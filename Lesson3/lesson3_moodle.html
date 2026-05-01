@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Equivalence of Propositions — Discrete Mathematics</title>
+<script>
+  MathJax = {
+    tex: { inlineMath: [['$','$']], displayMath: [['$$','$$']] },
+    options: { skipHtmlTags: ['script','noscript','style','textarea'] }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --orange:    #e67e22;
+  --darkblue:  #2c3e50;
+  --lightbg:   #f4f9fc;
+  --rowred:    #ffe8e8;
+  --rowblue:   #e3eeff;
+  --border:    #dce3ea;
+  /* SymPy green */
+  --sp-fg:     #1e824c;
+  --sp-bg:     #e8f5ec;
+  --sp-border: #27ae60;
+  --sp-head:   #27ae60;
+  /* Wolfram teal */
+  --wf-fg:     #006478;
+  --wf-bg:     #e4f5f9;
+  --wf-border: #008096;
+  --wf-head:   #008096;
+  /* Setup indigo */
+  --su-fg:     #4a4aaa;
+  --su-bg:     #eeeeff;
+  --su-border: #6060cc;
+  --su-head:   #6060cc;
+}
+
+body {
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  background: #e8edf2;
+  color: var(--darkblue);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem 1rem 5rem;
+  gap: 2rem;
+}
+
+/* ── Slide card ───────────────────────────────────────────────────── */
+.slide {
+  background: #fff;
+  width: 100%;
+  max-width: 940px;
+  border-radius: 10px;
+  box-shadow: 0 4px 18px rgba(0,0,0,.10);
+  padding: 2.2rem 2.8rem 1.8rem;
+  position: relative;
+}
+
+.slide-number {
+  position: absolute;
+  bottom: 0.7rem;
+  right: 1.2rem;
+  font-size: 0.72rem;
+  color: #aaa;
+}
+
+/* ── Title slide ──────────────────────────────────────────────────── */
+.slide.title-slide {
+  background: linear-gradient(145deg, #f4f9fc 60%, #e0eef7);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 260px;
+  text-align: center;
+  border-top: 6px solid var(--orange);
+}
+.slide.title-slide h1    { font-size: 1.9rem; color: var(--darkblue); margin-bottom: 0.4rem; }
+.slide.title-slide .subtitle { font-size: 1.15rem; color: #555; }
+
+/* ── Frame title ──────────────────────────────────────────────────── */
+h2.frame-title {
+  font-size: 1.65rem;
+  color: var(--orange);
+  font-weight: 700;
+  margin-bottom: 0.7rem;
+  padding-bottom: 0.35rem;
+  border-bottom: 2px solid #f9e4cc;
+}
+
+/* ── Body ─────────────────────────────────────────────────────────── */
+p { line-height: 1.7; margin: 0.45rem 0; }
+ul { margin: 0.4rem 0 0.4rem 1.4rem; line-height: 1.85; }
+ul li::marker { color: var(--orange); }
+strong { font-weight: 700; }
+em { font-style: italic; }
+
+/* ── Code pair (side by side) ─────────────────────────────────────── */
+.code-pair {
+  display: flex;
+  gap: 0.75rem;
+  margin: 0.7rem 0;
+}
+.code-pair > * { flex: 1; }
+
+/* ── SymPy block (green) ──────────────────────────────────────────── */
+.sympy-block {
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1px solid var(--sp-border);
+  margin: 0.7rem 0;
+}
+.sympy-label {
+  display: block;
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  background: var(--sp-head);
+  color: #fff;
+}
+.sympy-block .pane-code {
+  background: var(--sp-bg);
+  color: var(--sp-fg);
+  font-family: 'Consolas', 'Fira Code', monospace;
+  font-size: 0.83rem;
+  line-height: 1.6;
+  padding: 0.5rem 0.75rem;
+  white-space: pre;
+  display: block;
+}
+
+/* ── Wolfram block (teal) ─────────────────────────────────────────── */
+.wolfram-block {
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1px solid var(--wf-border);
+  margin: 0.7rem 0;
+}
+.wolfram-label {
+  display: block;
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  background: var(--wf-head);
+  color: #fff;
+}
+.wolfram-block .pane-code {
+  background: var(--wf-bg);
+  color: var(--wf-fg);
+  font-family: 'Consolas', 'Fira Code', monospace;
+  font-size: 0.83rem;
+  line-height: 1.6;
+  padding: 0.5rem 0.75rem;
+  white-space: pre;
+  display: block;
+}
+
+/* ── Tables ───────────────────────────────────────────────────────── */
+.eq-table {
+  border-collapse: collapse;
+  margin: 0.75rem 0;
+  font-size: 0.9rem;
+  width: 100%;
+}
+.eq-table th {
+  background: var(--darkblue);
+  color: #fff;
+  padding: 0.45rem 1rem;
+  text-align: left;
+  font-weight: 600;
+}
+.eq-table td {
+  border: 1px solid var(--border);
+  padding: 0.45rem 1rem;
+}
+.eq-table tr:nth-child(even) td { background: var(--lightbg); }
+.eq-table tr.row-hl td { background: #fff8e1; }
+
+/* ── Derivation block ─────────────────────────────────────────────── */
+.derivation {
+  background: var(--lightbg);
+  border-left: 4px solid var(--orange);
+  border-radius: 0 6px 6px 0;
+  padding: 1rem 1.2rem;
+  margin: 0.8rem 0;
+}
+.derivation .step {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  margin-bottom: 0.6rem;
+  font-size: 0.97rem;
+}
+.derivation .step:last-child { margin-bottom: 0; }
+.derivation .rule {
+  font-size: 0.78rem;
+  color: var(--orange);
+  font-style: italic;
+  white-space: nowrap;
+  min-width: 120px;
+}
+
+/* ── Info / alert boxes ───────────────────────────────────────────── */
+.info-box {
+  border: 1.5px solid var(--darkblue);
+  border-radius: 6px;
+  padding: 0.75rem 1rem;
+  background: var(--lightbg);
+  margin: 0.8rem 0;
+}
+.alert-box {
+  border: 1.5px solid var(--orange);
+  border-radius: 6px;
+  padding: 0.75rem 1rem;
+  background: #fff8f2;
+  margin: 0.8rem 0;
+}
+.alert-box .alert-title { font-weight: 700; color: var(--orange); margin-bottom: 0.3rem; }
+
+/* ── Nav ──────────────────────────────────────────────────────────── */
+#nav { position: fixed; bottom: 1.5rem; right: 1.5rem; display: flex; gap: 0.4rem; z-index: 100; }
+#nav button {
+  background: var(--orange); color: #fff; border: none;
+  border-radius: 50%; width: 40px; height: 40px;
+  font-size: 1.1rem; cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,.25); transition: background .2s;
+}
+#nav button:hover { background: #cf6d17; }
+#nav #btn-scroll { border-radius: 20px; width: auto; padding: 0 14px; font-size: 0.78rem; font-weight: 700; }
+
+body.slideshow .slide        { display: none; }
+body.slideshow .slide.active { display: block; }
+body.slideshow .slide.title-slide.active { display: flex; }
+</style>
+</head>
+<body>
+
+<!-- ══ Slide 1 — Title ════════════════════════════════════════════════ -->
+<section class="slide title-slide" id="s1">
+  <h1>Equivalence of Propositions</h1>
+  <p class="subtitle">Discrete Mathematics — Lesson 3</p>
+  <p style="font-size:1rem;color:#e67e22;margin-top:0.8rem;font-style:italic;font-weight:600;letter-spacing:.02em;">Notes By Pr. El Hadiq Zouhair</p>
+  <span class="slide-number">1 / 15</span>
+</section>
+
+<!-- ══ Slide 2 — Overview ════════════════════════════════════════════ -->
+<section class="slide" id="s2">
+  <h2 class="frame-title">Overview</h2>
+  <ul>
+    <li>Propositional <strong>equivalences</strong> are the primary tool of simplification in Boolean algebra.</li>
+    <li>Using equivalences allows the <strong>analysis of satisfiability</strong>.</li>
+    <li>Philosophy and reasoning are full of puzzles that can be simplified using equivalences.</li>
+  </ul>
+  <p style="margin-top:1rem;">You will learn about <strong>propositional equivalences</strong>, <strong>satisfiability</strong>, and <strong>normal forms</strong>.</p>
+  <span class="slide-number">2 / 15</span>
+</section>
+
+<!-- ══ Slide 3 — Satisfiability: Tautology & Contradiction ══════════ -->
+<section class="slide" id="s3">
+  <h2 class="frame-title">Satisfiability — Tautology &amp; Contradiction</h2>
+  <ul>
+    <li>A <strong>tautology</strong> is a logical statement that is <em>always true</em>: &nbsp;$p \lor \lnot p \equiv \top$</li>
+  </ul>
+  <div class="code-pair">
+    <div class="wolfram-block">
+      <span class="wolfram-label">Wolfram</span>
+      <span class="pane-code">TautologyQ[p || !p]
+(* Out: True *)</span>
+    </div>
+    <div class="sympy-block">
+      <span class="sympy-label">SymPy</span>
+      <span class="pane-code">from sympy import symbols, Or, Not
+from sympy.logic.inference import satisfiable
+p = symbols('p')
+not satisfiable(Not(Or(p, Not(p))))
+# True</span>
+    </div>
+  </div>
+  <ul>
+    <li>A formula is <strong>satisfiable</strong> if in at least one case it takes a true value.</li>
+    <li>A <strong>contradiction</strong> is always false: $p \land \lnot p \equiv \bot$</li>
+  </ul>
+  <div class="code-pair">
+    <div class="wolfram-block">
+      <span class="wolfram-label">Wolfram</span>
+      <span class="pane-code">SatisfiableQ[p &amp;&amp; !p]
+(* Out: False *)</span>
+    </div>
+    <div class="sympy-block">
+      <span class="sympy-label">SymPy</span>
+      <span class="pane-code">from sympy import And
+bool(satisfiable(And(p, Not(p))))
+# False</span>
+    </div>
+  </div>
+  <span class="slide-number">3 / 15</span>
+</section>
+
+<!-- ══ Slide 4 — Satisfiability: Contingency ═════════════════════════ -->
+<section class="slide" id="s4">
+  <h2 class="frame-title">Satisfiability — Contingency</h2>
+  <ul>
+    <li>A <strong>contingency</strong> may be true or false: $p \land q$ is satisfiable but not a tautology.</li>
+  </ul>
+  <div class="code-pair">
+    <div class="wolfram-block">
+      <span class="wolfram-label">Wolfram</span>
+      <span class="pane-code">SatisfiableQ[p &amp;&amp; q]  (* True  *)
+TautologyQ[p &amp;&amp; q]    (* False *)</span>
+    </div>
+    <div class="sympy-block">
+      <span class="sympy-label">SymPy</span>
+      <span class="pane-code">q = symbols('q')
+bool(satisfiable(And(p, q)))    # True
+not satisfiable(Not(And(p, q))) # False</span>
+    </div>
+  </div>
+  <table class="eq-table" style="margin-top:1rem; max-width:420px;">
+    <tr><th></th><th>Satisfiable</th><th>Tautology</th></tr>
+    <tr><td><strong>Tautology</strong></td><td style="text-align:center">✔</td><td style="text-align:center">✔</td></tr>
+    <tr><td><strong>Contingency</strong></td><td style="text-align:center">✔</td><td style="text-align:center">✘</td></tr>
+    <tr><td><strong>Contradiction</strong></td><td style="text-align:center">✘</td><td style="text-align:center">✘</td></tr>
+  </table>
+  <span class="slide-number">4 / 15</span>
+</section>
+
+<!-- ══ Slide 5 — Main Equivalences ══════════════════════════════════ -->
+<section class="slide" id="s5">
+  <h2 class="frame-title">Main Equivalences</h2>
+  <p>Two propositions $p$ and $q$ are <strong>equivalent</strong> if and only if $p \Leftrightarrow q$ is a tautology.</p>
+  <table class="eq-table" style="margin-top:0.7rem;">
+    <tr><th style="width:18%">Law</th><th>Equivalence 1</th><th>Equivalence 2</th></tr>
+    <tr><td>Identity</td><td>$p \land \top \Leftrightarrow p$</td><td>$p \lor \bot \Leftrightarrow p$</td></tr>
+    <tr><td>Domination</td><td>$p \lor \top \Leftrightarrow \top$</td><td>$p \land \bot \Leftrightarrow \bot$</td></tr>
+    <tr><td>Idempotency</td><td>$p \lor p \Leftrightarrow p$</td><td>$p \land p \Leftrightarrow p$</td></tr>
+    <tr><td>Double Negation</td><td>$\lnot(\lnot p) \Leftrightarrow p$</td><td></td></tr>
+    <tr><td>Commutativity</td><td>$p \lor q \Leftrightarrow q \lor p$</td><td>$p \land q \Leftrightarrow q \land p$</td></tr>
+    <tr><td>Associativity</td><td>$p \lor (q \lor r) \Leftrightarrow (p \lor q) \lor r$</td><td>$p \land (q \land r) \Leftrightarrow (p \land q) \land r$</td></tr>
+    <tr><td>Distributivity</td><td>$p \lor (q \land r) \Leftrightarrow (p \lor q) \land (p \lor r)$</td><td>$p \land (q \lor r) \Leftrightarrow (p \land q) \lor (p \land r)$</td></tr>
+    <tr class="row-hl"><td>De Morgan's</td><td>$\lnot(p \land q) \Leftrightarrow \lnot p \lor \lnot q$</td><td>$\lnot(p \lor q) \Leftrightarrow \lnot p \land \lnot q$</td></tr>
+    <tr><td>Absorption</td><td>$p \lor (p \land q) \Leftrightarrow p$</td><td>$p \land (p \lor q) \Leftrightarrow p$</td></tr>
+    <tr><td>Negation</td><td>$p \lor \lnot p \Leftrightarrow \top$</td><td>$p \land \lnot p \Leftrightarrow \bot$</td></tr>
+  </table>
+  <span class="slide-number">5 / 15</span>
+</section>
+
+<!-- ══ Slide 6 — Simplification Example ═════════════════════════════ -->
+<section class="slide" id="s6">
+  <h2 class="frame-title">Example: Simplifying a Proposition</h2>
+  <p><strong>Simplify:</strong> <em>"These potatoes are sweet and salty <strong>or</strong> they are salty, spicy and (salty or spicy)."</em></p>
+  <div class="derivation">
+    <div class="step"><span>$(\textit{sweet} \land \textit{salty}) \lor \bigl(\textit{salty} \land \textit{spicy} \land (\textit{salty} \lor \textit{spicy})\bigr)$</span><span class="rule"></span></div>
+    <div class="step"><span>$\Leftrightarrow\;(\textit{sweet} \land \textit{salty}) \lor (\textit{salty} \land \textit{spicy} \land \textit{salty}) \lor (\textit{salty} \land \textit{spicy} \land \textit{spicy})$</span><span class="rule">Distributivity</span></div>
+    <div class="step"><span>$\Leftrightarrow\;(\textit{sweet} \land \textit{salty}) \lor (\textit{salty} \land \textit{spicy}) \lor (\textit{salty} \land \textit{spicy})$</span><span class="rule">Idempotency</span></div>
+    <div class="step"><span>$\Leftrightarrow\;(\textit{salty} \land \textit{spicy}) \lor (\textit{salty} \land \textit{sweet})$</span><span class="rule">Idempotency</span></div>
+  </div>
+  <p><strong>Result:</strong> <em>"These potatoes are salty and spicy, or salty and sweet."</em></p>
+  <span class="slide-number">6 / 15</span>
+</section>
+
+<!-- ══ Slide 7 — Automated Simplification ════════════════════════════ -->
+<section class="slide" id="s7">
+  <h2 class="frame-title">Automated Simplification</h2>
+  <div class="code-pair">
+    <div class="wolfram-block">
+      <span class="wolfram-label">Wolfram — BooleanMinimize</span>
+      <span class="pane-code">BooleanMinimize[
+  (sweet &amp;&amp; salty) ||
+  (salty &amp;&amp; spicy &amp;&amp;
+   (salty || spicy))]
+(* (salty &amp;&amp; spicy) ||
+   (salty &amp;&amp; sweet) *)</span>
+    </div>
+    <div class="sympy-block">
+      <span class="sympy-label">SymPy — simplify_logic</span>
+      <span class="pane-code">from sympy import symbols
+from sympy.logic.boolalg import (
+    And, Or, simplify_logic)
+
+sweet, salty, spicy = symbols(
+    'sweet salty spicy')
+
+expr = Or(
+    And(sweet, salty),
+    And(salty, spicy,
+        Or(salty, spicy)))
+
+simplify_logic(expr)
+# (salty &amp; spicy) | (salty &amp; sweet)</span>
+    </div>
+  </div>
+  <span class="slide-number">7 / 15</span>
+</section>
+
+<!-- ══ Slide 8 — Conditional Equivalences ════════════════════════════ -->
+<section class="slide" id="s8">
+  <h2 class="frame-title">Conditional Equivalences</h2>
+  <p>All logical operators can be expressed using basic operators ($\lnot$, $\land$, $\lor$).</p>
+  <table class="eq-table" style="max-width:640px; margin-top:0.8rem;">
+    <tr><th>Operator</th><th>Equivalence</th></tr>
+    <tr><td>Conditional</td><td>$p \to q \;\Leftrightarrow\; \lnot p \lor q$</td></tr>
+    <tr><td>Bicond. to Cond.</td><td>$(p \Leftrightarrow q) \;\Leftrightarrow\; (p \to q) \land (\lnot p \to \lnot q)$</td></tr>
+    <tr><td>Biconditional</td><td>$(p \Leftrightarrow q) \;\Leftrightarrow\; (p \land q) \lor (\lnot p \land \lnot q)$</td></tr>
+  </table>
+  <div class="info-box" style="margin-top:1rem;">
+    <strong>Key result:</strong> All propositions can be expressed using only $\lnot$, $\land$, $\lor$.
+  </div>
+  <span class="slide-number">8 / 15</span>
+</section>
+
+<!-- ══ Slide 9 — DNF ══════════════════════════════════════════════════ -->
+<section class="slide" id="s9">
+  <h2 class="frame-title">Disjunctive Normal Form (DNF)</h2>
+  <p>A <strong>DNF</strong> proposition is the <em>disjunction</em> of one or more <em>conjunctions</em>.</p>
+  <p>From our example: $(\textit{salty} \land \textit{spicy}) \lor (\textit{salty} \land \textit{sweet})$ &nbsp;<strong style="color:var(--orange)">is in DNF.</strong></p>
+  <div class="code-pair" style="margin-top:0.8rem;">
+    <div class="wolfram-block">
+      <span class="wolfram-label">Wolfram — BooleanConvert</span>
+      <span class="pane-code">BooleanConvert[
+  ((a ~Xor~ b ~Xor~ !c ||
+    (a||b) &amp;&amp; (b||c||d))
+    &amp;&amp; (!c||b))
+  ~Xor~ (!c &amp;&amp; a),
+  "DNF"]
+(* (!a &amp;&amp; !b) || (!b &amp;&amp; c) *)</span>
+    </div>
+    <div class="sympy-block">
+      <span class="sympy-label">SymPy — to_dnf</span>
+      <span class="pane-code">from sympy import symbols, Xor
+from sympy.logic.boolalg import (
+    And, Or, Not, to_dnf)
+
+a, b, c, d = symbols('a b c d')
+inner = Or(Xor(a,b,Not(c)),
+           And(Or(a,b), Or(b,c,d)))
+expr = Xor(
+    And(inner, Or(Not(c), b)),
+    And(Not(c), a))
+
+to_dnf(expr, simplify=True)
+# (~a &amp; ~b) | (~b &amp; c)</span>
+    </div>
+  </div>
+  <span class="slide-number">9 / 15</span>
+</section>
+
+<!-- ══ Slide 10 — DNF: XOR ════════════════════════════════════════════ -->
+<section class="slide" id="s10">
+  <h2 class="frame-title">DNF — XOR: "For me or against me"</h2>
+  <p>Translate: <em>"You are <strong>either</strong> for me <strong>or</strong> against me"</em> $\;\longrightarrow\; f \oplus a$</p>
+  <div class="code-pair">
+    <div class="wolfram-block">
+      <span class="wolfram-label">Wolfram</span>
+      <span class="pane-code">BooleanConvert[f ~Xor~ a, "DNF"]
+(* (a &amp;&amp; !f) || (!a &amp;&amp; f) *)</span>
+    </div>
+    <div class="sympy-block">
+      <span class="sympy-label">SymPy</span>
+      <span class="pane-code">f, a = symbols('f a')
+to_dnf(Xor(f, a), simplify=True)
+# (a &amp; ~f) | (~a &amp; f)</span>
+    </div>
+  </div>
+  <span class="slide-number">10 / 15</span>
+</section>
+
+<!-- ══ Slide 11 — DNF: Counting Function ═════════════════════════════ -->
+<section class="slide" id="s11">
+  <h2 class="frame-title">DNF — Counting Function</h2>
+  <p><strong>Problem:</strong> Find the logical expression that is true when <strong style="color:var(--orange)">exactly 2 or 3</strong> of $\{a,b,c,d\}$ are true.</p>
+  <div class="code-pair">
+    <div class="wolfram-block">
+      <span class="wolfram-label">Wolfram — BooleanCountingFunction</span>
+      <span class="pane-code">expr = BooleanCountingFunction[
+         {2,3}, {a,b,c,d}];
+BooleanConvert@expr   (* full DNF   *)
+BooleanMinimize@expr  (* minimal DNF *)</span>
+    </div>
+    <div class="sympy-block">
+      <span class="sympy-label">SymPy</span>
+      <span class="pane-code">from itertools import combinations
+from sympy import symbols, And, Or, Not
+from sympy.logic.boolalg import (
+    to_dnf, simplify_logic)
+
+a, b, c, d = symbols('a b c d')
+vs = [a, b, c, d]
+
+def count_fn(ks, vs):
+    n = len(vs)
+    return Or(*[
+        And(*[vs[i] if i in combo
+              else Not(vs[i])
+              for i in range(n)])
+        for k in ks
+        for combo in
+            combinations(range(n), k)])
+
+expr = count_fn([2, 3], vs)
+print(to_dnf(expr, simplify=True))
+print(simplify_logic(expr))</span>
+    </div>
+  </div>
+  <span class="slide-number">11 / 15</span>
+</section>
+
+<!-- ══ Slide 12 — Other Normal Forms ════════════════════════════════ -->
+<section class="slide" id="s12">
+  <h2 class="frame-title">Other Normal Forms</h2>
+  <p>Other normal forms are also possible:</p>
+  <table class="eq-table" style="max-width:580px; margin: 0.7rem 0;">
+    <tr><th>Form</th><th>$x \oplus y$ expressed as …</th></tr>
+    <tr><td>DNF</td><td>$(x \land y) \lor (\lnot x \land \lnot y)$</td></tr>
+    <tr class="row-hl"><td>CNF</td><td>$(\lnot x \lor y) \land (x \lor \lnot y)$</td></tr>
+    <tr><td>NAND</td><td>$(x \barwedge y) \barwedge (\lnot x \barwedge \lnot y)$</td></tr>
+    <tr><td>NOR</td><td>$(\lnot x \downarrow y) \downarrow (x \downarrow \lnot y)$</td></tr>
+  </table>
+  <div class="code-pair">
+    <div class="wolfram-block">
+      <span class="wolfram-label">Wolfram — CNF</span>
+      <span class="pane-code">BooleanConvert[x ~Xor~ y, "CNF"]
+(* (!x || y) &amp;&amp; (x || !y) *)</span>
+    </div>
+    <div class="sympy-block">
+      <span class="sympy-label">SymPy — to_cnf</span>
+      <span class="pane-code">from sympy.logic.boolalg import to_cnf
+x, y = symbols('x y')
+to_cnf(Xor(x, y), simplify=True)
+# (x | y) &amp; (~x | ~y)</span>
+    </div>
+  </div>
+  <div class="info-box">
+    <strong>Universal gates:</strong> NAND ($\barwedge$) and NOR ($\downarrow$) can each express all binary operations.
+  </div>
+  <span class="slide-number">12 / 15</span>
+</section>
+
+<!-- ══ Slide 13 — CNF to DNF Conversion ═════════════════════════════ -->
+<section class="slide" id="s13">
+  <h2 class="frame-title">CNF to DNF Conversion</h2>
+  <p><strong>Convert</strong> $(\lnot p \lor q) \land (\lnot p \lor \lnot r) \land (\lnot q \lor r)$ <strong>to DNF</strong>:</p>
+  <div class="derivation">
+    <div class="step"><span>$(\lnot p \lor q) \land (\lnot p \lor \lnot r) \land (\lnot q \lor r)$</span><span class="rule"></span></div>
+    <div class="step"><span>$\Leftrightarrow\;\bigl(\lnot p \lor (q \land \lnot r)\bigr) \land (\lnot q \lor r)$</span><span class="rule">Distributivity</span></div>
+    <div class="step"><span>$\Leftrightarrow\;\bigl(\lnot p \lor \lnot(\lnot q \lor r)\bigr) \land (\lnot q \lor r)$</span><span class="rule">De Morgan's</span></div>
+    <div class="step"><span>$\Leftrightarrow\;\bigl(\lnot p \land (\lnot q \lor r)\bigr) \lor \bigl(\lnot(\lnot q \lor r) \land (\lnot q \lor r)\bigr)$</span><span class="rule">Distributivity</span></div>
+    <div class="step"><span>$\Leftrightarrow\;\lnot p \land (\lnot q \lor r) \;\lor\; \bot$</span><span class="rule">Negation</span></div>
+    <div class="step"><span>$\Leftrightarrow\;\lnot p \land (\lnot q \lor r)$</span><span class="rule">Identity</span></div>
+  </div>
+  <div class="alert-box">
+    <div class="alert-title">Complexity Note</div>
+    Converting from CNF to DNF is <strong>NP-hard</strong> — a class of computationally difficult problems.
+  </div>
+  <span class="slide-number">13 / 15</span>
+</section>
+
+<!-- ══ Slide 14 — Satisfiability Research ═══════════════════════════ -->
+<section class="slide" id="s14">
+  <h2 class="frame-title">Satisfiability Research</h2>
+  <ul>
+    <li>Satisfiability remains an <strong>open problem</strong> at the heart of computer science.</li>
+    <li>Efficiently determining whether <em>any</em> logical expression is satisfiable can be very difficult.</li>
+    <li>The propositional satisfiability problem (<strong>SAT</strong>) is the main subject of annual research conferences.</li>
+  </ul>
+  <div class="info-box" style="margin-top:1.5rem; text-align:center;">
+    <em>Is there an efficient algorithm for SAT?</em><br>
+    <strong style="color:var(--orange); font-size:1.05rem;">P vs. NP — one of the Millennium Prize Problems.</strong>
+  </div>
+  <span class="slide-number">14 / 15</span>
+</section>
+
+<!-- ══ Slide 15 — Summary ════════════════════════════════════════════ -->
+<section class="slide" id="s15">
+  <h2 class="frame-title">Summary</h2>
+  <ul>
+    <li>A proposition is either a <strong style="color:var(--orange)">tautology</strong>, a <strong style="color:var(--orange)">contradiction</strong>, or a <strong style="color:var(--orange)">contingency</strong>.</li>
+    <li>Many propositional equivalences are used by <code>simplify_logic</code> (SymPy) to simplify Boolean expressions automatically.</li>
+    <li>Simplifications are standardised through <strong style="color:var(--orange)">normal forms</strong> (DNF, CNF, NAND, NOR).</li>
+    <li>The previous propositions were declarative statements — more expressive logics (predicates, quantifiers) come next.</li>
+  </ul>
+  <table class="eq-table" style="max-width:500px; margin-top:1rem;">
+    <tr><th>SymPy function</th><th>Replaces Wolfram</th></tr>
+    <tr><td><code>not satisfiable(Not(expr))</code></td><td><code>TautologyQ</code></td></tr>
+    <tr><td><code>bool(satisfiable(expr))</code></td><td><code>SatisfiableQ</code></td></tr>
+    <tr><td><code>simplify_logic(expr)</code></td><td><code>BooleanMinimize</code></td></tr>
+    <tr><td><code>to_dnf(expr, simplify=True)</code></td><td><code>BooleanConvert[…,"DNF"]</code></td></tr>
+    <tr><td><code>to_cnf(expr, simplify=True)</code></td><td><code>BooleanConvert[…,"CNF"]</code></td></tr>
+  </table>
+  <span class="slide-number">15 / 15</span>
+</section>
+
+<!-- ── Navigation ─────────────────────────────────────────────────── -->
+<div id="nav">
+  <button id="btn-prev" title="Previous">&#8592;</button>
+  <button id="btn-scroll" title="Toggle slideshow">Slideshow</button>
+  <button id="btn-next" title="Next">&#8594;</button>
+</div>
+
+<script>
+const slides = document.querySelectorAll('.slide');
+let current = 0, slideshowMode = false;
+
+function enter(i) {
+  slides[current].classList.remove('active');
+  current = (i + slides.length) % slides.length;
+  slides[current].classList.add('active');
+  slides[current].scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+document.getElementById('btn-prev').addEventListener('click', () => {
+  if (slideshowMode) enter(current - 1);
+});
+document.getElementById('btn-next').addEventListener('click', () => {
+  if (slideshowMode) enter(current + 1);
+});
+document.getElementById('btn-scroll').addEventListener('click', () => {
+  slideshowMode = !slideshowMode;
+  document.body.classList.toggle('slideshow', slideshowMode);
+  document.getElementById('btn-scroll').textContent = slideshowMode ? 'Scroll' : 'Slideshow';
+  if (slideshowMode) slides[current].classList.add('active');
+  else slides.forEach(s => s.classList.remove('active'));
+});
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === 'ArrowDown') enter(current + 1);
+  if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   enter(current - 1);
+});
+</script>
+</body>
+</html>
