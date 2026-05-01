@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rules of Inference — Discrete Mathematics</title>
+<script>
+  MathJax = {
+    tex: { inlineMath: [['$','$']], displayMath: [['$$','$$']] },
+    options: { skipHtmlTags: ['script','noscript','style','textarea'] }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --orange:    #e67e22;
+  --darkblue:  #2c3e50;
+  --lightbg:   #f4f9fc;
+  --rowred:    #ffe8e8;
+  --rowblue:   #e3eeff;
+  --border:    #dce3ea;
+  --sp-fg:     #1e824c;
+  --sp-bg:     #e8f5ec;
+  --sp-border: #27ae60;
+  --sp-head:   #27ae60;
+  --su-fg:     #4a4aaa;
+  --su-bg:     #eeeeff;
+  --su-border: #6060cc;
+  --su-head:   #6060cc;
+}
+
+body {
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  background: #e8edf2;
+  color: var(--darkblue);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem 1rem 5rem;
+  gap: 2rem;
+}
+
+.slide {
+  background: #fff;
+  width: 100%;
+  max-width: 940px;
+  border-radius: 10px;
+  box-shadow: 0 4px 18px rgba(0,0,0,.10);
+  padding: 2.2rem 2.8rem 1.8rem;
+  position: relative;
+}
+
+.slide-number {
+  position: absolute;
+  bottom: 0.7rem;
+  right: 1.2rem;
+  font-size: 0.72rem;
+  color: #aaa;
+}
+
+.slide.title-slide {
+  background: linear-gradient(145deg, #f4f9fc 60%, #e0eef7);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 240px;
+  text-align: center;
+  border-top: 6px solid var(--orange);
+}
+.slide.title-slide h1  { font-size: 1.9rem; color: var(--darkblue); margin-bottom: 0.4rem; }
+.slide.title-slide .subtitle { font-size: 1.15rem; color: #555; }
+.slide.title-slide .author   { font-size: 1rem; color: var(--orange); margin-top: 0.7rem; font-style: italic; }
+
+h2.frame-title {
+  font-size: 1.65rem;
+  color: var(--orange);
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  padding-bottom: 0.35rem;
+  border-bottom: 2px solid #f9e4cc;
+}
+
+p { line-height: 1.7; margin: 0.45rem 0; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.4rem; line-height: 1.85; }
+ul li::marker { color: var(--orange); }
+ol li::marker { color: var(--orange); font-weight: 700; }
+
+.setup-block {
+  border-radius: 6px; overflow: hidden;
+  border: 1px solid var(--su-border); margin: 0.7rem 0;
+}
+.setup-label {
+  display: block; font-size: 0.65rem; font-weight: 800;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  padding: 3px 10px; background: var(--su-head); color: #fff;
+}
+.setup-block .pane-code {
+  background: var(--su-bg); color: var(--su-fg);
+  font-family: 'Consolas','Fira Code',monospace;
+  font-size: 0.83rem; line-height: 1.6;
+  padding: 0.5rem 0.75rem; white-space: pre; display: block;
+}
+
+.sympy-block {
+  border-radius: 6px; overflow: hidden;
+  border: 1px solid var(--sp-border); margin: 0.7rem 0;
+}
+.sympy-label {
+  display: block; font-size: 0.65rem; font-weight: 800;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  padding: 3px 10px; background: var(--sp-head); color: #fff;
+}
+.sympy-block .pane-code {
+  background: var(--sp-bg); color: var(--sp-fg);
+  font-family: 'Consolas','Fira Code',monospace;
+  font-size: 0.83rem; line-height: 1.6;
+  padding: 0.5rem 0.75rem; white-space: pre; display: block;
+}
+
+.truth-table {
+  border-collapse: collapse; margin: 0.75rem auto; font-size: 0.9rem;
+}
+.truth-table th, .truth-table td {
+  border: 1px solid var(--border);
+  padding: 0.4rem 1rem; text-align: center; min-width: 60px;
+}
+.truth-table th { background: var(--lightbg); font-weight: 600; }
+.truth-table tr.row-t { background: var(--rowred); }
+.truth-table tr.row-f { background: var(--rowblue); }
+
+/* conclusion highlight */
+.concl { color: var(--orange); font-weight: 700; }
+
+#nav { position: fixed; bottom: 1.5rem; right: 1.5rem; display: flex; gap: 0.4rem; z-index: 100; }
+#nav button {
+  background: var(--orange); color: #fff; border: none;
+  border-radius: 50%; width: 40px; height: 40px;
+  font-size: 1.1rem; cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,.25); transition: background .2s;
+}
+#nav button:hover { background: #cf6d17; }
+#nav #btn-scroll { border-radius: 20px; width: auto; padding: 0 12px; font-size: 0.8rem; }
+
+body.slideshow .slide        { display: none; }
+body.slideshow .slide.active { display: block; }
+</style>
+</head>
+<body>
+
+<!-- ══ Slide 1 — Title ════════════════════════════════════════════════ -->
+<section class="slide title-slide" id="s1">
+  <h1>Rules of Inference</h1>
+  <p class="subtitle">Discrete Mathematics — Lesson 5</p>
+  <p class="author">Notes By Pr. El Hadiq Zouhair</p>
+  <span class="slide-number">1 / 11</span>
+</section>
+
+<!-- ══ Slide 2 — Overview ════════════════════════════════════════════ -->
+<section class="slide" id="s2">
+  <h2 class="frame-title">Overview</h2>
+  <ul>
+    <li>Most of the time, the full explanation is not needed.</li>
+    <li>Inference is the process of deriving logical conclusions from known premises.</li>
+    <li>Aristotle classically divided it in two: <strong>deduction</strong> and <strong>induction</strong>.</li>
+  </ul>
+  <span class="slide-number">2 / 11</span>
+</section>
+
+<!-- ══ Slide 3 — Motivation ══════════════════════════════════════════ -->
+<section class="slide" id="s3">
+  <h2 class="frame-title">Motivation</h2>
+  <p>Assume the following statements as true:</p>
+  <ul>
+    <li>If you have cherries, you can eat. &emsp; $\mathit{have} \Rightarrow \mathit{eat}$</li>
+    <li>You have cherries. &emsp; $\mathit{have}$</li>
+  </ul>
+  <p>Intuitively, by inference, this implies you can eat. But how do you get there?</p>
+
+  <div class="setup-block">
+    <span class="setup-label">Python — imports (run once)</span>
+    <span class="pane-code">from sympy import symbols, And, Implies, simplify_logic
+from sympy.logic.boolalg import truth_table
+have, eat = symbols('have eat')</span>
+  </div>
+
+  <div class="sympy-block">
+    <span class="sympy-label">Python</span>
+    <span class="pane-code">expr = And(Implies(have, eat), have)
+print(simplify_logic(expr))          # eat &amp; have
+
+for vals, result in truth_table(expr, [have, eat]):
+    print(list(vals), '->', result)</span>
+  </div>
+
+  <table class="truth-table" style="margin-top:0.6rem">
+    <thead><tr><th>have</th><th>eat</th><th>eat ∧ have</th></tr></thead>
+    <tbody>
+      <tr class="row-t"><td>True</td><td>True</td><td>True</td></tr>
+      <tr class="row-f"><td>True</td><td>False</td><td>False</td></tr>
+      <tr class="row-f"><td>False</td><td>True</td><td>False</td></tr>
+      <tr class="row-f"><td>False</td><td>False</td><td>False</td></tr>
+    </tbody>
+  </table>
+  <span class="slide-number">3 / 11</span>
+</section>
+
+<!-- ══ Slide 4 — Limits of Truth Tables ══════════════════════════════ -->
+<section class="slide" id="s4">
+  <h2 class="frame-title">Limits of Truth Tables</h2>
+  <p>Simplification through equivalences is often insufficient to obtain conclusive results:</p>
+
+  <div class="setup-block">
+    <span class="setup-label">Python — imports (run once)</span>
+    <span class="pane-code">from sympy import symbols, Or, And, simplify_logic
+from sympy.logic.boolalg import truth_table
+from itertools import combinations</span>
+  </div>
+
+  <div class="sympy-block">
+    <span class="sympy-label">Python</span>
+    <span class="pane-code">a, b, c, d, e = symbols('a b c d e')
+# BooleanCountingFunction[2, 5]: at least 2 of 5 are True
+expr = Or(*[And(x, y) for x, y in combinations([a,b,c,d,e], 2)])
+simplified = simplify_logic(expr)
+print(simplified)   # still complex
+
+# Truth table: 2^5 = 32 rows — too large to inspect by hand
+for vals, result in truth_table(simplified, [a, b, c, d, e]):
+    print(list(vals), '->', result)</span>
+  </div>
+
+  <p>With 5 variables a truth table has $2^5 = 32$ rows. Rules of inference provide a structured shortcut.</p>
+  <span class="slide-number">4 / 11</span>
+</section>
+
+<!-- ══ Slide 5 — Rules of Inference ══════════════════════════════════ -->
+<section class="slide" id="s5">
+  <h2 class="frame-title">Rules of Inference</h2>
+  <p>The most common rules are as follows. Unlike equivalence, the right-hand side is <em>weaker</em>.</p>
+
+  <table class="truth-table" style="width:100%; margin:0.7rem 0; font-size:0.87rem;">
+    <thead>
+      <tr><th style="text-align:left;padding-left:0.6rem">Rule</th><th>Premises</th><th></th><th>Conclusion</th></tr>
+    </thead>
+    <tbody>
+      <tr><td style="text-align:left;padding-left:0.6rem">Modus Ponens</td>
+          <td>$p \;\wedge\; (p\to q)$</td><td>$\to$</td><td>$q$</td></tr>
+      <tr><td style="text-align:left;padding-left:0.6rem">Modus Tollens</td>
+          <td>$\neg q \;\wedge\; (p\to q)$</td><td>$\to$</td><td>$\neg p$</td></tr>
+      <tr><td style="text-align:left;padding-left:0.6rem">Hypothetical Syllogism</td>
+          <td>$(p\to q) \;\wedge\; (q\to r)$</td><td>$\to$</td><td>$p\to r$</td></tr>
+      <tr><td style="text-align:left;padding-left:0.6rem">Disjunctive Syllogism</td>
+          <td>$(p\vee q) \;\wedge\; \neg p$</td><td>$\to$</td><td>$q$</td></tr>
+      <tr><td style="text-align:left;padding-left:0.6rem">Addition</td>
+          <td>$p$</td><td>$\to$</td><td>$p\vee q$</td></tr>
+      <tr><td style="text-align:left;padding-left:0.6rem">Simplification</td>
+          <td>$p\wedge q$</td><td>$\to$</td><td>$p$</td></tr>
+      <tr><td style="text-align:left;padding-left:0.6rem">Conjunction</td>
+          <td>$p \;\wedge\; q$</td><td>$\to$</td><td>$p\wedge q$</td></tr>
+      <tr><td style="text-align:left;padding-left:0.6rem">Resolution</td>
+          <td>$(p\vee q) \;\wedge\; (\neg p\vee r)$</td><td>$\to$</td><td>$q\vee r$</td></tr>
+    </tbody>
+  </table>
+
+  <div class="sympy-block">
+    <span class="sympy-label">Python — verify all rules</span>
+    <span class="pane-code">from sympy import symbols, And, Or, Not, Implies
+from sympy.logic.inference import satisfiable
+
+p, q, r = symbols('p q r')
+# A rule is valid iff premises & ~conclusion is UNSAT
+checks = {
+    'Modus Ponens':     And(p, Implies(p,q),        Not(q)),
+    'Modus Tollens':    And(Not(q), Implies(p,q),   p),
+    'Hyp. Syllogism':   And(Implies(p,q), Implies(q,r), Not(Implies(p,r))),
+    'Disj. Syllogism':  And(Or(p,q), Not(p),        Not(q)),
+    'Resolution':       And(Or(p,q), Or(Not(p),r),  Not(Or(q,r))),
+}
+for name, f in checks.items():
+    print(name, ':', not satisfiable(f))   # all True</span>
+  </div>
+  <span class="slide-number">5 / 11</span>
+</section>
+
+<!-- ══ Slide 6 — Example 1: Swimming ════════════════════════════════ -->
+<section class="slide" id="s6">
+  <h2 class="frame-title">Example 1</h2>
+  <p>Assume the following statements as true:</p>
+  <ul>
+    <li>You will go swim <strong>or</strong> go to the gym. &emsp; $\mathrm{Swim(you)} \vee \mathrm{Gym(you)}$</li>
+    <li>If you go swimming, you will need a swimsuit. &emsp; $\mathrm{Swim(you)} \to \mathrm{Swimsuit(you)}$</li>
+  </ul>
+  <p>Is it true that you will need a swimsuit or go to the gym? &ensp; $\mathrm{Swimsuit(you)} \vee \mathrm{Gym(you)}$</p>
+  <ul>
+    <li>Using a conditional equivalence: $\neg\,\mathrm{Swim(you)} \vee \mathrm{Swimsuit(you)}$</li>
+    <li>Using <strong>resolution</strong>: &ensp; <span class="concl">$\mathrm{Swimsuit(you)} \vee \mathrm{Gym(you)}$</span></li>
+  </ul>
+
+  <div class="sympy-block">
+    <span class="sympy-label">Python</span>
+    <span class="pane-code">from sympy import symbols, And, Or, Not, Implies
+from sympy.logic.inference import satisfiable
+
+Swim, Gym, Swimsuit = symbols('Swim Gym Swimsuit')
+premises   = And(Or(Swim, Gym), Implies(Swim, Swimsuit))
+conclusion = Or(Swimsuit, Gym)
+
+# Valid if premises & ~conclusion is unsatisfiable
+print(not satisfiable(And(premises, Not(conclusion))))  # True</span>
+  </div>
+  <span class="slide-number">6 / 11</span>
+</section>
+
+<!-- ══ Slide 7 — Example 2: NFT Setup ═══════════════════════════════ -->
+<section class="slide" id="s7">
+  <h2 class="frame-title">Example 2</h2>
+  <p>Assume the following statements as true:</p>
+  <ul>
+    <li>Your Invisible Rock #14 NFT can be sold for ≈4.32 ETH if you sell it.
+        &emsp; $\mathrm{Sell(Rock)} \to \mathrm{Get(4.32\,ETH)}$</li>
+    <li>4.32 ETH can be sold for $7000 at this time.
+        &emsp; $\mathrm{Get(4.32\,ETH)} \to \mathrm{Get(\$7000)}$</li>
+    <li>If you have $10 000, you can buy yourself a car.
+        &emsp; $\mathrm{Have(\$10\,000)} \to \mathrm{Buy(Car)}$</li>
+    <li>You saved $3000 in your savings account for a car.
+        &emsp; $\mathrm{Savings(\$3000)}$</li>
+  </ul>
+  <p>If you sell your Invisible Rock ($\mathrm{Sell(Rock)}$), can you buy yourself a car?</p>
+  <span class="slide-number">7 / 11</span>
+</section>
+
+<!-- ══ Slide 8 — Example 2: NFT Solution ════════════════════════════ -->
+<section class="slide" id="s8">
+  <h2 class="frame-title">Example 2 (continued)</h2>
+  <ol>
+    <li><strong>Hypothetical syllogism</strong>: &emsp; $\mathrm{Sell(Rock)} \to \mathrm{Get(\$7000)}$</li>
+    <li><strong>Modus ponens</strong>: &emsp; $\mathrm{Get(\$7000)}$</li>
+    <li><strong>Conjunction</strong>: &emsp; $\mathrm{Get(\$7000)} \wedge \mathrm{Savings(\$3000)}$</li>
+    <li><strong>Addition + Modus ponens</strong>: &emsp; <span class="concl">$\mathrm{Have(\$10\,000)}$</span></li>
+    <li><strong>Modus ponens</strong>: &emsp; <span class="concl">$\mathrm{Buy(Car)}$</span></li>
+  </ol>
+
+  <div class="sympy-block">
+    <span class="sympy-label">Python</span>
+    <span class="pane-code">from sympy import symbols, And, Implies, Not
+from sympy.logic.inference import satisfiable
+
+SellRock, Get7000, Have10000, BuyCar, Savings = symbols(
+    'SellRock Get7000 Have10000 BuyCar Savings')
+
+premises = And(
+    SellRock,
+    Implies(SellRock, Get7000),                  # hyp. syllogism (steps 1&amp;2)
+    Savings,
+    Implies(And(Get7000, Savings), Have10000),    # addition principle
+    Implies(Have10000, BuyCar),
+)
+print(not satisfiable(And(premises, Not(BuyCar))))  # True</span>
+  </div>
+  <span class="slide-number">8 / 11</span>
+</section>
+
+<!-- ══ Slide 9 — Rules for Quantified Statements ════════════════════ -->
+<section class="slide" id="s9">
+  <h2 class="frame-title">Rules for Quantified Statements</h2>
+  <p>Inference is also used for quantifiers:</p>
+
+  <table class="truth-table" style="width:95%; margin:0.6rem auto; font-size:0.87rem;">
+    <thead>
+      <tr><th style="text-align:left;padding-left:0.6rem">Rule</th><th>Premise</th><th></th><th>Conclusion</th></tr>
+    </thead>
+    <tbody>
+      <tr><td style="text-align:left;padding-left:0.6rem">Universal Instantiation</td>
+          <td>$\forall x\,P(x)$</td><td>$\to$</td><td>$P(c)$</td></tr>
+      <tr><td style="text-align:left;padding-left:0.6rem">Universal Generalization</td>
+          <td>$P(c)$ for arbitrary $c$</td><td>$\to$</td><td>$\forall x\,P(x)$</td></tr>
+      <tr><td style="text-align:left;padding-left:0.6rem">Existential Instantiation</td>
+          <td>$\exists x\,P(x)$</td><td>$\to$</td><td>$P(c)$ for some $c$</td></tr>
+      <tr><td style="text-align:left;padding-left:0.6rem">Existential Generalization</td>
+          <td>$P(c)$ for some $c$</td><td>$\to$</td><td>$\exists x\,P(x)$</td></tr>
+    </tbody>
+  </table>
+
+  <p>All humans live on Earth: $\forall x\,(H(x)\to L(x))$. &ensp; You are human: $H(\text{you})$. &ensp; Therefore: <span class="concl">$L(\text{you})$</span></p>
+
+  <div class="sympy-block">
+    <span class="sympy-label">Python — Z3</span>
+    <span class="pane-code">from z3 import DeclareSort, Function, BoolSort, Const, ForAll, Implies, Solver, Not
+
+Person = DeclareSort('Person')
+you = Const('you', Person)
+x   = Const('x',   Person)
+H = Function('H', Person, BoolSort())
+L = Function('L', Person, BoolSort())
+
+s = Solver()
+s.add(ForAll([x], Implies(H(x), L(x))))  # ∀x: H(x) → L(x)
+s.add(H(you))                             # H(you)
+s.add(Not(L(you)))                        # assume ¬L(you) — contradiction?
+print(s.check())   # unsat  =>  L(you) is derived</span>
+  </div>
+  <span class="slide-number">9 / 11</span>
+</section>
+
+<!-- ══ Slide 10 — Example: Exam & Director ═══════════════════════════ -->
+<section class="slide" id="s10">
+  <h2 class="frame-title">Example: Exam &amp; Director</h2>
+  <p>Assume the following statements as true:</p>
+  <ul>
+    <li>If no one cheated last exam, no one would meet the director.
+        &emsp; $\neg\exists x\,\mathrm{Cheat}(x) \to \neg\exists x\,\mathrm{Director}(x)$</li>
+    <li>Octave, the class president, met the director. &emsp; <span class="concl">$\mathrm{Director(Octave)}$</span></li>
+    <li>No one cheated or someone will get a detention.
+        &emsp; $\neg\exists x\,\mathrm{Cheat}(x) \vee \exists x\,\mathrm{Detention}(x)$</li>
+  </ul>
+  <p>Will someone get a detention? Using existential generalization → modus tollens → disjunctive syllogism:</p>
+  <p style="text-align:center; margin:0.4rem 0">
+    $\exists x\,\mathrm{Director}(x)$ &ensp;⟹&ensp;
+    $\exists x\,\mathrm{Cheat}(x)$ &ensp;⟹&ensp;
+    <span class="concl">$\exists x\,\mathrm{Detention}(x)$</span>
+  </p>
+
+  <div class="sympy-block">
+    <span class="sympy-label">Python</span>
+    <span class="pane-code">from sympy import symbols, And, Or, Not, Implies
+from sympy.logic.inference import satisfiable
+
+ExCheat, ExDirector, ExDetention = symbols('ExCheat ExDirector ExDetention')
+
+premises = And(
+    Implies(Not(ExCheat), Not(ExDirector)),   # ¬ExCheat → ¬ExDirector
+    ExDirector,                               # Director(Octave) ⟹ ExDirector
+    Or(Not(ExCheat), ExDetention),            # ¬ExCheat ∨ ExDetention
+)
+# Modus tollens: ExDirector ⟹ ExCheat; disj. syllogism ⟹ ExDetention
+print(not satisfiable(And(premises, Not(ExDetention))))  # True</span>
+  </div>
+  <span class="slide-number">10 / 11</span>
+</section>
+
+<!-- ══ Slide 11 — Summary ════════════════════════════════════════════ -->
+<section class="slide" id="s11">
+  <h2 class="frame-title">Summary</h2>
+  <ul style="line-height:1.9">
+    <li>The main rules of inference are <strong>modus ponens</strong>, <strong>modus tollens</strong>,
+        <strong>hypothetical syllogism</strong>, <strong>disjunctive syllogism</strong>,
+        <strong>addition</strong>, <strong>simplification</strong>,
+        <strong>conjunction</strong> and <strong>resolution</strong>.</li>
+    <li>Quantified rules of inference are <strong>universal instantiation</strong>,
+        <strong>universal generalization</strong>, <strong>existential instantiation</strong>
+        and <strong>existential generalization</strong>.</li>
+    <li>These rules make it easy to extract useful conclusions out of compound propositions.</li>
+    <li>You should now have a good understanding of logic.</li>
+    <li>The next lesson goes beyond true/false values — onward with <strong>sets</strong>.</li>
+  </ul>
+
+  <div class="setup-block" style="margin-top:1rem;">
+    <span class="setup-label">Python — key imports for this lesson</span>
+    <span class="pane-code">from sympy import symbols, And, Or, Not, Implies, simplify_logic  # propositional rules
+from sympy.logic.boolalg import truth_table
+from sympy.logic.inference import satisfiable                       # rule verification
+from z3 import DeclareSort, Function, BoolSort, Const, ForAll      # quantified rules
+from z3 import Implies as Imp, Solver, Not as ZNot</span>
+  </div>
+  <span class="slide-number">11 / 11</span>
+</section>
+
+<!-- ── Navigation ─────────────────────────────────────────────────── -->
+<div id="nav">
+  <button id="btn-prev"   title="Previous">&#8592;</button>
+  <button id="btn-scroll" title="Toggle slideshow">Slideshow</button>
+  <button id="btn-next"   title="Next">&#8594;</button>
+</div>
+
+<script>
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  let current = 0, slideshowMode = false;
+
+  function enter(i) {
+    slides[current].classList.remove('active');
+    current = (i + slides.length) % slides.length;
+    slides[current].classList.add('active');
+    slides[current].scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  document.getElementById('btn-prev').addEventListener('click', () => {
+    if (slideshowMode) enter(current - 1);
+  });
+  document.getElementById('btn-next').addEventListener('click', () => {
+    if (slideshowMode) enter(current + 1);
+  });
+  document.getElementById('btn-scroll').addEventListener('click', () => {
+    slideshowMode = !slideshowMode;
+    document.body.classList.toggle('slideshow', slideshowMode);
+    document.getElementById('btn-scroll').textContent = slideshowMode ? 'Scroll' : 'Slideshow';
+    if (slideshowMode) slides[current].classList.add('active');
+    else slides.forEach(s => s.classList.remove('active'));
+  });
+
+  document.addEventListener('keydown', e => {
+    if (!slideshowMode) return;
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') enter(current + 1);
+    if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   enter(current - 1);
+  });
+</script>
+</body>
+</html>

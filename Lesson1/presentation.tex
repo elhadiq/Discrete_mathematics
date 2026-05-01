@@ -1,0 +1,268 @@
+\documentclass[aspectratio=169,11pt]{beamer}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{lmodern}
+
+% Orange matching original slides
+\definecolor{slideOrange}{RGB}{232,104,26}
+\definecolor{hlYellow}{RGB}{255,235,130}
+
+\usetheme{default}
+
+\setbeamercolor{frametitle}{fg=slideOrange,bg=white}
+\setbeamercolor{background canvas}{bg=white}
+\setbeamercolor{normal text}{fg=black}
+\setbeamercolor{itemize item}{fg=slideOrange}
+\setbeamercolor{itemize subitem}{fg=slideOrange}
+\setbeamercolor{enumerate item}{fg=slideOrange}
+\setbeamercolor{title}{fg=slideOrange,bg=white}
+\setbeamercolor{subtitle}{fg=darkgray,bg=white}
+
+\setbeamerfont{frametitle}{size=\Large,series=\bfseries}
+\setbeamerfont{title}{size=\huge,series=\bfseries}
+
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{itemize item}{\textbullet}
+\setbeamertemplate{itemize subitem}{--}
+
+\setbeamertemplate{footline}{%
+  \vspace{2pt}%
+  \noindent\textcolor{gray!40}{\rule{\paperwidth}{0.4pt}}%
+  \vspace{3pt}%
+}
+
+\newcommand{\hly}[1]{\colorbox{hlYellow}{#1}}
+
+\title{Introduction to Discrete Mathematics}
+\subtitle{Lesson 1: What Is Discrete Mathematics?}
+\author{Wolfram U}
+\date{}
+
+\begin{document}
+
+% ── Title ────────────────────────────────────────────────────────────────────
+{
+\setbeamertemplate{footline}{}
+\begin{frame}
+  \centering
+  \vspace{2.5em}
+  {\usebeamerfont{title}\usebeamercolor[fg]{title}
+    Introduction to Discrete Mathematics\par}
+  \vspace{0.6em}
+  {\large Lesson 1: What Is Discrete Mathematics?\par}
+  \vspace{0.6em}
+  {\normalsize\color{gray} Wolfram U\par}
+\end{frame}
+}
+
+% ── The World of Integers ────────────────────────────────────────────────────
+\begin{frame}{The World of Integers}
+  \begin{columns}[T]
+    \begin{column}{0.52\textwidth}
+      \vspace{0.4em}
+      Discrete mathematics is the study of \textbf{countable} things.
+
+      \medskip
+      It is not a branch of mathematics.
+
+      \medskip
+      Rather, it is a group of branches with a common property:
+      the study of \textbf{discrete objects}.
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \includegraphics[width=\textwidth]{slide_0006.png}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+% ── Main Questions ───────────────────────────────────────────────────────────
+\begin{frame}{Main Questions}
+  Discrete mathematics aims to answer a variety of problems:
+
+  \bigskip
+  \begin{itemize}
+    \setlength\itemsep{0.6em}
+    \item What is \hly{known}?
+    \item What can be \textit{computed}?
+    \item What can be computed \textit{efficiently}?
+    \item How can \textit{information} be organized and stored?
+  \end{itemize}
+\end{frame}
+
+% ── Information ──────────────────────────────────────────────────────────────
+\begin{frame}{Information}
+  \begin{columns}[T]
+    \begin{column}{0.54\textwidth}
+      \vspace{0.4em}
+      \hly{Logic, discrete structures and graphs} all allow the
+      verification and storage of information.
+    \end{column}
+    \begin{column}{0.44\textwidth}
+      \includegraphics[width=\textwidth]{slide_0008.png}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+% ── Summarization ────────────────────────────────────────────────────────────
+\begin{frame}{Summarization}
+  \begin{columns}[T]
+    \begin{column}{0.54\textwidth}
+      \vspace{0.4em}
+      Combinatorics, set theory and mathematical proofs allow the
+      study of \textbf{emerging properties}.
+    \end{column}
+    \begin{column}{0.44\textwidth}
+      \includegraphics[width=\textwidth]{slide_0010.png}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+% ── Computation ──────────────────────────────────────────────────────────────
+\begin{frame}{Computation}
+  \begin{columns}[T]
+    \begin{column}{0.54\textwidth}
+      \vspace{0.4em}
+      From a set of rules, \textbf{iterative and recursive
+      computations} can be done and verified.
+    \end{column}
+    \begin{column}{0.44\textwidth}
+      \includegraphics[width=\textwidth]{slide_0012.png}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+% ── History ──────────────────────────────────────────────────────────────────
+\begin{frame}{History}
+  Integers were first used with \textbf{tally marks} (3400\,BC),
+  and negative numbers were introduced with the
+  \textbf{Chinese number rod system} (200\,BC).
+
+  \medskip
+  Many mathematicians have had an important influence on modern
+  discrete mathematics, including:
+
+  \bigskip
+  \begin{columns}[c]
+    \begin{column}{0.19\textwidth}
+      \centering{\small\textbf{Aristotle}\\[2pt]Logic}
+    \end{column}
+    \begin{column}{0.19\textwidth}
+      \centering{\small\textbf{L.\ Euler}\\[2pt]Graphs}
+    \end{column}
+    \begin{column}{0.19\textwidth}
+      \centering{\small\textbf{G.\ Cantor}\\[2pt]Sets}
+    \end{column}
+    \begin{column}{0.19\textwidth}
+      \centering{\small\textbf{P.\ Erd\H{o}s}}
+    \end{column}
+    \begin{column}{0.19\textwidth}
+      \centering{\small\textbf{D.\ Knuth}\\[2pt]Algorithms}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+% ── Discrete Mathematics Today ───────────────────────────────────────────────
+\begin{frame}{Discrete Mathematics Today}
+  Nowadays, discrete mathematics is strongly associated with
+  \textbf{technology}.
+
+  \bigskip
+  \begin{itemize}
+    \setlength\itemsep{0.5em}
+    \item It is at the center of all \textbf{modern computation}.
+    \item It is the cornerstone of
+          \textbf{communications, networks and the internet}.
+    \item Practically all types of \textbf{resource management}
+          need discrete mathematics.
+    \item Discrete math is important in
+          \textbf{computer graphics, games} and even arts.
+  \end{itemize}
+\end{frame}
+
+% ── Why Study Discrete Mathematics? ─────────────────────────────────────────
+\begin{frame}{Why Study Discrete Mathematics?}
+  High-school mathematics mostly overlooks discrete mathematics
+  in favor of continuous mathematics.
+
+  \medskip
+  \textbf{Reasons to study discrete mathematics:}
+
+  \begin{itemize}
+    \setlength\itemsep{0.4em}
+    \item Calculate discrete phenomena \textbf{efficiently}
+    \item Understand \textbf{computation}
+    \item \textbf{Use and store} information
+    \item Develop your \textbf{mathematical reasoning}
+  \end{itemize}
+\end{frame}
+
+% ── About This Course ────────────────────────────────────────────────────────
+\begin{frame}{About This Course}
+  This course is designed to be an introduction to many fields of
+  mathematics and computer science.
+
+  \medskip
+  This exploration is facilitated by the use of
+  \textbf{Wolfram Language}, a language with discrete computation
+  as its core philosophy.
+
+  \medskip
+  This course is separated into \textbf{seven} small sections:
+
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \begin{enumerate}
+        \item What Is Discrete Mathematics?
+        \item Logic
+        \item Sets
+        \item Graphs
+      \end{enumerate}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{enumerate}
+        \setcounter{enumi}{4}
+        \item Combinatorics
+        \item Number Theory
+        \item Algorithms
+      \end{enumerate}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+% ── Who Is This Course For? ──────────────────────────────────────────────────
+\begin{frame}{Who Is This Course For?}
+  The Wolfram U course on discrete mathematics is most useful for:
+
+  \bigskip
+  \begin{itemize}
+    \setlength\itemsep{0.5em}
+    \item Future, current or self-taught
+          \textbf{computer science and software engineering students}
+    \item Individuals aiming to expand their
+          \textbf{mathematical intuition} and problem-solving skills
+    \item \textbf{Wolfram Language users} who want a guided
+          introduction to discrete mathematics functions
+    \item \textbf{Math hobbyists} wanting to explore the
+          beauty of mathematics
+  \end{itemize}
+\end{frame}
+
+% ── Summary ──────────────────────────────────────────────────────────────────
+\begin{frame}{Summary}
+  \begin{itemize}
+    \setlength\itemsep{0.8em}
+    \item As a \textbf{mathematical subject}, discrete mathematics
+          is essentially the study of \textbf{countable objects}.
+
+    \item As a \textbf{professional skill}, it helps you analyze,
+          store and compute information, all to conquer many tasks.
+
+    \item As an \textbf{educational hurdle}, it provides the
+          toolset necessary to
+          \hly{excel in computer science courses}.
+  \end{itemize}
+\end{frame}
+
+\end{document}

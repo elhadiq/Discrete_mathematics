@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Proposition Logic — Discrete Mathematics</title>
+<script>
+  MathJax = {
+    tex: { inlineMath: [['$','$']], displayMath: [['$$','$$']] },
+    options: { skipHtmlTags: ['script','noscript','style','textarea'] }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+<style>
+/* ── Reset & base ──────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --orange:    #e67e22;
+  --darkblue:  #2c3e50;
+  --lightbg:   #f4f9fc;
+  --rowred:    #ffe8e8;
+  --rowblue:   #e3eeff;
+  --border:    #dce3ea;
+  /* Wolfram teal */
+  --wf-fg:     #006478;
+  --wf-bg:     #e4f5f9;
+  --wf-border: #008096;
+  --wf-head:   #008096;
+  /* SymPy green */
+  --sp-fg:     #1e824c;
+  --sp-bg:     #e8f5ec;
+  --sp-border: #27ae60;
+  --sp-head:   #27ae60;
+  /* Setup indigo */
+  --su-fg:     #4a4aaa;
+  --su-bg:     #eeeeff;
+  --su-border: #6060cc;
+  --su-head:   #6060cc;
+}
+
+body {
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  background: #e8edf2;
+  color: var(--darkblue);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem 1rem 5rem;
+  gap: 2rem;
+}
+
+/* ── Slide card ──────────────────────────────────────────────────────*/
+.slide {
+  background: #fff;
+  width: 100%;
+  max-width: 940px;
+  border-radius: 10px;
+  box-shadow: 0 4px 18px rgba(0,0,0,.10);
+  padding: 2.2rem 2.8rem 1.8rem;
+  position: relative;
+}
+
+.slide-number {
+  position: absolute;
+  bottom: 0.7rem;
+  right: 1.2rem;
+  font-size: 0.72rem;
+  color: #aaa;
+}
+
+/* ── Title slide ─────────────────────────────────────────────────────*/
+.slide.title-slide {
+  background: linear-gradient(145deg, #f4f9fc 60%, #e0eef7);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 240px;
+  text-align: center;
+  border-top: 6px solid var(--orange);
+}
+.slide.title-slide h1 { font-size: 1.9rem; color: var(--darkblue); margin-bottom: 0.4rem; }
+.slide.title-slide .subtitle { font-size: 1.15rem; color: #555; }
+
+/* ── Frame title ─────────────────────────────────────────────────────*/
+h2.frame-title {
+  font-size: 1.65rem;
+  color: var(--orange);
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  padding-bottom: 0.35rem;
+  border-bottom: 2px solid #f9e4cc;
+}
+
+/* ── Body ────────────────────────────────────────────────────────────*/
+p { line-height: 1.7; margin: 0.45rem 0; }
+ul { margin: 0.4rem 0 0.4rem 1.4rem; line-height: 1.85; }
+ul li::marker { color: var(--orange); }
+
+/* ── Code pair (side-by-side) ────────────────────────────────────────*/
+.code-pair {
+  display: flex;
+  gap: 0.75rem;
+  margin: 0.7rem 0;
+}
+.code-pane {
+  flex: 1;
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1px solid transparent;
+  font-size: 0;          /* collapse inline gap */
+}
+.pane-label {
+  display: block;
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  color: #fff;
+}
+.pane-code {
+  font-family: 'Consolas', 'Fira Code', monospace;
+  font-size: 0.83rem;
+  line-height: 1.6;
+  padding: 0.5rem 0.75rem;
+  white-space: pre;
+  display: block;
+}
+
+/* Wolfram */
+.wolfram-pane  { border-color: var(--wf-border); }
+.wolfram-label { background: var(--wf-head); }
+.wolfram-pane .pane-code { background: var(--wf-bg); color: var(--wf-fg); }
+
+/* SymPy */
+.sympy-pane  { border-color: var(--sp-border); }
+.sympy-label { background: var(--sp-head); }
+.sympy-pane .pane-code { background: var(--sp-bg); color: var(--sp-fg); }
+
+/* ── Setup block (indigo, full-width) ────────────────────────────────*/
+.setup-block {
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1px solid var(--su-border);
+  margin: 0.7rem 0;
+}
+.setup-label {
+  display: block;
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  background: var(--su-head);
+  color: #fff;
+}
+.setup-block .pane-code {
+  background: var(--su-bg);
+  color: var(--su-fg);
+  font-family: 'Consolas', 'Fira Code', monospace;
+  font-size: 0.83rem;
+  line-height: 1.6;
+  padding: 0.5rem 0.75rem;
+  white-space: pre;
+  display: block;
+}
+
+/* ── Single-lang code block (SymPy only, full-width) ─────────────────*/
+.sympy-block {
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1px solid var(--sp-border);
+  margin: 0.7rem 0;
+}
+.sympy-block .sympy-label { background: var(--sp-head); }
+.sympy-block .pane-code {
+  background: var(--sp-bg);
+  color: var(--sp-fg);
+  font-family: 'Consolas', 'Fira Code', monospace;
+  font-size: 0.83rem;
+  line-height: 1.6;
+  padding: 0.5rem 0.75rem;
+  white-space: pre;
+  display: block;
+}
+
+/* ── Truth tables ────────────────────────────────────────────────────*/
+.truth-table {
+  border-collapse: collapse;
+  margin: 0.75rem auto;
+  font-size: 0.9rem;
+}
+.truth-table th, .truth-table td {
+  border: 1px solid var(--border);
+  padding: 0.4rem 1rem;
+  text-align: center;
+  min-width: 70px;
+}
+.truth-table th { background: var(--lightbg); font-weight: 600; }
+.truth-table tr.row-t { background: var(--rowred); }
+.truth-table tr.row-f { background: var(--rowblue); }
+
+/* ── Precedence box ──────────────────────────────────────────────────*/
+.prec-box {
+  background: var(--lightbg);
+  border: 2px solid #f9e4cc;
+  border-radius: 8px;
+  text-align: center;
+  padding: 0.75rem 1rem;
+  font-size: 1.15rem;
+  margin: 0.6rem 0;
+}
+.mnemonic-badge {
+  display: inline-block;
+  background: #c0395a;
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  padding: 0.25em 0.7em;
+  border-radius: 5px;
+  margin-right: 0.5rem;
+}
+
+/* ── Logic gates ─────────────────────────────────────────────────────*/
+.gates-table { width: 100%; border-collapse: collapse; text-align: center; margin: 0.7rem 0; }
+.gates-table th { color: var(--orange); font-size: 0.95rem; padding-bottom: 0.4rem; border-bottom: 1px solid var(--border); }
+.gates-table td { padding: 0.7rem 0.5rem; font-size: 0.9rem; }
+.gate-sym { display: inline-block; border: 2px solid var(--darkblue); padding: 0.12em 0.45em; border-radius: 4px; font-weight: 700; }
+
+/* ── Slide-show nav ──────────────────────────────────────────────────*/
+#nav { position: fixed; bottom: 1.5rem; right: 1.5rem; display: flex; gap: 0.4rem; z-index: 100; }
+#nav button {
+  background: var(--orange); color: #fff; border: none;
+  border-radius: 50%; width: 40px; height: 40px;
+  font-size: 1.1rem; cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,.25); transition: background .2s;
+}
+#nav button:hover { background: #cf6d17; }
+#nav #btn-scroll { border-radius: 20px; width: auto; padding: 0 12px; font-size: 0.8rem; }
+
+body.slideshow .slide         { display: none; }
+body.slideshow .slide.active  { display: block; }
+</style>
+</head>
+<body>
+
+<!-- ══ Slide 1: Title ════════════════════════════════════════════════ -->
+<section class="slide title-slide" id="s1">
+  <h1>Introduction to Discrete Mathematics</h1>
+  <p class="subtitle">Proposition Logic</p>
+  <span class="slide-number">1 / 13</span>
+</section>
+
+<!-- ══ Slide 2: Overview ═════════════════════════════════════════════ -->
+<section class="slide" id="s2">
+  <h2 class="frame-title">Overview</h2>
+  <ul>
+    <li>Proposition logic is a branch of logic studying ways of modifying and joining propositions.</li>
+    <li>Propositions are crucial in mathematics, as all proofs rely on propositional logic.</li>
+    <li>It was first seriously studied by Aristotle, who was also the first to popularize most topics covered in this section.</li>
+    <li>You will learn about propositions and logical operators in this lesson.</li>
+  </ul>
+  <span class="slide-number">2 / 13</span>
+</section>
+
+<!-- ══ Slide 3: Proposition ══════════════════════════════════════════ -->
+<section class="slide" id="s3">
+  <h2 class="frame-title">Proposition</h2>
+  <p>A <strong>proposition</strong> is a mathematical statement that is either <em>true</em> or <em>false</em>:</p>
+  <ul>
+    <li>This course is on discrete mathematics.</li>
+    <li>3 is greater than 4.</li>
+  </ul>
+  <p style="margin-top:0.6rem;">Interrogative, exclamatory and imperative sentences are <strong>not</strong> propositions:</p>
+  <ul>
+    <li>Why are some sheep black?</li>
+    <li>Do the dishes.</li>
+  </ul>
+
+  <div class="setup-block">
+    <span class="setup-label">SymPy — imports (run once)</span>
+    <span class="pane-code">from sympy import symbols, Not, And, Or, Implies, Equivalent, simplify
+from sympy.logic.boolalg import truth_table, to_cnf, to_dnf
+from sympy.logic.inference import satisfiable
+p, q = symbols('p q')</span>
+  </div>
+
+  <div class="code-pair">
+    <div class="code-pane wolfram-pane">
+      <span class="pane-label wolfram-label">Wolfram</span>
+      <span class="pane-code">In[1]:= {Boole[True], Boole[False]}
+Out[1]= {1, 0}</span>
+    </div>
+    <div class="code-pane sympy-pane">
+      <span class="pane-label sympy-label">SymPy</span>
+      <span class="pane-code">[int(True), int(False)]
+# [1, 0]</span>
+    </div>
+  </div>
+  <span class="slide-number">3 / 13</span>
+</section>
+
+<!-- ══ Slide 4: Basic Operators — NOT + AND ══════════════════════════ -->
+<section class="slide" id="s4">
+  <h2 class="frame-title">Basic Operators</h2>
+  <p>Let $p$ and $q$ be propositions.</p>
+  <p style="margin-top:0.6rem;">The <strong>negation</strong> of $p$ ($\neg$, <code>!</code>, <code>Not</code>) is the opposite of $p$; states "$p$ is false":</p>
+
+  <div class="code-pair">
+    <div class="code-pane wolfram-pane">
+      <span class="pane-label wolfram-label">Wolfram</span>
+      <span class="pane-code">{¬p,  !p,  Not[p]}</span>
+    </div>
+    <div class="code-pane sympy-pane">
+      <span class="pane-label sympy-label">SymPy</span>
+      <span class="pane-code">Not(p)    # or ~p</span>
+    </div>
+  </div>
+
+  <table class="truth-table">
+    <thead><tr><th>$p$</th><th>$\neg p$</th></tr></thead>
+    <tbody>
+      <tr class="row-t"><td>True</td><td>False</td></tr>
+      <tr class="row-f"><td>False</td><td>True</td></tr>
+    </tbody>
+  </table>
+
+  <p>The <strong>conjunction</strong> of $p$ and $q$ ($\wedge$, <code>&amp;&amp;</code>, <code>And</code>) is "$p$ and $q$":</p>
+
+  <div class="code-pair">
+    <div class="code-pane wolfram-pane">
+      <span class="pane-label wolfram-label">Wolfram</span>
+      <span class="pane-code">{p ∧ q,  p && q,  And[p,q]}</span>
+    </div>
+    <div class="code-pane sympy-pane">
+      <span class="pane-label sympy-label">SymPy</span>
+      <span class="pane-code">And(p, q)    # or p & q</span>
+    </div>
+  </div>
+  <span class="slide-number">4 / 13</span>
+</section>
+
+<!-- ══ Slide 5: Basic Operators — OR ════════════════════════════════ -->
+<section class="slide" id="s5">
+  <h2 class="frame-title">Basic Operators (continued)</h2>
+  <p>The <strong>disjunction</strong> of $p$ and $q$ ($\vee$, <code>||</code>, <code>Or</code>) is "$p$ or $q$":</p>
+
+  <div class="code-pair">
+    <div class="code-pane wolfram-pane">
+      <span class="pane-label wolfram-label">Wolfram</span>
+      <span class="pane-code">{p ∨ q,  p || q,  Or[p,q]}</span>
+    </div>
+    <div class="code-pane sympy-pane">
+      <span class="pane-label sympy-label">SymPy</span>
+      <span class="pane-code">Or(p, q)    # or p | q</span>
+    </div>
+  </div>
+
+  <table class="truth-table">
+    <thead><tr><th>$p$</th><th>$q$</th><th>$p \vee q$</th></tr></thead>
+    <tbody>
+      <tr class="row-t"><td>True</td><td>True</td><td>True</td></tr>
+      <tr class="row-t"><td>True</td><td>False</td><td>True</td></tr>
+      <tr class="row-t"><td>False</td><td>True</td><td>True</td></tr>
+      <tr class="row-f"><td>False</td><td>False</td><td>False</td></tr>
+    </tbody>
+  </table>
+
+  <div class="sympy-block">
+    <span class="sympy-label">SymPy — generate truth table</span>
+    <span class="pane-code">for row in truth_table(Or(p, q), [p, q]):
+    print(row)   # prints (vals, result) tuples</span>
+  </div>
+  <span class="slide-number">5 / 13</span>
+</section>
+
+<!-- ══ Slide 6: Example 1 ════════════════════════════════════════════ -->
+<section class="slide" id="s6">
+  <h2 class="frame-title">Example</h2>
+  <p>Let $p$ = "I studied for the exam" and $q$ = "I passed the exam."</p>
+
+  <p style="margin-top:0.7rem;"><strong>Express in English:</strong></p>
+  <ul>
+    <li>$\neg q$ &ensp;—&ensp; I did not pass the exam.</li>
+    <li>$p \wedge q$ &ensp;—&ensp; I studied for the exam and I passed the exam.</li>
+  </ul>
+
+  <p style="margin-top:0.7rem;"><strong>Express in logic:</strong></p>
+  <ul>
+    <li>I did not pass the exam, nor did I study for it. &ensp; $\neg q \wedge \neg p$</li>
+    <li>I studied for the exam, but I did not pass it. &ensp; $p \wedge \neg q$</li>
+  </ul>
+
+  <div class="sympy-block">
+    <span class="sympy-label">SymPy — verify</span>
+    <span class="pane-code">Not(q)                  # ¬q
+And(p, q)               # p ∧ q
+And(Not(q), Not(p))     # ¬q ∧ ¬p
+And(p, Not(q))          # p ∧ ¬q</span>
+  </div>
+  <span class="slide-number">6 / 13</span>
+</section>
+
+<!-- ══ Slide 7: More Operators ═══════════════════════════════════════ -->
+<section class="slide" id="s7">
+  <h2 class="frame-title">More Operators</h2>
+  <p>The <strong>conditional</strong> $p \Rightarrow q$ ($\Rightarrow$, <code>Implies</code>) is "If $p$, then $q$":</p>
+
+  <div class="code-pair">
+    <div class="code-pane wolfram-pane">
+      <span class="pane-label wolfram-label">Wolfram</span>
+      <span class="pane-code">{p ⇒ q,  Implies[p, q]}</span>
+    </div>
+    <div class="code-pane sympy-pane">
+      <span class="pane-label sympy-label">SymPy</span>
+      <span class="pane-code">Implies(p, q)</span>
+    </div>
+  </div>
+
+  <table class="truth-table">
+    <thead><tr><th>$p$</th><th>$q$</th><th>$p \Rightarrow q$</th></tr></thead>
+    <tbody>
+      <tr class="row-t"><td>True</td><td>True</td><td>True</td></tr>
+      <tr class="row-f"><td>True</td><td>False</td><td>False</td></tr>
+      <tr class="row-t"><td>False</td><td>True</td><td>True</td></tr>
+      <tr class="row-t"><td>False</td><td>False</td><td>True</td></tr>
+    </tbody>
+  </table>
+
+  <p style="margin-top:0.5rem;">The <strong>biconditional</strong> $p \Leftrightarrow q$ ($\Leftrightarrow$, <code>Equivalent</code>, iff) is "$p$ if and only if $q$":</p>
+
+  <div class="code-pair">
+    <div class="code-pane wolfram-pane">
+      <span class="pane-label wolfram-label">Wolfram</span>
+      <span class="pane-code">{p ⟺ q,  Equivalent[p, q]}</span>
+    </div>
+    <div class="code-pane sympy-pane">
+      <span class="pane-label sympy-label">SymPy</span>
+      <span class="pane-code">Equivalent(p, q)</span>
+    </div>
+  </div>
+  <span class="slide-number">7 / 13</span>
+</section>
+
+<!-- ══ Slide 8: Example 2 ════════════════════════════════════════════ -->
+<section class="slide" id="s8">
+  <h2 class="frame-title">Example</h2>
+  <p>Let $p$ = "It is raining" and $q$ = "Kala wants to play outside."</p>
+
+  <p style="margin-top:0.7rem;"><strong>Express in English:</strong></p>
+  <ul>
+    <li>$p \Rightarrow q$ &ensp;—&ensp; If it is raining, then Kala wants to play outside.</li>
+    <li>$\neg q \Leftrightarrow p$ &ensp;—&ensp; Kala does not want to play outside iff it is raining.</li>
+  </ul>
+
+  <p style="margin-top:0.7rem;"><strong>Express in logic:</strong></p>
+  <ul>
+    <li>Either Kala wants to play outside or it is raining. &ensp; $q \vee p$</li>
+    <li>Kala wants to play outside regardless of rain. &ensp; $(p \Rightarrow q) \wedge (\neg p \Rightarrow q)$</li>
+  </ul>
+
+  <div class="sympy-block">
+    <span class="sympy-label">SymPy — simplification</span>
+    <span class="pane-code">expr = And(Implies(p, q), Implies(Not(p), q))
+simplify(expr)    # simplifies to just: q</span>
+  </div>
+  <span class="slide-number">8 / 13</span>
+</section>
+
+<!-- ══ Slide 9: Precedence ════════════════════════════════════════════ -->
+<section class="slide" id="s9">
+  <h2 class="frame-title">Precedence</h2>
+  <p>The precedence of logical operators is as follows:</p>
+  <div class="prec-box">
+    $() \;>\; \neg \;>\; \wedge \;>\; \vee \;>\; \Rightarrow \;>\; \Leftrightarrow$
+  </div>
+  <p>
+    <span class="mnemonic-badge">P N A O I B</span>
+    <em>Parentheses &gt; Not &gt; And &gt; Or &gt; Implies &gt; Biconditional</em>
+  </p>
+
+  <p style="margin-top:0.8rem;"><strong>Evaluate the following if $p$ = True and $q$ = False:</strong></p>
+
+  <div class="code-pair">
+    <div class="code-pane wolfram-pane">
+      <span class="pane-label wolfram-label">Wolfram</span>
+      <span class="pane-code">In[2]:= {p,q} = {True, False}
+In[3]:= ¬p ∨ q ⇒ p ∧ ¬q
+Out[3]= True</span>
+    </div>
+    <div class="code-pane sympy-pane">
+      <span class="pane-label sympy-label">SymPy</span>
+      <span class="pane-code">p_v, q_v = True, False
+e = Implies(~p | q, p & ~q)
+e.subs({p: p_v, q: q_v})   # True</span>
+    </div>
+  </div>
+
+  <div class="code-pair" style="margin-top:0.3rem;">
+    <div class="code-pane wolfram-pane">
+      <span class="pane-label wolfram-label">Wolfram</span>
+      <span class="pane-code">¬p ∨ q ∨ (p ∧ q ∨ True) ⇒ p ∧ q</span>
+    </div>
+    <div class="code-pane sympy-pane">
+      <span class="pane-label sympy-label">SymPy</span>
+      <span class="pane-code">f = Implies(~p|q|(p&q)|True, p&q)
+f.subs({p: p_v, q: q_v})   # False</span>
+    </div>
+  </div>
+  <span class="slide-number">9 / 13</span>
+</section>
+
+<!-- ══ Slide 10: Converse / Contrapositive ═══════════════════════════ -->
+<section class="slide" id="s10">
+  <h2 class="frame-title">Converse, Contrapositive, Inverse or Opposite?</h2>
+  <p>Consider the conditional proposition $p \Rightarrow q$.</p>
+
+  <div style="display:flex; gap:1.5rem; margin-top:0.8rem; align-items:flex-start;">
+    <div style="flex:1;">
+      <ul style="line-height:2.2; font-size:1.02rem;">
+        <li>The <strong>converse</strong> is $q \Rightarrow p$.</li>
+        <li>The <strong>contrapositive</strong> is $\neg q \Rightarrow \neg p$.</li>
+        <li>The <strong>inverse</strong> is $\neg p \Rightarrow \neg q$.</li>
+        <li>The <strong>opposite</strong> is $\neg(p \Rightarrow q)$.</li>
+      </ul>
+      <p style="margin-top:0.8rem;">The <strong>contrapositive</strong> will be useful in future lessons.</p>
+    </div>
+    <div style="flex:1;">
+      <div class="sympy-block">
+        <span class="sympy-label">SymPy</span>
+        <span class="pane-code">converse = Implies(q, p)
+contra   = Implies(~q, ~p)
+inverse  = Implies(~p, ~q)
+opposite = Not(Implies(p, q))
+
+# Contrapositive ≡ original:
+Equivalent(Implies(p,q),
+           Implies(~q,~p))  # True</span>
+      </div>
+    </div>
+  </div>
+  <span class="slide-number">10 / 13</span>
+</section>
+
+<!-- ══ Slide 11: Logic Gates ═════════════════════════════════════════ -->
+<section class="slide" id="s11">
+  <h2 class="frame-title">Logic Gates</h2>
+  <p>A <strong>logic gate</strong> is a simple switching circuit with an output corresponding to logical operators.</p>
+  <p style="margin-top:0.5rem;">Logic gates are usually represented in a diagram, with the following symbols:</p>
+
+  <table class="gates-table">
+    <thead>
+      <tr><th>NOT gate</th><th>AND gate</th><th>OR gate</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>$p \longrightarrow$ <span class="gate-sym">$\neg$</span> $\longrightarrow \neg p$</td>
+        <td>$p,q \longrightarrow$ <span class="gate-sym">$\wedge$</span> $\longrightarrow p \wedge q$</td>
+        <td>$p,q \longrightarrow$ <span class="gate-sym">$\vee$</span> $\longrightarrow p \vee q$</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="sympy-block">
+    <span class="sympy-label">SymPy — gate truth tables</span>
+    <span class="pane-code">for row in truth_table(Not(p), [p]):     print(row)  # NOT
+for row in truth_table(And(p,q), [p,q]): print(row)  # AND
+for row in truth_table(Or(p,q),  [p,q]): print(row)  # OR</span>
+  </div>
+
+  <p style="margin-top:0.7rem;">They are essential in understanding computing <strong>from the ground up</strong>.</p>
+  <span class="slide-number">11 / 13</span>
+</section>
+
+<!-- ══ Slide 12: Summary ══════════════════════════════════════════════ -->
+<section class="slide" id="s12">
+  <h2 class="frame-title">Summary</h2>
+  <ul style="line-height:2;">
+    <li>A <strong>proposition</strong> is a mathematical statement that is either true or false, but never both.</li>
+    <li>The three main logical operators are <strong>negation</strong> ($\neg$), <strong>conjunction</strong> ($\wedge$), and <strong>disjunction</strong> ($\vee$).</li>
+    <li>Many other operators exist, most importantly the <strong>conditional</strong> ($\Rightarrow$) and <strong>biconditional</strong> ($\Leftrightarrow$).</li>
+    <li>Logical expressions easily get convoluted.</li>
+  </ul>
+
+  <div class="setup-block" style="margin-top:1rem;">
+    <span class="setup-label">SymPy — key imports for this lesson</span>
+    <span class="pane-code">from sympy import symbols, Not, And, Or, Implies, Equivalent, simplify
+from sympy.logic.boolalg import truth_table, to_cnf, to_dnf
+from sympy.logic.inference import satisfiable
+p, q = symbols('p q')</span>
+  </div>
+  <span class="slide-number">12 / 13</span>
+</section>
+
+<!-- ══ Slide 13: SymPy Reference ══════════════════════════════════════ -->
+<section class="slide" id="s13">
+  <h2 class="frame-title">Wolfram → SymPy Quick Reference</h2>
+  <table class="truth-table" style="width:100%; margin:0.5rem 0;">
+    <thead>
+      <tr>
+        <th style="text-align:left; padding-left:0.8rem;">Operation</th>
+        <th>Wolfram</th>
+        <th>SymPy function</th>
+        <th>SymPy operator</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td style="text-align:left;padding-left:0.8rem;">Negation</td>
+          <td><code>Not[p]</code></td><td><code>Not(p)</code></td><td><code>~p</code></td></tr>
+      <tr><td style="text-align:left;padding-left:0.8rem;">Conjunction</td>
+          <td><code>And[p,q]</code></td><td><code>And(p,q)</code></td><td><code>p &amp; q</code></td></tr>
+      <tr><td style="text-align:left;padding-left:0.8rem;">Disjunction</td>
+          <td><code>Or[p,q]</code></td><td><code>Or(p,q)</code></td><td><code>p | q</code></td></tr>
+      <tr><td style="text-align:left;padding-left:0.8rem;">Conditional</td>
+          <td><code>Implies[p,q]</code></td><td><code>Implies(p,q)</code></td><td>—</td></tr>
+      <tr><td style="text-align:left;padding-left:0.8rem;">Biconditional</td>
+          <td><code>Equivalent[p,q]</code></td><td><code>Equivalent(p,q)</code></td><td>—</td></tr>
+      <tr><td style="text-align:left;padding-left:0.8rem;">Boole / int</td>
+          <td><code>Boole[expr]</code></td><td><code>int(expr)</code></td><td>—</td></tr>
+      <tr><td style="text-align:left;padding-left:0.8rem;">Truth table</td>
+          <td><code>TruthTable[…]</code></td><td><code>truth_table(expr,[vars])</code></td><td>—</td></tr>
+      <tr><td style="text-align:left;padding-left:0.8rem;">Simplify</td>
+          <td><code>Simplify[expr]</code></td><td><code>simplify(expr)</code></td><td>—</td></tr>
+      <tr><td style="text-align:left;padding-left:0.8rem;">Satisfiable</td>
+          <td><code>Reduce[expr,{p,q}]</code></td><td><code>satisfiable(expr)</code></td><td>—</td></tr>
+    </tbody>
+  </table>
+  <span class="slide-number">13 / 13</span>
+</section>
+
+<!-- ── Navigation ─────────────────────────────────────────────────── -->
+<div id="nav">
+  <button id="btn-prev" title="Previous">&#8592;</button>
+  <button id="btn-scroll" title="Toggle slideshow">Slideshow</button>
+  <button id="btn-next"  title="Next">&#8594;</button>
+</div>
+
+<script>
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  let current = 0, slideshowMode = false;
+
+  function enter(i) {
+    slides[current].classList.remove('active');
+    current = (i + slides.length) % slides.length;
+    slides[current].classList.add('active');
+    slides[current].scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  document.getElementById('btn-prev').addEventListener('click', () => {
+    if (slideshowMode) enter(current - 1);
+  });
+  document.getElementById('btn-next').addEventListener('click', () => {
+    if (slideshowMode) enter(current + 1);
+  });
+  document.getElementById('btn-scroll').addEventListener('click', () => {
+    slideshowMode = !slideshowMode;
+    document.body.classList.toggle('slideshow', slideshowMode);
+    document.getElementById('btn-scroll').textContent = slideshowMode ? 'Scroll' : 'Slideshow';
+    if (slideshowMode) slides[current].classList.add('active');
+    else slides.forEach(s => s.classList.remove('active'));
+  });
+
+  document.addEventListener('keydown', e => {
+    if (!slideshowMode) return;
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') enter(current + 1);
+    if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   enter(current - 1);
+  });
+</script>
+</body>
+</html>

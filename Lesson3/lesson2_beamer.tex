@@ -1,0 +1,585 @@
+\documentclass[aspectratio=169]{beamer}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{colortbl}
+\usepackage{array}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{lmodern}
+\usepackage{graphicx}
+
+%%% ── Colour palette (matching original slides) ────────────────────────────
+\definecolor{dmOrange}{RGB}{232,119,34}
+\definecolor{dmDarkBlue}{RGB}{20,60,110}
+\definecolor{dmGray}{RGB}{55,55,55}
+\definecolor{codeBg}{RGB}{233,241,251}
+\definecolor{codeKey}{RGB}{0,80,160}
+\definecolor{rowHigh}{RGB}{255,243,175}
+
+%%% ── Beamer theme ─────────────────────────────────────────────────────────
+\usetheme{default}
+\setbeamercolor{frametitle}{fg=dmOrange,bg=white}
+\setbeamercolor{title}{fg=dmOrange}
+\setbeamercolor{subtitle}{fg=dmDarkBlue}
+\setbeamercolor{normal text}{fg=dmGray}
+\setbeamercolor{itemize item}{fg=dmOrange}
+\setbeamercolor{itemize subitem}{fg=dmOrange}
+\setbeamercolor{alerted text}{fg=dmOrange}
+\setbeamerfont{frametitle}{size=\Large,series=\bfseries}
+\setbeamerfont{title}{size=\LARGE,series=\bfseries}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{footline}[frame number]
+\setbeamertemplate{itemize item}{\color{dmOrange}\textbullet}
+\setbeamertemplate{itemize subitem}{\color{dmOrange}\small$\blacktriangleright$}
+
+%%% ── Listings: Wolfram/Mathematica ────────────────────────────────────────
+\lstdefinestyle{wolfram}{
+  backgroundcolor=\color{codeBg},
+  basicstyle=\ttfamily\footnotesize\color{codeKey},
+  keywordstyle=\bfseries,
+  commentstyle=\color{gray}\itshape,
+  frame=single, framerule=0pt, rulecolor=\color{codeBg},
+  xleftmargin=6pt, xrightmargin=6pt,
+  breaklines=true, showstringspaces=false,
+}
+
+%%% ── Listings: Python / SymPy ─────────────────────────────────────────────
+\lstdefinestyle{python}{
+  backgroundcolor=\color{codeBg},
+  basicstyle=\ttfamily\footnotesize,
+  keywordstyle=\color{codeKey}\bfseries,
+  commentstyle=\color{gray}\itshape,
+  stringstyle=\color{dmOrange},
+  frame=single, framerule=0pt, rulecolor=\color{codeBg},
+  xleftmargin=6pt, xrightmargin=6pt,
+  breaklines=true, showstringspaces=false,
+  language=Python,
+  morekeywords={symbols,Or,And,Not,Xor,satisfiable,simplify_logic,
+                to_dnf,to_cnf,combinations},
+}
+
+%%% ── Helper commands ──────────────────────────────────────────────────────
+\newcommand{\codelabel}[1]{\textbf{\footnotesize\color{dmDarkBlue}#1}\par\smallskip}
+\newcommand{\Iff}{\Leftrightarrow}
+\newcommand{\T}{\top}
+\newcommand{\F}{\bot}
+
+%%% ── Meta ─────────────────────────────────────────────────────────────────
+\title{Equivalence of Propositions}
+\subtitle{Introduction to Discrete Mathematics}
+\author{}
+\date{}
+
+\begin{document}
+
+% ═══════════════════════════════════════════════════════════════════════════
+\begin{frame}
+  \vspace{1.8cm}
+  \titlepage
+\end{frame}
+
+% ═══════════════════════════════════════════════════════════════════════════
+\begin{frame}{Overview}
+  \begin{itemize}
+    \item Propositional \textbf{equivalences} are the primary tool of
+          simplification in Boolean algebra.
+    \item Using equivalences allows the \textbf{analysis of satisfiability}.
+    \item Philosophy and reasoning are full of puzzles that can be simplified
+          using equivalences.
+  \end{itemize}
+  \bigskip
+  You will learn about
+  \textcolor{dmOrange}{\textbf{propositional equivalences}},
+  \textcolor{dmOrange}{\textbf{satisfiability}}, and
+  \textcolor{dmOrange}{\textbf{normal forms}}.
+\end{frame}
+
+% ═══════════════════════════════════════════════════════════════════════════
+\section{Satisfiability}
+
+\begin{frame}[fragile]{Satisfiability}
+  \begin{itemize}
+    \item A \textbf{tautology} is always true:
+          $p \lor \lnot p \equiv \top$
+  \end{itemize}
+  \begin{columns}[T]
+    \column{0.47\textwidth}
+      \codelabel{Wolfram}
+\begin{lstlisting}[style=wolfram]
+TautologyQ[p || !p]
+(* Out: True *)
+\end{lstlisting}
+    \column{0.50\textwidth}
+      \codelabel{SymPy}
+\begin{lstlisting}[style=python]
+from sympy import symbols, Or, Not
+from sympy.logic.inference import satisfiable
+p = symbols('p')
+not satisfiable(Not(Or(p, Not(p))))
+# True
+\end{lstlisting}
+  \end{columns}
+
+  \medskip
+  \begin{itemize}
+    \item A formula is \textbf{satisfiable} if it is true in at least one case.
+    \item A \textbf{contradiction} is always false:
+          $p \land \lnot p \equiv \bot$
+  \end{itemize}
+  \begin{columns}[T]
+    \column{0.47\textwidth}
+      \codelabel{Wolfram}
+\begin{lstlisting}[style=wolfram]
+SatisfiableQ[p && !p]
+(* Out: False *)
+\end{lstlisting}
+    \column{0.50\textwidth}
+      \codelabel{SymPy}
+\begin{lstlisting}[style=python]
+from sympy import And
+bool(satisfiable(And(p, Not(p))))
+# False
+\end{lstlisting}
+  \end{columns}
+\end{frame}
+
+% ───────────────────────────────────────────────────────────────────────────
+\begin{frame}[fragile]{Satisfiability — Contingency}
+  \begin{itemize}
+    \item A \textbf{contingency} may be true or false:
+          $p \land q$ is satisfiable but not a tautology.
+  \end{itemize}
+  \begin{columns}[T]
+    \column{0.47\textwidth}
+      \codelabel{Wolfram}
+\begin{lstlisting}[style=wolfram]
+SatisfiableQ[p && q]  (* True  *)
+TautologyQ[p && q]    (* False *)
+\end{lstlisting}
+    \column{0.50\textwidth}
+      \codelabel{SymPy}
+\begin{lstlisting}[style=python]
+q = symbols('q')
+# Satisfiable? (returns an assignment)
+bool(satisfiable(And(p, q)))   # True
+# Tautology?
+not satisfiable(Not(And(p, q)))# False
+\end{lstlisting}
+  \end{columns}
+
+  \bigskip
+  \begin{block}{Key distinctions}
+    \centering
+    \begin{tabular}{lccc}
+      \toprule
+      & \textbf{Satisfiable} & \textbf{Tautology} \\
+      \midrule
+      Tautology    & \checkmark & \checkmark \\
+      Contingency  & \checkmark & $\times$   \\
+      Contradiction& $\times$   & $\times$   \\
+      \bottomrule
+    \end{tabular}
+  \end{block}
+\end{frame}
+
+% ═══════════════════════════════════════════════════════════════════════════
+\section{Main Equivalences}
+
+\begin{frame}{Main Equivalences}
+  Two propositions $p$ and $q$ are \textbf{equivalent} iff
+  $p \Iff q$ is a tautology.
+
+  \medskip
+  \footnotesize
+  \renewcommand{\arraystretch}{1.25}
+  \begin{tabular}{lll}
+    \toprule
+    \textbf{Law} & \textbf{Equivalence 1} & \textbf{Equivalence 2} \\
+    \midrule
+    Identity        & $p \land \T \Iff p$
+                    & $p \lor  \F \Iff p$ \\
+    Domination      & $p \lor  \T \Iff \T$
+                    & $p \land \F \Iff \F$ \\
+    Idempotency     & $p \lor  p \Iff p$
+                    & $p \land p \Iff p$ \\
+    Double Negation & $\lnot(\lnot p) \Iff p$
+                    & \\
+    Commutativity   & $p \lor  q \Iff q \lor  p$
+                    & $p \land q \Iff q \land p$ \\
+    Associativity   & $p \lor (q \lor  r) \Iff (p \lor  q) \lor  r$
+                    & $p \land(q \land r) \Iff (p \land q) \land r$ \\
+    Distributivity  & $p \lor (q \land r) \Iff (p \lor  q)\land(p \lor  r)$
+                    & $p \land(q \lor  r) \Iff (p \land q)\lor (p \land r)$ \\
+    De Morgan's     & $\lnot(p \land q) \Iff \lnot p \lor  \lnot q$
+                    & $\lnot(p \lor  q) \Iff \lnot p \land \lnot q$ \\
+    Absorption      & $p \lor (p \land q) \Iff p$
+                    & $p \land(p \lor  q) \Iff p$ \\
+    Negation        & $p \lor \lnot p \Iff \T$
+                    & $p \land \lnot p \Iff \F$ \\
+    \bottomrule
+  \end{tabular}
+  \normalsize
+
+  \medskip
+  \textit{Equivalences are tools to simplify compound propositions.}
+\end{frame}
+
+% ═══════════════════════════════════════════════════════════════════════════
+\section{Simplification Example}
+
+\begin{frame}{Example: Simplifying a Proposition}
+  \textbf{Simplify:} ``These potatoes are sweet and salty \textbf{or} they are
+  salty, spicy and (salty or spicy).''
+
+  \medskip
+  \small
+  \begin{align*}
+    & (\mathit{sweet} \land \mathit{salty})
+      \lor
+      \bigl(\mathit{salty} \land \mathit{spicy}
+            \land (\mathit{salty} \lor \mathit{spicy})\bigr) \\[4pt]
+    \pause
+    \Iff\;
+    & (\mathit{sweet} \land \mathit{salty})
+      \lor (\mathit{salty} \land \mathit{spicy} \land \mathit{salty})
+      \lor (\mathit{salty} \land \mathit{spicy} \land \mathit{spicy})
+      \quad\text{(Distributivity)} \\[4pt]
+    \pause
+    \Iff\;
+    & (\mathit{sweet} \land \mathit{salty})
+      \lor (\mathit{salty} \land \mathit{spicy})
+      \lor (\mathit{salty} \land \mathit{spicy})
+      \quad\text{(Idempotency)} \\[4pt]
+    \pause
+    \Iff\;
+    & (\mathit{salty} \land \mathit{spicy})
+      \lor (\mathit{salty} \land \mathit{sweet})
+      \quad\text{(Idempotency)}
+  \end{align*}
+  \normalsize
+
+  \pause
+  \bigskip
+  \textbf{Result:} ``These potatoes are salty and spicy, or salty and sweet.''
+\end{frame}
+
+% ───────────────────────────────────────────────────────────────────────────
+\begin{frame}[fragile]{Example: Automated Simplification}
+  \begin{columns}[T]
+    \column{0.47\textwidth}
+      \codelabel{Wolfram — BooleanMinimize}
+\begin{lstlisting}[style=wolfram]
+BooleanMinimize[
+  (sweet && salty) ||
+  (salty && spicy &&
+   (salty || spicy))]
+(* (salty && spicy) ||
+   (salty && sweet) *)
+\end{lstlisting}
+    \column{0.50\textwidth}
+      \codelabel{SymPy — simplify\_logic}
+\begin{lstlisting}[style=python]
+from sympy import symbols
+from sympy.logic.boolalg import (
+    And, Or, simplify_logic)
+
+sweet, salty, spicy = symbols(
+    'sweet salty spicy')
+
+expr = Or(
+    And(sweet, salty),
+    And(salty, spicy,
+        Or(salty, spicy)))
+
+simplify_logic(expr)
+# (salty & spicy) | (salty & sweet)
+\end{lstlisting}
+  \end{columns}
+\end{frame}
+
+% ═══════════════════════════════════════════════════════════════════════════
+\section{Conditional Equivalences}
+
+\begin{frame}{Conditional Equivalences}
+  All logical operators can be expressed using basic operators
+  ($\lnot$, $\land$, $\lor$).
+
+  \medskip
+  \renewcommand{\arraystretch}{1.35}
+  \begin{tabular}{ll}
+    \toprule
+    \textbf{Operator} & \textbf{Equivalence} \\
+    \midrule
+    Conditional
+      & $p \to q \;\Iff\; \lnot p \lor q$ \\[4pt]
+    Biconditional $\to$ Conditionals
+      & $(p \Iff q)
+         \;\Iff\;
+         (p \to q) \land (\lnot p \to \lnot q)$ \\[4pt]
+    Biconditional
+      & $(p \Iff q)
+         \;\Iff\;
+         (p \land q) \lor (\lnot p \land \lnot q)$ \\
+    \bottomrule
+  \end{tabular}
+
+  \bigskip
+  \begin{itemize}
+    \item All propositions can be expressed using only $\lnot$, $\land$, $\lor$.
+  \end{itemize}
+\end{frame}
+
+% ═══════════════════════════════════════════════════════════════════════════
+\section{Normal Forms}
+
+\begin{frame}{Disjunctive Normal Form (DNF)}
+  A \textbf{DNF} proposition is the disjunction ($\lor$) of one or more
+  conjunctions ($\land$).
+
+  \bigskip
+  \begin{itemize}
+    \item From our example:
+          $(\mathit{salty} \land \mathit{spicy})
+            \lor (\mathit{salty} \land \mathit{sweet})$
+          \quad\textcolor{dmOrange}{is in DNF.}
+    \bigskip
+    \item Every proposition has a DNF equivalent,
+          obtainable by applying equivalence laws.
+  \end{itemize}
+\end{frame}
+
+% ───────────────────────────────────────────────────────────────────────────
+\begin{frame}[fragile]{DNF: BooleanConvert / to\_dnf}
+  \begin{columns}[T]
+    \column{0.47\textwidth}
+      \codelabel{Wolfram}
+\begin{lstlisting}[style=wolfram]
+BooleanConvert[
+  ((a ~Xor~ b ~Xor~ !c ||
+    (a||b) && (b||c||d))
+    && (!c||b))
+  ~Xor~ (!c && a),
+  "DNF"]
+(* (!a && !b) || (!b && c) *)
+\end{lstlisting}
+    \column{0.50\textwidth}
+      \codelabel{SymPy}
+\begin{lstlisting}[style=python]
+from sympy import symbols, Xor
+from sympy.logic.boolalg import (
+    And, Or, Not, to_dnf)
+
+a, b, c, d = symbols('a b c d')
+
+inner = Or(
+    Xor(a, b, Not(c)),
+    And(Or(a,b), Or(b,c,d)))
+
+expr = Xor(
+    And(inner, Or(Not(c), b)),
+    And(Not(c), a))
+
+to_dnf(expr, simplify=True)
+# (~a & ~b) | (~b & c)
+\end{lstlisting}
+  \end{columns}
+\end{frame}
+
+% ───────────────────────────────────────────────────────────────────────────
+\begin{frame}[fragile]{DNF: XOR — ``For me or against me''}
+  Translate: ``You are \textbf{either} for me \textbf{or} against me''
+  $\;\longrightarrow\; f \oplus a$
+
+  \medskip
+  \begin{columns}[T]
+    \column{0.47\textwidth}
+      \codelabel{Wolfram}
+\begin{lstlisting}[style=wolfram]
+BooleanConvert[f ~Xor~ a, "DNF"]
+(* (a && !f) || (!a && f) *)
+\end{lstlisting}
+    \column{0.50\textwidth}
+      \codelabel{SymPy}
+\begin{lstlisting}[style=python]
+f, a = symbols('f a')
+to_dnf(Xor(f, a), simplify=True)
+# (a & ~f) | (~a & f)
+\end{lstlisting}
+  \end{columns}
+\end{frame}
+
+% ───────────────────────────────────────────────────────────────────────────
+\begin{frame}[fragile]{DNF: Counting Function}
+  \textbf{Problem:} Find the logical expression that is \textbf{true when
+  exactly 2 or 3} of $\{a,b,c,d\}$ are true.
+
+  \begin{columns}[T]
+    \column{0.47\textwidth}
+      \codelabel{Wolfram}
+\begin{lstlisting}[style=wolfram]
+expr = BooleanCountingFunction[
+         {2,3}, {a,b,c,d}];
+BooleanConvert@expr  (* full DNF  *)
+BooleanMinimize@expr (* minimal   *)
+\end{lstlisting}
+    \column{0.50\textwidth}
+      \codelabel{SymPy}
+\begin{lstlisting}[style=python]
+from itertools import combinations
+from sympy import symbols, And, Or, Not
+from sympy.logic.boolalg import (
+    to_dnf, simplify_logic)
+
+a, b, c, d = symbols('a b c d')
+vs = [a, b, c, d]
+
+def count_fn(ks, vs):
+    n = len(vs)
+    return Or(*[
+        And(*[vs[i] if i in combo
+              else Not(vs[i])
+              for i in range(n)])
+        for k in ks
+        for combo in
+            combinations(range(n), k)])
+
+expr = count_fn([2, 3], vs)
+print(to_dnf(expr, simplify=True))
+print(simplify_logic(expr))
+\end{lstlisting}
+  \end{columns}
+\end{frame}
+
+% ───────────────────────────────────────────────────────────────────────────
+\begin{frame}[fragile]{Other Normal Forms}
+  \begin{columns}[T]
+    \column{0.52\textwidth}
+      Other normal forms are also possible:
+
+      \medskip
+      \footnotesize
+      \renewcommand{\arraystretch}{1.3}
+      \begin{tabular}{ll}
+        \toprule
+        \textbf{Form} & \textbf{$x \oplus y$ expressed as \ldots} \\
+        \midrule
+        DNF  & $(x \land y) \lor (\lnot x \land \lnot y)$ \\
+        \rowcolor{rowHigh}
+        CNF  & $(\lnot x \lor y) \land (x \lor \lnot y)$ \\
+        NAND & $(x \barwedge y) \barwedge (\lnot x \barwedge \lnot y)$ \\
+        NOR  & $(\lnot x \downarrow y) \downarrow (x \downarrow \lnot y)$ \\
+        \bottomrule
+      \end{tabular}
+      \normalsize
+
+    \column{0.45\textwidth}
+      \codelabel{SymPy — CNF}
+\begin{lstlisting}[style=python]
+from sympy.logic.boolalg import to_cnf
+x, y = symbols('x y')
+
+to_cnf(Xor(x, y), simplify=True)
+# (x | y) & (~x | ~y)
+\end{lstlisting}
+  \end{columns}
+
+  \bigskip
+  \begin{itemize}
+    \item \textbf{Universal gates}: NAND ($\barwedge$) and NOR ($\downarrow$)
+          can each express all binary operations.
+  \end{itemize}
+\end{frame}
+
+% ═══════════════════════════════════════════════════════════════════════════
+\section{CNF to DNF}
+
+\begin{frame}{CNF to DNF Conversion}
+  \textbf{Convert} $(\lnot p \lor q) \land (\lnot p \lor \lnot r)
+    \land (\lnot q \lor r)$ \textbf{to DNF}:
+
+  \medskip\small
+  \begin{align*}
+    & (\lnot p \lor q)
+      \land (\lnot p \lor \lnot r)
+      \land (\lnot q \lor r) \\[4pt]
+    \pause
+    \Iff\;
+    & \bigl(\lnot p \lor (q \land \lnot r)\bigr)
+      \land (\lnot q \lor r)
+      \quad\text{(Distributivity)} \\[4pt]
+    \pause
+    \Iff\;
+    & \bigl(\lnot p \lor \lnot(\lnot q \lor r)\bigr)
+      \land (\lnot q \lor r)
+      \quad\text{(De Morgan's)} \\[4pt]
+    \pause
+    \Iff\;
+    & \bigl(\lnot p \land (\lnot q \lor r)\bigr)
+      \lor
+      \bigl(\lnot(\lnot q \lor r) \land (\lnot q \lor r)\bigr)
+      \quad\text{(Distributivity)} \\[4pt]
+    \pause
+    \Iff\;
+    & \lnot p \land (\lnot q \lor r) \;\lor\; \F
+      \quad\text{(Negation)} \\[4pt]
+    \pause
+    \Iff\;
+    & \lnot p \land (\lnot q \lor r)
+      \quad\text{(Identity)}
+  \end{align*}
+  \normalsize
+
+  \pause
+  \begin{alertblock}{Complexity Note}
+    Converting from CNF to DNF is \textbf{NP-hard}
+    (a class of computationally difficult problems — see Lesson~14).
+  \end{alertblock}
+\end{frame}
+
+% ═══════════════════════════════════════════════════════════════════════════
+\section{Satisfiability Research}
+
+\begin{frame}{Satisfiability Research}
+  \begin{itemize}
+    \item Satisfiability remains an \textbf{open problem} at the heart of
+          computer science.
+    \item Efficiently determining whether \emph{any} logical expression is
+          satisfiable can be very difficult.
+    \item The propositional satisfiability problem (\textbf{SAT}) is the main
+          subject of annual research conferences.
+  \end{itemize}
+
+  \bigskip
+  \begin{center}
+    \large
+    \textit{Is there an efficient algorithm for SAT?}\\[4pt]
+    \textcolor{dmOrange}{\textbf{P vs.\ NP — one of the Millennium Prize Problems.}}
+  \end{center}
+\end{frame}
+
+% ═══════════════════════════════════════════════════════════════════════════
+\section{Summary}
+
+\begin{frame}{Summary}
+  \begin{itemize}
+    \item A proposition is either a
+          \textcolor{dmOrange}{\textbf{tautology}},
+          a \textcolor{dmOrange}{\textbf{contradiction}}, or a
+          \textcolor{dmOrange}{\textbf{contingency}}.
+    \pause
+    \item Many propositional equivalences are used by
+          \texttt{simplify\_logic} (SymPy) to simplify Boolean expressions
+          automatically.
+    \pause
+    \item Simplifications are standardised through
+          \textcolor{dmOrange}{\textbf{normal forms}}
+          (DNF, CNF, NAND, NOR).
+    \pause
+    \item The previous propositions were \emph{declarative statements}
+          — more expressive logics (predicates, quantifiers) come next.
+  \end{itemize}
+\end{frame}
+
+\end{document}

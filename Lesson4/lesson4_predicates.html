@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Predicates and Quantifiers — Discrete Mathematics</title>
+<script>
+  MathJax = {
+    tex: { inlineMath: [['$','$']], displayMath: [['$$','$$']] },
+    options: { skipHtmlTags: ['script','noscript','style','textarea'] }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+<style>
+/* ── Reset & base ──────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --orange:    #e67e22;
+  --darkblue:  #2c3e50;
+  --lightbg:   #f4f9fc;
+  --rowred:    #ffe8e8;
+  --rowblue:   #e3eeff;
+  --border:    #dce3ea;
+  /* Python/SymPy green */
+  --sp-fg:     #1e824c;
+  --sp-bg:     #e8f5ec;
+  --sp-border: #27ae60;
+  --sp-head:   #27ae60;
+  /* Setup indigo */
+  --su-fg:     #4a4aaa;
+  --su-bg:     #eeeeff;
+  --su-border: #6060cc;
+  --su-head:   #6060cc;
+}
+
+body {
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  background: #e8edf2;
+  color: var(--darkblue);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem 1rem 5rem;
+  gap: 2rem;
+}
+
+/* ── Slide card ───────────────────────────────────────────────────── */
+.slide {
+  background: #fff;
+  width: 100%;
+  max-width: 940px;
+  border-radius: 10px;
+  box-shadow: 0 4px 18px rgba(0,0,0,.10);
+  padding: 2.2rem 2.8rem 1.8rem;
+  position: relative;
+}
+
+.slide-number {
+  position: absolute;
+  bottom: 0.7rem;
+  right: 1.2rem;
+  font-size: 0.72rem;
+  color: #aaa;
+}
+
+/* ── Title slide ──────────────────────────────────────────────────── */
+.slide.title-slide {
+  background: linear-gradient(145deg, #f4f9fc 60%, #e0eef7);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 240px;
+  text-align: center;
+  border-top: 6px solid var(--orange);
+}
+.slide.title-slide h1 { font-size: 1.9rem; color: var(--darkblue); margin-bottom: 0.4rem; }
+.slide.title-slide .subtitle { font-size: 1.15rem; color: #555; }
+.slide.title-slide .author   { font-size: 1rem; color: var(--orange); margin-top: 0.7rem; font-style: italic; }
+
+/* ── Frame title ──────────────────────────────────────────────────── */
+h2.frame-title {
+  font-size: 1.65rem;
+  color: var(--orange);
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  padding-bottom: 0.35rem;
+  border-bottom: 2px solid #f9e4cc;
+}
+
+/* ── Body ─────────────────────────────────────────────────────────── */
+p { line-height: 1.7; margin: 0.45rem 0; }
+ul { margin: 0.4rem 0 0.4rem 1.4rem; line-height: 1.85; }
+ul li::marker { color: var(--orange); }
+
+/* ── Setup block (indigo) ─────────────────────────────────────────── */
+.setup-block {
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1px solid var(--su-border);
+  margin: 0.7rem 0;
+}
+.setup-label {
+  display: block;
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  background: var(--su-head);
+  color: #fff;
+}
+.setup-block .pane-code {
+  background: var(--su-bg);
+  color: var(--su-fg);
+  font-family: 'Consolas', 'Fira Code', monospace;
+  font-size: 0.83rem;
+  line-height: 1.6;
+  padding: 0.5rem 0.75rem;
+  white-space: pre;
+  display: block;
+}
+
+/* ── Python code block (green) ────────────────────────────────────── */
+.sympy-block {
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1px solid var(--sp-border);
+  margin: 0.7rem 0;
+}
+.sympy-label {
+  display: block;
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  background: var(--sp-head);
+  color: #fff;
+}
+.sympy-block .pane-code {
+  background: var(--sp-bg);
+  color: var(--sp-fg);
+  font-family: 'Consolas', 'Fira Code', monospace;
+  font-size: 0.83rem;
+  line-height: 1.6;
+  padding: 0.5rem 0.75rem;
+  white-space: pre;
+  display: block;
+}
+
+/* ── Tables ───────────────────────────────────────────────────────── */
+.truth-table {
+  border-collapse: collapse;
+  margin: 0.75rem auto;
+  font-size: 0.9rem;
+}
+.truth-table th, .truth-table td {
+  border: 1px solid var(--border);
+  padding: 0.4rem 1rem;
+  text-align: center;
+  min-width: 70px;
+}
+.truth-table th { background: var(--lightbg); font-weight: 600; }
+
+/* ── Slideshow nav ────────────────────────────────────────────────── */
+#nav { position: fixed; bottom: 1.5rem; right: 1.5rem; display: flex; gap: 0.4rem; z-index: 100; }
+#nav button {
+  background: var(--orange); color: #fff; border: none;
+  border-radius: 50%; width: 40px; height: 40px;
+  font-size: 1.1rem; cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,.25); transition: background .2s;
+}
+#nav button:hover { background: #cf6d17; }
+#nav #btn-scroll { border-radius: 20px; width: auto; padding: 0 12px; font-size: 0.8rem; }
+
+body.slideshow .slide        { display: none; }
+body.slideshow .slide.active { display: block; }
+</style>
+</head>
+<body>
+
+<!-- ══ Slide 1 — Title ════════════════════════════════════════════════ -->
+<section class="slide title-slide" id="s1">
+  <h1>Predicates and Quantifiers</h1>
+  <p class="subtitle">Discrete Mathematics — Lesson 4</p>
+  <p class="author">Notes By Pr. El Hadiq Zouhair</p>
+  <span class="slide-number">1 / 11</span>
+</section>
+
+<!-- ══ Slide 2 — Overview ════════════════════════════════════════════ -->
+<section class="slide" id="s2">
+  <h2 class="frame-title">Overview</h2>
+  <ul>
+    <li>Predicate logic expands the range of propositions that are possible.</li>
+    <li>A particular form of programming is possible using predicate logic: logic programming.</li>
+    <li>Universal truths can be differentiated from special cases.</li>
+    <li>You will learn about predicates and quantifiers.</li>
+  </ul>
+  <span class="slide-number">2 / 11</span>
+</section>
+
+<!-- ══ Slide 3 — Predicates ══════════════════════════════════════════ -->
+<section class="slide" id="s3">
+  <h2 class="frame-title">Predicates</h2>
+  <p>Many propositions have variables that determine their value.</p>
+  <ul>
+    <li>The melting point of $x$ element is $y$ Kelvin: $M(x, y)$</li>
+  </ul>
+  <p>Popular predicates include equality predicates:
+     $&lt;$, $&gt;$, $\leq$ (<code>&lt;=</code>), $\geq$ (<code>&gt;=</code>),
+     $=$ (<code>==</code>) and $\neq$ (<code>!=</code>):</p>
+
+  <div class="setup-block">
+    <span class="setup-label">Python — imports (run once)</span>
+    <span class="pane-code">from sympy import symbols, Implies
+x = symbols('x')</span>
+  </div>
+
+  <div class="sympy-block">
+    <span class="sympy-label">Python</span>
+    <span class="pane-code"># Predicate: (x + 2 > 4) => (x + 3 < 4)
+pred = Implies(x + 2 > 4, x + 3 &lt; 4)
+
+# Evaluate for x = 2 and x = 3
+results = [pred.subs(x, v) for v in [2, 3]]
+print(results)  # [True, False]</span>
+  </div>
+  <span class="slide-number">3 / 11</span>
+</section>
+
+<!-- ══ Slide 4 — Example: Pythagorean ════════════════════════════════ -->
+<section class="slide" id="s4">
+  <h2 class="frame-title">Example: Pythagorean Triple</h2>
+  <p>Consider the proposition $p:\; x^2 + y^2 = z^2$</p>
+
+  <div class="sympy-block">
+    <span class="sympy-label">Python</span>
+    <span class="pane-code"># Define the predicate as a Python lambda
+p = lambda x, y, z: x**2 + y**2 == z**2
+
+# What is the truth value for x=5, y=12, z=13?
+print(p(5, 12, 13))      # True
+
+# What is the truth value for x=160, y=241, z=290?
+print(p(160, 241, 290))  # False</span>
+  </div>
+
+  <ul>
+    <li>To learn more about this equation, read about Pythagorean triples.</li>
+  </ul>
+  <span class="slide-number">4 / 11</span>
+</section>
+
+<!-- ══ Slide 5 — Universal Quantifier ═══════════════════════════════ -->
+<section class="slide" id="s5">
+  <h2 class="frame-title">Universal Quantifier $\forall$</h2>
+  <p>Universal quantification is the proposition: "$P(x)$ is true for <strong>all</strong> values of $x$."</p>
+
+  <p>$$\forall x\; (x^2 \geq 0)$$</p>
+
+  <div class="setup-block">
+    <span class="setup-label">Python — imports (run once)</span>
+    <span class="pane-code">from z3 import Real, ForAll, Implies, prove</span>
+  </div>
+
+  <div class="sympy-block">
+    <span class="sympy-label">Python</span>
+    <span class="pane-code">x = Real('x')
+
+# For all real x: x^2 >= 0
+prove(ForAll([x], x**2 >= 0))                  # proved</span>
+  </div>
+
+  <p>$$\forall x \geq 2\; (x \geq 0)$$</p>
+
+  <div class="sympy-block">
+    <span class="sympy-label">Python</span>
+    <span class="pane-code"># For all x >= 2: x >= 0  (encode domain as implication)
+prove(ForAll([x], Implies(x >= 2, x >= 0)))    # proved</span>
+  </div>
+  <span class="slide-number">5 / 11</span>
+</section>
+
+<!-- ══ Slide 6 — Existential Quantifier ══════════════════════════════ -->
+<section class="slide" id="s6">
+  <h2 class="frame-title">Existential Quantifier $\exists$</h2>
+  <p>Existential quantification is the proposition: "$P(x)$ is true for <strong>at least one</strong> value of $x$."</p>
+
+  <p>$$\exists x\; (x = -x)$$</p>
+
+  <div class="setup-block">
+    <span class="setup-label">Python — imports (run once)</span>
+    <span class="pane-code">from z3 import Real, Reals, And, Exists, Solver, Goal, Tactic, sat</span>
+  </div>
+
+  <div class="sympy-block">
+    <span class="sympy-label">Python</span>
+    <span class="pane-code">x = Real('x')
+s = Solver()
+s.add(x == -x)
+print(s.check())   # sat
+print(s.model())   # [x = 0]</span>
+  </div>
+
+  <p>This is a special case of existence — it is unique, denoted $\exists!\,x$.</p>
+  <p>$$\exists\,x,y\;\bigl(x^2 + ay^2 \leq 1 \;\wedge\; x - y \geq 2\bigr)$$</p>
+
+  <div class="sympy-block">
+    <span class="sympy-label">Python</span>
+    <span class="pane-code">x, y, a = Reals('x y a')
+# Quantifier elimination: remove x, y to find condition on a
+g = Goal()
+g.add(Exists([x, y], And(x**2 + a*y**2 &lt;= 1, x - y >= 2)))
+print(Tactic('qe')(g))   # [[a &lt;= 1/3]]</span>
+  </div>
+  <span class="slide-number">6 / 11</span>
+</section>
+
+<!-- ══ Slide 7 — Example: Region Inclusion ═══════════════════════════ -->
+<section class="slide" id="s7">
+  <h2 class="frame-title">Example: Region Inclusion</h2>
+  <p>Test whether region $R_1$ is contained in region $R_2$:</p>
+
+  <div class="setup-block">
+    <span class="setup-label">Python — imports (run once)</span>
+    <span class="pane-code">from z3 import Reals, And, Not, Solver
+import numpy as np, matplotlib.pyplot as plt</span>
+  </div>
+
+  <div class="sympy-block">
+    <span class="sympy-label">Python — Z3 proof</span>
+    <span class="pane-code">x, y = Reals('x y')
+R1_z3 = (2*x)**2 + y**2 + 2*x*y &lt;= 1
+R2_z3 = x**2 + y**2 &lt;= 2
+
+# Exists (x,y): R1 and not R2?
+s = Solver()
+s.add(And(R1_z3, Not(R2_z3)))
+print(s.check())   # unsat  =>  R1 ⊆ R2</span>
+  </div>
+
+  <div class="sympy-block">
+    <span class="sympy-label">Python — visualisation</span>
+    <span class="pane-code">X, Y = np.meshgrid(np.linspace(-2,2,500), np.linspace(-2,2,500))
+R1 = (2*X)**2 + Y**2 + 2*X*Y &lt;= 1
+R2 = X**2 + Y**2 &lt;= 2
+plt.contourf(X, Y, R2, levels=[.5,1.5], colors=['lightblue'], alpha=.5)
+plt.contourf(X, Y, R1, levels=[.5,1.5], colors=['orange'],    alpha=.7)
+plt.axis('equal'); plt.show()</span>
+  </div>
+  <span class="slide-number">7 / 11</span>
+</section>
+
+<!-- ══ Slide 8 — Equivalences ════════════════════════════════════════ -->
+<section class="slide" id="s8">
+  <h2 class="frame-title">Equivalences</h2>
+  <p>Equivalences are also used for quantifiers, using <code>sympy.simplify</code> or <code>reduce_inequalities</code>:</p>
+
+  <table class="truth-table" style="width:100%; margin:0.7rem 0;">
+    <thead>
+      <tr>
+        <th style="text-align:left; padding-left:0.8rem;">Law</th>
+        <th>Equivalence</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td style="text-align:left; padding-left:0.8rem;">Conjunction</td>
+        <td>$\forall x(P(x)\wedge Q(x)) \;\Leftrightarrow\; \forall x\,P(x) \wedge \forall x\,Q(x)$</td>
+      </tr>
+      <tr>
+        <td style="text-align:left; padding-left:0.8rem;">Disjunction</td>
+        <td>$\exists x(P(x)\vee Q(x)) \;\Leftrightarrow\; \exists x\,P(x) \vee \exists x\,Q(x)$</td>
+      </tr>
+      <tr>
+        <td style="text-align:left; padding-left:0.8rem;">De Morgan's ($\forall$)</td>
+        <td>$\neg\forall x\,P(x) \;\Leftrightarrow\; \exists x\,\neg P(x)$</td>
+      </tr>
+      <tr>
+        <td style="text-align:left; padding-left:0.8rem;">De Morgan's ($\exists$)</td>
+        <td>$\neg\exists x\,P(x) \;\Leftrightarrow\; \forall x\,\neg P(x)$</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>In fact, the negation can be passed all the way down the expression:</p>
+  $$\begin{aligned}
+    &\neg\exists v\;\forall w\;\exists x\;\exists y\;\forall z\;P(v,w,x,y,z)\\
+    \Leftrightarrow\;&\forall v\;\neg\forall w\;\exists x\;\exists y\;\forall z\;P(v,w,x,y,z)\\
+    \Leftrightarrow\;&\forall v\;\exists w\;\neg\exists x\;\exists y\;\forall z\;P(v,w,x,y,z)\\
+    \Leftrightarrow\;&\forall v\;\exists w\;\forall x\;\forall y\;\neg\forall z\;P(v,w,x,y,z)\\
+    \Leftrightarrow\;&\forall v\;\exists w\;\forall x\;\forall y\;\exists z\;\neg P(v,w,x,y,z)
+  \end{aligned}$$
+  <span class="slide-number">8 / 11</span>
+</section>
+
+<!-- ══ Slide 9 — Nested Quantifiers ══════════════════════════════════ -->
+<section class="slide" id="s9">
+  <h2 class="frame-title">Nested Quantifiers</h2>
+  <p>How to interpret nested quantifiers:</p>
+
+  <table class="truth-table" style="width:90%; margin:0.7rem auto;">
+    <thead>
+      <tr>
+        <th>Statement</th>
+        <th style="text-align:left; padding-left:1rem;">Meaning</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>$\exists x\;\exists y\;P(x,y)$</td>
+        <td style="text-align:left; padding-left:1rem;">At least one pair exists.</td>
+      </tr>
+      <tr>
+        <td>$\forall x\;\exists y\;P(x,y)$</td>
+        <td style="text-align:left; padding-left:1rem;">A pair exists for every $x$.</td>
+      </tr>
+      <tr>
+        <td>$\exists x\;\forall y\;P(x,y)$</td>
+        <td style="text-align:left; padding-left:1rem;">A specific $x$ works for any $y$.</td>
+      </tr>
+      <tr>
+        <td>$\forall x\;\forall y\;P(x,y)$</td>
+        <td style="text-align:left; padding-left:1rem;">All pairs work!</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>Everyone in this course likes a branch of mathematics:</p>
+  <p>$$\forall\,s \in \mathrm{students}\;\; \exists\,b \in \mathrm{mathematics}\;\; \bigl(\mathrm{Likes}(s,\,b)\bigr)$$</p>
+  <span class="slide-number">9 / 11</span>
+</section>
+
+<!-- ══ Slide 10 — Examples: Translating ══════════════════════════════ -->
+<section class="slide" id="s10">
+  <h2 class="frame-title">Examples: Translating Statements to Logic</h2>
+  <p>Translate the following statements in logic:</p>
+  <ul>
+    <li>
+      <em>No one is perfect.</em>
+      $$\neg\,\exists x\;\mathrm{Perfect}(x)$$
+    </li>
+    <li>
+      <em>Not all propositions are contradictions.</em>
+      $$\neg\,\forall x\;\mathrm{Contradiction}(x)$$
+    </li>
+    <li>
+      <em>In my second-year class, only one person knew Java, SQL and Python.</em>
+      $$\exists!\,x\;\bigl(\mathrm{Java}(x) \wedge \mathrm{SQL}(x) \wedge \mathrm{Python}(x)\bigr)$$
+    </li>
+  </ul>
+  <span class="slide-number">10 / 11</span>
+</section>
+
+<!-- ══ Slide 11 — Summary ════════════════════════════════════════════ -->
+<section class="slide" id="s11">
+  <h2 class="frame-title">Summary</h2>
+  <ul style="line-height:2;">
+    <li>Predicates are propositional functions with parameters.</li>
+    <li>There are three quantifiers: Universal ($\forall$), Existence ($\exists$) and Uniqueness ($\exists!$).</li>
+    <li><strong>Z3</strong> directly mirrors Wolfram's <code>ForAll</code>, <code>Exists</code> and <code>Reduce</code>:
+      <ul>
+        <li>Universal: <code>prove(ForAll([x], ...))</code></li>
+        <li>Existence: <code>Solver().check()</code> → <code>sat</code> / <code>unsat</code></li>
+        <li>Quantifier elimination: <code>Tactic('qe')</code></li>
+      </ul>
+    </li>
+    <li>So far, propositions were taken as is.</li>
+    <li>The next lesson allows for analysis of propositions through rules of inference.</li>
+  </ul>
+
+  <div class="setup-block" style="margin-top:1rem;">
+    <span class="setup-label">Python — key imports for this lesson</span>
+    <span class="pane-code">from sympy import symbols, Implies                        # propositional predicates
+from z3 import Real, Reals, ForAll, Exists, And, Not, Implies as Imp
+from z3 import Solver, Goal, Tactic, prove, sat           # quantifiers
+import numpy as np, matplotlib.pyplot as plt              # visualisation</span>
+  </div>
+  <span class="slide-number">11 / 11</span>
+</section>
+
+<!-- ── Navigation ─────────────────────────────────────────────────── -->
+<div id="nav">
+  <button id="btn-prev"   title="Previous">&#8592;</button>
+  <button id="btn-scroll" title="Toggle slideshow">Slideshow</button>
+  <button id="btn-next"   title="Next">&#8594;</button>
+</div>
+
+<script>
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  let current = 0, slideshowMode = false;
+
+  function enter(i) {
+    slides[current].classList.remove('active');
+    current = (i + slides.length) % slides.length;
+    slides[current].classList.add('active');
+    slides[current].scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  document.getElementById('btn-prev').addEventListener('click', () => {
+    if (slideshowMode) enter(current - 1);
+  });
+  document.getElementById('btn-next').addEventListener('click', () => {
+    if (slideshowMode) enter(current + 1);
+  });
+  document.getElementById('btn-scroll').addEventListener('click', () => {
+    slideshowMode = !slideshowMode;
+    document.body.classList.toggle('slideshow', slideshowMode);
+    document.getElementById('btn-scroll').textContent = slideshowMode ? 'Scroll' : 'Slideshow';
+    if (slideshowMode) slides[current].classList.add('active');
+    else slides.forEach(s => s.classList.remove('active'));
+  });
+
+  document.addEventListener('keydown', e => {
+    if (!slideshowMode) return;
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') enter(current + 1);
+    if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   enter(current - 1);
+  });
+</script>
+</body>
+</html>

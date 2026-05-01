@@ -1,0 +1,417 @@
+\documentclass[aspectratio=169]{beamer}
+\usepackage{amsmath,amssymb}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{colortbl,xcolor,array}
+\usepackage{tcolorbox}
+\tcbuselibrary{skins}
+
+% ── Colours ───────────────────────────────────────────────────────────
+\definecolor{orange}{RGB}{230,126,34}
+\definecolor{darkblue}{RGB}{44,62,80}
+\definecolor{rowred}{RGB}{255,220,220}
+\definecolor{rowblue}{RGB}{220,235,255}
+% Wolfram palette (teal)
+\definecolor{wfg}{RGB}{0,100,120}
+\definecolor{wbg}{RGB}{228,246,250}
+\definecolor{wfr}{RGB}{0,128,150}
+% SymPy palette (green)
+\definecolor{sfg}{RGB}{30,130,76}
+\definecolor{sbg}{RGB}{232,246,237}
+\definecolor{sfr}{RGB}{39,174,96}
+% Setup palette (indigo)
+\definecolor{setupcol}{RGB}{90,90,190}
+
+% ── Beamer theme ──────────────────────────────────────────────────────
+\usetheme{default}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{itemize item}{\textcolor{orange}{\textbullet}}
+\setbeamertemplate{itemize subitem}{\textcolor{orange}{\textbullet}}
+\setbeamercolor{frametitle}{fg=orange,bg=white}
+\setbeamercolor{normal text}{fg=darkblue}
+\setbeamerfont{frametitle}{size=\LARGE,series=\bfseries}
+\setbeamertemplate{footline}{%
+  \hfill\footnotesize\color{gray}%
+  \insertframenumber\,/\,\inserttotalframenumber\hspace{4pt}\vspace{4pt}%
+}
+\addtobeamertemplate{frametitle}{}%
+  {\vspace{-4pt}\textcolor{orange!40}{\hrule height 0.4pt}}
+
+% ── tcolorbox styles ──────────────────────────────────────────────────
+\tcbset{
+  wfstyle/.style={
+    colback=wbg, colframe=wfr, colbacktitle=wfr, coltitle=white,
+    fonttitle=\bfseries\tiny, title=Wolfram,
+    fontupper=\ttfamily\scriptsize\color{wfg},
+    boxrule=0.5pt, arc=3pt,
+    top=3pt, bottom=3pt, left=5pt, right=5pt,
+    toptitle=1pt, bottomtitle=1pt,
+  },
+  spstyle/.style={
+    colback=sbg, colframe=sfr, colbacktitle=sfr, coltitle=white,
+    fonttitle=\bfseries\tiny, title=SymPy,
+    fontupper=\ttfamily\scriptsize\color{sfg},
+    boxrule=0.5pt, arc=3pt,
+    top=3pt, bottom=3pt, left=5pt, right=5pt,
+    toptitle=1pt, bottomtitle=1pt,
+  },
+  setupstyle/.style={
+    colback=setupcol!8, colframe=setupcol!50,
+    colbacktitle=setupcol!70, coltitle=white,
+    fonttitle=\bfseries\tiny, title=SymPy --- imports (run once),
+    fontupper=\ttfamily\scriptsize\color{setupcol},
+    boxrule=0.5pt, arc=3pt,
+    top=2pt, bottom=2pt, left=5pt, right=5pt,
+    toptitle=1pt, bottomtitle=1pt,
+  }
+}
+
+% ── Inline helpers ────────────────────────────────────────────────────
+\newcommand{\wcode}[1]{\texttt{\textcolor{wfg}{#1}}}
+\newcommand{\scode}[1]{\texttt{\textcolor{sfg}{#1}}}
+% Dual-code columns (usage: \dualcols{wolfram content}{sympy content})
+\newcommand{\dualcols}[2]{%
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.487\textwidth}
+      \begin{tcolorbox}[wfstyle]#1\end{tcolorbox}
+    \end{column}
+    \begin{column}{0.487\textwidth}
+      \begin{tcolorbox}[spstyle]#2\end{tcolorbox}
+    \end{column}
+  \end{columns}
+}
+
+\title{Introduction to Discrete Mathematics}
+\subtitle{Proposition Logic}
+\date{}
+
+% ══════════════════════════════════════════════════════════════════════
+\begin{document}
+
+% ── Title ─────────────────────────────────────────────────────────────
+\begin{frame}[t]
+  \vspace{3em}\centering
+  {\usebeamerfont{title}\usebeamercolor[fg]{title}
+    Introduction to Discrete Mathematics\par}
+  \vspace{0.4em}
+  {\large\textcolor{darkblue}{Proposition Logic}\par}
+\end{frame}
+
+% ── Overview ──────────────────────────────────────────────────────────
+\begin{frame}[t]{Overview}
+  \begin{itemize}\setlength\itemsep{0.6em}
+    \item Proposition logic is a branch of logic studying ways of modifying and joining propositions.
+    \item Propositions are crucial in mathematics, as all proofs rely on propositional logic.
+    \item It was first seriously studied by Aristotle, who was also the first to popularize most topics covered in this section.
+    \item You will learn about propositions and logical operators in this lesson.
+  \end{itemize}
+\end{frame}
+
+% ── Proposition ───────────────────────────────────────────────────────
+\begin{frame}[t]{Proposition}
+  A \textbf{proposition} is a mathematical statement that is either \emph{true} or \emph{false}:
+  \begin{itemize}\setlength\itemsep{0.05em}
+    \item This course is on discrete mathematics. \quad
+          \textbullet\quad 3 is greater than 4.
+  \end{itemize}
+  Interrogative, exclamatory or imperative sentences are \textbf{not} propositions:
+  \begin{itemize}\setlength\itemsep{0.05em}
+    \item Why are some sheep black? \quad
+          \textbullet\quad Do the dishes.
+  \end{itemize}
+  \vspace{0.3em}
+  \begin{tcolorbox}[setupstyle]
+    from sympy import symbols, Not, And, Or, Implies, Equivalent,
+    simplify\\
+    from sympy.logic.boolalg import truth\_table\\
+    p, q = symbols('p q')
+  \end{tcolorbox}
+  \vspace{0.2em}
+  \dualcols{%
+    In[1]:= \{Boole[True], Boole[False]\}\\
+    Out[1]= \{1, 0\}
+  }{%
+    [int(True), int(False)] \# [1, 0]
+  }
+\end{frame}
+
+% ── Basic Operators: NOT + AND ────────────────────────────────────────
+\begin{frame}[t]{Basic Operators}
+  Let $p$ and $q$ be propositions.
+  \smallskip
+
+  The \textbf{negation} of $p$
+  \,($\neg$, \wcode{!}, \wcode{Not})\,
+  states ``$p$ is false'':
+  \vspace{2pt}
+  \dualcols{%
+    \{$\neg$p,\ !p,\ Not[p]\}
+  }{%
+    Not(p)\quad\# or \textasciitilde{}p
+  }
+
+  \begin{center}
+    \renewcommand{\arraystretch}{1.2}
+    \begin{tabular}{|>{\centering}p{1.5cm}|>{\centering\arraybackslash}p{1.5cm}|}
+      \hline $p$ & $\neg p$\\\hline
+      \rowcolor{rowred}  True  & False\\
+      \rowcolor{rowblue} False & True\\\hline
+    \end{tabular}
+  \end{center}
+  \vspace{2pt}
+
+  The \textbf{conjunction} of $p$ and $q$
+  \,($\wedge$, \wcode{\&\&}, \wcode{And})\,
+  is ``$p$ and $q$'':
+  \vspace{2pt}
+  \dualcols{%
+    \{p $\wedge$ q,\ p \&\& q,\ And[p,q]\}
+  }{%
+    And(p, q)\quad\# or p \& q
+  }
+\end{frame}
+
+% ── Basic Operators: OR ───────────────────────────────────────────────
+\begin{frame}[t]{Basic Operators (continued)}
+  The \textbf{disjunction} of $p$ and $q$
+  \,($\vee$, \wcode{||}, \wcode{Or})\,
+  is ``$p$ or $q$'':
+  \vspace{4pt}
+  \dualcols{%
+    \{p $\vee$ q,\ p || q,\ Or[p,q]\}
+  }{%
+    Or(p, q)\quad\# or p | q
+  }
+
+  \vspace{0.5em}
+  \begin{center}
+    \renewcommand{\arraystretch}{1.25}
+    \begin{tabular}{|>{\centering}p{1.5cm}|>{\centering}p{1.5cm}|>{\centering\arraybackslash}p{1.8cm}|}
+      \hline $p$ & $q$ & $p \vee q$\\\hline
+      \rowcolor{rowred}  True  & True  & True\\
+      \rowcolor{rowred}  True  & False & True\\
+      \rowcolor{rowred}  False & True  & True\\
+      \rowcolor{rowblue} False & False & False\\\hline
+    \end{tabular}
+  \end{center}
+
+  \vspace{0.5em}
+  \begin{tcolorbox}[spstyle, title=SymPy --- truth table]
+    for row in truth\_table(Or(p, q), [p, q]):\\
+    \quad\quad print(row)\quad\# prints (vals, result) tuples
+  \end{tcolorbox}
+\end{frame}
+
+% ── Example 1 ─────────────────────────────────────────────────────────
+\begin{frame}[t]{Example}
+  Let $p$ = ``I studied for the exam'' and $q$ = ``I passed the exam.''
+  \vspace{0.5em}
+
+  \textbf{Express in English:}
+  \begin{itemize}
+    \item $\neg q$ \hfill I did not pass the exam.
+    \item $p \wedge q$ \hfill I studied for the exam and I passed the exam.
+  \end{itemize}
+  \vspace{0.5em}
+
+  \textbf{Express in logic:}
+  \begin{itemize}
+    \item I did not pass the exam, nor did I study for it.
+          \hfill $\neg q \wedge \neg p$
+    \item I studied for the exam, but I did not pass it.
+          \hfill $p \wedge \neg q$
+  \end{itemize}
+  \vspace{0.5em}
+
+  \begin{tcolorbox}[spstyle, title=SymPy --- verify]
+    Not(q)\quad\quad\quad\quad\quad\quad\quad\quad
+    \# \textasciitilde{}q\\
+    And(p, q)\quad\quad\quad\quad\quad\quad\quad
+    \# p \& q\\
+    And(Not(q), Not(p))\quad\quad\# \textasciitilde{}q \& \textasciitilde{}p\\
+    And(p, Not(q))\quad\quad\quad\quad\# p \& \textasciitilde{}q
+  \end{tcolorbox}
+\end{frame}
+
+% ── More Operators: IMPLIES + BICONDITIONAL ───────────────────────────
+\begin{frame}[t]{More Operators}
+  The \textbf{conditional} $p \Rightarrow q$
+  \,($\Rightarrow$, \wcode{Implies})\,
+  is ``If $p$, then $q$'':
+  \vspace{2pt}
+  \dualcols{%
+    \{p $\Rightarrow$ q,\ Implies[p,q]\}
+  }{%
+    Implies(p, q)
+  }
+
+  \begin{center}
+    \renewcommand{\arraystretch}{1.2}
+    \begin{tabular}{|>{\centering}p{1.5cm}|>{\centering}p{1.5cm}|>{\centering\arraybackslash}p{2cm}|}
+      \hline $p$ & $q$ & $p \Rightarrow q$\\\hline
+      \rowcolor{rowred}  True  & True  & True\\
+      \rowcolor{rowblue} True  & False & False\\
+      \rowcolor{rowred}  False & True  & True\\
+      \rowcolor{rowred}  False & False & True\\\hline
+    \end{tabular}
+  \end{center}
+  \vspace{2pt}
+
+  The \textbf{biconditional} $p \Leftrightarrow q$
+  \,($\Leftrightarrow$, \wcode{Equivalent})\,
+  is ``$p$ iff $q$'':
+  \vspace{2pt}
+  \dualcols{%
+    \{p $\Leftrightarrow$ q,\ Equivalent[p,q]\}
+  }{%
+    Equivalent(p, q)
+  }
+\end{frame}
+
+% ── Example 2 ─────────────────────────────────────────────────────────
+\begin{frame}[t]{Example}
+  Let $p$ = ``It is raining'' and $q$ = ``Kala wants to play outside.''
+  \vspace{0.5em}
+
+  \textbf{Express in English:}
+  \begin{itemize}
+    \item $p \Rightarrow q$ \hfill
+          If it is raining, then Kala wants to play outside.
+    \item $\neg q \Leftrightarrow p$ \hfill
+          Kala does not want to play outside iff it is raining.
+  \end{itemize}
+  \vspace{0.5em}
+
+  \textbf{Express in logic:}
+  \begin{itemize}
+    \item Either Kala wants to play outside or it is raining.
+          \hfill $q \vee p$
+    \item Kala wants to play outside regardless of rain.
+          \hfill $(p \Rightarrow q) \wedge (\neg p \Rightarrow q)$
+  \end{itemize}
+  \vspace{0.4em}
+
+  \begin{tcolorbox}[spstyle, title=SymPy --- simplification]
+    expr = And(Implies(p,q), Implies(Not(p),q))\\
+    simplify(expr)\quad\# simplifies to just: q
+  \end{tcolorbox}
+\end{frame}
+
+% ── Precedence ────────────────────────────────────────────────────────
+\begin{frame}[t]{Precedence}
+  The precedence of logical operators is as follows:
+  \begin{center}
+    \large$() \;>\; \neg \;>\; \wedge \;>\; \vee \;>\; \Rightarrow \;>\; \Leftrightarrow$
+  \end{center}
+  \begin{center}
+    \colorbox{orange!20}{\textbf{Mnemonic: P\,N\,A\,O\,I\,B}
+    (Parentheses, Not, And, Or, Implies, Biconditional)}
+  \end{center}
+  \vspace{0.4em}
+  \textbf{Evaluate if $p$ is true and $q$ is false:}
+  \vspace{2pt}
+  \dualcols{%
+    In[2]:= \{p,q\} = \{True,False\}\\
+    In[3]:= $\neg$p $\vee$ q $\Rightarrow$ p $\wedge$ $\neg$q\\
+    Out[3]= True
+  }{%
+    p\_v, q\_v = True, False\\
+    e = Implies(\textasciitilde{}p|q, p\&\textasciitilde{}q)\\
+    e.subs(\{p:p\_v, q:q\_v\})\quad\# True
+  }
+  \vspace{0.3em}
+  \dualcols{%
+    $\neg$p $\vee$ q $\vee$ (p $\wedge$ q $\vee$ True) $\Rightarrow$ p $\wedge$ q
+  }{%
+    f = Implies(\textasciitilde{}p|q|(p\&q)|True, p\&q)\\
+    f.subs(\{p:p\_v, q:q\_v\})\quad\# False
+  }
+\end{frame}
+
+% ── Converse / Contrapositive ─────────────────────────────────────────
+\begin{frame}[t]{Converse, Contrapositive, Inverse or Opposite?}
+  Consider the conditional proposition $p \Rightarrow q$.
+  \vspace{0.4em}
+
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.44\textwidth}
+      \begin{itemize}\setlength\itemsep{0.45em}
+        \item \textbf{Converse:}\quad $q \Rightarrow p$
+        \item \textbf{Contrapositive:}\quad $\neg q \Rightarrow \neg p$
+        \item \textbf{Inverse:}\quad $\neg p \Rightarrow \neg q$
+        \item \textbf{Opposite:}\quad $\neg(p \Rightarrow q)$
+      \end{itemize}
+      \vspace{0.6em}
+      The \textbf{contrapositive} will be useful in future lessons.
+    \end{column}
+    \begin{column}{0.53\textwidth}
+      \begin{tcolorbox}[spstyle]
+        converse = Implies(q, p)\\
+        contra   = Implies(\textasciitilde{}q, \textasciitilde{}p)\\
+        inverse  = Implies(\textasciitilde{}p, \textasciitilde{}q)\\
+        opposite = Not(Implies(p, q))\\[4pt]
+        \# Contrapositive $\equiv$ original:\\
+        Equivalent(Implies(p,q),\\
+        \quad\quad\quad\quad Implies(\textasciitilde{}q,\textasciitilde{}p))
+        \# True
+      \end{tcolorbox}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+% ── Logic Gates ───────────────────────────────────────────────────────
+\begin{frame}[t]{Logic Gates}
+  A \textbf{logic gate} is a simple switching circuit with an output corresponding to logical operators.
+  \vspace{0.5em}
+
+  Logic gates are usually represented in diagrams:
+  \vspace{0.4em}
+
+  \begin{center}
+    \renewcommand{\arraystretch}{1.6}
+    \begin{tabular}{ccc}
+      \textbf{NOT gate} & \textbf{AND gate} & \textbf{OR gate}\\[4pt]
+      $p \longrightarrow \framebox{$\neg$} \longrightarrow \neg p$
+      &
+      $\begin{array}{r}p\\q\end{array}
+       \longrightarrow \framebox{$\wedge$} \longrightarrow p\wedge q$
+      &
+      $\begin{array}{r}p\\q\end{array}
+       \longrightarrow \framebox{$\vee$} \longrightarrow p\vee q$
+    \end{tabular}
+  \end{center}
+
+  \vspace{0.5em}
+  \begin{tcolorbox}[spstyle, title=SymPy --- gate truth tables]
+    for row in truth\_table(Not(p), [p]):\\
+    \quad\quad print(row)\quad\# NOT\\
+    for row in truth\_table(And(p,q), [p,q]):\\
+    \quad\quad print(row)\quad\# AND\\
+    for row in truth\_table(Or(p,q), [p,q]):\\
+    \quad\quad print(row)\quad\# OR
+  \end{tcolorbox}
+
+  They are essential in understanding computing \textbf{from the ground up}.
+\end{frame}
+
+% ── Summary ───────────────────────────────────────────────────────────
+\begin{frame}[t]{Summary}
+  \begin{itemize}\setlength\itemsep{0.6em}
+    \item A \textbf{proposition} is a mathematical statement that is either true or false, but never both.
+    \item The three main logical operators are
+          \textbf{negation} ($\neg$), \textbf{conjunction} ($\wedge$), and \textbf{disjunction} ($\vee$).
+    \item Many other operators exist, most importantly the
+          \textbf{conditional} ($\Rightarrow$) and \textbf{biconditional} ($\Leftrightarrow$).
+    \item Logical expressions easily get convoluted.
+  \end{itemize}
+  \vspace{0.8em}
+  \begin{tcolorbox}[spstyle, title=SymPy --- key imports for this lesson]
+    from sympy import symbols, Not, And, Or, Implies, Equivalent,
+    simplify\\
+    from sympy.logic.boolalg import truth\_table, to\_cnf, to\_dnf\\
+    from sympy.logic.inference import satisfiable\\
+    p, q = symbols('p q')
+  \end{tcolorbox}
+\end{frame}
+
+\end{document}

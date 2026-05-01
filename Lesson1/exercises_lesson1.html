@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Lesson 1 — Exercises: Introduction to Discrete Mathematics</title>
+<script>
+MathJax = { tex: { inlineMath: [['$','$']] }, svg: { fontCache: 'global' } };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #e8edf2;
+    color: #1a1a2e;
+    padding: 40px 20px 60px;
+  }
+  .page-header {
+    max-width: 860px;
+    margin: 0 auto 36px;
+    border-top: 5px solid #e67e22;
+    background: linear-gradient(135deg, #1a1a2e 0%, #2c3e6b 100%);
+    color: #fff;
+    border-radius: 10px;
+    padding: 32px 36px;
+  }
+  .page-header h1 { font-size: 1.8rem; margin-bottom: 6px; color: #f0a500; }
+  .page-header p  { font-size: 1rem; opacity: .85; }
+  .exercise {
+    max-width: 860px;
+    margin: 0 auto 22px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 3px 12px rgba(0,0,0,.10);
+    overflow: hidden;
+  }
+  .ex-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 24px;
+    background: #fdf3e7;
+    border-bottom: 2px solid #f9e4cc;
+  }
+  .ex-number {
+    background: #e67e22;
+    color: #fff;
+    font-weight: 700;
+    font-size: .85rem;
+    padding: 4px 10px;
+    border-radius: 20px;
+    white-space: nowrap;
+  }
+  .ex-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #e67e22;
+  }
+  .ex-body { padding: 20px 24px; }
+  .ex-body p  { margin-bottom: 10px; line-height: 1.65; }
+  .ex-body ul { margin: 8px 0 10px 22px; line-height: 1.75; }
+  .ex-body li { margin-bottom: 4px; }
+  .hint {
+    margin-top: 14px;
+    padding: 10px 14px;
+    background: #f0f4ff;
+    border-left: 4px solid #6060cc;
+    border-radius: 0 6px 6px 0;
+    font-size: .92rem;
+    color: #444;
+  }
+  .hint strong { color: #6060cc; }
+  .tag {
+    display: inline-block;
+    font-size: .78rem;
+    background: #eaf4ea;
+    color: #27ae60;
+    border: 1px solid #b2dfb2;
+    border-radius: 12px;
+    padding: 2px 9px;
+    margin-left: 8px;
+    vertical-align: middle;
+  }
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <h1>Lesson 1 — Introduction to Discrete Mathematics</h1>
+  <p>Exercises &nbsp;·&nbsp; Pure Python &nbsp;·&nbsp; Topics: integers, divisibility, primes, modular arithmetic, counting, sequences, combinatorics</p>
+  <p style="margin-top:10px;font-size:.92rem;color:#f9e4cc;letter-spacing:.02em;">Pr. Zouhair el Hadiq</p>
+</div>
+
+<!-- Exercise 1 -->
+<div class="exercise">
+  <div class="ex-header">
+    <span class="ex-number">Ex 1</span>
+    <span class="ex-title">Even vs Odd <span class="tag">integers</span></span>
+  </div>
+  <div class="ex-body">
+    <p>Write a Python function <code>classify(n: int) -> str</code> that returns <code>"even"</code> if $n$ is even and <code>"odd"</code> otherwise.</p>
+    <ul>
+      <li>The function must handle negative integers and zero correctly.</li>
+      <li>Verify: <code>classify(0) == "even"</code>, <code>classify(7) == "odd"</code>, <code>classify(-4) == "even"</code>.</li>
+      <li>Print the classification for every integer in $[-3, 5]$.</li>
+    </ul>
+    <div class="hint"><strong>Hint:</strong> An integer $n$ is even iff $n \bmod 2 = 0$.</div>
+  </div>
+</div>
+
+<!-- Exercise 2 -->
+<div class="exercise">
+  <div class="ex-header">
+    <span class="ex-number">Ex 2</span>
+    <span class="ex-title">Primality Test <span class="tag">primes</span></span>
+  </div>
+  <div class="ex-body">
+    <p>Implement <code>is_prime(n: int) -> bool</code> using <strong>trial division up to $\lfloor\sqrt{n}\rfloor$</strong>.</p>
+    <ul>
+      <li>Handle edge cases: $n < 2$ is not prime; 2 is prime; even numbers $> 2$ are not prime.</li>
+      <li>List all primes below 30 and verify the result is <code>[2, 3, 5, 7, 11, 13, 17, 19, 23, 29]</code>.</li>
+    </ul>
+    <div class="hint"><strong>Hint:</strong> Use <code>math.isqrt(n)</code> from the standard library to compute $\lfloor\sqrt{n}\rfloor$ exactly.</div>
+  </div>
+</div>
+
+<!-- Exercise 3 -->
+<div class="exercise">
+  <div class="ex-header">
+    <span class="ex-number">Ex 3</span>
+    <span class="ex-title">Modular Arithmetic <span class="tag">mod</span></span>
+  </div>
+  <div class="ex-body">
+    <p>Write <code>mod_ops(a, b, m) -> dict</code> that returns a dictionary with keys <code>"add"</code>, <code>"sub"</code>, and <code>"mul"</code> holding $(a+b)\bmod m$, $(a-b)\bmod m$, and $(a \cdot b)\bmod m$ respectively.</p>
+    <ul>
+      <li>Test with $a=17,\; b=9,\; m=5$.</li>
+      <li>Verify the <strong>distributive law for addition</strong>: $(a+b)\bmod m = \bigl((a\bmod m)+(b\bmod m)\bigr)\bmod m$.</li>
+    </ul>
+  </div>
+</div>
+
+<!-- Exercise 4 -->
+<div class="exercise">
+  <div class="ex-header">
+    <span class="ex-number">Ex 4</span>
+    <span class="ex-title">GCD and LCM <span class="tag">divisibility</span></span>
+  </div>
+  <div class="ex-body">
+    <p>Implement <code>lcm(a, b)</code> using Python's <code>math.gcd</code>, then verify the identity:</p>
+    <p>$$\gcd(a,b)\times \text{lcm}(a,b) = a \times b$$</p>
+    <p>Test with pairs $(12,8)$, $(100,75)$, and $(17,13)$. Print the GCD, LCM, and whether the identity holds for each pair.</p>
+  </div>
+</div>
+
+<!-- Exercise 5 -->
+<div class="exercise">
+  <div class="ex-header">
+    <span class="ex-number">Ex 5</span>
+    <span class="ex-title">Fibonacci Sequence <span class="tag">sequences</span></span>
+  </div>
+  <div class="ex-body">
+    <p>Write <code>fibonacci(n: int) -> list[int]</code> that generates the first $n$ Fibonacci numbers <strong>iteratively</strong> (no recursion).</p>
+    <ul>
+      <li>The sequence starts: $0, 1, 1, 2, 3, 5, 8, \ldots$ with recurrence $F(n) = F(n-1)+F(n-2)$.</li>
+      <li>Print the first 12 terms and verify your output matches: <code>[0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89]</code>.</li>
+    </ul>
+    <div class="hint"><strong>Hint:</strong> Handle the edge case $n \le 0$ by returning an empty list.</div>
+  </div>
+</div>
+
+<!-- Exercise 6 -->
+<div class="exercise">
+  <div class="ex-header">
+    <span class="ex-number">Ex 6</span>
+    <span class="ex-title">Counting Divisors <span class="tag">divisibility</span></span>
+  </div>
+  <div class="ex-body">
+    <p>Write <code>divisors(n: int) -> list[int]</code> that returns all positive divisors of $n$ in sorted order.</p>
+    <ul>
+      <li>Apply it to $n \in \{12, 16, 17, 36\}$ and print the divisors, their count, and whether $n$ is a perfect square.</li>
+      <li>Observe that <strong>perfect squares always have an odd number of divisors</strong>. Why?</li>
+    </ul>
+  </div>
+</div>
+
+<!-- Exercise 7 -->
+<div class="exercise">
+  <div class="ex-header">
+    <span class="ex-number">Ex 7</span>
+    <span class="ex-title">Binomial Coefficient &amp; Pascal's Identity <span class="tag">combinatorics</span></span>
+  </div>
+  <div class="ex-body">
+    <p>Implement $C(n,k)$ (n-choose-k) without using <code>math.comb</code>, then verify <strong>Pascal's identity</strong>:</p>
+    <p>$$C(n,k) = C(n-1,k-1) + C(n-1,k)$$</p>
+    <ul>
+      <li>Check that $C(5,2)=10$ and $C(6,3)=20$.</li>
+      <li>Assert Pascal's identity for all valid $(n,k)$ with $2 \le n \le 6$.</li>
+    </ul>
+    <div class="hint"><strong>Hint:</strong> Use the multiplicative formula and reduce $k$ to $\min(k,\, n-k)$ to minimise iterations.</div>
+  </div>
+</div>
+
+<!-- Exercise 8 -->
+<div class="exercise">
+  <div class="ex-header">
+    <span class="ex-number">Ex 8</span>
+    <span class="ex-title">Power Set <span class="tag">sets · counting</span></span>
+  </div>
+  <div class="ex-body">
+    <p>Write <code>power_set(s: list) -> list</code> that returns the list of all subsets of $s$.</p>
+    <ul>
+      <li>Use <code>itertools.combinations</code> to enumerate subsets of each size $k = 0, 1, \ldots, |s|$.</li>
+      <li>Apply it to $S = \{1, 2, 3\}$ and verify that $|\mathcal{P}(S)| = 2^3 = 8$.</li>
+    </ul>
+  </div>
+</div>
+
+<!-- Exercise 9 -->
+<div class="exercise">
+  <div class="ex-header">
+    <span class="ex-number">Ex 9</span>
+    <span class="ex-title">Sieve of Eratosthenes <span class="tag">primes</span></span>
+  </div>
+  <div class="ex-body">
+    <p>Implement <code>sieve(N: int) -> list[int]</code> that returns all primes $\le N$ using the Sieve of Eratosthenes (boolean array).</p>
+    <ul>
+      <li>Verify that there are exactly <strong>168 primes</strong> below 1000.</li>
+      <li>Print the largest prime $\le 1000$.</li>
+    </ul>
+    <div class="hint"><strong>Hint:</strong> Start crossing off multiples of $i$ from $i^2$, not from $2i$. Only iterate $i$ up to $\lfloor\sqrt{N}\rfloor$.</div>
+  </div>
+</div>
+
+<!-- Exercise 10 -->
+<div class="exercise">
+  <div class="ex-header">
+    <span class="ex-number">Ex 10</span>
+    <span class="ex-title">Arithmetic &amp; Geometric Sequences <span class="tag">sequences</span></span>
+  </div>
+  <div class="ex-body">
+    <p>Write <code>arithmetic(start, step, n)</code> and <code>geometric(start, ratio, n)</code> that each return a list of $n$ terms.</p>
+    <ul>
+      <li>Generate the arithmetic sequence with $\text{start}=3,\;\text{step}=4,\; n=8$.</li>
+      <li>Verify the arithmetic sum formula: $S = \dfrac{n}{2}(a_1 + a_n)$.</li>
+      <li>Generate the geometric sequence with $\text{start}=2,\;\text{ratio}=3,\; n=6$.</li>
+    </ul>
+  </div>
+</div>
+
+<!-- Exercise 11 -->
+<div class="exercise">
+  <div class="ex-header">
+    <span class="ex-number">Ex 11</span>
+    <span class="ex-title">Brute-Force Truth Table <span class="tag">logic</span></span>
+  </div>
+  <div class="ex-body">
+    <p>Write <code>brute_truth_table(expr_fn, var_names)</code> that prints a truth table for any boolean function of $n$ variables by enumerating all $2^n$ combinations.</p>
+    <ul>
+      <li>Use <code>itertools.product([False, True], repeat=n)</code> to generate rows.</li>
+      <li>Apply it to: $(p \to q) \leftrightarrow (\neg p \lor q)$ — this is a <strong>tautology</strong>.</li>
+      <li>Also apply it to: $(p \land q) \lor (\neg p \land \neg q)$ — this is the truth table for $p \leftrightarrow q$.</li>
+    </ul>
+  </div>
+</div>
+
+</body>
+</html>

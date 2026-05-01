@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Lesson 5 — Exercises: Rules of Inference</title>
+<script>
+MathJax = { tex: { inlineMath: [['$','$']] }, svg: { fontCache: 'global' } };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #e8edf2;
+    color: #1a1a2e;
+    padding: 40px 20px 60px;
+  }
+  .page-header {
+    max-width: 860px;
+    margin: 0 auto 36px;
+    border-top: 5px solid #e67e22;
+    background: linear-gradient(135deg, #1a1a2e 0%, #2c3e6b 100%);
+    color: #fff;
+    border-radius: 10px;
+    padding: 32px 36px;
+  }
+  .page-header h1 { font-size: 1.8rem; margin-bottom: 6px; color: #f0a500; }
+  .page-header p  { font-size: 1rem; opacity: .85; }
+  .exercise {
+    max-width: 860px;
+    margin: 0 auto 22px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 3px 12px rgba(0,0,0,.10);
+    overflow: hidden;
+  }
+  .ex-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 24px;
+    background: #fdf3e7;
+    border-bottom: 2px solid #f9e4cc;
+  }
+  .ex-number {
+    background: #e67e22;
+    color: #fff;
+    font-weight: 700;
+    font-size: .85rem;
+    padding: 4px 10px;
+    border-radius: 20px;
+    white-space: nowrap;
+  }
+  .ex-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #e67e22;
+  }
+  .ex-body { padding: 20px 24px; }
+  .ex-body p  { margin-bottom: 10px; line-height: 1.65; }
+  .ex-body ul { margin: 8px 0 10px 22px; line-height: 1.75; }
+  .ex-body ol { margin: 8px 0 10px 22px; line-height: 1.75; }
+  .ex-body li { margin-bottom: 4px; }
+  .hint {
+    margin-top: 14px;
+    padding: 10px 14px;
+    background: #f0f4ff;
+    border-left: 4px solid #6060cc;
+    border-radius: 0 6px 6px 0;
+    font-size: .92rem;
+    color: #444;
+  }
+  .hint strong { color: #6060cc; }
+  .tag {
+    display: inline-block;
+    font-size: .78rem;
+    background: #eaf4ea;
+    color: #27ae60;
+    border: 1px solid #b2dfb2;
+    border-radius: 12px;
+    padding: 2px 9px;
+    margin-left: 8px;
+    vertical-align: middle;
+  }
+  .tag-z3 {
+    display: inline-block;
+    font-size: .78rem;
+    background: #e8eaff;
+    color: #6060cc;
+    border: 1px solid #c0c4f0;
+    border-radius: 12px;
+    padding: 2px 9px;
+    margin-left: 8px;
+    vertical-align: middle;
+  }
+  table {
+    border-collapse: collapse;
+    margin: 12px 0;
+    font-size: .91rem;
+    width: 100%;
+  }
+  th, td {
+    border: 1px solid #ccc;
+    padding: 7px 14px;
+    text-align: left;
+  }
+  th { background: #fdf3e7; color: #e67e22; font-weight: 700; text-align: center; }
+  td:nth-child(2), td:nth-child(3) { text-align: center; }
+  .inference-block {
+    margin: 12px 0;
+    padding: 12px 18px;
+    background: #fafafa;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    font-size: .97rem;
+    line-height: 2;
+  }
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <h1>Lesson 5 — Rules of Inference</h1>
+  <p>Exercises &nbsp;·&nbsp; SymPy + Z3 &nbsp;·&nbsp; Topics: modus ponens, modus tollens, hypothetical syllogism, disjunctive syllogism, addition, simplification, conjunction, resolution, quantified rules, multi-step inference</p>
+  <p style="margin-top:10px;font-size:.92rem;color:#f9e4cc;letter-spacing:.02em;">Pr. Zouhair el Hadiq</p>
+</div>
+
+<!-- Reference table -->
+<div class="exercise">
+  <div class="ex-header">
+    <span class="ex-number">Ref</span>
+    <span class="ex-title">Rules of Inference — Quick Reference</span>
+  </div>
+  <div class="ex-body">
+    <table>
+      <tr><th>Rule</th><th>Premises</th><th>Conclusion</th></tr>
+      <tr><td>Modus Ponens</td><td>$p \;\wedge\; (p\to q)$</td><td>$q$</td></tr>
+      <tr><td>Modus Tollens</td><td>$\neg q \;\wedge\; (p\to q)$</td><td>$\neg p$</td></tr>
+      <tr><td>Hypothetical Syllogism</td><td>$(p\to q) \;\wedge\; (q\to r)$</td><td>$p\to r$</td></tr>
+      <tr><td>Disjunctive Syllogism</td><td>$(p\vee q) \;\wedge\; \neg p$</td><td>$q$</td></tr>
+      <tr><td>Addition</td><td>$p$</td><td>$p\vee q$</td></tr>
+      <tr><td>Simplification</td><td>$p\wedge q$</td><td>$p$</td></tr>
+      <tr><td>Conjunction</td><td>$p \;\wedge\; q$</td><td>$p\wedge q$</td></tr>
+      <tr><td>Resolution</td><td>$(p\vee q) \;\wedge\; (\neg p\vee r)$</td><td>$q\vee r$</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- Helper note -->
+<div class="exercise" style="border-left: 4px solid #6060cc;">
+  <div class="ex-body" style="padding: 14px 24px;">
+    <p><strong style="color:#6060cc;">Helper to use in all exercises:</strong> write a function <code>valid(premises_conj, conclusion) -> bool</code> that returns <code>True</code> iff the argument is valid.</p>
+    <div class="hint" style="margin-top:0;"><strong>Hint:</strong> An argument is valid iff its premises cannot be True while the conclusion is False — i.e., <code>not satisfiable(And(premises, Not(conclusion)))</code>.</div>
+  </div>
+</div>
+
+<!-- Exercise 1 -->
+<div class="exercise">
+  <div class="ex-header">
+    <span class="ex-number">Ex 1</span>
+    <span class="ex-title">Modus Ponens <span class="tag">SymPy</span></span>
+  </div>
+  <div class="ex-body">
+    <p>Verify the validity of <strong>Modus Ponens</strong> using the <code>valid</code> helper.</p>
+    <div class="inference-block">
+      Premises: &nbsp; $p$ &nbsp; and &nbsp; $p \to q$ <br>
+      Conclusion: &nbsp; $q$
+    </div>
+    <ul>
+      <li>Call <code>valid(And(p, Implies(p, q)), q)</code> and assert the result is <code>True</code>.</li>
+      <li>In plain language: if it's raining and rain implies wet ground, what can you conclude?</li>
+    </ul>
+  </div>
+</div>
+
+<!-- Exercise 2 -->
+<div class="exercise">
+  <div class="ex-header">
+    <span class="ex-number">Ex 2</span>
+    <span class="ex-title">Modus Tollens <span class="tag">SymPy</span></span>
+  </div>
+  <div class="ex-body">
+    <p>Verify <strong>Modus Tollens</strong>:</p>
+    <div class="inference-block">
+      Premises: &nbsp; $\neg q$ &nbsp; and &nbsp; $p \to q$ <br>
+      Conclusion: &nbsp; $\neg p$
+    </div>
+    <ul>
+      <li>Build the premises with <code>And(Not(q), Implies(p, q))</code> and check against <code>Not(p)</code>.</li>
+      <li>Why does this rule work? (Hint: think about the contrapositive.)</li>
+    </ul>
+  </div>
+</div>
+
+<!-- Exercise 3 -->
+<div class="exercise">
+  <div class="ex-header">
+    <span class="ex-number">Ex 3</span>
+    <span class="ex-title">Hypothetical Syllogism <span class="tag">SymPy</span></span>
+  </div>
+  <div class="ex-body">
+    <p>Verify <strong>Hypothetical Syllogism</strong>:</p>
+    <div class="inference-block">
+      Premises: &nbsp; $p \to q$ &nbsp; and &nbsp; $q \to r$ <br>
+      Conclusion: &nbsp; $p \to r$
+    </div>
+    <ul>
+      <li>Use three symbols $p, q, r$.</li>
+      <li>Assert validity and print a confirmation message.</li>
+    </ul>
+  </div>
+</div>
+
+<!-- Exercise 4 -->
+<div class="exercise">
+  <div class="ex-header">
+    <span class="ex-number">Ex 4</span>
+    <span class="ex-title">Disjunctive Syllogism <span class="tag">SymPy</span></span>
+  </div>
+  <div class="ex-body">
+    <p>Verify <strong>Disjunctive Syllogism</strong>:</p>
+    <div class="inference-block">
+      Premises: &nbsp; $p \vee q$ &nbsp; and &nbsp; $\neg p$ <br>
+      Conclusion: &nbsp; $q$
+    </div>
+    <ul>
+      <li>In plain language: "It will rain or snow. It will not rain. Therefore it will snow." — verify this is valid.</li>
+    </ul>
+  </div>
+</div>
+
+<!-- Exercise 5 -->
+<div class="exercise">
+  <div class="ex-header">
+    <span class="ex-number">Ex 5</span>
+    <span class="ex-title">Addition and Simplification <span class="tag">SymPy</span></span>
+  </div>
+  <div class="ex-body">
+    <p>Verify both rules:</p>
+    <div class="inference-block">
+      <strong>Addition:</strong> &nbsp; premise $p$ &nbsp;⟹&nbsp; conclusion $p \vee q$ <br>
+      <strong>Simplification:</strong> &nbsp; premise $p \wedge q$ &nbsp;⟹&nbsp; conclusion $p$
+    </div>
+    <ul>
+      <li>For Addition: why is it valid to conclude a <em>weaker</em> statement from a stronger one?</li>
+      <li>For Simplification: what information is lost when going from $p \land q$ to $p$?</li>
+    </ul>
+  </div>
+</div>
+
+<!-- Exercise 6 -->
+<div class="exercise">
+  <div class="ex-header">
+    <span class="ex-number">Ex 6</span>
+    <span class="ex-title">Conjunction and Resolution <span class="tag">SymPy</span></span>
+  </div>
+  <div class="ex-body">
+    <p>Verify both rules:</p>
+    <div class="inference-block">
+      <strong>Conjunction:</strong> &nbsp; premises $p$ and $q$ &nbsp;⟹&nbsp; conclusion $p \wedge q$ <br>
+      <strong>Resolution:</strong> &nbsp; premises $p\vee q$ and $\neg p\vee r$ &nbsp;⟹&nbsp; conclusion $q\vee r$
+    </div>
+    <ul>
+      <li>Resolution is the basis of logic programming (Prolog) and SAT solvers. Why?</li>
+      <li>Verify both with the <code>valid</code> helper and assert the results.</li>
+    </ul>
+  </div>
+</div>
+
+<!-- Exercise 7 -->
+<div class="exercise">
+  <div class="ex-header">
+    <span class="ex-number">Ex 7</span>
+    <span class="ex-title">All Eight Rules in One Sweep <span class="tag">SymPy</span></span>
+  </div>
+  <div class="ex-body">
+    <p>Store all eight rules in a dictionary mapping rule names to <code>(premises, conclusion)</code> tuples. Iterate over the dictionary and verify every rule is valid.</p>
+    <ul>
+      <li>Print one line per rule: <code>"Modus Ponens : True"</code>, etc.</li>
+      <li>Assert every result is <code>True</code> — if any assertion fails, which rule is broken?</li>
+    </ul>
+  </div>
+</div>
+
+<!-- Exercise 8 -->
+<div class="exercise">
+  <div class="ex-header">
+    <span class="ex-number">Ex 8</span>
+    <span class="ex-title">Multi-Step Inference — Swimming <span class="tag">SymPy</span></span>
+  </div>
+  <div class="ex-body">
+    <p>Model the following argument and verify its validity:</p>
+    <ol>
+      <li>You will go swimming <strong>or</strong> go to the gym. &nbsp; $\mathrm{Swim} \vee \mathrm{Gym}$</li>
+      <li>If you go swimming, you will need a swimsuit. &nbsp; $\mathrm{Swim} \to \mathrm{Swimsuit}$</li>
+    </ol>
+    <p><strong>Conclusion:</strong> You will need a swimsuit <strong>or</strong> go to the gym. &nbsp; $\mathrm{Swimsuit} \vee \mathrm{Gym}$</p>
+    <ul>
+      <li>Declare the three symbols, build the premises with <code>And</code>, and call <code>valid</code>.</li>
+      <li>Which rule of inference is applied here?</li>
+    </ul>
+  </div>
+</div>
+
+<!-- Exercise 9 -->
+<div class="exercise">
+  <div class="ex-header">
+    <span class="ex-number">Ex 9</span>
+    <span class="ex-title">Multi-Step Inference — NFT and Car <span class="tag">SymPy</span></span>
+  </div>
+  <div class="ex-body">
+    <p>Model and verify the following chain of reasoning:</p>
+    <ol>
+      <li>You sell your NFT: $\mathrm{SellRock}$</li>
+      <li>Selling the NFT gives you \$7000: $\mathrm{SellRock} \to \mathrm{Get7000}$</li>
+      <li>You have \$3000 in savings: $\mathrm{Savings}$</li>
+      <li>Having \$7000 + savings gives you \$10000: $(\mathrm{Get7000} \land \mathrm{Savings}) \to \mathrm{Have10000}$</li>
+      <li>Having \$10000 lets you buy a car: $\mathrm{Have10000} \to \mathrm{BuyCar}$</li>
+    </ol>
+    <p><strong>Conclusion:</strong> $\mathrm{BuyCar}$</p>
+    <ul>
+      <li>Encode all premises using <code>And</code>, then verify <code>valid(premises, BuyCar)</code>.</li>
+      <li>Name the inference rules used at each step.</li>
+    </ul>
+  </div>
+</div>
+
+<!-- Exercise 10 -->
+<div class="exercise">
+  <div class="ex-header">
+    <span class="ex-number">Ex 10</span>
+    <span class="ex-title">Invalid Argument — Affirming the Consequent <span class="tag">fallacy</span></span>
+  </div>
+  <div class="ex-body">
+    <p>The following is a <strong>common logical fallacy</strong>. Show that it is <em>not</em> a valid argument:</p>
+    <div class="inference-block">
+      Premises: &nbsp; $p \to q$ &nbsp; and &nbsp; $q$ <br>
+      (Invalid) Conclusion: &nbsp; $p$
+    </div>
+    <ul>
+      <li>Use <code>valid</code> and assert the result is <code>False</code>.</li>
+      <li>Use <code>satisfiable</code> to find and print a counterexample (assignment where premises are True but conclusion is False).</li>
+      <li>Give a real-world example of this fallacy.</li>
+    </ul>
+    <div class="hint"><strong>Example fallacy:</strong> "If it rains, the ground is wet. The ground is wet. Therefore it rained." — Can you think of another reason the ground might be wet?</div>
+  </div>
+</div>
+
+<!-- Exercise 11 -->
+<div class="exercise">
+  <div class="ex-header">
+    <span class="ex-number">Ex 11</span>
+    <span class="ex-title">Quantified Rules — Universal &amp; Existential Instantiation <span class="tag-z3">Z3</span></span>
+  </div>
+  <div class="ex-body">
+    <p>Use Z3 to verify two quantified rules of inference:</p>
+    <p><strong>Universal Instantiation:</strong> $\forall x\; H(x) \to M(x)$ and $H(\text{socrates})$ implies $M(\text{socrates})$.</p>
+    <ul>
+      <li>Declare <code>Person = DeclareSort('Person')</code>, declare functions $H$ and $M$, add the axioms, assume $\neg M(\text{socrates})$, and check for <code>unsat</code>.</li>
+    </ul>
+    <p><strong>Existential Generalization:</strong> $M(\text{socrates})$ implies $\exists x\; M(x)$.</p>
+    <ul>
+      <li>Add $M(\text{socrates})$, assume $\neg\exists x\; M(x)$, and check for <code>unsat</code>.</li>
+    </ul>
+  </div>
+</div>
+
+<!-- Exercise 12 -->
+<div class="exercise">
+  <div class="ex-header">
+    <span class="ex-number">Ex 12</span>
+    <span class="ex-title">Exam &amp; Director — Full Worked Example <span class="tag">SymPy</span></span>
+  </div>
+  <div class="ex-body">
+    <p>Model and verify the following argument:</p>
+    <ol>
+      <li>If no one cheated, no one meets the director. &nbsp; $\neg\exists x\,\mathrm{Cheat}(x) \to \neg\exists x\,\mathrm{Director}(x)$</li>
+      <li>Octave (class president) met the director. &nbsp; $\mathrm{ExDirector}$</li>
+      <li>Either no one cheated, or someone gets detention. &nbsp; $\neg\mathrm{ExCheat} \vee \mathrm{ExDetention}$</li>
+    </ol>
+    <p><strong>Conclusion:</strong> Someone gets a detention. &nbsp; $\mathrm{ExDetention}$</p>
+    <ul>
+      <li>Model each existential claim as a single propositional variable (<code>ExCheat</code>, <code>ExDirector</code>, <code>ExDetention</code>).</li>
+      <li>Verify the argument with <code>valid</code> and identify which rules are applied (modus tollens + disjunctive syllogism).</li>
+    </ul>
+  </div>
+</div>
+
+</body>
+</html>

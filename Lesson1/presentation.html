@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Introduction to Discrete Mathematics – Lesson 1</title>
+  <style>
+    /* ── Reset & base ─────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --orange: #E8681A;
+      --highlight: #FFF082;
+      --text: #1a1a1a;
+      --slide-w: 900px;
+      --slide-h: 506px;   /* 16:9 */
+    }
+
+    body {
+      background: #2b2b2b;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 24px 16px;
+      gap: 16px;
+      color: var(--text);
+    }
+
+    /* ── Slide wrapper ────────────────────────────────────────── */
+    #deck {
+      position: relative;
+      width: var(--slide-w);
+      max-width: 100%;
+    }
+
+    .slide {
+      display: none;
+      background: #fff;
+      width: var(--slide-w);
+      max-width: 100%;
+      aspect-ratio: 16 / 9;
+      border-radius: 4px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.55);
+      padding: 44px 56px 36px;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+    }
+    .slide.active { display: flex; }
+
+    /* bottom rule */
+    .slide::after {
+      content: '';
+      position: absolute;
+      bottom: 32px;
+      left: 0; right: 0;
+      height: 1px;
+      background: #d0d0d0;
+    }
+
+    /* ── Typography ───────────────────────────────────────────── */
+    h1.slide-title {
+      font-size: 2.4rem;
+      font-weight: 700;
+      color: var(--orange);
+      line-height: 1.15;
+      margin-bottom: 18px;
+      letter-spacing: -0.5px;
+    }
+    h2.main-title {
+      font-size: 2.0rem;
+      font-weight: 700;
+      color: var(--orange);
+      margin-bottom: 12px;
+    }
+    p.body { font-size: 1.02rem; line-height: 1.65; margin-bottom: 10px; }
+    ul { margin: 10px 0 0 18px; }
+    ul li {
+      font-size: 1.0rem;
+      line-height: 1.6;
+      margin-bottom: 7px;
+      list-style: disc;
+    }
+    ul li::marker { color: var(--orange); }
+    ol { margin: 8px 0 0 18px; }
+    ol li { font-size: 0.97rem; line-height: 1.55; margin-bottom: 5px; }
+    ol li::marker { color: var(--orange); font-weight: 600; }
+
+    .hl   { background: var(--highlight); padding: 0 3px; border-radius: 2px; }
+    strong { font-weight: 600; }
+
+    /* ── Title slide ──────────────────────────────────────────── */
+    .title-slide {
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+    .title-slide h1 {
+      font-size: 2.6rem;
+      font-weight: 700;
+      color: var(--orange);
+      line-height: 1.2;
+      margin-bottom: 14px;
+    }
+    .title-slide .subtitle {
+      font-size: 1.15rem;
+      color: #555;
+      margin-bottom: 8px;
+    }
+    .title-slide .institution {
+      font-size: 0.95rem;
+      color: #888;
+    }
+
+    /* ── Two-column layout ────────────────────────────────────── */
+    .cols { display: flex; gap: 20px; flex: 1; align-items: flex-start; }
+    .col-text { flex: 1.1; }
+    .col-img  { flex: 0.9; }
+    .col-img img {
+      width: 100%;
+      height: auto;
+      border-radius: 3px;
+      display: block;
+      max-height: 330px;
+      object-fit: contain;
+    }
+
+    /* ── History columns ──────────────────────────────────────── */
+    .hist-cols {
+      display: flex;
+      gap: 8px;
+      margin-top: 14px;
+      justify-content: space-around;
+    }
+    .hist-col {
+      text-align: center;
+      font-size: 0.85rem;
+      background: #f7f7f7;
+      border-radius: 4px;
+      padding: 8px 10px;
+      flex: 1;
+    }
+    .hist-col strong { display: block; color: var(--orange); margin-bottom: 3px; }
+
+    /* ── Two-col list (About course) ─────────────────────────── */
+    .two-list { display: grid; grid-template-columns: 1fr 1fr; gap: 0 24px; }
+
+    /* ── Navigation ───────────────────────────────────────────── */
+    #nav {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      color: #ccc;
+      user-select: none;
+    }
+    #nav button {
+      background: none;
+      border: 2px solid #666;
+      color: #ccc;
+      border-radius: 50%;
+      width: 38px; height: 38px;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: border-color .2s, color .2s;
+      display: flex; align-items: center; justify-content: center;
+    }
+    #nav button:hover { border-color: var(--orange); color: var(--orange); }
+    #nav button:disabled { opacity: 0.3; cursor: default; }
+    #counter { font-size: 0.9rem; min-width: 56px; text-align: center; }
+
+    /* ── Keyboard hint ────────────────────────────────────────── */
+    #hint {
+      font-size: 0.75rem;
+      color: #666;
+      letter-spacing: 0.03em;
+    }
+  </style>
+</head>
+<body>
+
+<div id="deck">
+
+  <!-- 0 · Title -->
+  <div class="slide title-slide active">
+    <h1>Introduction to<br>Discrete Mathematics</h1>
+    <p class="subtitle">Lesson 1: What Is Discrete Mathematics?</p>
+    <p class="institution">Wolfram U</p>
+  </div>
+
+  <!-- 1 · The World of Integers -->
+  <div class="slide">
+    <h1 class="slide-title">The World of Integers</h1>
+    <div class="cols">
+      <div class="col-text">
+        <p class="body">Discrete mathematics is the study of <strong>countable</strong> things.</p>
+        <p class="body">It is not a branch of mathematics.</p>
+        <p class="body">Rather, it is a group of branches with a common property:
+          the study of <strong>discrete objects</strong>.</p>
+      </div>
+      <div class="col-img">
+        <img src="slide_0006.png" alt="Discrete vs Continuous graphs" />
+      </div>
+    </div>
+  </div>
+
+  <!-- 2 · Main Questions -->
+  <div class="slide">
+    <h1 class="slide-title">Main Questions</h1>
+    <p class="body">Discrete mathematics aims to answer a variety of problems:</p>
+    <ul>
+      <li>What is <span class="hl">known</span>?</li>
+      <li>What can be <em>computed</em>?</li>
+      <li>What can be computed <em>efficiently</em>?</li>
+      <li>How can <em>information</em> be organized and stored?</li>
+    </ul>
+  </div>
+
+  <!-- 3 · Information -->
+  <div class="slide">
+    <h1 class="slide-title">Information</h1>
+    <div class="cols">
+      <div class="col-text">
+        <p class="body">
+          <span class="hl">Logic, discrete structures and graphs</span>
+          all allow the verification and storage of information.
+        </p>
+      </div>
+      <div class="col-img">
+        <img src="slide_0008.png" alt="Graph / network diagram" />
+      </div>
+    </div>
+  </div>
+
+  <!-- 4 · Summarization -->
+  <div class="slide">
+    <h1 class="slide-title">Summarization</h1>
+    <div class="cols">
+      <div class="col-text">
+        <p class="body">Combinatorics, set theory and mathematical proofs allow
+          the study of <strong>emerging properties</strong>.</p>
+      </div>
+      <div class="col-img">
+        <img src="slide_0010.png" alt="3-D stacked cubes showing combinatorial growth" />
+      </div>
+    </div>
+  </div>
+
+  <!-- 5 · Computation -->
+  <div class="slide">
+    <h1 class="slide-title">Computation</h1>
+    <div class="cols">
+      <div class="col-text">
+        <p class="body">From a set of rules, <strong>iterative and recursive
+          computations</strong> can be done and verified.</p>
+      </div>
+      <div class="col-img">
+        <img src="slide_0012.png" alt="Cellular automaton pattern" />
+      </div>
+    </div>
+  </div>
+
+  <!-- 6 · History -->
+  <div class="slide">
+    <h1 class="slide-title">History</h1>
+    <p class="body">Integers were first used with <strong>tally marks</strong> (3400 BC),
+      and negative numbers were introduced with the
+      <strong>Chinese number rod system</strong> (200 BC).</p>
+    <p class="body" style="margin-top:8px;">
+      Many mathematicians have had an important influence on modern discrete
+      mathematics, including:
+    </p>
+    <div class="hist-cols">
+      <div class="hist-col"><strong>Aristotle</strong>Logic</div>
+      <div class="hist-col"><strong>Leonhard Euler</strong>Graphs</div>
+      <div class="hist-col"><strong>Georg Cantor</strong>Sets</div>
+      <div class="hist-col"><strong>Paul Erd&#337;s</strong>&nbsp;</div>
+      <div class="hist-col"><strong>Donald Knuth</strong>Algorithms</div>
+    </div>
+  </div>
+
+  <!-- 7 · Discrete Mathematics Today -->
+  <div class="slide">
+    <h1 class="slide-title">Discrete Mathematics Today</h1>
+    <p class="body">Nowadays, discrete mathematics is strongly associated with
+      <strong>technology</strong>.</p>
+    <ul>
+      <li>It is at the center of all <strong>modern computation</strong>.</li>
+      <li>It is the cornerstone of
+        <strong>communications, networks and the internet</strong>.</li>
+      <li>Practically all types of <strong>resource management</strong>
+        need discrete mathematics.</li>
+      <li>Discrete math is important in
+        <strong>computer graphics, games</strong> and even arts.</li>
+    </ul>
+  </div>
+
+  <!-- 8 · Why Study Discrete Mathematics? -->
+  <div class="slide">
+    <h1 class="slide-title">Why Study Discrete Mathematics?</h1>
+    <p class="body">High-school mathematics mostly overlooks discrete mathematics
+      in favor of continuous mathematics.</p>
+    <p class="body"><strong>Reasons to study discrete mathematics:</strong></p>
+    <ul>
+      <li>Calculate discrete phenomena <strong>efficiently</strong></li>
+      <li>Understand <strong>computation</strong></li>
+      <li><strong>Use and store</strong> information</li>
+      <li>Develop your <strong>mathematical reasoning</strong></li>
+    </ul>
+  </div>
+
+  <!-- 9 · About This Course -->
+  <div class="slide">
+    <h1 class="slide-title">About This Course</h1>
+    <p class="body">This course is designed to be an introduction to many fields
+      of mathematics and computer science.</p>
+    <p class="body">This exploration is facilitated by the use of
+      <strong>Wolfram Language</strong>, a language with discrete computation
+      as its core philosophy.</p>
+    <p class="body">This course is separated into <strong>seven</strong> small sections:</p>
+    <div class="two-list">
+      <ol>
+        <li>What Is Discrete Mathematics?</li>
+        <li>Logic</li>
+        <li>Sets</li>
+        <li>Graphs</li>
+      </ol>
+      <ol start="5">
+        <li>Combinatorics</li>
+        <li>Number Theory</li>
+        <li>Algorithms</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- 10 · Who Is This Course For? -->
+  <div class="slide">
+    <h1 class="slide-title">Who Is This Course For?</h1>
+    <p class="body">The Wolfram U course on discrete mathematics is most useful for:</p>
+    <ul>
+      <li>Future, current or self-taught
+        <strong>computer science and software engineering students</strong></li>
+      <li>Individuals aiming to expand their
+        <strong>mathematical intuition</strong> and problem-solving skills</li>
+      <li><strong>Wolfram Language users</strong> who want a guided introduction
+        to discrete mathematics functions</li>
+      <li><strong>Math hobbyists</strong> wanting to explore the beauty of
+        mathematics</li>
+    </ul>
+  </div>
+
+  <!-- 11 · Summary -->
+  <div class="slide">
+    <h1 class="slide-title">Summary</h1>
+    <ul>
+      <li>As a <strong>mathematical subject</strong>, discrete mathematics is
+        essentially the study of <strong>countable objects</strong>.</li>
+      <li>As a <strong>professional skill</strong>, it helps you analyze, store
+        and compute information, all to conquer many tasks.</li>
+      <li>As an <strong>educational hurdle</strong>, it provides the toolset
+        necessary to <span class="hl">excel in computer science courses</span>.</li>
+    </ul>
+  </div>
+
+</div><!-- #deck -->
+
+<!-- Navigation -->
+<div id="nav">
+  <button id="prev" title="Previous (←)" aria-label="Previous slide">&#8592;</button>
+  <span id="counter">1 / 12</span>
+  <button id="next" title="Next (→)" aria-label="Next slide">&#8594;</button>
+</div>
+
+<p id="hint">Use ← → arrow keys to navigate</p>
+
+<script>
+  const slides  = document.querySelectorAll('.slide');
+  const counter = document.getElementById('counter');
+  const prevBtn = document.getElementById('prev');
+  const nextBtn = document.getElementById('next');
+  let cur = 0;
+
+  function show(n) {
+    slides[cur].classList.remove('active');
+    cur = Math.max(0, Math.min(slides.length - 1, n));
+    slides[cur].classList.add('active');
+    counter.textContent = (cur + 1) + ' / ' + slides.length;
+    prevBtn.disabled = cur === 0;
+    nextBtn.disabled = cur === slides.length - 1;
+  }
+
+  prevBtn.addEventListener('click', () => show(cur - 1));
+  nextBtn.addEventListener('click', () => show(cur + 1));
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowLeft')  show(cur - 1);
+    if (e.key === 'ArrowRight') show(cur + 1);
+  });
+
+  show(0);
+</script>
+</body>
+</html>

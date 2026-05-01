@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Lesson 3 — Exercises: Equivalence of Propositions</title>
+<script>
+MathJax = { tex: { inlineMath: [['$','$']] }, svg: { fontCache: 'global' } };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #e8edf2;
+    color: #1a1a2e;
+    padding: 40px 20px 60px;
+  }
+  .page-header {
+    max-width: 860px;
+    margin: 0 auto 36px;
+    border-top: 5px solid #e67e22;
+    background: linear-gradient(135deg, #1a1a2e 0%, #2c3e6b 100%);
+    color: #fff;
+    border-radius: 10px;
+    padding: 32px 36px;
+  }
+  .page-header h1 { font-size: 1.8rem; margin-bottom: 6px; color: #f0a500; }
+  .page-header p  { font-size: 1rem; opacity: .85; }
+  .exercise {
+    max-width: 860px;
+    margin: 0 auto 22px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 3px 12px rgba(0,0,0,.10);
+    overflow: hidden;
+  }
+  .ex-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 24px;
+    background: #fdf3e7;
+    border-bottom: 2px solid #f9e4cc;
+  }
+  .ex-number {
+    background: #e67e22;
+    color: #fff;
+    font-weight: 700;
+    font-size: .85rem;
+    padding: 4px 10px;
+    border-radius: 20px;
+    white-space: nowrap;
+  }
+  .ex-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #e67e22;
+  }
+  .ex-body { padding: 20px 24px; }
+  .ex-body p  { margin-bottom: 10px; line-height: 1.65; }
+  .ex-body ul { margin: 8px 0 10px 22px; line-height: 1.75; }
+  .ex-body li { margin-bottom: 4px; }
+  .hint {
+    margin-top: 14px;
+    padding: 10px 14px;
+    background: #f0f4ff;
+    border-left: 4px solid #6060cc;
+    border-radius: 0 6px 6px 0;
+    font-size: .92rem;
+    color: #444;
+  }
+  .hint strong { color: #6060cc; }
+  .tag {
+    display: inline-block;
+    font-size: .78rem;
+    background: #eaf4ea;
+    color: #27ae60;
+    border: 1px solid #b2dfb2;
+    border-radius: 12px;
+    padding: 2px 9px;
+    margin-left: 8px;
+    vertical-align: middle;
+  }
+  table {
+    border-collapse: collapse;
+    margin: 12px 0;
+    font-size: .93rem;
+  }
+  th, td {
+    border: 1px solid #ccc;
+    padding: 6px 18px;
+    text-align: center;
+  }
+  th { background: #fdf3e7; color: #e67e22; font-weight: 700; }
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <h1>Lesson 3 — Equivalence of Propositions</h1>
+  <p>Exercises &nbsp;·&nbsp; SymPy &nbsp;·&nbsp; Topics: logical equivalence, simplification, CNF, DNF, De Morgan, absorption, distributivity, satisfiability, counting functions</p>
+  <p style="margin-top:10px;font-size:.92rem;color:#f9e4cc;letter-spacing:.02em;">Pr. Zouhair el Hadiq</p>
+</div>
+
+<!-- Exercise 1 -->
+<div class="exercise">
+  <div class="ex-header">
+    <span class="ex-number">Ex 1</span>
+    <span class="ex-title">De Morgan's First Law <span class="tag">equivalence</span></span>
+  </div>
+  <div class="ex-body">
+    <p>Verify the equivalence $\neg(p \land q) \equiv \neg p \lor \neg q$ by comparing truth table outputs row by row.</p>
+    <ul>
+      <li>Write a helper <code>are_equivalent(expr1, expr2, variables) -> bool</code> using <code>truth_table</code>.</li>
+      <li>Apply it to confirm De Morgan's first law for all four assignments of $(p, q)$.</li>
+    </ul>
+  </div>
+</div>
+
+<!-- Exercise 2 -->
+<div class="exercise">
+  <div class="ex-header">
+    <span class="ex-number">Ex 2</span>
+    <span class="ex-title">De Morgan's Second Law <span class="tag">equivalence</span></span>
+  </div>
+  <div class="ex-body">
+    <p>Verify the equivalence $\neg(p \lor q) \equiv \neg p \land \neg q$ using the same <code>are_equivalent</code> helper from Exercise 1.</p>
+    <ul>
+      <li>Confirm the result for all four assignments of $(p, q)$.</li>
+      <li>State in plain English what De Morgan's laws say about negating compound statements.</li>
+    </ul>
+  </div>
+</div>
+
+<!-- Exercise 3 -->
+<div class="exercise">
+  <div class="ex-header">
+    <span class="ex-number">Ex 3</span>
+    <span class="ex-title">Double Negation <span class="tag">simplify_logic</span></span>
+  </div>
+  <div class="ex-body">
+    <p>Use <code>simplify_logic(Not(Not(p)))</code> and verify that the result equals $p$.</p>
+    <ul>
+      <li>Assert <code>simplify_logic(Not(Not(p))) == p</code>.</li>
+      <li>What does the double negation law $\neg\neg p \equiv p$ mean intuitively?</li>
+    </ul>
+  </div>
+</div>
+
+<!-- Exercise 4 -->
+<div class="exercise">
+  <div class="ex-header">
+    <span class="ex-number">Ex 4</span>
+    <span class="ex-title">Absorption Laws <span class="tag">simplify_logic</span></span>
+  </div>
+  <div class="ex-body">
+    <p>Verify both absorption laws using <code>simplify_logic</code>:</p>
+    <ul>
+      <li>$p \lor (p \land q) \equiv p$ &nbsp;&nbsp;(OR absorption)</li>
+      <li>$p \land (p \lor q) \equiv p$ &nbsp;&nbsp;(AND absorption)</li>
+    </ul>
+    <p>Assert that both expressions simplify to the symbol $p$ alone. Why is this called an "absorption" law?</p>
+  </div>
+</div>
+
+<!-- Exercise 5 -->
+<div class="exercise">
+  <div class="ex-header">
+    <span class="ex-number">Ex 5</span>
+    <span class="ex-title">Distributive Laws <span class="tag">equivalence</span></span>
+  </div>
+  <div class="ex-body">
+    <p>Verify both distributive laws using <code>are_equivalent</code> over three variables $(p, q, r)$:</p>
+    <ul>
+      <li>$p \land (q \lor r) \equiv (p \land q) \lor (p \land r)$</li>
+      <li>$p \lor (q \land r) \equiv (p \lor q) \land (p \lor r)$</li>
+    </ul>
+    <p>How many rows does a truth table with 3 variables have?</p>
+  </div>
+</div>
+
+<!-- Exercise 6 -->
+<div class="exercise">
+  <div class="ex-header">
+    <span class="ex-number">Ex 6</span>
+    <span class="ex-title">Simplification with simplify_logic <span class="tag">simplify_logic</span></span>
+  </div>
+  <div class="ex-body">
+    <p>Simplify the following compound formulas using <code>simplify_logic</code> and verify each result equals $p$:</p>
+    <ul>
+      <li>$(p \land q) \lor (p \land \neg q)$</li>
+      <li>$(p \lor q) \land (p \lor \neg q)$</li>
+    </ul>
+    <div class="hint"><strong>Hint:</strong> Both expressions can be simplified by factoring out $p$ using the distributive law, then applying the tautology $q \lor \neg q \equiv \top$.</div>
+  </div>
+</div>
+
+<!-- Exercise 7 -->
+<div class="exercise">
+  <div class="ex-header">
+    <span class="ex-number">Ex 7</span>
+    <span class="ex-title">Conjunctive Normal Form (CNF) <span class="tag">to_cnf</span></span>
+  </div>
+  <div class="ex-body">
+    <p>Convert each of the following formulas to <strong>CNF</strong> using <code>sympy.to_cnf</code>. A CNF is a conjunction (AND) of clauses, where each clause is a disjunction (OR) of literals.</p>
+    <ul>
+      <li>$p \to q$</li>
+      <li>$p \leftrightarrow q$</li>
+      <li>$(p \lor q) \land (p \to r)$</li>
+    </ul>
+    <p>Print the CNF form of each and verify it is logically equivalent to the original using <code>are_equivalent</code>.</p>
+  </div>
+</div>
+
+<!-- Exercise 8 -->
+<div class="exercise">
+  <div class="ex-header">
+    <span class="ex-number">Ex 8</span>
+    <span class="ex-title">Disjunctive Normal Form (DNF) <span class="tag">to_dnf</span></span>
+  </div>
+  <div class="ex-body">
+    <p>Convert each formula to <strong>DNF</strong> using <code>sympy.to_dnf</code>. A DNF is a disjunction (OR) of terms, where each term is a conjunction (AND) of literals.</p>
+    <ul>
+      <li>$(p \lor q) \land \neg r$</li>
+      <li>$p \leftrightarrow (q \land r)$</li>
+    </ul>
+    <p>Print the DNF form and verify equivalence with the original formula.</p>
+  </div>
+</div>
+
+<!-- Exercise 9 -->
+<div class="exercise">
+  <div class="ex-header">
+    <span class="ex-number">Ex 9</span>
+    <span class="ex-title">Satisfiability <span class="tag">satisfiable</span></span>
+  </div>
+  <div class="ex-body">
+    <p>Use <code>sympy.logic.inference.satisfiable</code> to determine whether each formula below is satisfiable, unsatisfiable, or a tautology. <code>satisfiable</code> returns a model (dictionary) if satisfiable, or <code>False</code> if not.</p>
+    <ul>
+      <li>$p \land q$</li>
+      <li>$p \land \neg p$</li>
+      <li>$(p \to q) \land p \land \neg q$</li>
+      <li>$p \lor \neg p$</li>
+    </ul>
+    <p>For each satisfiable formula, print the model (assignment that makes it True).</p>
+  </div>
+</div>
+
+<!-- Exercise 10 -->
+<div class="exercise">
+  <div class="ex-header">
+    <span class="ex-number">Ex 10</span>
+    <span class="ex-title">Counting Function — At Least $k$ of $n$ <span class="tag">combinations</span></span>
+  </div>
+  <div class="ex-body">
+    <p>Implement <code>at_least_k_of(variables, k)</code> that returns a SymPy formula which is True iff at least $k$ of the given variables are True.</p>
+    <div class="hint"><strong>Hint:</strong> Use <code>itertools.combinations</code> — "at least $k$ variables are True" iff some $k$-element subset is simultaneously True: <code>Or(*[And(*combo) for combo in combinations(variables, k)])</code>.</div>
+    <ul>
+      <li>Declare variables $a, b, c, d, e$ and build <code>at_least_2_of_5</code>.</li>
+      <li>Verify: the formula is True when $a=b=\text{True},\; c=d=e=\text{False}$.</li>
+      <li>Verify: the formula is False when only $a=\text{True}$ and all others False.</li>
+      <li>Print the simplified form using <code>simplify_logic</code>.</li>
+    </ul>
+  </div>
+</div>
+
+<!-- Exercise 11 -->
+<div class="exercise">
+  <div class="ex-header">
+    <span class="ex-number">Ex 11</span>
+    <span class="ex-title">Implication Equivalences <span class="tag">equivalence</span></span>
+  </div>
+  <div class="ex-body">
+    <p>Verify each of the following equivalences using <code>are_equivalent</code>:</p>
+    <table>
+      <tr><th>Name</th><th>Equivalence</th></tr>
+      <tr><td>Implication as disjunction</td><td>$p \to q \;\equiv\; \neg p \lor q$</td></tr>
+      <tr><td>Contrapositive</td><td>$p \to q \;\equiv\; \neg q \to \neg p$</td></tr>
+      <tr><td>Negation of implication</td><td>$\neg(p \to q) \;\equiv\; p \land \neg q$</td></tr>
+    </table>
+    <p>For each equivalence, assert the result and print a confirmation message.</p>
+  </div>
+</div>
+
+</body>
+</html>

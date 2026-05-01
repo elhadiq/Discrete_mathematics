@@ -1,0 +1,314 @@
+\documentclass[aspectratio=169]{beamer}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{hyperref}
+
+% ── Colour palette ─────────────────────────────────────────────────────────────
+\definecolor{orangetheme}{RGB}{220,95,0}
+\definecolor{pyblue}    {RGB}{42,115,205}
+\definecolor{pygreen}   {RGB}{0,128,0}
+\definecolor{pygray}    {RGB}{110,110,110}
+\definecolor{pyred}     {RGB}{180,0,0}
+\definecolor{pybg}      {RGB}{248,248,252}
+\definecolor{linkblue}  {RGB}{0,100,200}
+
+% ── Beamer theme ───────────────────────────────────────────────────────────────
+\usetheme{default}
+\setbeamercolor{title}         {fg=orangetheme}
+\setbeamercolor{frametitle}    {fg=orangetheme}
+\setbeamercolor{structure}     {fg=orangetheme}
+\setbeamercolor{itemize item}  {fg=orangetheme}
+\setbeamercolor{itemize subitem}{fg=orangetheme}
+\setbeamerfont{title}    {size=\Large,series=\bfseries}
+\setbeamerfont{frametitle}{size=\large,series=\bfseries}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{footline}[frame number]
+
+% ── Python listings style ──────────────────────────────────────────────────────
+\lstdefinestyle{python}{
+  language        = Python,
+  basicstyle      = \footnotesize\ttfamily,
+  keywordstyle    = \color{pyblue}\bfseries,
+  stringstyle     = \color{pyred},
+  commentstyle    = \color{pygreen}\itshape,
+  backgroundcolor = \color{pybg},
+  frame           = single,
+  framerule       = 0.4pt,
+  rulecolor       = \color{gray!40},
+  showstringspaces= false,
+  breaklines      = true,
+  xleftmargin     = 4pt,
+  xrightmargin    = 4pt,
+  aboveskip       = 4pt,
+  belowskip       = 4pt,
+  morekeywords    = {True,False,None},
+}
+
+% ── Meta ───────────────────────────────────────────────────────────────────────
+\title{Predicates and Quantifiers}
+\subtitle{Discrete Mathematics --- Lesson 4}
+\author{Notes By Pr. El Hadiq Zouhair}
+\date{}
+
+% ══════════════════════════════════════════════════════════════════════════════
+\begin{document}
+
+% ── Title slide ────────────────────────────────────────────────────────────────
+\begin{frame}
+  \titlepage
+\end{frame}
+
+% ── 1. Overview ────────────────────────────────────────────────────────────────
+\begin{frame}{Overview}
+  \begin{itemize}
+    \item Predicate logic expands the range of propositions that are possible.
+    \item A particular form of programming is possible using predicate logic:
+          \textcolor{linkblue}{logic programming}.
+    \item Universal truths can be differentiated from special cases.
+    \item You will learn about predicates and quantifiers.
+  \end{itemize}
+\end{frame}
+
+% ── 2. Predicates ──────────────────────────────────────────────────────────────
+\begin{frame}[fragile]{Predicates}
+  Many propositions have variables that determine their value.
+  \begin{itemize}
+    \item The melting point of $x$ element is $y$ Kelvin: $M(x,\,y)$
+  \end{itemize}
+  Popular predicates include equality predicates:
+  $<,\;>,\;\leq\;(\texttt{<=}),\;\geq\;(\texttt{>=}),\;=\;(\texttt{==}),\;\neq\;(\texttt{!=})$
+
+  \begin{lstlisting}[style=python]
+from sympy import symbols, Implies
+
+x = symbols('x')
+# Predicate: (x + 2 > 4) => (x + 3 < 4)
+pred = Implies(x + 2 > 4, x + 3 < 4)
+
+# Evaluate for x = 2 and x = 3
+results = [pred.subs(x, v) for v in [2, 3]]
+print(results)  # [True, False]
+  \end{lstlisting}
+\end{frame}
+
+% ── 3. Example: Pythagorean triple ─────────────────────────────────────────────
+\begin{frame}[fragile]{Example: Pythagorean Triple}
+  Consider the proposition $p\colon\; x^{2} + y^{2} = z^{2}$
+
+  \begin{lstlisting}[style=python]
+# Define the predicate as a Python lambda
+p = lambda x, y, z: x**2 + y**2 == z**2
+
+# What is the truth value for x=5, y=12, z=13?
+print(p(5, 12, 13))     # True
+
+# What is the truth value for x=160, y=241, z=290?
+print(p(160, 241, 290)) # False
+  \end{lstlisting}
+
+  \begin{itemize}
+    \item To learn more about this equation, read about
+          \textcolor{linkblue}{Pythagorean triples}.
+  \end{itemize}
+\end{frame}
+
+% ── 4. Universal Quantifier ────────────────────────────────────────────────────
+\begin{frame}[fragile]{Universal Quantifier $\boldsymbol{\forall}$}
+  Universal quantification: ``$P(x)$ is true for \emph{all} values of~$x$.''
+
+  \[
+    \forall x\;(x^{2} \geq 0)
+  \]
+
+  \begin{lstlisting}[style=python]
+from z3 import Real, ForAll, Implies, prove
+
+x = Real('x')
+# For all real x: x^2 >= 0
+prove(ForAll([x], x**2 >= 0))                  # proved
+  \end{lstlisting}
+
+  \[
+    \forall x \geq 2\;(x \geq 0)
+  \]
+
+  \begin{lstlisting}[style=python]
+# For all x >= 2: x >= 0  (encode domain as implication)
+prove(ForAll([x], Implies(x >= 2, x >= 0)))    # proved
+  \end{lstlisting}
+\end{frame}
+
+% ── 5. Existential Quantifier ──────────────────────────────────────────────────
+\begin{frame}[fragile]{Existential Quantifier $\boldsymbol{\exists}$}
+  Existential quantification: ``$P(x)$ is true for \emph{at least one} value of~$x$.''
+
+  \[
+    \exists x\;(x = -x)
+  \]
+
+  \begin{lstlisting}[style=python]
+from z3 import Real, Reals, And, Exists, Solver, Goal, Tactic, sat
+
+x = Real('x')
+s = Solver()
+s.add(x == -x)
+print(s.check())   # sat
+print(s.model())   # [x = 0]
+  \end{lstlisting}
+
+  This is unique: $\exists!\,x$. \quad
+  $\exists\,x,y\;\bigl(x^{2}+ay^{2}\leq 1 \;\wedge\; x-y \geq 2\bigr)$
+
+  \begin{lstlisting}[style=python]
+x, y, a = Reals('x y a')
+# Quantifier elimination: remove x, y to find condition on a
+g = Goal()
+g.add(Exists([x, y], And(x**2 + a*y**2 <= 1, x - y >= 2)))
+print(Tactic('qe')(g))   # [[a <= 1/3]]
+  \end{lstlisting}
+\end{frame}
+
+% ── 6. Example: Region inclusion ───────────────────────────────────────────────
+\begin{frame}[fragile]{Example: Region Inclusion}
+  Test whether region $R_{1}$ is contained in region $R_{2}$:
+
+  \begin{lstlisting}[style=python]
+from z3 import Reals, And, Not, Solver
+
+x, y = Reals('x y')
+R1_z3 = (2*x)**2 + y**2 + 2*x*y <= 1
+R2_z3 = x**2 + y**2 <= 2
+
+# Exists (x,y): R1 and not R2?
+s = Solver()
+s.add(And(R1_z3, Not(R2_z3)))
+print(s.check())   # unsat  =>  R1 subset R2
+  \end{lstlisting}
+
+  \begin{lstlisting}[style=python]
+import numpy as np, matplotlib.pyplot as plt
+X, Y = np.meshgrid(np.linspace(-2,2,500), np.linspace(-2,2,500))
+R1 = (2*X)**2 + Y**2 + 2*X*Y <= 1
+R2 = X**2 + Y**2 <= 2
+plt.contourf(X, Y, R2, levels=[.5,1.5], colors=['lightblue'], alpha=.5)
+plt.contourf(X, Y, R1, levels=[.5,1.5], colors=['orange'],    alpha=.7)
+plt.axis('equal'); plt.show()
+  \end{lstlisting}
+\end{frame}
+
+% ── 7. Equivalences ────────────────────────────────────────────────────────────
+\begin{frame}{Equivalences}
+  Equivalences are also used for quantifiers
+  (verified with \texttt{sympy.simplify} or \texttt{reduce\_inequalities}):
+
+  \medskip
+  \begin{center}
+    \renewcommand{\arraystretch}{1.45}
+    \begin{tabular}{|l|c|}
+      \hline
+      \textbf{Law} & \textbf{Equivalence} \\
+      \hline
+      Conjunction &
+        $\forall x\bigl(P(x)\wedge Q(x)\bigr)
+         \;\Leftrightarrow\;
+         \forall x\,P(x)\wedge\forall x\,Q(x)$ \\
+      Disjunction &
+        $\exists x\bigl(P(x)\vee Q(x)\bigr)
+         \;\Leftrightarrow\;
+         \exists x\,P(x)\vee\exists x\,Q(x)$ \\
+      De Morgan's $(\forall)$ &
+        $\neg\forall x\,P(x)
+         \;\Leftrightarrow\;
+         \exists x\,\neg P(x)$ \\
+      De Morgan's $(\exists)$ &
+        $\neg\exists x\,P(x)
+         \;\Leftrightarrow\;
+         \forall x\,\neg P(x)$ \\
+      \hline
+    \end{tabular}
+  \end{center}
+
+  \smallskip
+  The negation can be pushed all the way through an expression:
+  \begin{align*}
+    &\neg\exists v\;\forall w\;\exists x\;\exists y\;\forall z\;P(v,w,x,y,z)\\
+    \Leftrightarrow\;&\forall v\;\neg\forall w\;\exists x\;\exists y\;\forall z\;P(v,w,x,y,z)\\
+    \Leftrightarrow\;&\forall v\;\exists w\;\neg\exists x\;\exists y\;\forall z\;P(v,w,x,y,z)\\
+    \Leftrightarrow\;&\forall v\;\exists w\;\forall x\;\forall y\;\neg\forall z\;P(v,w,x,y,z)\\
+    \Leftrightarrow\;&\forall v\;\exists w\;\forall x\;\forall y\;\exists z\;\neg P(v,w,x,y,z)
+  \end{align*}
+\end{frame}
+
+% ── 8. Nested Quantifiers ──────────────────────────────────────────────────────
+\begin{frame}{Nested Quantifiers}
+  How to interpret nested quantifiers:
+
+  \medskip
+  \begin{center}
+    \renewcommand{\arraystretch}{1.45}
+    \begin{tabular}{|c|l|}
+      \hline
+      $\exists x\;\exists y\;P(x,y)$ & At least one pair exists. \\
+      $\forall x\;\exists y\;P(x,y)$ & A pair exists for every $x$. \\
+      $\exists x\;\forall y\;P(x,y)$ & A specific $x$ works for any $y$. \\
+      $\forall x\;\forall y\;P(x,y)$ & All pairs work! \\
+      \hline
+    \end{tabular}
+  \end{center}
+
+  \medskip
+  Everyone in this course likes a branch of mathematics:
+  \[
+    \forall\,s \in \mathrm{students}\;\;
+    \exists\,b \in \mathrm{mathematics}\;\;
+    \bigl(\mathrm{Likes}(s,\,b)\bigr)
+  \]
+\end{frame}
+
+% ── 9. Examples: Translating statements ────────────────────────────────────────
+\begin{frame}{Examples: Translating Statements to Logic}
+  Translate the following statements into logic:
+
+  \medskip
+  \begin{itemize}
+    \item \emph{No one is perfect.}
+    \[
+      \neg\,\exists x\;\mathrm{Perfect}(x)
+    \]
+
+    \item \emph{Not all propositions are contradictions.}
+    \[
+      \neg\,\forall x\;\mathrm{Contradiction}(x)
+    \]
+
+    \item \emph{In my second-year class, only one person knew Java, SQL and Python.}
+    \[
+      \exists!\,x\;\bigl(\mathrm{Java}(x)\;\wedge\;\mathrm{SQL}(x)\;\wedge\;\mathrm{Python}(x)\bigr)
+    \]
+  \end{itemize}
+\end{frame}
+
+% ── 10. Summary ────────────────────────────────────────────────────────────────
+\begin{frame}{Summary}
+  \begin{itemize}
+    \item Predicates are propositional functions with parameters.
+    \item There are three quantifiers:
+    \begin{itemize}
+      \item \textbf{Universal} \quad(\texttt{z3.prove(ForAll([x],\;...))},\; $\forall$)
+      \item \textbf{Existence} \quad(\texttt{z3.Solver().check()},\; $\exists$)
+      \item \textbf{Uniqueness} \quad($\exists!$)
+    \end{itemize}
+    \item Quantifier elimination via \texttt{z3.Tactic('qe')} mirrors Wolfram's \texttt{Reduce}.
+    \item So far, propositions were taken as is.
+    \item The next lesson allows for analysis of propositions through
+          \textbf{rules of inference}.
+  \end{itemize}
+\end{frame}
+
+\end{document}

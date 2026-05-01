@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Lesson 4 — Exercises: Predicates and Quantifiers</title>
+<script>
+MathJax = { tex: { inlineMath: [['$','$']] }, svg: { fontCache: 'global' } };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #e8edf2;
+    color: #1a1a2e;
+    padding: 40px 20px 60px;
+  }
+  .page-header {
+    max-width: 860px;
+    margin: 0 auto 36px;
+    border-top: 5px solid #e67e22;
+    background: linear-gradient(135deg, #1a1a2e 0%, #2c3e6b 100%);
+    color: #fff;
+    border-radius: 10px;
+    padding: 32px 36px;
+  }
+  .page-header h1 { font-size: 1.8rem; margin-bottom: 6px; color: #f0a500; }
+  .page-header p  { font-size: 1rem; opacity: .85; }
+  .exercise {
+    max-width: 860px;
+    margin: 0 auto 22px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 3px 12px rgba(0,0,0,.10);
+    overflow: hidden;
+  }
+  .ex-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 24px;
+    background: #fdf3e7;
+    border-bottom: 2px solid #f9e4cc;
+  }
+  .ex-number {
+    background: #e67e22;
+    color: #fff;
+    font-weight: 700;
+    font-size: .85rem;
+    padding: 4px 10px;
+    border-radius: 20px;
+    white-space: nowrap;
+  }
+  .ex-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #e67e22;
+  }
+  .ex-body { padding: 20px 24px; }
+  .ex-body p  { margin-bottom: 10px; line-height: 1.65; }
+  .ex-body ul { margin: 8px 0 10px 22px; line-height: 1.75; }
+  .ex-body li { margin-bottom: 4px; }
+  .hint {
+    margin-top: 14px;
+    padding: 10px 14px;
+    background: #f0f4ff;
+    border-left: 4px solid #6060cc;
+    border-radius: 0 6px 6px 0;
+    font-size: .92rem;
+    color: #444;
+  }
+  .hint strong { color: #6060cc; }
+  .tag {
+    display: inline-block;
+    font-size: .78rem;
+    background: #eaf4ea;
+    color: #27ae60;
+    border: 1px solid #b2dfb2;
+    border-radius: 12px;
+    padding: 2px 9px;
+    margin-left: 8px;
+    vertical-align: middle;
+  }
+  .tag-z3 {
+    display: inline-block;
+    font-size: .78rem;
+    background: #e8eaff;
+    color: #6060cc;
+    border: 1px solid #c0c4f0;
+    border-radius: 12px;
+    padding: 2px 9px;
+    margin-left: 8px;
+    vertical-align: middle;
+  }
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <h1>Lesson 4 — Predicates and Quantifiers</h1>
+  <p>Exercises &nbsp;·&nbsp; Python lambdas + Z3 &nbsp;·&nbsp; Topics: predicates, universal quantifier ∀, existential quantifier ∃, negation of quantifiers, nested quantifiers, quantifier elimination, region membership</p>
+  <p style="margin-top:10px;font-size:.92rem;color:#f9e4cc;letter-spacing:.02em;">Pr. Zouhair el Hadiq</p>
+</div>
+
+<!-- Exercise 1 -->
+<div class="exercise">
+  <div class="ex-header">
+    <span class="ex-number">Ex 1</span>
+    <span class="ex-title">Predicate over a Finite Domain <span class="tag">lambda</span></span>
+  </div>
+  <div class="ex-body">
+    <p>Define a predicate $P(x)$: "$x$ is even" as a Python lambda over the domain $\{1, 2, \ldots, 10\}$.</p>
+    <ul>
+      <li>Evaluate $P$ at every point in the domain.</li>
+      <li>List all <strong>witnesses</strong> — elements for which $P(x)$ is True.</li>
+      <li>How many witnesses are there? What fraction of the domain do they cover?</li>
+    </ul>
+  </div>
+</div>
+
+<!-- Exercise 2 -->
+<div class="exercise">
+  <div class="ex-header">
+    <span class="ex-number">Ex 2</span>
+    <span class="ex-title">Universal Quantifier — Finite Domain <span class="tag">∀</span></span>
+  </div>
+  <div class="ex-body">
+    <p>Check whether $\forall x \in D,\; P(x)$ holds by testing every element of the domain $D = \{1, 2, 3, 4, 5\}$.</p>
+    <ul>
+      <li>Test $P_1(x)$: "$x > 0$" — does it hold for all elements?</li>
+      <li>Test $P_2(x)$: "$x$ is even" — does it hold for all elements?</li>
+      <li>For $P_2$, find and print the <strong>counterexample</strong> (the first $x$ where $P_2(x)$ fails).</li>
+    </ul>
+    <div class="hint"><strong>Hint:</strong> Use <code>all(P(x) for x in domain)</code> and <code>next(x for x in domain if not P(x))</code>.</div>
+  </div>
+</div>
+
+<!-- Exercise 3 -->
+<div class="exercise">
+  <div class="ex-header">
+    <span class="ex-number">Ex 3</span>
+    <span class="ex-title">Existential Quantifier — Finite Domain <span class="tag">∃</span></span>
+  </div>
+  <div class="ex-body">
+    <p>Check whether $\exists x \in D,\; P(x)$ holds over the domain $D = \{-5, -4, \ldots, 5\}$.</p>
+    <ul>
+      <li>Test $P_1(x)$: "$x < 0$" — does at least one element satisfy it?</li>
+      <li>Test $P_2(x)$: "$x > 10$" — does at least one element satisfy it?</li>
+      <li>For $P_1$, find and print a <strong>witness</strong> (any $x$ where $P_1(x)$ is True).</li>
+    </ul>
+    <div class="hint"><strong>Hint:</strong> Use <code>any(P(x) for x in domain)</code> and <code>next(x for x in domain if P(x), None)</code>.</div>
+  </div>
+</div>
+
+<!-- Exercise 4 -->
+<div class="exercise">
+  <div class="ex-header">
+    <span class="ex-number">Ex 4</span>
+    <span class="ex-title">Z3: Universal Quantifier over ℝ <span class="tag-z3">Z3 · ForAll · prove</span></span>
+  </div>
+  <div class="ex-body">
+    <p>Use Z3 to reason about universal quantification over the real numbers.</p>
+    <ul>
+      <li>Prove $\forall x \in \mathbb{R},\; x^2 \ge 0$ using <code>z3.prove(ForAll([x], x**2 &gt;= 0))</code>.</li>
+      <li>Show that $\forall x \in \mathbb{R},\; x^2 > 0$ is <strong>not</strong> valid by finding a counterexample with a <code>Solver</code>.</li>
+      <li>Print the counterexample value of $x$.</li>
+    </ul>
+    <div class="hint"><strong>Hint:</strong> To find a counterexample to $\forall x\; P(x)$, add $\neg(\forall x\; P(x))$ to the solver and check for <code>sat</code>.</div>
+  </div>
+</div>
+
+<!-- Exercise 5 -->
+<div class="exercise">
+  <div class="ex-header">
+    <span class="ex-number">Ex 5</span>
+    <span class="ex-title">Z3: Existential Quantifier — Real vs Integer <span class="tag-z3">Z3 · Solver</span></span>
+  </div>
+  <div class="ex-body">
+    <p>Use Z3 to determine the satisfiability of $\exists x,\; x^2 = 2$ in two different domains:</p>
+    <ul>
+      <li>Over $\mathbb{R}$ using <code>z3.Real('x')</code> — expected result: <code>sat</code> (since $x = \sqrt{2}$).</li>
+      <li>Over $\mathbb{Z}$ using <code>z3.Int('x')</code> — expected result: <code>unsat</code> (no integer solution).</li>
+    </ul>
+    <p>What does this demonstrate about the importance of the <strong>domain</strong> in quantified statements?</p>
+  </div>
+</div>
+
+<!-- Exercise 6 -->
+<div class="exercise">
+  <div class="ex-header">
+    <span class="ex-number">Ex 6</span>
+    <span class="ex-title">Negation of Quantifiers <span class="tag-z3">Z3 · Solver</span></span>
+  </div>
+  <div class="ex-body">
+    <p>Demonstrate the duality laws using Z3:</p>
+    <ul>
+      <li>$\neg(\forall x,\; x > 0) \;\equiv\; \exists x,\; x \le 0$: find a witness for $x \le 0$ over $\mathbb{R}$.</li>
+      <li>$\neg(\exists x,\; x^2 < 0) \;\equiv\; \forall x,\; x^2 \ge 0$: show no witness for $x^2 < 0$ exists (result: <code>unsat</code>).</li>
+    </ul>
+    <div class="hint"><strong>Reminder:</strong> $\neg\forall x\; P(x) \equiv \exists x\; \neg P(x)$ and $\neg\exists x\; P(x) \equiv \forall x\; \neg P(x)$.</div>
+  </div>
+</div>
+
+<!-- Exercise 7 -->
+<div class="exercise">
+  <div class="ex-header">
+    <span class="ex-number">Ex 7</span>
+    <span class="ex-title">Quantifier Elimination <span class="tag-z3">Z3 · Tactic('qe')</span></span>
+  </div>
+  <div class="ex-body">
+    <p>Use Z3's quantifier elimination tactic to simplify the statement:</p>
+    <p>$$\exists (x, y) \in \mathbb{R}^2,\quad x^2 + a \cdot y^2 \le 1 \;\land\; x - y \ge 2$$</p>
+    <p>This eliminates $x$ and $y$ and produces a constraint on the parameter $a$ alone.</p>
+    <ul>
+      <li>Declare <code>x, y, a = Reals('x y a')</code>.</li>
+      <li>Create a <code>Goal</code>, add the <code>Exists</code> formula, apply <code>Tactic('qe')</code>.</li>
+      <li>Print the resulting constraint on $a$.</li>
+    </ul>
+  </div>
+</div>
+
+<!-- Exercise 8 -->
+<div class="exercise">
+  <div class="ex-header">
+    <span class="ex-number">Ex 8</span>
+    <span class="ex-title">Nested Quantifiers — Order Matters <span class="tag-z3">Z3 · ForAll · Exists</span></span>
+  </div>
+  <div class="ex-body">
+    <p>Quantifier order changes the meaning. Compare the two statements over $\mathbb{R}$:</p>
+    <ul>
+      <li>$\forall x \;\exists y,\; x + y = 0$ — for every $x$ there is a $y$ (namely $y = -x$). Use <code>z3.prove</code>.</li>
+      <li>$\exists x \;\forall y,\; x + y = 0$ — one fixed $x$ works for every $y$. Check validity with a <code>Solver</code>.</li>
+    </ul>
+    <p>Which statement is valid? Which is not? Explain the difference.</p>
+  </div>
+</div>
+
+<!-- Exercise 9 -->
+<div class="exercise">
+  <div class="ex-header">
+    <span class="ex-number">Ex 9</span>
+    <span class="ex-title">Binary Predicate — Divisibility Relation <span class="tag">lambda</span></span>
+  </div>
+  <div class="ex-body">
+    <p>Define the binary predicate $R(x, y)$: "$x$ divides $y$" (i.e., $y \bmod x = 0$) over the domain $\{1, 2, 3, 4, 5, 6\} \times \{1, 2, 3, 4, 5, 6\}$.</p>
+    <ul>
+      <li>List all pairs $(x, y)$ for which $R(x, y)$ is True.</li>
+      <li>How many such pairs are there?</li>
+      <li>Is the relation <strong>reflexive</strong>? (Does $x \mid x$ for every $x$?)</li>
+    </ul>
+  </div>
+</div>
+
+<!-- Exercise 10 -->
+<div class="exercise">
+  <div class="ex-header">
+    <span class="ex-number">Ex 10</span>
+    <span class="ex-title">Z3: Predicate over a Declared Sort <span class="tag-z3">Z3 · DeclareSort · Function</span></span>
+  </div>
+  <div class="ex-body">
+    <p>Encode the classic syllogism in Z3 using an uninterpreted sort <code>Person</code>:</p>
+    <ul>
+      <li>Declare uninterpreted functions $H(\cdot)$ ("is human") and $M(\cdot)$ ("is mortal") mapping <code>Person → Bool</code>.</li>
+      <li>Add the universal axiom: $\forall x,\; H(x) \to M(x)$.</li>
+      <li>Add the fact: $H(\text{socrates})$.</li>
+      <li>Assume $\neg M(\text{socrates})$ and check for <code>unsat</code> — this proves $M(\text{socrates})$ follows.</li>
+    </ul>
+    <div class="hint"><strong>Hint:</strong> Use <code>DeclareSort</code>, <code>Const</code>, <code>Function</code>, <code>BoolSort</code> from Z3.</div>
+  </div>
+</div>
+
+<!-- Exercise 11 -->
+<div class="exercise">
+  <div class="ex-header">
+    <span class="ex-number">Ex 11</span>
+    <span class="ex-title">Region Inclusion — R2 ⊆ R1 <span class="tag-z3">Z3 · Solver</span></span>
+  </div>
+  <div class="ex-body">
+    <p>Define two regions in $\mathbb{R}^2$:</p>
+    <ul>
+      <li>$R_1$: the disk of radius 2 — $x^2 + y^2 \le 4$</li>
+      <li>$R_2$: the disk of radius 1 — $x^2 + y^2 \le 1$</li>
+    </ul>
+    <p>Use Z3 to:</p>
+    <ul>
+      <li>Prove $R_2 \subseteq R_1$ by showing no point can be in $R_2$ but outside $R_1$ (expected: <code>unsat</code>).</li>
+      <li>Find a point that is in $R_1$ but <strong>not</strong> in $R_2$ (expected: <code>sat</code>; print the witness).</li>
+    </ul>
+  </div>
+</div>
+
+</body>
+</html>
