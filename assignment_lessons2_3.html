@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Assignment — Lessons 2 &amp; 3: Propositional Logic &amp; Equivalences</title>
+<script>
+MathJax = { tex: { inlineMath: [['$','$']], displayMath: [['$$','$$']] }, svg: { fontCache: 'global' } };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #e8edf2;
+    color: #1a1a2e;
+    padding: 40px 20px 60px;
+  }
+  .page-header {
+    max-width: 860px;
+    margin: 0 auto 36px;
+    border-top: 5px solid #e67e22;
+    background: linear-gradient(135deg, #1a1a2e 0%, #2c3e6b 100%);
+    color: #fff;
+    border-radius: 10px;
+    padding: 32px 36px;
+  }
+  .page-header h1 { font-size: 1.8rem; margin-bottom: 6px; color: #f0a500; }
+  .page-header .subtitle { font-size: 1rem; opacity: .85; margin-bottom: 4px; }
+  .page-header .meta { font-size: .92rem; color: #f9e4cc; letter-spacing: .02em; margin-top: 10px; }
+  .page-header .info-row {
+    display: flex; gap: 32px; margin-top: 18px; flex-wrap: wrap;
+  }
+  .page-header .info-item { font-size: .88rem; opacity: .8; }
+  .page-header .info-item strong { color: #f0a500; }
+
+  .exercise {
+    max-width: 860px;
+    margin: 0 auto 24px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 3px 12px rgba(0,0,0,.10);
+    overflow: hidden;
+  }
+  .ex-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 24px;
+    background: #fdf3e7;
+    border-bottom: 2px solid #f9e4cc;
+  }
+  .ex-number {
+    background: #e67e22;
+    color: #fff;
+    font-weight: 700;
+    font-size: .85rem;
+    padding: 4px 12px;
+    border-radius: 20px;
+    white-space: nowrap;
+  }
+  .ex-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #e67e22;
+    flex: 1;
+  }
+  .points {
+    font-size: .82rem;
+    background: #1a1a2e;
+    color: #f0a500;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  .ex-body { padding: 22px 26px; }
+  .ex-body p  { margin-bottom: 12px; line-height: 1.7; }
+  .ex-body ul, .ex-body ol { margin: 8px 0 12px 24px; line-height: 1.8; }
+  .ex-body li { margin-bottom: 5px; }
+
+  .part {
+    margin: 16px 0 8px;
+    font-weight: 700;
+    color: #2c3e6b;
+    font-size: .97rem;
+  }
+
+  .hint {
+    margin-top: 16px;
+    padding: 10px 16px;
+    background: #f0f4ff;
+    border-left: 4px solid #6060cc;
+    border-radius: 0 6px 6px 0;
+    font-size: .91rem;
+    color: #444;
+  }
+  .hint strong { color: #6060cc; }
+
+  .tag {
+    display: inline-block;
+    font-size: .76rem;
+    background: #eaf4ea;
+    color: #27ae60;
+    border: 1px solid #b2dfb2;
+    border-radius: 12px;
+    padding: 2px 9px;
+    margin-left: 6px;
+    vertical-align: middle;
+    font-weight: 600;
+  }
+  .tag.blue {
+    background: #eaf0ff;
+    color: #2c3e6b;
+    border-color: #b2caff;
+  }
+
+  table {
+    border-collapse: collapse;
+    margin: 14px 0;
+    font-size: .93rem;
+    width: 100%;
+    max-width: 520px;
+  }
+  th, td {
+    border: 1px solid #ccc;
+    padding: 7px 16px;
+    text-align: center;
+  }
+  th { background: #fdf3e7; color: #e67e22; font-weight: 700; }
+  td.blank { background: #f9f9f9; color: #ccc; font-style: italic; }
+
+  .law-box {
+    background: #f5f8ff;
+    border: 1px solid #cce0ff;
+    border-radius: 8px;
+    padding: 14px 18px;
+    margin: 14px 0;
+    font-size: .95rem;
+    line-height: 2;
+  }
+  .law-box .law-name {
+    font-weight: 700;
+    color: #2c3e6b;
+    margin-right: 8px;
+  }
+
+  .answer-line {
+    display: block;
+    border-bottom: 1px dashed #aaa;
+    margin: 10px 0 16px;
+    min-height: 28px;
+  }
+
+  .footer {
+    max-width: 860px;
+    margin: 36px auto 0;
+    text-align: center;
+    font-size: .84rem;
+    color: #666;
+  }
+</style>
+</head>
+<body>
+
+<!-- ===== HEADER ===== -->
+<div class="page-header">
+  <h1>Assignment — Lessons 2 &amp; 3</h1>
+  <p class="subtitle">Propositional Logic &amp; Logical Equivalences</p>
+  <div class="info-row">
+    <div class="info-item"><strong>Course:</strong> Discrete Mathematics</div>
+    <div class="info-item"><strong>Total:</strong> 20 points</div>
+    <div class="info-item"><strong>Duration:</strong> 1 h 30 min</div>
+  </div>
+  <p class="meta">Pr. Zouhair El Hadiq</p>
+</div>
+
+
+<!-- ===== EXERCISE 1 ===== -->
+<div class="exercise">
+  <div class="ex-header">
+    <span class="ex-number">Exercise 1</span>
+    <span class="ex-title">Truth Table Construction <span class="tag">Lesson 2</span></span>
+    <span class="points">4 pts</span>
+  </div>
+  <div class="ex-body">
+    <p>Let $p$, $q$, and $r$ be propositional variables. Consider the following compound proposition:</p>
+    <p style="text-align:center; font-size:1.1rem;">$$F = (p \lor \neg q) \rightarrow (q \land r)$$</p>
+
+    <p class="part">Part A — Complete the truth table.</p>
+    <p>Fill in every blank cell. There are $2^3 = 8$ rows.</p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>$p$</th><th>$q$</th><th>$r$</th>
+          <th>$\neg q$</th>
+          <th>$p \lor \neg q$</th>
+          <th>$q \land r$</th>
+          <th>$F$</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>T</td><td>T</td><td>T</td><td class="blank">…</td><td class="blank">…</td><td class="blank">…</td><td class="blank">…</td></tr>
+        <tr><td>T</td><td>T</td><td>F</td><td class="blank">…</td><td class="blank">…</td><td class="blank">…</td><td class="blank">…</td></tr>
+        <tr><td>T</td><td>F</td><td>T</td><td class="blank">…</td><td class="blank">…</td><td class="blank">…</td><td class="blank">…</td></tr>
+        <tr><td>T</td><td>F</td><td>F</td><td class="blank">…</td><td class="blank">…</td><td class="blank">…</td><td class="blank">…</td></tr>
+        <tr><td>F</td><td>T</td><td>T</td><td class="blank">…</td><td class="blank">…</td><td class="blank">…</td><td class="blank">…</td></tr>
+        <tr><td>F</td><td>T</td><td>F</td><td class="blank">…</td><td class="blank">…</td><td class="blank">…</td><td class="blank">…</td></tr>
+        <tr><td>F</td><td>F</td><td>T</td><td class="blank">…</td><td class="blank">…</td><td class="blank">…</td><td class="blank">…</td></tr>
+        <tr><td>F</td><td>F</td><td>F</td><td class="blank">…</td><td class="blank">…</td><td class="blank">…</td><td class="blank">…</td></tr>
+      </tbody>
+    </table>
+
+    <p class="part">Part B — Classification.</p>
+    <p>Based on your table, is $F$ a <em>tautology</em>, a <em>contradiction</em>, or a <em>contingency</em>? Justify your answer in one sentence.</p>
+    <span class="answer-line"></span>
+    <span class="answer-line"></span>
+
+    <p class="part">Part C — Converse and Contrapositive.</p>
+    <p>The formula $F$ has the form $A \rightarrow B$. Write the <strong>converse</strong>, the <strong>inverse</strong>, and the <strong>contrapositive</strong> of $F$ using symbolic notation.</p>
+    <ul>
+      <li><strong>Converse:</strong> <span class="answer-line"></span></li>
+      <li><strong>Inverse:</strong> <span class="answer-line"></span></li>
+      <li><strong>Contrapositive:</strong> <span class="answer-line"></span></li>
+    </ul>
+
+    <div class="hint">
+      <strong>Recall:</strong> A conditional $A \rightarrow B$ is <em>false</em> only when $A$ is true and $B$ is false.
+      Its contrapositive $\neg B \rightarrow \neg A$ is always logically equivalent to the original.
+    </div>
+  </div>
+</div>
+
+
+<!-- ===== EXERCISE 2 ===== -->
+<div class="exercise">
+  <div class="ex-header">
+    <span class="ex-number">Exercise 2</span>
+    <span class="ex-title">Tautology, Contradiction, and Contingency <span class="tag">Lesson 3</span></span>
+    <span class="points">3 pts</span>
+  </div>
+  <div class="ex-body">
+    <p>Classify each of the following propositions as a <strong>tautology</strong>, a <strong>contradiction</strong>, or a <strong>contingency</strong>. Justify each answer by constructing a short truth table or a logical argument.</p>
+
+    <ol>
+      <li>
+        <p>$P_1 = p \lor \neg p$</p>
+        <span class="answer-line"></span>
+      </li>
+      <li>
+        <p>$P_2 = (p \rightarrow q) \land (p \land \neg q)$</p>
+        <span class="answer-line"></span>
+        <span class="answer-line"></span>
+      </li>
+      <li>
+        <p>$P_3 = (p \rightarrow q) \leftrightarrow (\neg p \lor q)$</p>
+        <span class="answer-line"></span>
+        <span class="answer-line"></span>
+      </li>
+    </ol>
+
+    <div class="hint">
+      <strong>Hint:</strong> A <em>tautology</em> is true for every assignment; a <em>contradiction</em> is always false;
+      a <em>contingency</em> is true for at least one assignment and false for at least one other.
+    </div>
+  </div>
+</div>
+
+
+<!-- ===== EXERCISE 3 ===== -->
+<div class="exercise">
+  <div class="ex-header">
+    <span class="ex-number">Exercise 3</span>
+    <span class="ex-title">Logical Equivalences &amp; De Morgan's Laws <span class="tag">Lesson 3</span></span>
+    <span class="points">5 pts</span>
+  </div>
+  <div class="ex-body">
+    <p>The table below lists the main equivalence laws from Lesson 3. You will use them to prove or simplify propositions step by step, <strong>citing the law used at each step</strong>.</p>
+
+    <div class="law-box">
+      <span class="law-name">De Morgan 1:</span> $\neg(p \land q) \equiv \neg p \lor \neg q$ &nbsp;&nbsp;
+      <span class="law-name">De Morgan 2:</span> $\neg(p \lor q) \equiv \neg p \land \neg q$<br/>
+      <span class="law-name">Double Negation:</span> $\neg\neg p \equiv p$ &nbsp;&nbsp;
+      <span class="law-name">Absorption:</span> $p \lor (p \land q) \equiv p$<br/>
+      <span class="law-name">Distributivity:</span> $p \land (q \lor r) \equiv (p \land q) \lor (p \land r)$<br/>
+      <span class="law-name">Implication:</span> $p \rightarrow q \equiv \neg p \lor q$
+    </div>
+
+    <p class="part">Part A — Verify De Morgan's first law by truth table.</p>
+    <p>Complete the table to show that $\neg(p \land q) \equiv \neg p \lor \neg q$ for all assignments of $(p, q)$.</p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>$p$</th><th>$q$</th>
+          <th>$p \land q$</th>
+          <th>$\neg(p \land q)$</th>
+          <th>$\neg p$</th><th>$\neg q$</th>
+          <th>$\neg p \lor \neg q$</th>
+          <th>Equal?</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>T</td><td>T</td><td class="blank">…</td><td class="blank">…</td><td class="blank">…</td><td class="blank">…</td><td class="blank">…</td><td class="blank">…</td></tr>
+        <tr><td>T</td><td>F</td><td class="blank">…</td><td class="blank">…</td><td class="blank">…</td><td class="blank">…</td><td class="blank">…</td><td class="blank">…</td></tr>
+        <tr><td>F</td><td>T</td><td class="blank">…</td><td class="blank">…</td><td class="blank">…</td><td class="blank">…</td><td class="blank">…</td><td class="blank">…</td></tr>
+        <tr><td>F</td><td>F</td><td class="blank">…</td><td class="blank">…</td><td class="blank">…</td><td class="blank">…</td><td class="blank">…</td><td class="blank">…</td></tr>
+      </tbody>
+    </table>
+
+    <p class="part">Part B — Algebraic simplification.</p>
+    <p>Simplify the following proposition by applying equivalence laws one step at a time. Show each intermediate step and name the law used.</p>
+    <p style="text-align:center;">$$G = \neg(\neg p \lor q) \lor (p \land \neg q)$$</p>
+    <p>Steps:</p>
+    <ol>
+      <li>$G = $ <span class="answer-line"></span> <em>(Law: ________________________)</em></li>
+      <li>$\phantom{G} = $ <span class="answer-line"></span> <em>(Law: ________________________)</em></li>
+      <li>$\phantom{G} = $ <span class="answer-line"></span> <em>(Law: ________________________)</em></li>
+    </ol>
+
+    <p class="part">Part C — Implication equivalence.</p>
+    <p>Use the <em>implication equivalence</em> to rewrite $(p \rightarrow q) \rightarrow r$ in a form that uses only $\neg$, $\land$, and $\lor$. Show your steps.</p>
+    <span class="answer-line"></span>
+    <span class="answer-line"></span>
+    <span class="answer-line"></span>
+  </div>
+</div>
+
+
+<!-- ===== EXERCISE 4 ===== -->
+<div class="exercise">
+  <div class="ex-header">
+    <span class="ex-number">Exercise 4</span>
+    <span class="ex-title">Normal Forms — CNF and DNF <span class="tag blue">Lesson 3</span></span>
+    <span class="points">4 pts</span>
+  </div>
+  <div class="ex-body">
+    <p>A formula is in <strong>Disjunctive Normal Form (DNF)</strong> when it is a disjunction of conjunctions of literals.<br/>
+    It is in <strong>Conjunctive Normal Form (CNF)</strong> when it is a conjunction of disjunctions of literals.</p>
+
+    <p class="part">Part A — DNF from a truth table.</p>
+    <p>The truth table below defines a proposition $H(p, q, r)$. Use the <em>minterms</em> method to write $H$ in DNF.</p>
+
+    <table>
+      <thead>
+        <tr><th>$p$</th><th>$q$</th><th>$r$</th><th>$H$</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>T</td><td>T</td><td>T</td><td>T</td></tr>
+        <tr><td>T</td><td>T</td><td>F</td><td>F</td></tr>
+        <tr><td>T</td><td>F</td><td>T</td><td>F</td></tr>
+        <tr><td>T</td><td>F</td><td>F</td><td>T</td></tr>
+        <tr><td>F</td><td>T</td><td>T</td><td>F</td></tr>
+        <tr><td>F</td><td>T</td><td>F</td><td>T</td></tr>
+        <tr><td>F</td><td>F</td><td>T</td><td>F</td></tr>
+        <tr><td>F</td><td>F</td><td>F</td><td>F</td></tr>
+      </tbody>
+    </table>
+
+    <p>DNF of $H$: <span class="answer-line"></span></p>
+
+    <p class="part">Part B — Convert to CNF.</p>
+    <p>Starting from the DNF you found in Part A, apply De Morgan's laws and other equivalences to obtain the CNF of $H$. Show your derivation.</p>
+    <span class="answer-line"></span>
+    <span class="answer-line"></span>
+    <span class="answer-line"></span>
+
+    <p class="part">Part C — Identify the form.</p>
+    <p>State whether each expression below is already in DNF, CNF, both, or neither. Justify in one sentence.</p>
+    <ol>
+      <li>$(p \lor \neg q) \land (r \lor p)$<br/><span class="answer-line"></span></li>
+      <li>$(p \land q) \lor (\neg p \land r)$<br/><span class="answer-line"></span></li>
+      <li>$p \land (q \lor r) \land \neg p$<br/><span class="answer-line"></span></li>
+    </ol>
+
+    <div class="hint">
+      <strong>Minterms method:</strong> For each row where $H = T$, write a conjunction of the variables (un-negated if T, negated if F). The DNF is the disjunction of all such conjunctions.
+    </div>
+  </div>
+</div>
+
+
+<!-- ===== EXERCISE 5 ===== -->
+<div class="exercise">
+  <div class="ex-header">
+    <span class="ex-number">Exercise 5</span>
+    <span class="ex-title">Satisfiability &amp; Logical Reasoning <span class="tag">Lesson 2</span> <span class="tag blue">Lesson 3</span></span>
+    <span class="points">4 pts</span>
+  </div>
+  <div class="ex-body">
+    <p>This exercise combines satisfiability analysis (Lesson 3) with propositional reasoning (Lesson 2).</p>
+
+    <p class="part">Part A — Satisfiability.</p>
+    <p>For each proposition, determine whether it is <strong>satisfiable</strong> (there exists an assignment making it true). If satisfiable, provide a satisfying assignment; if not, explain why.</p>
+    <ol>
+      <li>
+        <p>$S_1 = (p \rightarrow q) \land p \land \neg q$</p>
+        <span class="answer-line"></span>
+        <span class="answer-line"></span>
+      </li>
+      <li>
+        <p>$S_2 = (p \lor q) \land (\neg p \lor r) \land (\neg q \lor \neg r)$</p>
+        <span class="answer-line"></span>
+        <span class="answer-line"></span>
+      </li>
+    </ol>
+
+    <p class="part">Part B — Hypothetical Syllogism.</p>
+    <p>The <em>hypothetical syllogism</em> rule states: if $p \rightarrow q$ and $q \rightarrow r$ are both true, then $p \rightarrow r$ is true.</p>
+    <p>Use this rule to derive a conclusion from the following premises, and verify your answer using a truth table for the three variables.</p>
+    <div class="law-box" style="margin: 12px 0;">
+      Premise 1: "If it rains, the ground is wet." &nbsp;$(r \rightarrow w)$<br/>
+      Premise 2: "If the ground is wet, the road is slippery." &nbsp;$(w \rightarrow s)$<br/>
+      Premise 3: "It is raining." &nbsp;$(r)$
+    </div>
+    <p>Conclusion: <span class="answer-line"></span></p>
+    <p>Verify — fill in the table for the specific row where $r = T$, $w = T$, $s = T$:</p>
+
+    <table>
+      <thead>
+        <tr><th>$r$</th><th>$w$</th><th>$s$</th><th>$r \rightarrow w$</th><th>$w \rightarrow s$</th><th>$r \rightarrow s$</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>T</td><td>T</td><td>T</td><td class="blank">…</td><td class="blank">…</td><td class="blank">…</td></tr>
+      </tbody>
+    </table>
+
+    <p class="part">Part C — Short proof using equivalences.</p>
+    <p>Prove that $(p \rightarrow q) \land (q \rightarrow p) \equiv p \leftrightarrow q$ using only known equivalence laws. Show every step.</p>
+    <ol>
+      <li>$(p \rightarrow q) \land (q \rightarrow p)$</li>
+      <li>$= $ <span class="answer-line"></span> <em>(Law: ________________________)</em></li>
+      <li>$= $ <span class="answer-line"></span> <em>(Law: ________________________)</em></li>
+      <li>$= p \leftrightarrow q$ &nbsp; ✓</li>
+    </ol>
+
+    <div class="hint">
+      <strong>Recall:</strong> $p \leftrightarrow q \equiv (p \rightarrow q) \land (q \rightarrow p)$ is itself one of the standard biconditional equivalences from Lesson 3.
+    </div>
+  </div>
+</div>
+
+
+<div class="footer">
+  Discrete Mathematics · Assignment — Lessons 2 &amp; 3 · Pr. Zouhair El Hadiq
+</div>
+
+</body>
+</html>
