@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Discrete Mathematics — Course Overview</title>
+<script>
+MathJax = { tex: { inlineMath: [['$','$']], displayMath: [['$$','$$']] }, svg: { fontCache: 'global' } };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --orange:   #e67e22;
+  --orange2:  #f0a500;
+  --dark:     #1a1a2e;
+  --navy:     #2c3e50;
+  --navy2:    #2c3e6b;
+  --lightbg:  #f4f9fc;
+  --border:   #dce3ea;
+}
+
+body {
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background: #e8edf2;
+  color: var(--navy);
+  padding: 40px 20px 80px;
+}
+
+/* ── Shared width ─────────────────────────────────────────────────── */
+.page-header, .section-card, .schedule-wrap, .tools-grid, .footer {
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* ── Hero header ──────────────────────────────────────────────────── */
+.page-header {
+  background: linear-gradient(135deg, #1a1a2e 0%, #2c3e6b 100%);
+  color: #fff;
+  border-radius: 12px;
+  border-top: 6px solid var(--orange);
+  padding: 38px 40px 32px;
+  margin-bottom: 32px;
+  position: relative;
+  overflow: hidden;
+}
+.page-header::before {
+  content: '';
+  position: absolute;
+  top: -40px; right: -40px;
+  width: 220px; height: 220px;
+  border-radius: 50%;
+  background: rgba(230,126,34,.12);
+}
+.page-header .course-label {
+  font-size: .8rem;
+  text-transform: uppercase;
+  letter-spacing: .12em;
+  color: var(--orange2);
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+.page-header h1 {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #fff;
+  margin-bottom: 6px;
+  line-height: 1.2;
+}
+.page-header .tagline {
+  font-size: 1rem;
+  color: rgba(255,255,255,.75);
+  margin-bottom: 24px;
+}
+
+/* Team row */
+.team-row {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+.instructor-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(255,255,255,.08);
+  border: 1px solid rgba(255,255,255,.15);
+  border-radius: 10px;
+  padding: 10px 16px;
+}
+.instructor-avatar {
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  background: var(--orange);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #fff;
+  flex-shrink: 0;
+}
+.instructor-info .name  { font-weight: 700; font-size: .95rem; color: #fff; }
+.instructor-info .role  { font-size: .78rem; color: var(--orange2); }
+
+.meta-row {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+  margin-top: 4px;
+}
+.meta-item { font-size: .86rem; color: rgba(255,255,255,.7); }
+.meta-item strong { color: var(--orange2); }
+
+/* ── Section cards ────────────────────────────────────────────────── */
+.section-card {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 3px 14px rgba(0,0,0,.09);
+  overflow: hidden;
+  margin-bottom: 24px;
+}
+.section-card .card-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 24px;
+  background: #fdf3e7;
+  border-bottom: 2px solid #f9e4cc;
+}
+.card-header .card-icon {
+  font-size: 1.3rem;
+  width: 36px; height: 36px;
+  background: var(--orange);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+}
+.card-header h2 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--orange);
+}
+.card-body { padding: 22px 26px; }
+
+/* ── Learning goals ───────────────────────────────────────────────── */
+.goals-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+@media (max-width: 600px) { .goals-grid { grid-template-columns: 1fr; } }
+
+.goal-item {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  background: var(--lightbg);
+  border-left: 3px solid var(--orange);
+  border-radius: 0 8px 8px 0;
+  padding: 10px 14px;
+  font-size: .93rem;
+  line-height: 1.55;
+}
+.goal-item .bullet {
+  color: var(--orange);
+  font-weight: 700;
+  font-size: 1.1rem;
+  line-height: 1.4;
+  flex-shrink: 0;
+}
+
+/* ── Prerequisites ────────────────────────────────────────────────── */
+.prereq-list {
+  list-style: none;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+@media (max-width: 600px) { .prereq-list { grid-template-columns: 1fr; } }
+.prereq-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: .93rem;
+  line-height: 1.55;
+  padding: 9px 12px;
+  background: #f9fafb;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+}
+.prereq-list li .check {
+  color: var(--orange);
+  font-size: 1rem;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+/* ── Schedule ─────────────────────────────────────────────────────── */
+.schedule-wrap { margin-bottom: 24px; }
+.seq-item {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0,0,0,.08);
+  margin-bottom: 10px;
+  overflow: hidden;
+  border-left: 4px solid var(--orange);
+}
+.seq-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 13px 20px;
+  cursor: pointer;
+  user-select: none;
+}
+.seq-num {
+  background: var(--orange);
+  color: #fff;
+  font-weight: 700;
+  font-size: .8rem;
+  padding: 3px 10px;
+  border-radius: 16px;
+  white-space: nowrap;
+}
+.seq-title {
+  font-weight: 700;
+  font-size: .98rem;
+  color: var(--navy);
+  flex: 1;
+}
+.seq-weeks {
+  font-size: .8rem;
+  color: #888;
+  white-space: nowrap;
+}
+.seq-chevron {
+  font-size: .85rem;
+  color: var(--orange);
+  transition: transform .25s;
+}
+.seq-item.open .seq-chevron { transform: rotate(90deg); }
+.seq-body {
+  display: none;
+  padding: 0 20px 14px 20px;
+  border-top: 1px solid #f9e4cc;
+}
+.seq-item.open .seq-body { display: block; }
+.unit-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 7px 0;
+  font-size: .9rem;
+  border-bottom: 1px dashed #eee;
+  line-height: 1.5;
+}
+.unit-row:last-child { border-bottom: none; }
+.unit-tag {
+  font-size: .74rem;
+  background: #fdf3e7;
+  color: var(--orange);
+  border: 1px solid #f9e4cc;
+  border-radius: 12px;
+  padding: 1px 8px;
+  white-space: nowrap;
+  font-weight: 600;
+  margin-top: 2px;
+}
+.unit-goals {
+  list-style: none;
+  margin-top: 8px;
+  padding: 8px 12px;
+  background: var(--lightbg);
+  border-radius: 6px;
+  font-size: .87rem;
+}
+.unit-goals li { padding: 2px 0 2px 14px; position: relative; line-height: 1.5; }
+.unit-goals li::before { content: '›'; position: absolute; left: 0; color: var(--orange); font-weight: 700; }
+
+/* ── Methodology ──────────────────────────────────────────────────── */
+.method-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 14px;
+}
+.method-card {
+  text-align: center;
+  background: var(--lightbg);
+  border: 1px solid var(--border);
+  border-top: 3px solid var(--orange);
+  border-radius: 8px;
+  padding: 18px 14px 14px;
+}
+.method-card .m-icon { font-size: 1.8rem; margin-bottom: 8px; display: block; }
+.method-card .m-label {
+  font-weight: 700;
+  color: var(--orange);
+  font-size: .92rem;
+  margin-bottom: 6px;
+}
+.method-card .m-desc { font-size: .83rem; color: #555; line-height: 1.5; }
+
+/* ── Tools ────────────────────────────────────────────────────────── */
+.tools-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 12px;
+  margin-bottom: 24px;
+}
+.tool-card {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0,0,0,.08);
+  padding: 18px 12px 14px;
+  text-align: center;
+  border-bottom: 3px solid var(--orange);
+}
+.tool-card .t-logo {
+  font-size: 2rem;
+  margin-bottom: 8px;
+  display: block;
+}
+.tool-card .t-name {
+  font-weight: 700;
+  font-size: .92rem;
+  color: var(--navy);
+  margin-bottom: 4px;
+}
+.tool-card .t-role {
+  font-size: .78rem;
+  color: #666;
+  line-height: 1.45;
+}
+.tool-card .t-badge {
+  display: inline-block;
+  margin-top: 8px;
+  font-size: .7rem;
+  background: #fdf3e7;
+  color: var(--orange);
+  border: 1px solid #f9e4cc;
+  border-radius: 10px;
+  padding: 1px 8px;
+  font-weight: 600;
+}
+
+/* ── Footer ───────────────────────────────────────────────────────── */
+.footer {
+  text-align: center;
+  font-size: .83rem;
+  color: #888;
+  margin-top: 36px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════
+     HERO HEADER
+════════════════════════════════════════════════════════════ -->
+<div class="page-header">
+  <div class="course-label">ACSP Programme · DMath_CC_25</div>
+  <h1>Discrete Mathematics</h1>
+  <p class="tagline">A rigorous, tool-assisted introduction to the mathematics behind computer science</p>
+
+  <div class="team-row">
+    <div class="instructor-card">
+      <div class="instructor-avatar">IB</div>
+      <div class="instructor-info">
+        <div class="name">Pr. Ismail Bouishak</div>
+        <div class="role">Co-instructor · Pedagogical Lead</div>
+      </div>
+    </div>
+    <div class="instructor-card">
+      <div class="instructor-avatar">ZE</div>
+      <div class="instructor-info">
+        <div class="name">Pr. Zouhair El Hadiq</div>
+        <div class="role">Co-instructor · Lab Designer</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="meta-row">
+    <div class="meta-item"><strong>Sequences:</strong> 7</div>
+    <div class="meta-item"><strong>Level:</strong> Undergraduate / Preparatory</div>
+    <div class="meta-item"><strong>Format:</strong> Online · Blended</div>
+    <div class="meta-item"><strong>Language:</strong> English</div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     LEARNING GOALS
+════════════════════════════════════════════════════════════ -->
+<div class="section-card">
+  <div class="card-header">
+    <div class="card-icon">🎯</div>
+    <h2>Learning Goals</h2>
+  </div>
+  <div class="card-body">
+    <p style="margin-bottom:16px; font-size:.94rem; color:#555; line-height:1.6;">
+      By the end of this course, students will be able to:
+    </p>
+    <div class="goals-grid">
+      <div class="goal-item"><span class="bullet">›</span>Read, write, and evaluate <strong>propositional and predicate logic</strong> formulas, including truth tables and equivalence proofs.</div>
+      <div class="goal-item"><span class="bullet">›</span>Apply <strong>rules of inference</strong> and formal proof techniques (direct, contrapositive, contradiction, induction).</div>
+      <div class="goal-item"><span class="bullet">›</span>Work with <strong>sets, relations, and functions</strong> using formal notation and prove their properties rigorously.</div>
+      <div class="goal-item"><span class="bullet">›</span>Use <strong>mathematical induction</strong> and strong induction to prove statements about integers and recursive structures.</div>
+      <div class="goal-item"><span class="bullet">›</span>Count using <strong>permutations, combinations, and the binomial theorem</strong>; prove combinatorial identities.</div>
+      <div class="goal-item"><span class="bullet">›</span>Model and analyse real-world problems using <strong>graph theory</strong>: isomorphism, special graphs, routing, and paths.</div>
+      <div class="goal-item"><span class="bullet">›</span>Automate mathematical reasoning with <strong>Python tools</strong> (SymPy, Z3, NetworkX) inside Jupyter notebooks.</div>
+      <div class="goal-item"><span class="bullet">›</span>Typeset mathematical proofs and documents using <strong>LaTeX</strong>.</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     PREREQUISITES
+════════════════════════════════════════════════════════════ -->
+<div class="section-card">
+  <div class="card-header">
+    <div class="card-icon">📋</div>
+    <h2>Prerequisites</h2>
+  </div>
+  <div class="card-body">
+    <p style="margin-bottom:14px; font-size:.93rem; color:#555;">
+      No prior university mathematics is required. The following high-school level knowledge is assumed:
+    </p>
+    <ul class="prereq-list">
+      <li><span class="check">✓</span><span><strong>Basic algebra</strong> — manipulating equations, inequalities, and algebraic expressions.</span></li>
+      <li><span class="check">✓</span><span><strong>Elementary set notation</strong> — understanding what sets, elements, and subsets mean informally.</span></li>
+      <li><span class="check">✓</span><span><strong>Introductory programming</strong> — familiarity with variables, loops, and functions in any language.</span></li>
+      <li><span class="check">✓</span><span><strong>High-school logic</strong> — informal use of AND, OR, NOT, IF…THEN in everyday reasoning.</span></li>
+      <li><span class="check">✓</span><span><strong>Basic Python</strong> — ability to run a script and read simple code (no advanced OOP required).</span></li>
+      <li><span class="check">✓</span><span><strong>Reading mathematical notation</strong> — comfort with $\sum$, $\in$, $\subseteq$, $\forall$, $\exists$ is helpful but not mandatory.</span></li>
+    </ul>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     SCHEDULE  (accordion)
+════════════════════════════════════════════════════════════ -->
+<div class="section-card">
+  <div class="card-header">
+    <div class="card-icon">📅</div>
+    <h2>Schedule</h2>
+  </div>
+  <div class="card-body" style="padding-bottom:8px;">
+    <p style="margin-bottom:14px; font-size:.93rem; color:#555;">
+      The course is structured into <strong>7 sequences</strong>. Click any sequence to expand its units and objectives.
+    </p>
+  </div>
+</div>
+
+<div class="schedule-wrap">
+
+  <!-- Seq 1 -->
+  <div class="seq-item open">
+    <div class="seq-header">
+      <span class="seq-num">Sequence 1</span>
+      <span class="seq-title">Foundations of Logic — Part 1</span>
+      <span class="seq-weeks">Weeks 1 – 2</span>
+      <span class="seq-chevron">▶</span>
+    </div>
+    <div class="seq-body">
+      <div class="unit-row"><span class="unit-tag">Unit 1.1</span> <span>Propositions and Logical Connectives — truth values, negation, conjunction, disjunction, implication, biconditional.</span></div>
+      <div class="unit-row"><span class="unit-tag">Unit 1.2</span> <span>Equivalence of Propositions — logical laws, De Morgan's laws, simplification, CNF and DNF.</span></div>
+      <ul class="unit-goals">
+        <li>Construct and evaluate truth tables for compound propositions.</li>
+        <li>Identify tautologies, contradictions, and contingencies.</li>
+        <li>Simplify logical expressions using equivalence laws step by step.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Seq 2 -->
+  <div class="seq-item">
+    <div class="seq-header">
+      <span class="seq-num">Sequence 2</span>
+      <span class="seq-title">Foundations of Logic — Part 2</span>
+      <span class="seq-weeks">Weeks 3 – 4</span>
+      <span class="seq-chevron">▶</span>
+    </div>
+    <div class="seq-body">
+      <div class="unit-row"><span class="unit-tag">Unit 2.1</span> <span>Predicate Logic and Quantifiers — predicates, $\forall$, $\exists$, scope, negation of quantified statements.</span></div>
+      <div class="unit-row"><span class="unit-tag">Unit 2.2</span> <span>Rules of Inference in Propositional Logic — modus ponens, modus tollens, hypothetical syllogism, resolution.</span></div>
+      <ul class="unit-goals">
+        <li>Translate natural-language statements into predicate logic formulas.</li>
+        <li>Negate quantified expressions correctly.</li>
+        <li>Apply rules of inference to derive conclusions from premises.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Seq 3 -->
+  <div class="seq-item">
+    <div class="seq-header">
+      <span class="seq-num">Sequence 3</span>
+      <span class="seq-title">Discrete Structures</span>
+      <span class="seq-weeks">Weeks 5 – 7</span>
+      <span class="seq-chevron">▶</span>
+    </div>
+    <div class="seq-body">
+      <div class="unit-row"><span class="unit-tag">Unit 3.1</span> <span>Foundations of Set Theory — sets, subsets, power sets, Cartesian products, Venn diagrams.</span></div>
+      <div class="unit-row"><span class="unit-tag">Unit 3.2</span> <span>Set Operations — union, intersection, complement, difference, symmetric difference.</span></div>
+      <div class="unit-row"><span class="unit-tag">Unit 3.3</span> <span>Relations and Functions — binary relations, equivalence relations, partial orders, injections, surjections, bijections.</span></div>
+      <div class="unit-row"><span class="unit-tag">Unit 3.4</span> <span>Sequences and Series — arithmetic and geometric sequences, summation formulas, telescoping sums.</span></div>
+      <ul class="unit-goals">
+        <li>Prove set identities using element arguments and algebraic laws.</li>
+        <li>Classify relations by their properties (reflexive, symmetric, transitive).</li>
+        <li>Determine whether a function is injective, surjective, or bijective.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Seq 4 -->
+  <div class="seq-item">
+    <div class="seq-header">
+      <span class="seq-num">Sequence 4</span>
+      <span class="seq-title">Proofs and Recursions</span>
+      <span class="seq-weeks">Weeks 8 – 10</span>
+      <span class="seq-chevron">▶</span>
+    </div>
+    <div class="seq-body">
+      <div class="unit-row"><span class="unit-tag">Unit 4.1</span> <span>Fundamental Proof Techniques — direct proof, proof by contrapositive, proof by contradiction, exhaustive proof.</span></div>
+      <div class="unit-row"><span class="unit-tag">Unit 4.2</span> <span>Mathematical Induction — weak induction, strong induction, well-ordering principle.</span></div>
+      <div class="unit-row"><span class="unit-tag">Unit 4.3</span> <span>Recursive Definitions — recursively defined functions, structural recursion, recurrence relations.</span></div>
+      <ul class="unit-goals">
+        <li>Understand and apply fundamental proof techniques.</li>
+        <li>Master mathematical induction and strong induction.</li>
+        <li>Develop skills in recursive thinking and recursive definitions.</li>
+        <li>Connect proofs, recursion, and induction in mathematical problem solving.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Seq 5 -->
+  <div class="seq-item">
+    <div class="seq-header">
+      <span class="seq-num">Sequence 5</span>
+      <span class="seq-title">Counting</span>
+      <span class="seq-weeks">Weeks 11 – 12</span>
+      <span class="seq-chevron">▶</span>
+    </div>
+    <div class="seq-body">
+      <div class="unit-row"><span class="unit-tag">Unit 5.1</span> <span>Counting Principles — sum rule, product rule, inclusion-exclusion, permutations, combinations.</span></div>
+      <div class="unit-row"><span class="unit-tag">Unit 5.2</span> <span>Binomial Identities — binomial theorem, Pascal's triangle, Pascal's identity, Vandermonde's identity.</span></div>
+      <ul class="unit-goals">
+        <li>Apply sum and product rules as the foundation of counting.</li>
+        <li>Distinguish between ordered selections (permutations) and unordered selections (combinations).</li>
+        <li>Apply the binomial theorem and Pascal's triangle to expand polynomial expressions.</li>
+        <li>Prove classical binomial identities using algebraic and combinatorial arguments.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Seq 6 -->
+  <div class="seq-item">
+    <div class="seq-header">
+      <span class="seq-num">Sequence 6</span>
+      <span class="seq-title">Graphs — Part 1</span>
+      <span class="seq-weeks">Weeks 13 – 14</span>
+      <span class="seq-chevron">▶</span>
+    </div>
+    <div class="seq-body">
+      <div class="unit-row"><span class="unit-tag">Unit 6.1</span> <span>Introduction to Graphs — vertices, edges, degree, adjacency matrix, adjacency list, directed vs undirected.</span></div>
+      <div class="unit-row"><span class="unit-tag">Unit 6.2</span> <span>Special Graphs — trees, bipartite graphs, complete graphs $K_n$, cycles $C_n$, paths $P_n$.</span></div>
+      <ul class="unit-goals">
+        <li>Acquire the fundamental concepts of graph theory, including vertices, edges, and basic properties.</li>
+        <li>Master the construction and modification of graphs for different contexts.</li>
+        <li>Classify and analyse special types of graphs.</li>
+        <li>Apply graph theory to modelling problems in computer science.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Seq 7 -->
+  <div class="seq-item">
+    <div class="seq-header">
+      <span class="seq-num">Sequence 7</span>
+      <span class="seq-title">Graphs — Part 2</span>
+      <span class="seq-weeks">Weeks 15 – 16</span>
+      <span class="seq-chevron">▶</span>
+    </div>
+    <div class="seq-body">
+      <div class="unit-row"><span class="unit-tag">Unit 7.1</span> <span>Graph Isomorphism &amp; Canonical Form — invariants, isomorphism checks, isomorphic subgraphs (cliques, stars, cycles).</span></div>
+      <div class="unit-row"><span class="unit-tag">Unit 7.2</span> <span>Routing Problems — walk/trail/path, shortest paths, Eulerian circuits (Chinese Postman), Hamiltonian cycles (TSP).</span></div>
+      <ul class="unit-goals">
+        <li>Identify graph isomorphisms using invariants and canonical form.</li>
+        <li>Find and count isomorphic subgraphs.</li>
+        <li>Classify routing tasks: shortest path, Eulerian/Chinese Postman, Traveling Salesman.</li>
+        <li>Differentiate walk, trail, and path, and compute shortest paths in graphs.</li>
+      </ul>
+    </div>
+  </div>
+
+</div><!-- /schedule-wrap -->
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     METHODOLOGY
+════════════════════════════════════════════════════════════ -->
+<div class="section-card">
+  <div class="card-header">
+    <div class="card-icon">⚙️</div>
+    <h2>Methodology</h2>
+  </div>
+  <div class="card-body">
+    <p style="margin-bottom:18px; font-size:.93rem; color:#555; line-height:1.6;">
+      Each sequence follows a consistent <strong>four-step pedagogical cycle</strong> designed to build understanding
+      progressively — from concept exposure to applied problem solving.
+    </p>
+    <div class="method-grid">
+      <div class="method-card">
+        <span class="m-icon">▶️</span>
+        <div class="m-label">Watch</div>
+        <div class="m-desc">Video lectures introduce core concepts with worked examples and visual explanations.</div>
+      </div>
+      <div class="method-card">
+        <span class="m-icon">📖</span>
+        <div class="m-label">Read</div>
+        <div class="m-desc">Lecture notes provide formal definitions, proofs, and guided exercises for deeper study.</div>
+      </div>
+      <div class="method-card">
+        <span class="m-icon">🧩</span>
+        <div class="m-label">Practice</div>
+        <div class="m-desc">Unit quizzes reinforce understanding with immediate feedback on each topic.</div>
+      </div>
+      <div class="method-card">
+        <span class="m-icon">🔬</span>
+        <div class="m-label">Lab</div>
+        <div class="m-desc">Python-based Jupyter labs let students explore and automate mathematical reasoning.</div>
+      </div>
+      <div class="method-card">
+        <span class="m-icon">📝</span>
+        <div class="m-label">Assign</div>
+        <div class="m-desc">End-of-sequence assignments evaluate mastery across all units with multi-part problems.</div>
+      </div>
+    </div>
+
+    <div style="margin-top:20px; padding:14px 18px; background:#f5f8ff; border:1px solid #cce0ff; border-radius:8px; font-size:.9rem; line-height:1.65;">
+      <strong style="color:var(--navy2);">Assessment split:</strong>
+      Quizzes provide continuous formative feedback (ungraded or low-stakes). Lab assignments carry weight toward the final grade. Each sequence concludes with a graded assignment. A specialisation-track choice (Data or Cyber) is made after Sequence 7.
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     TOOLS & PLATFORMS
+════════════════════════════════════════════════════════════ -->
+<div class="section-card">
+  <div class="card-header">
+    <div class="card-icon">🛠️</div>
+    <h2>Tools &amp; Platforms</h2>
+  </div>
+  <div class="card-body" style="padding-bottom:6px;">
+    <p style="margin-bottom:18px; font-size:.93rem; color:#555; line-height:1.6;">
+      Students work with an open-source, Python-first toolchain throughout the labs, making abstract
+      mathematical concepts tangible and verifiable by code.
+    </p>
+  </div>
+</div>
+
+<div class="tools-grid">
+
+  <div class="tool-card">
+    <span class="t-logo">🐍</span>
+    <div class="t-name">Python</div>
+    <div class="t-role">General-purpose scripting language used throughout all labs.</div>
+    <div class="t-badge">Core</div>
+  </div>
+
+  <div class="tool-card">
+    <span class="t-logo">📓</span>
+    <div class="t-name">Jupyter</div>
+    <div class="t-role">Interactive notebook environment for mixing code, math, and explanations.</div>
+    <div class="t-badge">Lab environment</div>
+  </div>
+
+  <div class="tool-card">
+    <span class="t-logo">🔣</span>
+    <div class="t-name">SymPy</div>
+    <div class="t-role">Symbolic algebra and logic: simplify propositions, evaluate equivalences, manipulate sets.</div>
+    <div class="t-badge">Logic · Sets</div>
+  </div>
+
+  <div class="tool-card">
+    <span class="t-logo">🔍</span>
+    <div class="t-name">Z3</div>
+    <div class="t-role">SAT/SMT solver for checking satisfiability and verifying logical formulas automatically.</div>
+    <div class="t-badge">Satisfiability</div>
+  </div>
+
+  <div class="tool-card">
+    <span class="t-logo">🕸️</span>
+    <div class="t-name">NetworkX</div>
+    <div class="t-role">Graph construction, visualisation, isomorphism testing, and shortest-path algorithms.</div>
+    <div class="t-badge">Graph theory</div>
+  </div>
+
+  <div class="tool-card">
+    <span class="t-logo">📄</span>
+    <div class="t-name">LaTeX</div>
+    <div class="t-role">Mathematical typesetting for formal proofs, assignments, and professional documents.</div>
+    <div class="t-badge">Typesetting</div>
+  </div>
+
+</div><!-- /tools-grid -->
+
+
+<!-- ── Footer ─────────────────────────────────────────────────────── -->
+<div class="footer">
+  Discrete Mathematics · DMath_CC_25 · ACSP Programme<br/>
+  Pr. Ismail Bouishak &amp; Pr. Zouhair El Hadiq
+</div>
+
+
+<script>
+// Accordion toggle for schedule sequences
+document.querySelectorAll('.seq-header').forEach(header => {
+  header.addEventListener('click', () => {
+    const item = header.closest('.seq-item');
+    item.classList.toggle('open');
+  });
+});
+</script>
+</body>
+</html>
