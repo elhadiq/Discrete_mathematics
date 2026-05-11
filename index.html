@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Discrete Mathematics — ACSP</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --orange: #e67e22;
+  --orange2: #f0a500;
+  --dark:   #1a1a2e;
+  --navy:   #2c3e50;
+  --bg:     #e8edf2;
+  --border: #dce3ea;
+}
+
+body {
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background: var(--bg);
+  color: var(--navy);
+  min-height: 100vh;
+  padding: 0 0 60px;
+}
+
+/* ── Hero ─────────────────────────────────────────────────────────── */
+.hero {
+  background: linear-gradient(135deg, #1a1a2e 0%, #2c3e6b 100%);
+  border-bottom: 4px solid var(--orange);
+  padding: 48px 24px 40px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute; top: -60px; right: -60px;
+  width: 280px; height: 280px; border-radius: 50%;
+  background: rgba(230,126,34,.10);
+}
+.hero::after {
+  content: '';
+  position: absolute; bottom: -80px; left: -40px;
+  width: 200px; height: 200px; border-radius: 50%;
+  background: rgba(230,126,34,.07);
+}
+.hero .label {
+  font-size: .78rem; text-transform: uppercase; letter-spacing: .14em;
+  color: var(--orange2); font-weight: 700; margin-bottom: 10px;
+}
+.hero h1 {
+  font-size: 2.3rem; font-weight: 800; color: #fff; margin-bottom: 10px;
+}
+.hero .sub {
+  font-size: 1.05rem; color: rgba(255,255,255,.7); margin-bottom: 24px;
+}
+.hero .team {
+  display: inline-flex; gap: 20px; flex-wrap: wrap; justify-content: center;
+}
+.hero .prof {
+  font-size: .88rem; color: var(--orange2); font-weight: 600;
+}
+.hero .prof span { color: rgba(255,255,255,.6); font-weight: 400; }
+
+/* ── CTA button ───────────────────────────────────────────────────── */
+.btn {
+  display: inline-block;
+  background: var(--orange);
+  color: #fff; font-weight: 700; font-size: .95rem;
+  padding: 11px 28px; border-radius: 6px;
+  text-decoration: none; margin-top: 20px;
+  transition: background .2s;
+}
+.btn:hover { background: #cf6d17; }
+
+/* ── Main layout ──────────────────────────────────────────────────── */
+.main { max-width: 960px; margin: 0 auto; padding: 36px 20px 0; }
+
+.section-title {
+  font-size: 1.15rem; font-weight: 700; color: var(--navy);
+  margin-bottom: 16px; padding-bottom: 8px;
+  border-bottom: 2px solid #f9e4cc;
+  display: flex; align-items: center; gap: 8px;
+}
+
+/* ── Sequence cards ───────────────────────────────────────────────── */
+.seq-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+  gap: 16px;
+  margin-bottom: 36px;
+}
+.seq-card {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 12px rgba(0,0,0,.09);
+  overflow: hidden;
+  border-top: 4px solid var(--orange);
+  display: flex; flex-direction: column;
+}
+.seq-card .seq-head {
+  padding: 14px 18px 10px;
+}
+.seq-card .seq-num {
+  font-size: .72rem; text-transform: uppercase; letter-spacing: .1em;
+  color: var(--orange); font-weight: 700; margin-bottom: 4px;
+}
+.seq-card .seq-name {
+  font-size: 1rem; font-weight: 700; color: var(--navy); line-height: 1.3;
+}
+.seq-card .seq-weeks {
+  font-size: .78rem; color: #999; margin-top: 4px;
+}
+.seq-card .seq-links {
+  margin-top: auto;
+  padding: 10px 18px 14px;
+  display: flex; flex-wrap: wrap; gap: 8px;
+  border-top: 1px solid var(--border);
+  background: #fafbfc;
+}
+.seq-card .seq-links a {
+  font-size: .8rem; font-weight: 600;
+  color: var(--navy); text-decoration: none;
+  background: #f0f4f8; border: 1px solid var(--border);
+  border-radius: 20px; padding: 3px 12px;
+  transition: all .2s;
+}
+.seq-card .seq-links a:hover {
+  background: var(--orange); color: #fff; border-color: var(--orange);
+}
+.seq-card .seq-links a.lecture { background: #fdf3e7; border-color: #f9e4cc; color: var(--orange); }
+.seq-card .seq-links a.lecture:hover { background: var(--orange); color: #fff; }
+
+/* ── Quick links row ──────────────────────────────────────────────── */
+.quick-row {
+  display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 36px;
+}
+.quick-card {
+  flex: 1; min-width: 160px;
+  background: #fff; border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0,0,0,.08);
+  padding: 18px 16px; text-align: center;
+  text-decoration: none; color: var(--navy);
+  border-bottom: 3px solid var(--orange);
+  transition: transform .2s, box-shadow .2s;
+}
+.quick-card:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(0,0,0,.13); }
+.quick-card .qc-icon { font-size: 1.7rem; margin-bottom: 8px; display: block; }
+.quick-card .qc-label { font-weight: 700; font-size: .92rem; }
+.quick-card .qc-sub { font-size: .78rem; color: #888; margin-top: 3px; }
+
+/* ── Footer ───────────────────────────────────────────────────────── */
+.footer {
+  text-align: center; font-size: .82rem; color: #999;
+  margin-top: 40px; padding-top: 16px;
+  border-top: 1px solid var(--border);
+  max-width: 960px; margin-left: auto; margin-right: auto;
+  padding-left: 20px; padding-right: 20px;
+}
+</style>
+</head>
+<body>
+
+<!-- ── Hero ──────────────────────────────────────────────────────── -->
+<div class="hero">
+  <div class="label">ACSP Programme · DMath_CC_25</div>
+  <h1>Discrete Mathematics</h1>
+  <p class="sub">Logic · Sets · Proofs · Counting · Graphs</p>
+  <div class="team">
+    <div class="prof">Pr. Ismail Bouishak <span>· Co-instructor</span></div>
+    <div class="prof">Pr. Zouhair El Hadiq <span>· Co-instructor</span></div>
+  </div>
+  <br/>
+  <a class="btn" href="course_overview.html">📋 View Full Course Overview</a>
+</div>
+
+<!-- ── Main ──────────────────────────────────────────────────────── -->
+<div class="main">
+
+  <!-- Quick links -->
+  <div class="section-title">⚡ Quick Access</div>
+  <div class="quick-row">
+    <a class="quick-card" href="course_overview.html">
+      <span class="qc-icon">📋</span>
+      <div class="qc-label">Course Overview</div>
+      <div class="qc-sub">Goals · Schedule · Tools</div>
+    </a>
+    <a class="quick-card" href="assignment_lessons2_3.html">
+      <span class="qc-icon">📝</span>
+      <div class="qc-label">Assignment 1</div>
+      <div class="qc-sub">Logic &amp; Equivalences</div>
+    </a>
+    <a class="quick-card" href="Lesson0/presentation.html">
+      <span class="qc-icon">🎓</span>
+      <div class="qc-label">Introduction</div>
+      <div class="qc-sub">What is Discrete Math?</div>
+    </a>
+  </div>
+
+  <!-- Sequences -->
+  <div class="section-title">📚 Course Sequences</div>
+  <div class="seq-grid">
+
+    <!-- Seq 1 -->
+    <div class="seq-card">
+      <div class="seq-head">
+        <div class="seq-num">Sequence 1 · Weeks 1–2</div>
+        <div class="seq-name">Foundations of Logic — Part 1</div>
+        <div class="seq-weeks">Propositions · Connectives · Equivalences</div>
+      </div>
+      <div class="seq-links">
+        <a class="lecture" href="Lesson0/presentation.html">📖 Lecture</a>
+        <a href="Lesson0/exercises_lesson0.html">✏️ Exercises</a>
+      </div>
+    </div>
+
+    <!-- Seq 2 -->
+    <div class="seq-card">
+      <div class="seq-head">
+        <div class="seq-num">Sequence 2 · Weeks 3–4</div>
+        <div class="seq-name">Foundations of Logic — Part 2</div>
+        <div class="seq-weeks">Predicate Logic · Quantifiers · Inference</div>
+      </div>
+      <div class="seq-links">
+        <a class="lecture" href="Lesson2/proposition_logic.html">📖 Lecture</a>
+        <a href="Lesson2/exercises_lesson2.html">✏️ Exercises</a>
+      </div>
+    </div>
+
+    <!-- Seq 3 -->
+    <div class="seq-card">
+      <div class="seq-head">
+        <div class="seq-num">Sequence 3 · Weeks 5–7</div>
+        <div class="seq-name">Discrete Structures</div>
+        <div class="seq-weeks">Sets · Relations · Functions · Sequences</div>
+      </div>
+      <div class="seq-links">
+        <a class="lecture" href="Lesson3/lesson3_moodle.html">📖 Lecture</a>
+        <a href="Lesson3/exercises_lesson3.html">✏️ Exercises</a>
+      </div>
+    </div>
+
+    <!-- Seq 4 -->
+    <div class="seq-card">
+      <div class="seq-head">
+        <div class="seq-num">Sequence 4 · Weeks 8–10</div>
+        <div class="seq-name">Proofs and Recursions</div>
+        <div class="seq-weeks">Proof Techniques · Induction · Recursion</div>
+      </div>
+      <div class="seq-links">
+        <a class="lecture" href="Lesson4/lesson4_predicates.html">📖 Lecture</a>
+        <a href="Lesson4/exercises_lesson4.html">✏️ Exercises</a>
+      </div>
+    </div>
+
+    <!-- Seq 5 -->
+    <div class="seq-card">
+      <div class="seq-head">
+        <div class="seq-num">Sequence 5 · Weeks 11–12</div>
+        <div class="seq-name">Counting</div>
+        <div class="seq-weeks">Permutations · Combinations · Binomial</div>
+      </div>
+      <div class="seq-links">
+        <a class="lecture" href="Lesson5/lesson5_inference.html">📖 Lecture</a>
+        <a href="Lesson5/exercises_lesson5.html">✏️ Exercises</a>
+      </div>
+    </div>
+
+    <!-- Seq 6 -->
+    <div class="seq-card">
+      <div class="seq-head">
+        <div class="seq-num">Sequence 6 · Weeks 13–14</div>
+        <div class="seq-name">Graphs — Part 1</div>
+        <div class="seq-weeks">Vertices · Edges · Special Graphs</div>
+      </div>
+      <div class="seq-links">
+        <span style="font-size:.8rem;color:#aaa;align-self:center;">Coming soon</span>
+      </div>
+    </div>
+
+    <!-- Seq 7 -->
+    <div class="seq-card">
+      <div class="seq-head">
+        <div class="seq-num">Sequence 7 · Weeks 15–16</div>
+        <div class="seq-name">Graphs — Part 2</div>
+        <div class="seq-weeks">Isomorphism · Routing · Shortest Paths</div>
+      </div>
+      <div class="seq-links">
+        <span style="font-size:.8rem;color:#aaa;align-self:center;">Coming soon</span>
+      </div>
+    </div>
+
+  </div><!-- /seq-grid -->
+
+  <div class="footer">
+    Discrete Mathematics · DMath_CC_25 · ACSP Programme<br/>
+    Pr. Ismail Bouishak &amp; Pr. Zouhair El Hadiq
+  </div>
+
+</div><!-- /main -->
+</body>
+</html>
