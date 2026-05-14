@@ -290,11 +290,6 @@ p, q = symbols('p q')</span>
   </div>
 
   <div class="code-pair">
-    <div class="code-pane wolfram-pane">
-      <span class="pane-label wolfram-label">Wolfram</span>
-      <span class="pane-code">In[1]:= {Boole[True], Boole[False]}
-Out[1]= {1, 0}</span>
-    </div>
     <div class="code-pane sympy-pane">
       <span class="pane-label sympy-label">SymPy</span>
       <span class="pane-code">[int(True), int(False)]
@@ -311,10 +306,7 @@ Out[1]= {1, 0}</span>
   <p style="margin-top:0.6rem;">The <strong>negation</strong> of $p$ ($\neg$, <code>!</code>, <code>Not</code>) is the opposite of $p$; states "$p$ is false":</p>
 
   <div class="code-pair">
-    <div class="code-pane wolfram-pane">
-      <span class="pane-label wolfram-label">Wolfram</span>
-      <span class="pane-code">{¬p,  !p,  Not[p]}</span>
-    </div>
+
     <div class="code-pane sympy-pane">
       <span class="pane-label sympy-label">SymPy</span>
       <span class="pane-code">Not(p)    # or ~p</span>
@@ -332,10 +324,7 @@ Out[1]= {1, 0}</span>
   <p>The <strong>conjunction</strong> of $p$ and $q$ ($\wedge$, <code>&amp;&amp;</code>, <code>And</code>) is "$p$ and $q$":</p>
 
   <div class="code-pair">
-    <div class="code-pane wolfram-pane">
-      <span class="pane-label wolfram-label">Wolfram</span>
-      <span class="pane-code">{p ∧ q,  p && q,  And[p,q]}</span>
-    </div>
+
     <div class="code-pane sympy-pane">
       <span class="pane-label sympy-label">SymPy</span>
       <span class="pane-code">And(p, q)    # or p & q</span>
@@ -350,10 +339,7 @@ Out[1]= {1, 0}</span>
   <p>The <strong>disjunction</strong> of $p$ and $q$ ($\vee$, <code>||</code>, <code>Or</code>) is "$p$ or $q$":</p>
 
   <div class="code-pair">
-    <div class="code-pane wolfram-pane">
-      <span class="pane-label wolfram-label">Wolfram</span>
-      <span class="pane-code">{p ∨ q,  p || q,  Or[p,q]}</span>
-    </div>
+
     <div class="code-pane sympy-pane">
       <span class="pane-label sympy-label">SymPy</span>
       <span class="pane-code">Or(p, q)    # or p | q</span>
@@ -411,10 +397,7 @@ And(p, Not(q))          # p ∧ ¬q</span>
   <p>The <strong>conditional</strong> $p \Rightarrow q$ ($\Rightarrow$, <code>Implies</code>) is "If $p$, then $q$":</p>
 
   <div class="code-pair">
-    <div class="code-pane wolfram-pane">
-      <span class="pane-label wolfram-label">Wolfram</span>
-      <span class="pane-code">{p ⇒ q,  Implies[p, q]}</span>
-    </div>
+
     <div class="code-pane sympy-pane">
       <span class="pane-label sympy-label">SymPy</span>
       <span class="pane-code">Implies(p, q)</span>
@@ -434,10 +417,7 @@ And(p, Not(q))          # p ∧ ¬q</span>
   <p style="margin-top:0.5rem;">The <strong>biconditional</strong> $p \Leftrightarrow q$ ($\Leftrightarrow$, <code>Equivalent</code>, iff) is "$p$ if and only if $q$":</p>
 
   <div class="code-pair">
-    <div class="code-pane wolfram-pane">
-      <span class="pane-label wolfram-label">Wolfram</span>
-      <span class="pane-code">{p ⟺ q,  Equivalent[p, q]}</span>
-    </div>
+
     <div class="code-pane sympy-pane">
       <span class="pane-label sympy-label">SymPy</span>
       <span class="pane-code">Equivalent(p, q)</span>
@@ -486,12 +466,6 @@ simplify(expr)    # simplifies to just: q</span>
   <p style="margin-top:0.8rem;"><strong>Evaluate the following if $p$ = True and $q$ = False:</strong></p>
 
   <div class="code-pair">
-    <div class="code-pane wolfram-pane">
-      <span class="pane-label wolfram-label">Wolfram</span>
-      <span class="pane-code">In[2]:= {p,q} = {True, False}
-In[3]:= ¬p ∨ q ⇒ p ∧ ¬q
-Out[3]= True</span>
-    </div>
     <div class="code-pane sympy-pane">
       <span class="pane-label sympy-label">SymPy</span>
       <span class="pane-code">p_v, q_v = True, False
@@ -501,10 +475,6 @@ e.subs({p: p_v, q: q_v})   # True</span>
   </div>
 
   <div class="code-pair" style="margin-top:0.3rem;">
-    <div class="code-pane wolfram-pane">
-      <span class="pane-label wolfram-label">Wolfram</span>
-      <span class="pane-code">¬p ∨ q ∨ (p ∧ q ∨ True) ⇒ p ∧ q</span>
-    </div>
     <div class="code-pane sympy-pane">
       <span class="pane-label sympy-label">SymPy</span>
       <span class="pane-code">f = Implies(~p|q|(p&q)|True, p&q)
@@ -598,35 +568,34 @@ p, q = symbols('p q')</span>
 
 <!-- ══ Slide 13: SymPy Reference ══════════════════════════════════════ -->
 <section class="slide" id="s13">
-  <h2 class="frame-title">Wolfram → SymPy Quick Reference</h2>
+  <h2 class="frame-title">SymPy Quick Reference</h2>
   <table class="truth-table" style="width:100%; margin:0.5rem 0;">
     <thead>
       <tr>
         <th style="text-align:left; padding-left:0.8rem;">Operation</th>
-        <th>Wolfram</th>
         <th>SymPy function</th>
         <th>SymPy operator</th>
       </tr>
     </thead>
     <tbody>
       <tr><td style="text-align:left;padding-left:0.8rem;">Negation</td>
-          <td><code>Not[p]</code></td><td><code>Not(p)</code></td><td><code>~p</code></td></tr>
+          <td><code>Not(p)</code></td><td><code>~p</code></td></tr>
       <tr><td style="text-align:left;padding-left:0.8rem;">Conjunction</td>
-          <td><code>And[p,q]</code></td><td><code>And(p,q)</code></td><td><code>p &amp; q</code></td></tr>
+          <td><code>And(p,q)</code></td><td><code>p &amp; q</code></td></tr>
       <tr><td style="text-align:left;padding-left:0.8rem;">Disjunction</td>
-          <td><code>Or[p,q]</code></td><td><code>Or(p,q)</code></td><td><code>p | q</code></td></tr>
+          <td><code>Or(p,q)</code></td><td><code>p | q</code></td></tr>
       <tr><td style="text-align:left;padding-left:0.8rem;">Conditional</td>
-          <td><code>Implies[p,q]</code></td><td><code>Implies(p,q)</code></td><td>—</td></tr>
+          <td><code>Implies(p,q)</code></td><td>—</td></tr>
       <tr><td style="text-align:left;padding-left:0.8rem;">Biconditional</td>
-          <td><code>Equivalent[p,q]</code></td><td><code>Equivalent(p,q)</code></td><td>—</td></tr>
+          <td><code>Equivalent(p,q)</code></td><td>—</td></tr>
       <tr><td style="text-align:left;padding-left:0.8rem;">Boole / int</td>
-          <td><code>Boole[expr]</code></td><td><code>int(expr)</code></td><td>—</td></tr>
+          <td><code>int(expr)</code></td><td>—</td></tr>
       <tr><td style="text-align:left;padding-left:0.8rem;">Truth table</td>
-          <td><code>TruthTable[…]</code></td><td><code>truth_table(expr,[vars])</code></td><td>—</td></tr>
+          <td><code>truth_table(expr,[vars])</code></td><td>—</td></tr>
       <tr><td style="text-align:left;padding-left:0.8rem;">Simplify</td>
-          <td><code>Simplify[expr]</code></td><td><code>simplify(expr)</code></td><td>—</td></tr>
+          <td><code>simplify(expr)</code></td><td>—</td></tr>
       <tr><td style="text-align:left;padding-left:0.8rem;">Satisfiable</td>
-          <td><code>Reduce[expr,{p,q}]</code></td><td><code>satisfiable(expr)</code></td><td>—</td></tr>
+         <td><code>satisfiable(expr)</code></td><td>—</td></tr>
     </tbody>
   </table>
   <span class="slide-number">13 / 13</span>

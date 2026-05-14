@@ -75,7 +75,7 @@ body {
 .btn:hover { background: #cf6d17; }
 
 /* ── Main layout ──────────────────────────────────────────────────── */
-.main { max-width: 960px; margin: 0 auto; padding: 36px 20px 0; }
+.main { max-width: 1040px; margin: 0 auto; padding: 36px 20px 0; }
 
 .section-title {
   font-size: 1.15rem; font-weight: 700; color: var(--navy);
@@ -83,54 +83,6 @@ body {
   border-bottom: 2px solid #f9e4cc;
   display: flex; align-items: center; gap: 8px;
 }
-
-/* ── Sequence cards ───────────────────────────────────────────────── */
-.seq-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
-  gap: 16px;
-  margin-bottom: 36px;
-}
-.seq-card {
-  background: #fff;
-  border-radius: 10px;
-  box-shadow: 0 2px 12px rgba(0,0,0,.09);
-  overflow: hidden;
-  border-top: 4px solid var(--orange);
-  display: flex; flex-direction: column;
-}
-.seq-card .seq-head {
-  padding: 14px 18px 10px;
-}
-.seq-card .seq-num {
-  font-size: .72rem; text-transform: uppercase; letter-spacing: .1em;
-  color: var(--orange); font-weight: 700; margin-bottom: 4px;
-}
-.seq-card .seq-name {
-  font-size: 1rem; font-weight: 700; color: var(--navy); line-height: 1.3;
-}
-.seq-card .seq-weeks {
-  font-size: .78rem; color: #999; margin-top: 4px;
-}
-.seq-card .seq-links {
-  margin-top: auto;
-  padding: 10px 18px 14px;
-  display: flex; flex-wrap: wrap; gap: 8px;
-  border-top: 1px solid var(--border);
-  background: #fafbfc;
-}
-.seq-card .seq-links a {
-  font-size: .8rem; font-weight: 600;
-  color: var(--navy); text-decoration: none;
-  background: #f0f4f8; border: 1px solid var(--border);
-  border-radius: 20px; padding: 3px 12px;
-  transition: all .2s;
-}
-.seq-card .seq-links a:hover {
-  background: var(--orange); color: #fff; border-color: var(--orange);
-}
-.seq-card .seq-links a.lecture { background: #fdf3e7; border-color: #f9e4cc; color: var(--orange); }
-.seq-card .seq-links a.lecture:hover { background: var(--orange); color: #fff; }
 
 /* ── Quick links row ──────────────────────────────────────────────── */
 .quick-row {
@@ -150,12 +102,135 @@ body {
 .quick-card .qc-label { font-weight: 700; font-size: .92rem; }
 .quick-card .qc-sub { font-size: .78rem; color: #888; margin-top: 3px; }
 
+/* ── Session grid (top-level) ─────────────────────────────────────── */
+.seq-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+  margin-bottom: 36px;
+}
+
+/* a clickable session header card */
+.session {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 12px rgba(0,0,0,.09);
+  border-top: 4px solid var(--orange);
+  cursor: pointer;
+  display: flex; flex-direction: column;
+  position: relative;
+  transition: transform .15s, box-shadow .15s;
+  user-select: none;
+}
+.session:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(0,0,0,.13); }
+.session.coming { border-top-color: #aab2bc; background: #f7f9fb; cursor: default; }
+.session.coming:hover { transform: none; box-shadow: 0 2px 12px rgba(0,0,0,.09); }
+
+.session .seq-head { padding: 16px 18px 12px; flex: 1; }
+.session .seq-num {
+  font-size: .72rem; text-transform: uppercase; letter-spacing: .1em;
+  color: var(--orange); font-weight: 700; margin-bottom: 4px;
+}
+.session.coming .seq-num { color: #8a93a0; }
+.session .seq-name {
+  font-size: 1rem; font-weight: 700; color: var(--navy); line-height: 1.3;
+}
+.session .seq-weeks {
+  font-size: .78rem; color: #999; margin-top: 4px;
+}
+.session .seq-footer {
+  padding: 10px 18px 14px;
+  display: flex; justify-content: space-between; align-items: center;
+  border-top: 1px solid var(--border);
+  background: #fafbfc;
+  font-size: .8rem; color: #777;
+}
+.session.coming .seq-footer { background: transparent; border-top: none; }
+.session .count {
+  background: #fdf3e7; color: var(--orange);
+  font-weight: 700; font-size: .75rem;
+  padding: 3px 11px; border-radius: 20px;
+  border: 1px solid #f9e4cc;
+}
+.session .chevron {
+  font-size: 1rem;
+  color: var(--orange);
+  transition: transform .25s;
+}
+.session.open .chevron { transform: rotate(90deg); }
+.session .coming-tag {
+  font-size: .75rem; font-weight: 700;
+  color: #8a93a0; background: #eef1f5;
+  padding: 3px 11px; border-radius: 20px;
+  letter-spacing: .04em;
+}
+
+/* ── Course panel (revealed on click) ─────────────────────────────── */
+.course-panel {
+  display: none;
+  margin: -10px 0 36px;
+  padding: 22px 22px 6px;
+  background: #fff;
+  border-radius: 0 0 10px 10px;
+  box-shadow: 0 4px 18px rgba(0,0,0,.10);
+  border: 1px solid var(--border);
+  border-top: 4px solid var(--orange);
+  animation: slideDown .25s ease-out;
+}
+.course-panel.show { display: block; }
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.course-panel .panel-title {
+  font-size: .82rem; text-transform: uppercase; letter-spacing: .12em;
+  color: var(--orange); font-weight: 800;
+  margin-bottom: 14px;
+}
+
+.lesson-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 14px;
+  margin-bottom: 12px;
+}
+.lesson-card {
+  background: #fafbfc;
+  border-radius: 8px;
+  box-shadow: 0 1px 4px rgba(0,0,0,.05);
+  padding: 14px 16px;
+  border-left: 4px solid var(--orange);
+  display: flex; flex-direction: column;
+}
+.lesson-card .l-num {
+  font-size: .7rem; text-transform: uppercase; letter-spacing: .1em;
+  color: var(--orange); font-weight: 700;
+}
+.lesson-card .l-name {
+  font-size: .95rem; font-weight: 700; color: var(--navy); margin: 2px 0 8px;
+}
+.lesson-card .l-links {
+  display: flex; gap: 6px; flex-wrap: wrap;
+}
+.lesson-card .l-links a {
+  font-size: .76rem; font-weight: 600;
+  color: var(--navy); text-decoration: none;
+  background: #f0f4f8; border: 1px solid var(--border);
+  border-radius: 18px; padding: 2px 11px;
+  transition: all .2s;
+}
+.lesson-card .l-links a:hover {
+  background: var(--orange); color: #fff; border-color: var(--orange);
+}
+.lesson-card .l-links a.lecture { background: #fdf3e7; border-color: #f9e4cc; color: var(--orange); }
+.lesson-card .l-links a.lecture:hover { background: var(--orange); color: #fff; }
+
 /* ── Footer ───────────────────────────────────────────────────────── */
 .footer {
   text-align: center; font-size: .82rem; color: #999;
   margin-top: 40px; padding-top: 16px;
   border-top: 1px solid var(--border);
-  max-width: 960px; margin-left: auto; margin-right: auto;
+  max-width: 1040px; margin-left: auto; margin-right: auto;
   padding-left: 20px; padding-right: 20px;
 }
 </style>
@@ -178,7 +253,7 @@ body {
 <!-- ── Main ──────────────────────────────────────────────────────── -->
 <div class="main">
 
-  <!-- Quick links -->
+  <!-- ⚡ Quick Access -->
   <div class="section-title">⚡ Quick Access</div>
   <div class="quick-row">
     <a class="quick-card" href="course_overview.html">
@@ -191,107 +266,190 @@ body {
       <div class="qc-label">Assignment 1</div>
       <div class="qc-sub">Logic &amp; Equivalences</div>
     </a>
-    <a class="quick-card" href="logic/Lesson1/presentation.html">
-      <span class="qc-icon">🎓</span>
-      <div class="qc-label">Introduction</div>
-      <div class="qc-sub">What is Discrete Math?</div>
-    </a>
   </div>
 
-  <!-- Sequences -->
-  <div class="section-title">📚 Course Sequences</div>
+  <!-- 📚 Sessions (only headers visible) -->
+  <div class="section-title">📚 Sessions</div>
   <div class="seq-grid">
 
-    <!-- Seq 1 -->
-    <div class="seq-card">
+    <!-- Session 1 · Logic -->
+    <div class="session" data-target="panel-logic">
       <div class="seq-head">
-        <div class="seq-num">Sequence 1 · Weeks 1–2</div>
-        <div class="seq-name">Foundations of Logic — Part 1</div>
-        <div class="seq-weeks">Propositions · Connectives · Equivalences</div>
+        <div class="seq-num">Session 1 · Weeks 1–4</div>
+        <div class="seq-name">Foundations of Logic</div>
+        <div class="seq-weeks">Propositions · Equivalences · Quantifiers · Inference</div>
       </div>
-      <div class="seq-links">
-        <a class="lecture" href="logic/Lesson1/presentation.html">📖 Lecture</a>
-        <a href="logic/Lesson1/exercises_lesson0.html">✏️ Exercises</a>
+      <div class="seq-footer">
+        <span class="count">5 lessons</span>
+        <span class="chevron">▸</span>
       </div>
     </div>
 
-    <!-- Seq 2 -->
-    <div class="seq-card">
+    <!-- Session 2 · Discrete Structures -->
+    <div class="session" data-target="panel-ds">
       <div class="seq-head">
-        <div class="seq-num">Sequence 2 · Weeks 3–4</div>
-        <div class="seq-name">Foundations of Logic — Part 2</div>
-        <div class="seq-weeks">Predicate Logic · Quantifiers · Inference</div>
-      </div>
-      <div class="seq-links">
-        <a class="lecture" href="logic/Lesson2/proposition_logic.html">📖 Lecture</a>
-        <a href="logic/Lesson2/exercises_lesson2.html">✏️ Exercises</a>
-      </div>
-    </div>
-
-    <!-- Seq 3 -->
-    <div class="seq-card">
-      <div class="seq-head">
-        <div class="seq-num">Sequence 3 · Weeks 5–7</div>
+        <div class="seq-num">Session 2 · Weeks 5–7</div>
         <div class="seq-name">Discrete Structures</div>
-        <div class="seq-weeks">Sets · Relations · Functions · Sequences</div>
+        <div class="seq-weeks">Sets · Operations · Relations &amp; Functions · Sequences &amp; Series</div>
       </div>
-      <div class="seq-links">
-        <a class="lecture" href="logic/Lesson3/lesson3_moodle.html">📖 Lecture</a>
-        <a href="logic/Lesson3/exercises_lesson3.html">✏️ Exercises</a>
+      <div class="seq-footer">
+        <span class="count">4 topics</span>
+        <span class="chevron">▸</span>
       </div>
     </div>
 
-    <!-- Seq 4 -->
-    <div class="seq-card">
+    <!-- Session 3 · Coming soon -->
+    <div class="session coming">
       <div class="seq-head">
-        <div class="seq-num">Sequence 4 · Weeks 8–10</div>
+        <div class="seq-num">Session 3 · Weeks 8–10</div>
         <div class="seq-name">Proofs and Recursions</div>
         <div class="seq-weeks">Proof Techniques · Induction · Recursion</div>
       </div>
-      <div class="seq-links">
-        <a class="lecture" href="logic/Lesson4/lesson4_predicates.html">📖 Lecture</a>
-        <a href="logic/Lesson4/exercises_lesson4.html">✏️ Exercises</a>
+      <div class="seq-footer">
+        <span class="coming-tag">Coming soon</span>
       </div>
     </div>
 
-    <!-- Seq 5 -->
-    <div class="seq-card">
+    <!-- Session 4 · Coming soon -->
+    <div class="session coming">
       <div class="seq-head">
-        <div class="seq-num">Sequence 5 · Weeks 11–12</div>
+        <div class="seq-num">Session 4 · Weeks 11–12</div>
         <div class="seq-name">Counting</div>
         <div class="seq-weeks">Permutations · Combinations · Binomial</div>
       </div>
-      <div class="seq-links">
-        <a class="lecture" href="logic/Lesson5/lesson5_inference.html">📖 Lecture</a>
-        <a href="logic/Lesson5/exercises_lesson5.html">✏️ Exercises</a>
+      <div class="seq-footer">
+        <span class="coming-tag">Coming soon</span>
       </div>
     </div>
 
-    <!-- Seq 6 -->
-    <div class="seq-card">
+    <!-- Session 5 · Coming soon -->
+    <div class="session coming">
       <div class="seq-head">
-        <div class="seq-num">Sequence 6 · Weeks 13–14</div>
+        <div class="seq-num">Session 5 · Weeks 13–14</div>
         <div class="seq-name">Graphs — Part 1</div>
         <div class="seq-weeks">Vertices · Edges · Special Graphs</div>
       </div>
-      <div class="seq-links">
-        <span style="font-size:.8rem;color:#aaa;align-self:center;">Coming soon</span>
+      <div class="seq-footer">
+        <span class="coming-tag">Coming soon</span>
       </div>
     </div>
 
-    <!-- Seq 7 -->
-    <div class="seq-card">
+    <!-- Session 6 · Coming soon -->
+    <div class="session coming">
       <div class="seq-head">
-        <div class="seq-num">Sequence 7 · Weeks 15–16</div>
+        <div class="seq-num">Session 6 · Weeks 15–16</div>
         <div class="seq-name">Graphs — Part 2</div>
         <div class="seq-weeks">Isomorphism · Routing · Shortest Paths</div>
       </div>
-      <div class="seq-links">
-        <span style="font-size:.8rem;color:#aaa;align-self:center;">Coming soon</span>
+      <div class="seq-footer">
+        <span class="coming-tag">Coming soon</span>
       </div>
     </div>
 
-  </div><!-- /seq-grid -->
+  </div>
+
+  <!-- ── Hidden course panels (revealed on session click) ─────────── -->
+
+  <!-- Panel: Logic -->
+  <div class="course-panel" id="panel-logic">
+    <div class="panel-title">🧠 Session 1 · Foundations of Logic — 5 lessons</div>
+    <div class="lesson-grid">
+
+      <div class="lesson-card">
+        <div class="l-num">Lesson 1</div>
+        <div class="l-name">Introduction to Discrete Mathematics</div>
+        <div class="l-links">
+          <a class="lecture" href="logic/Lesson1/presentation.html">📖 Lecture</a>
+          <a href="logic/Lesson1/exercises_lesson0.html">✏️ Exercises</a>
+        </div>
+      </div>
+
+      <div class="lesson-card">
+        <div class="l-num">Lesson 2</div>
+        <div class="l-name">Proposition Logic</div>
+        <div class="l-links">
+          <a class="lecture" href="logic/Lesson2/proposition_logic.html">📖 Lecture</a>
+          <a href="logic/Lesson2/exercises_lesson2.html">✏️ Exercises</a>
+        </div>
+      </div>
+
+      <div class="lesson-card">
+        <div class="l-num">Lesson 3</div>
+        <div class="l-name">Logical Equivalences</div>
+        <div class="l-links">
+          <a class="lecture" href="logic/Lesson3/lesson3_moodle.html">📖 Lecture</a>
+          <a href="logic/Lesson3/exercises_lesson3.html">✏️ Exercises</a>
+        </div>
+      </div>
+
+      <div class="lesson-card">
+        <div class="l-num">Lesson 4</div>
+        <div class="l-name">Predicate Logic &amp; Quantifiers</div>
+        <div class="l-links">
+          <a class="lecture" href="logic/Lesson4/lesson4_predicates.html">📖 Lecture</a>
+          <a href="logic/Lesson4/exercises_lesson4.html">✏️ Exercises</a>
+        </div>
+      </div>
+
+      <div class="lesson-card">
+        <div class="l-num">Lesson 5</div>
+        <div class="l-name">Rules of Inference</div>
+        <div class="l-links">
+          <a class="lecture" href="logic/Lesson5/lesson5_inference.html">📖 Lecture</a>
+          <a href="logic/Lesson5/exercises_lesson5.html">✏️ Exercises</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Panel: Discrete Structures -->
+  <div class="course-panel" id="panel-ds">
+    <div class="panel-title">📂 Session 2 · Discrete Structures (Python) — 4 topics</div>
+    <div class="lesson-grid">
+
+      <div class="lesson-card">
+        <div class="l-num">Topic 2.1</div>
+        <div class="l-name">Sets</div>
+        <div class="l-links">
+          <a class="lecture" href="Discrete%20Structures/Sets/Lesson/sets.html">📖 Lecture</a>
+          <a href="Discrete%20Structures/Sets/Lesson/exercises_sets.html">✏️ Exercises + solutions</a>
+          <a href="Discrete%20Structures/Sets/Lesson/exercises_sets_enonces.html">📝 énoncés</a>
+        </div>
+      </div>
+
+      <div class="lesson-card">
+        <div class="l-num">Topic 2.2</div>
+        <div class="l-name">Operations on Sets</div>
+        <div class="l-links">
+          <a class="lecture" href="Discrete%20Structures/Operations%20on%20Sets/Lesson/operations_on_sets.html">📖 Lecture</a>
+          <a href="Discrete%20Structures/Operations%20on%20Sets/Lesson/exercises_operations_on_sets.html">✏️ Exercises + solutions</a>
+          <a href="Discrete%20Structures/Operations%20on%20Sets/Lesson/exercises_operations_on_sets_enonces.html">📝 énoncés</a>
+        </div>
+      </div>
+
+      <div class="lesson-card">
+        <div class="l-num">Topic 2.3</div>
+        <div class="l-name">Relations and Functions</div>
+        <div class="l-links">
+          <a class="lecture" href="Discrete%20Structures/Relations%20and%20Functions/Lesson/relations_and_functions.html">📖 Lecture</a>
+          <a href="Discrete%20Structures/Relations%20and%20Functions/Lesson/exercises_relations_and_functions.html">✏️ Exercises + solutions</a>
+          <a href="Discrete%20Structures/Relations%20and%20Functions/Lesson/exercises_relations_and_functions_enonces.html">📝 énoncés</a>
+        </div>
+      </div>
+
+      <div class="lesson-card">
+        <div class="l-num">Topic 2.4</div>
+        <div class="l-name">Sequences and Series</div>
+        <div class="l-links">
+          <a class="lecture" href="Discrete%20Structures/Sequences%20and%20Series/Lesson/sequences_and_series.html">📖 Lecture</a>
+          <a href="Discrete%20Structures/Sequences%20and%20Series/Lesson/exercises_sequences_and_series.html">✏️ Exercises + solutions</a>
+          <a href="Discrete%20Structures/Sequences%20and%20Series/Lesson/exercises_sequences_and_series_enonces.html">📝 énoncés</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
 
   <div class="footer">
     Discrete Mathematics · DMath_CC_25 · ACSP Programme<br/>
@@ -299,5 +457,28 @@ body {
   </div>
 
 </div><!-- /main -->
+
+<script>
+  // Click a session header → toggle its course panel (only one open at a time)
+  document.querySelectorAll('.session[data-target]').forEach(card => {
+    card.addEventListener('click', () => {
+      const id    = card.dataset.target;
+      const panel = document.getElementById(id);
+      const isOpen = panel.classList.contains('show');
+
+      // close all panels and reset arrows
+      document.querySelectorAll('.course-panel').forEach(p => p.classList.remove('show'));
+      document.querySelectorAll('.session').forEach(s => s.classList.remove('open'));
+
+      // open the clicked one (if it was not already open)
+      if (!isOpen) {
+        panel.classList.add('show');
+        card.classList.add('open');
+        // smooth scroll the panel into view
+        setTimeout(() => panel.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
+      }
+    });
+  });
+</script>
 </body>
 </html>
