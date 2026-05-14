@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sequences and Series — Exercises</title>
+<script>
+  MathJax = {
+    tex: { inlineMath: [['$','$']], displayMath: [['$$','$$']] },
+    options: { skipHtmlTags: ['script','noscript','style','textarea'] }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --orange:    #e67e22;
+  --darkblue:  #2c3e50;
+  --lightbg:   #f4f9fc;
+  --border:    #dce3ea;
+  --py-fg:     #1f4e7a;
+  --py-bg:     #eaf3fb;
+  --py-border: #2a6fb3;
+  --py-head:   #2a6fb3;
+  --sp-fg:     #1e824c;
+  --sp-bg:     #e8f5ec;
+  --sp-border: #27ae60;
+  --sp-head:   #27ae60;
+  --out-fg:    #6e4b0a;
+  --out-bg:    #fff7e0;
+  --out-border:#e0b341;
+  --out-head:  #c89324;
+  --sol-bg:    #fdf6ee;
+  --sol-border:#e67e22;
+}
+
+body {
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  background: #e8edf2;
+  color: var(--darkblue);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem 1rem 5rem;
+  gap: 1.5rem;
+}
+
+.slide {
+  background: #fff;
+  width: 100%;
+  max-width: 940px;
+  border-radius: 10px;
+  box-shadow: 0 4px 18px rgba(0,0,0,.10);
+  padding: 2rem 2.4rem 1.6rem;
+  position: relative;
+}
+.slide.title-slide {
+  background: linear-gradient(145deg, #f4f9fc 60%, #e0eef7);
+  text-align: center;
+  border-top: 6px solid var(--orange);
+  padding: 2.5rem 2rem;
+}
+.slide.title-slide h1 { font-size: 1.9rem; color: var(--darkblue); margin-bottom: 0.4rem; }
+.slide.title-slide .subtitle { font-size: 1.15rem; color: #555; }
+
+h2.frame-title {
+  font-size: 1.45rem;
+  color: var(--orange);
+  font-weight: 700;
+  margin-bottom: 0.4rem;
+  padding-bottom: 0.3rem;
+  border-bottom: 2px solid #f9e4cc;
+}
+.ex-number {
+  display: inline-block;
+  background: var(--orange);
+  color: #fff;
+  font-weight: 700;
+  padding: 0.15em 0.6em;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  margin-right: 0.5rem;
+}
+.difficulty {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  padding: 0.1em 0.5em;
+  border-radius: 3px;
+  margin-left: 0.4rem;
+  vertical-align: middle;
+  text-transform: uppercase;
+}
+.easy   { background: #d4f4dd; color: #1e7a3b; }
+.medium { background: #fce4b6; color: #8a5400; }
+.hard   { background: #f8c8c8; color: #952020; }
+
+p { line-height: 1.7; margin: 0.4rem 0; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.4rem; line-height: 1.85; }
+ul li::marker, ol li::marker { color: var(--orange); }
+.statement { margin: 0.3rem 0 0.6rem; }
+
+.python-block, .sympy-block {
+  border-radius: 6px;
+  overflow: hidden;
+  margin: 0.6rem 0;
+}
+.python-block { border: 1px solid var(--py-border); }
+.sympy-block  { border: 1px solid var(--sp-border); }
+.python-label, .sympy-label, .output-label {
+  display: block;
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  color: #fff;
+}
+.python-label { background: var(--py-head); }
+.sympy-label  { background: var(--sp-head); }
+.python-block .pane-code, .sympy-block .pane-code {
+  font-family: 'Consolas', 'Fira Code', monospace;
+  font-size: 0.83rem;
+  line-height: 1.6;
+  padding: 0.5rem 0.75rem;
+  white-space: pre;
+  display: block;
+  overflow-x: auto;
+}
+.python-block .pane-code { background: var(--py-bg); color: var(--py-fg); }
+.sympy-block  .pane-code { background: var(--sp-bg); color: var(--sp-fg); }
+
+.output-block {
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1px solid var(--out-border);
+  margin: 0.4rem 0 0.6rem;
+}
+.output-label { background: var(--out-head); }
+.output-block .pane-code {
+  background: var(--out-bg);
+  color: var(--out-fg);
+  font-family: 'Consolas', 'Fira Code', monospace;
+  font-size: 0.83rem;
+  line-height: 1.6;
+  padding: 0.5rem 0.75rem;
+  white-space: pre;
+  display: block;
+  overflow-x: auto;
+}
+
+details.solution {
+  margin: 0.4rem 0 0.6rem;
+  background: var(--sol-bg);
+  border-left: 4px solid var(--sol-border);
+  border-radius: 4px;
+  padding: 0.5rem 0.8rem;
+}
+details.solution summary {
+  cursor: pointer;
+  font-weight: 700;
+  color: var(--orange);
+  list-style: none;
+  font-size: 0.9rem;
+  letter-spacing: 0.04em;
+}
+details.solution summary::before { content: "▸ "; }
+details.solution[open] summary::before { content: "▾ "; }
+details.solution > *:not(summary) { margin-top: 0.5rem; }
+
+.toc {
+  background: var(--lightbg);
+  border-left: 4px solid var(--orange);
+  padding: 0.8rem 1rem;
+  border-radius: 4px;
+}
+.toc a { color: var(--darkblue); text-decoration: none; }
+.toc a:hover { color: var(--orange); }
+</style>
+</head>
+<body>
+
+<section class="slide title-slide">
+  <h1>Sequences &amp; Series — Exercises</h1>
+  <p class="subtitle">With Python solutions</p>
+  <p style="font-size:1rem;color:#e67e22;margin-top:0.8rem;font-style:italic;font-weight:600;letter-spacing:.02em;">By Pr. El Hadiq Zouhair</p>
+</section>
+
+<section class="slide">
+  <h2 class="frame-title">Contents</h2>
+  <div class="toc">
+    <ol>
+      <li><a href="#ex1">Generate finite sequences</a> <span class="difficulty easy">easy</span></li>
+      <li><a href="#ex2">Sum &amp; product of a list</a> <span class="difficulty easy">easy</span></li>
+      <li><a href="#ex3">Arithmetic progression</a> <span class="difficulty easy">easy</span></li>
+      <li><a href="#ex4">Geometric progression</a> <span class="difficulty medium">medium</span></li>
+      <li><a href="#ex5">Sum of $1..n$ and $1^2..n^2$</a> <span class="difficulty medium">medium</span></li>
+      <li><a href="#ex6">$\sum (2k-1) = n^2$</a> <span class="difficulty medium">medium</span></li>
+      <li><a href="#ex7">Infinite geometric series</a> <span class="difficulty medium">medium</span></li>
+      <li><a href="#ex8">Recurrence — Fibonacci</a> <span class="difficulty medium">medium</span></li>
+      <li><a href="#ex9">Convergence — p-series</a> <span class="difficulty hard">hard</span></li>
+      <li><a href="#ex10">Catalan numbers</a> <span class="difficulty hard">hard</span></li>
+      <li><a href="#ex11">Factorial as a product</a> <span class="difficulty medium">medium</span></li>
+      <li><a href="#ex12">Symbolic recurrence with rsolve</a> <span class="difficulty hard">hard</span></li>
+    </ol>
+  </div>
+</section>
+
+<!-- ══ Ex 1 ═════════════════════════════════════════════════════════ -->
+<section class="slide" id="ex1">
+  <h2 class="frame-title"><span class="ex-number">1</span>Generate finite sequences <span class="difficulty easy">easy</span></h2>
+  <p class="statement">Produce the first 10 terms of each:</p>
+  <ol>
+    <li>Squares $a_k = k^2$ for $k = 1..10$.</li>
+    <li>Odd numbers $a_k = 2k - 1$ for $k = 1..10$.</li>
+    <li>Powers of 2 $a_k = 2^k$ for $k = 0..9$.</li>
+  </ol>
+
+  <details class="solution"><summary>Solution</summary>
+  <div class="python-block">
+    <span class="python-label">Python</span>
+    <span class="pane-code">print([k**2     for k in range(1, 11)])   # [1, 4, ..., 100]
+print([2*k - 1  for k in range(1, 11)])   # [1, 3, 5, 7, 9, 11, 13, 15, 17, 19]
+print([2**k     for k in range(0, 10)])   # [1, 2, 4, 8, 16, 32, 64, 128, 256, 512]</span>
+  </div>
+  </details>
+</section>
+
+<!-- ══ Ex 2 ═════════════════════════════════════════════════════════ -->
+<section class="slide" id="ex2">
+  <h2 class="frame-title"><span class="ex-number">2</span>Sum &amp; product of a list <span class="difficulty easy">easy</span></h2>
+  <p class="statement">Given <code>L = [3, 1, 4, 1, 5, 9, 2, 6]</code>, compute its sum and its product.</p>
+
+  <details class="solution"><summary>Solution</summary>
+  <div class="python-block">
+    <span class="python-label">Python</span>
+    <span class="pane-code">import math
+L = [3, 1, 4, 1, 5, 9, 2, 6]
+print(sum(L))         # 31
+print(math.prod(L))   # 6480</span>
+  </div>
+  </details>
+</section>
+
+<!-- ══ Ex 3 ═════════════════════════════════════════════════════════ -->
+<section class="slide" id="ex3">
+  <h2 class="frame-title"><span class="ex-number">3</span>Arithmetic progression <span class="difficulty easy">easy</span></h2>
+  <p class="statement">For $c = 2,\, d = 3,\, n = 10$, list $\{c + kd\}_{k=0}^{n}$ and compute its sum.
+  Then verify the closed-form $\dfrac{(n+1)(2c + nd)}{2}$.</p>
+
+  <details class="solution"><summary>Solution</summary>
+  <div class="python-block">
+    <span class="python-label">Python</span>
+    <span class="pane-code">c, d, n = 2, 3, 10
+ap = [c + k*d for k in range(n+1)]
+S  = sum(ap)
+print(ap)                                  # [2, 5, 8, ..., 32]
+print(S, (n+1)*(2*c + n*d)//2)             # 187 187</span>
+  </div>
+  </details>
+</section>
+
+<!-- ══ Ex 4 ═════════════════════════════════════════════════════════ -->
+<section class="slide" id="ex4">
+  <h2 class="frame-title"><span class="ex-number">4</span>Geometric progression <span class="difficulty medium">medium</span></h2>
+  <p class="statement">For $d = 2,\, r = 3,\, n = 8$, list $\{d \cdot r^k\}_{k=0}^{n}$ and compute its sum.
+  Verify the closed-form $\dfrac{d\,(r^{\,n+1} - 1)}{r - 1}$.</p>
+
+  <details class="solution"><summary>Solution</summary>
+  <div class="python-block">
+    <span class="python-label">Python</span>
+    <span class="pane-code">d, r, n = 2, 3, 8
+gp = [d * r**k for k in range(n+1)]
+print(gp)                                          # [2, 6, 18, ..., 13122]
+print(sum(gp), d*(r**(n+1) - 1)//(r - 1))          # 19682 19682</span>
+  </div>
+  </details>
+</section>
+
+<!-- ══ Ex 5 ═════════════════════════════════════════════════════════ -->
+<section class="slide" id="ex5">
+  <h2 class="frame-title"><span class="ex-number">5</span>Sum of $1..n$ and $1^2..n^2$ <span class="difficulty medium">medium</span></h2>
+  <p class="statement">For $n = 100$, compute:</p>
+  <ol>
+    <li>$\displaystyle \sum_{k=1}^{n} k$ and check $= n(n+1)/2$.</li>
+    <li>$\displaystyle \sum_{k=1}^{n} k^2$ and check $= n(n+1)(2n+1)/6$.</li>
+  </ol>
+
+  <details class="solution"><summary>Solution</summary>
+  <div class="python-block">
+    <span class="python-label">Python</span>
+    <span class="pane-code">n = 100
+print(sum(range(1, n+1)),         n*(n+1)//2)            # 5050    5050
+print(sum(k*k for k in range(1, n+1)), n*(n+1)*(2*n+1)//6) # 338350  338350</span>
+  </div>
+  </details>
+</section>
+
+<!-- ══ Ex 6 ═════════════════════════════════════════════════════════ -->
+<section class="slide" id="ex6">
+  <h2 class="frame-title"><span class="ex-number">6</span>$\displaystyle\sum_{k=1}^{n}(2k-1) = n^2$ <span class="difficulty medium">medium</span></h2>
+  <p class="statement">Verify for $n = 1..1000$. Then prove it symbolically with SymPy.</p>
+
+  <details class="solution"><summary>Solution</summary>
+  <div class="python-block">
+    <span class="python-label">Python — numerical</span>
+    <span class="pane-code">for n in range(1, 1001):
+    assert sum(2*k - 1 for k in range(1, n+1)) == n**2
+print("ok up to 1000 ✓")</span>
+  </div>
+  <div class="sympy-block">
+    <span class="sympy-label">SymPy — symbolic</span>
+    <span class="pane-code">from sympy import symbols, Sum, simplify
+k, n = symbols('k n')
+print(simplify(Sum(2*k - 1, (k, 1, n)).doit()))   # n**2</span>
+  </div>
+  </details>
+</section>
+
+<!-- ══ Ex 7 ═════════════════════════════════════════════════════════ -->
+<section class="slide" id="ex7">
+  <h2 class="frame-title"><span class="ex-number">7</span>Infinite geometric series <span class="difficulty medium">medium</span></h2>
+  <p class="statement">Compute $\displaystyle \sum_{k=0}^{\infty} \left(\tfrac{3}{10}\right)^{k}$ and
+  $\displaystyle \sum_{k=1}^{\infty} \left(\tfrac{1}{2}\right)^{k}$ both numerically and with SymPy.</p>
+
+  <details class="solution"><summary>Solution</summary>
+  <div class="python-block">
+    <span class="python-label">Python — partial sums</span>
+    <span class="pane-code">print(sum((3/10)**k for k in range(1000)))   # ≈ 1.4285…  (= 10/7)
+print(sum((1/2)**k for k in range(1, 1000))) # ≈ 1.0</span>
+  </div>
+  <div class="sympy-block">
+    <span class="sympy-label">SymPy — exact</span>
+    <span class="pane-code">from sympy import Sum, symbols, oo, Rational
+k = symbols('k')
+print(Sum(Rational(3,10)**k, (k, 0, oo)).doit())    # 10/7
+print(Sum(Rational(1,2)**k,  (k, 1, oo)).doit())    # 1</span>
+  </div>
+  </details>
+</section>
+
+<!-- ══ Ex 8 ═════════════════════════════════════════════════════════ -->
+<section class="slide" id="ex8">
+  <h2 class="frame-title"><span class="ex-number">8</span>Recurrence — Fibonacci <span class="difficulty medium">medium</span></h2>
+  <p class="statement">The Fibonacci sequence is $F_0 = 0,\ F_1 = 1,\ F_n = F_{n-1} + F_{n-2}$.
+  Print $F_0..F_{15}$ using:</p>
+  <ol>
+    <li>Recursive function with memoization.</li>
+    <li>Iterative loop.</li>
+    <li>SymPy's <code>rsolve</code> to obtain the closed-form (Binet's formula).</li>
+  </ol>
+
+  <details class="solution"><summary>Solution</summary>
+  <div class="python-block">
+    <span class="python-label">Python</span>
+    <span class="pane-code">from functools import lru_cache
+
+@lru_cache
+def fib(n):
+    return n if n &lt; 2 else fib(n-1) + fib(n-2)
+
+print([fib(k) for k in range(16)])
+
+# iterative
+a, b = 0, 1
+out  = []
+for _ in range(16):
+    out.append(a); a, b = b, a + b
+print(out)</span>
+  </div>
+  <div class="sympy-block">
+    <span class="sympy-label">SymPy — Binet's formula</span>
+    <span class="pane-code">from sympy import Function, rsolve, symbols, simplify
+n = symbols('n', integer=True)
+f = Function('f')
+expr = rsolve(f(n) - f(n-1) - f(n-2), f(n), {f(0): 0, f(1): 1})
+print(simplify(expr))
+# sqrt(5)*(-(1/2 - sqrt(5)/2)**n + (1/2 + sqrt(5)/2)**n)/5</span>
+  </div>
+  </details>
+</section>
+
+<!-- ══ Ex 9 ═════════════════════════════════════════════════════════ -->
+<section class="slide" id="ex9">
+  <h2 class="frame-title"><span class="ex-number">9</span>Convergence — p-series <span class="difficulty hard">hard</span></h2>
+  <p class="statement">Compute $\displaystyle\sum_{k=1}^{\infty} \frac{1}{k^p}$ for $p = 1, 2, 3$.
+  Which converge? Compare partial sums to known exact values (Basel problem: $\pi^2/6$ for $p=2$).</p>
+
+  <details class="solution"><summary>Solution</summary>
+  <p>$p = 1$ — harmonic series — <strong>diverges</strong>.<br>
+     $p = 2$ — Basel — converges to $\pi^2/6$.<br>
+     $p = 3$ — Apéry's constant — converges to $\zeta(3) \approx 1.20206$.</p>
+  <div class="sympy-block">
+    <span class="sympy-label">SymPy</span>
+    <span class="pane-code">from sympy import Sum, symbols, oo, pi
+k = symbols('k', integer=True, positive=True)
+print(Sum(1/k,    (k, 1, oo)).doit())     # oo   (diverges)
+print(Sum(1/k**2, (k, 1, oo)).doit())     # pi**2/6
+print(Sum(1/k**3, (k, 1, oo)).doit())     # zeta(3)</span>
+  </div>
+  <div class="python-block">
+    <span class="python-label">Python — numerical partial sum</span>
+    <span class="pane-code">import math
+N = 10_000
+print(sum(1/k**2 for k in range(1, N+1)))   # ≈ 1.6448...
+print(math.pi**2 / 6)                       # 1.6449...</span>
+  </div>
+  </details>
+</section>
+
+<!-- ══ Ex 10 ════════════════════════════════════════════════════════ -->
+<section class="slide" id="ex10">
+  <h2 class="frame-title"><span class="ex-number">10</span>Catalan numbers <span class="difficulty hard">hard</span></h2>
+  <p class="statement">Compute $C_0..C_{10}$ from $C_n = \frac{1}{n+1}\binom{2n}{n}$ in two ways:</p>
+  <ol>
+    <li>Direct formula using <code>math.comb</code>.</li>
+    <li><code>sympy.catalan</code>.</li>
+  </ol>
+
+  <details class="solution"><summary>Solution</summary>
+  <div class="python-block">
+    <span class="python-label">Python</span>
+    <span class="pane-code">import math
+def C(n):
+    return math.comb(2*n, n) // (n + 1)
+
+print([C(n) for n in range(11)])
+# [1, 1, 2, 5, 14, 42, 132, 429, 1430, 4862, 16796]</span>
+  </div>
+  <div class="sympy-block">
+    <span class="sympy-label">SymPy</span>
+    <span class="pane-code">from sympy import catalan
+print([catalan(n) for n in range(11)])
+# [1, 1, 2, 5, 14, 42, 132, 429, 1430, 4862, 16796]</span>
+  </div>
+  </details>
+</section>
+
+<!-- ══ Ex 11 ════════════════════════════════════════════════════════ -->
+<section class="slide" id="ex11">
+  <h2 class="frame-title"><span class="ex-number">11</span>Factorial as a product <span class="difficulty medium">medium</span></h2>
+  <p class="statement">Express $n! = \displaystyle\prod_{k=1}^{n} k$ in three ways: <code>math.prod</code>, <code>functools.reduce</code>, and SymPy's <code>Product</code>. Compute $10!$.</p>
+
+  <details class="solution"><summary>Solution</summary>
+  <div class="python-block">
+    <span class="python-label">Python</span>
+    <span class="pane-code">import math
+from functools import reduce
+from operator   import mul
+
+print(math.prod(range(1, 11)))                 # 3628800
+print(reduce(mul, range(1, 11), 1))            # 3628800
+print(math.factorial(10))                      # 3628800</span>
+  </div>
+  <div class="sympy-block">
+    <span class="sympy-label">SymPy</span>
+    <span class="pane-code">from sympy import symbols, Product, factorial
+k, n = symbols('k n', integer=True, positive=True)
+print(Product(k, (k, 1, 10)).doit())           # 3628800
+print(Product(k, (k, 1, n)).doit())            # factorial(n)</span>
+  </div>
+  </details>
+</section>
+
+<!-- ══ Ex 12 ════════════════════════════════════════════════════════ -->
+<section class="slide" id="ex12">
+  <h2 class="frame-title"><span class="ex-number">12</span>Symbolic recurrence with <code>rsolve</code> <span class="difficulty hard">hard</span></h2>
+  <p class="statement">Solve each recurrence symbolically.</p>
+  <ol>
+    <li>$a_k = a_{k-1} + 3,\;a_0 = 2$</li>
+    <li>$g_k = 3\,g_{k-1},\;g_0 = 2$</li>
+    <li>$t_k = 2\,t_{k-1} + 1,\;t_0 = 0$ &nbsp;(Hanoi)</li>
+  </ol>
+
+  <details class="solution"><summary>Solution</summary>
+  <div class="sympy-block">
+    <span class="sympy-label">SymPy</span>
+    <span class="pane-code">from sympy import Function, rsolve, symbols, simplify
+k = symbols('k', integer=True)
+a, g, t = Function('a'), Function('g'), Function('t')
+
+print(rsolve(a(k) - a(k-1) - 3, a(k), {a(0): 2}))     # 3*k + 2
+print(rsolve(g(k) - 3*g(k-1),    g(k), {g(0): 2}))     # 2*3**k
+print(simplify(rsolve(t(k) - 2*t(k-1) - 1, t(k), {t(0): 0})))   # 2**k − 1</span>
+  </div>
+  </details>
+</section>
+
+<section class="slide">
+  <h2 class="frame-title">Going further</h2>
+  <ul>
+    <li>Plot partial sums of $\sum 1/k^2$ converging to $\pi^2/6$ with matplotlib.</li>
+    <li>Implement memoized Catalan numbers from the recurrence $C_{n+1} = \sum_{i=0}^n C_i C_{n-i}$.</li>
+    <li>Try <code>sympy.summation</code> on $\sum_{k=0}^{\infty} x^k/k!$ — recognize the result.</li>
+    <li>Use <code>generating_function</code> ideas to derive a closed form for $\sum_{k=0}^{\infty} k\,r^k$.</li>
+  </ul>
+  <p style="margin-top:0.8rem;font-style:italic;color:#666;">Open the <a href="sequences_and_series.html" style="color:var(--orange);font-weight:600;text-decoration:none;">main lesson</a> for the matching theory.</p>
+</section>
+
+</body>
+</html>

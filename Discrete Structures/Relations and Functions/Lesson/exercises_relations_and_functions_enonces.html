@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Relations and Functions — Exercises (énoncés)</title>
+<script>
+  MathJax = {
+    tex: { inlineMath: [['$','$']], displayMath: [['$$','$$']] },
+    options: { skipHtmlTags: ['script','noscript','style','textarea'] }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --orange:    #e67e22;
+  --darkblue:  #2c3e50;
+  --lightbg:   #f4f9fc;
+  --border:    #dce3ea;
+}
+
+body {
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  background: #e8edf2;
+  color: var(--darkblue);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem 1rem 5rem;
+  gap: 1.5rem;
+}
+
+.slide {
+  background: #fff;
+  width: 100%;
+  max-width: 940px;
+  border-radius: 10px;
+  box-shadow: 0 4px 18px rgba(0,0,0,.10);
+  padding: 2rem 2.4rem 1.6rem;
+  position: relative;
+}
+.slide.title-slide {
+  background: linear-gradient(145deg, #f4f9fc 60%, #e0eef7);
+  text-align: center;
+  border-top: 6px solid var(--orange);
+  padding: 2.5rem 2rem;
+}
+.slide.title-slide h1 { font-size: 1.9rem; color: var(--darkblue); margin-bottom: 0.4rem; }
+.slide.title-slide .subtitle { font-size: 1.15rem; color: #555; }
+
+h2.frame-title {
+  font-size: 1.45rem;
+  color: var(--orange);
+  font-weight: 700;
+  margin-bottom: 0.4rem;
+  padding-bottom: 0.3rem;
+  border-bottom: 2px solid #f9e4cc;
+}
+.ex-number {
+  display: inline-block;
+  background: var(--orange);
+  color: #fff;
+  font-weight: 700;
+  padding: 0.15em 0.6em;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  margin-right: 0.5rem;
+}
+.difficulty {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  padding: 0.1em 0.5em;
+  border-radius: 3px;
+  margin-left: 0.4rem;
+  vertical-align: middle;
+  text-transform: uppercase;
+}
+.easy   { background: #d4f4dd; color: #1e7a3b; }
+.medium { background: #fce4b6; color: #8a5400; }
+.hard   { background: #f8c8c8; color: #952020; }
+
+p { line-height: 1.7; margin: 0.4rem 0; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.4rem; line-height: 1.85; }
+ul li::marker, ol li::marker { color: var(--orange); }
+.statement { margin: 0.3rem 0 0.6rem; }
+
+.toc {
+  background: var(--lightbg);
+  border-left: 4px solid var(--orange);
+  padding: 0.8rem 1rem;
+  border-radius: 4px;
+}
+.toc a { color: var(--darkblue); text-decoration: none; }
+.toc a:hover { color: var(--orange); }
+
+.answer-space {
+  border: 1.5px dashed #c9d4dd;
+  border-radius: 6px;
+  min-height: 70px;
+  margin: 0.6rem 0;
+  background: #fafcfe;
+  padding: 0.6rem 0.8rem;
+  color: #aab;
+  font-style: italic;
+  font-size: 0.85rem;
+}
+</style>
+</head>
+<body>
+
+<section class="slide title-slide">
+  <h1>Relations &amp; Functions — Exercises</h1>
+  <p class="subtitle">énoncés</p>
+  <p style="font-size:1rem;color:#e67e22;margin-top:0.8rem;font-style:italic;font-weight:600;letter-spacing:.02em;">By Pr. El Hadiq Zouhair</p>
+</section>
+
+<section class="slide">
+  <h2 class="frame-title">Contents</h2>
+  <div class="toc">
+    <ol>
+      <li><a href="#ex1">Relation as a set of tuples</a> <span class="difficulty easy">easy</span></li>
+      <li><a href="#ex2">Is this a function?</a> <span class="difficulty easy">easy</span></li>
+      <li><a href="#ex3">Domain &amp; range (finite)</a> <span class="difficulty easy">easy</span></li>
+      <li><a href="#ex4">Domain of $\sqrt{x-3}/(x-7)$</a> <span class="difficulty medium">medium</span></li>
+      <li><a href="#ex5">Injectivity test</a> <span class="difficulty medium">medium</span></li>
+      <li><a href="#ex6">Surjectivity test</a> <span class="difficulty medium">medium</span></li>
+      <li><a href="#ex7">Inverse of a finite bijection</a> <span class="difficulty medium">medium</span></li>
+      <li><a href="#ex8">Symbolic inverse</a> <span class="difficulty medium">medium</span></li>
+      <li><a href="#ex9">Composition</a> <span class="difficulty medium">medium</span></li>
+      <li><a href="#ex10">Pipe of $n$ functions</a> <span class="difficulty hard">hard</span></li>
+      <li><a href="#ex11">$x^2$ vs $x^3$ — invertibility</a> <span class="difficulty hard">hard</span></li>
+      <li><a href="#ex12">Sigmoid example</a> <span class="difficulty hard">hard</span></li>
+    </ol>
+  </div>
+</section>
+
+<section class="slide" id="ex1">
+  <h2 class="frame-title"><span class="ex-number">1</span>Relation as a set of tuples <span class="difficulty easy">easy</span></h2>
+  <p class="statement">Let $A = \{1, 2, 3\}$ and $B = \{a, b, c\}$.
+  Define the relation $R = \{(1, a), (1, b), (2, c), (3, b)\}$.</p>
+  <ol>
+    <li>Verify that $R \subseteq A \times B$.</li>
+    <li>List all elements in $A$ that have <em>at least one</em> image in $R$ (the <em>domain of definition</em>).</li>
+    <li>List all elements in $B$ that appear as an image (the <em>image set</em>).</li>
+  </ol>
+  <div class="answer-space">Your answer…</div>
+</section>
+
+<section class="slide" id="ex2">
+  <h2 class="frame-title"><span class="ex-number">2</span>Is this a function? <span class="difficulty easy">easy</span></h2>
+  <p class="statement">For each relation on $A = \{1, 2, 3, 4\}$, decide whether it is a function. Use Python.</p>
+  <ol>
+    <li>$R_1 = \{(1, 1), (2, 4), (3, 9), (4, 16)\}$</li>
+    <li>$R_2 = \{(1, 1), (1, 2), (2, 4), (3, 9), (4, 16)\}$</li>
+    <li>$R_3 = \{(1, 1), (2, 4), (3, 9)\}$ — domain still $A = \{1,2,3,4\}$</li>
+  </ol>
+  <div class="answer-space">Your answer…</div>
+</section>
+
+<section class="slide" id="ex3">
+  <h2 class="frame-title"><span class="ex-number">3</span>Domain &amp; range (finite) <span class="difficulty easy">easy</span></h2>
+  <p class="statement">Given the dictionary <code>f = {1:'a', 2:'b', 3:'a', 4:'c', 5:'b'}</code>, compute the domain, the image, and the preimage of <code>'a'</code> and of <code>'b'</code>.</p>
+  <div class="answer-space">Your answer…</div>
+</section>
+
+<section class="slide" id="ex4">
+  <h2 class="frame-title"><span class="ex-number">4</span>Domain of $\dfrac{\sqrt{x-3}}{x-7}$ <span class="difficulty medium">medium</span></h2>
+  <p class="statement">Find the (real) domain of $f(x) = \dfrac{\sqrt{x-3}}{x-7}$, both by hand and with SymPy.</p>
+  <div class="answer-space">Your answer…</div>
+</section>
+
+<section class="slide" id="ex5">
+  <h2 class="frame-title"><span class="ex-number">5</span>Injectivity test <span class="difficulty medium">medium</span></h2>
+  <p class="statement">Decide whether each of these is injective on its domain:</p>
+  <ol>
+    <li>$f_1(x) = 3x - 4$ on $\mathbb{R}$</li>
+    <li>$f_2(x) = x^2 - 4x + 7$ on $\mathbb{R}$</li>
+    <li>$f_3(x) = x^2 - 4x + 7$ on $[2, \infty)$</li>
+    <li>$f_4 = \{1\!\to\!a,\, 2\!\to\!b,\, 3\!\to\!a\}$</li>
+  </ol>
+  <div class="answer-space">Your answer…</div>
+</section>
+
+<section class="slide" id="ex6">
+  <h2 class="frame-title"><span class="ex-number">6</span>Surjectivity test <span class="difficulty medium">medium</span></h2>
+  <p class="statement">Is the function $f : \mathbb{R} \to \mathbb{R},\; f(x) = e^x$ surjective?
+  What about $f : \mathbb{R} \to (0, \infty),\; f(x) = e^x$?</p>
+  <div class="answer-space">Your answer…</div>
+</section>
+
+<section class="slide" id="ex7">
+  <h2 class="frame-title"><span class="ex-number">7</span>Inverse of a finite bijection <span class="difficulty medium">medium</span></h2>
+  <p class="statement">Let $f = \{1\!\to\!v,\, 2\!\to\!x,\, 3\!\to\!w,\, 4\!\to\!z\}$ from $\{1,2,3,4\}$ to $\{v,w,x,z\}$.
+  Build $f^{-1}$ and verify $f^{-1}(f(k)) = k$ for every key.</p>
+  <div class="answer-space">Your answer…</div>
+</section>
+
+<section class="slide" id="ex8">
+  <h2 class="frame-title"><span class="ex-number">8</span>Symbolic inverse <span class="difficulty medium">medium</span></h2>
+  <p class="statement">Find the inverse of $f(x) = 2x + 5$ and of $g(x) = \dfrac{x-1}{x+1}$. Verify with SymPy.</p>
+  <div class="answer-space">Your answer…</div>
+</section>
+
+<section class="slide" id="ex9">
+  <h2 class="frame-title"><span class="ex-number">9</span>Composition <span class="difficulty medium">medium</span></h2>
+  <p class="statement">Let $f(x) = x^2 + 1$ and $g(x) = 2x - 3$. Compute $f \circ g$ and $g \circ f$ symbolically with SymPy, then verify numerically that $f(g(2)) = 2$ and $g(f(2)) = 7$.</p>
+  <div class="answer-space">Your answer…</div>
+</section>
+
+<section class="slide" id="ex10">
+  <h2 class="frame-title"><span class="ex-number">10</span>Pipe of $n$ functions <span class="difficulty hard">hard</span></h2>
+  <p class="statement">Write <code>pipe(*fs)</code> such that <code>pipe(f1, f2, …, fn)(x) = fn(…f2(f1(x)))</code> (left-to-right).
+  Then write <code>compose(*fs)</code> for the mathematical right-to-left convention (<code>f1(f2(…fn(x)))</code>).</p>
+  <div class="answer-space">Your answer…</div>
+</section>
+
+<section class="slide" id="ex11">
+  <h2 class="frame-title"><span class="ex-number">11</span>$x^2$ vs $x^3$ — invertibility <span class="difficulty hard">hard</span></h2>
+  <p class="statement">Decide whether each is invertible on its stated domain, and give the inverse when it exists.</p>
+  <ol>
+    <li>$f(x) = x^2$ on $\mathbb{R}$</li>
+    <li>$f(x) = x^2$ on $[0, \infty)$</li>
+    <li>$f(x) = x^3$ on $\mathbb{R}$</li>
+  </ol>
+  <div class="answer-space">Your answer…</div>
+</section>
+
+<section class="slide" id="ex12">
+  <h2 class="frame-title"><span class="ex-number">12</span>Sigmoid example <span class="difficulty hard">hard</span></h2>
+  <p class="statement">Let $f(x) = \dfrac{-x}{-1+x}$ and $g(x) = \log(x)$.
+  Compute $h = f^{-1} \circ g^{-1}$, then find its domain and range with SymPy.
+  Recognize the result.</p>
+  <div class="answer-space">Your answer…</div>
+</section>
+
+<section class="slide">
+  <h2 class="frame-title">Going further</h2>
+  <ul>
+    <li>Implement <code>iterate(f, n)</code> that returns $f^n = f \circ f \circ \cdots \circ f$ ($n$ times).</li>
+    <li>For a random injection $f : \{1,\dots,10\} \to \{1,\dots,10\}$, verify $f \circ f^{-1} = \mathrm{id}$.</li>
+    <li>With SymPy, prove $\log$ and $\exp$ are inverses on $(0, \infty)$.</li>
+    <li>Visualize the sigmoid from exercise 12 with <code>matplotlib</code>.</li>
+  </ul>
+  <p style="margin-top:0.8rem;font-style:italic;color:#666;">Open the <a href="relations_and_functions.html" style="color:var(--orange);font-weight:600;text-decoration:none;">main lesson</a> for the matching theory.</p>
+</section>
+
+</body>
+</html>
