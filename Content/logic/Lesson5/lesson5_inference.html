@@ -6,7 +6,11 @@
 <title>Rules of Inference — Discrete Mathematics</title>
 <script>
   MathJax = {
-    tex: { inlineMath: [['$','$']], displayMath: [['$$','$$']] },
+    tex: {
+      inlineMath: [['$','$']],
+      displayMath: [['$$','$$']],
+      processEscapes: true   // allow \$ as a literal dollar sign in prose
+    },
     options: { skipHtmlTags: ['script','noscript','style','textarea'] }
   };
 </script>
@@ -134,6 +138,55 @@ ol li::marker { color: var(--orange); font-weight: 700; }
 /* conclusion highlight */
 .concl { color: var(--orange); font-weight: 700; }
 
+/* rule cards — premises / conclusion fraction format */
+.rule-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 0.7rem;
+  margin: 0.7rem 0;
+}
+.rule-card {
+  background: var(--lightbg);
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--orange);
+  border-radius: 6px;
+  padding: 0.7rem 0.6rem 0.5rem;
+  text-align: center;
+}
+.rule-card .rule-name {
+  display: block;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--orange);
+  font-weight: 700;
+  margin-top: 0.45rem;
+}
+
+/* proof line — left bullet column, formula column, justification column */
+.proof-list { list-style: none; padding-left: 0; margin: 0.5rem 0; }
+.proof-list li {
+  display: grid;
+  grid-template-columns: 1.8rem 1fr auto;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.25rem 0.4rem;
+  border-bottom: 1px dashed var(--border);
+}
+.proof-list li:last-child { border-bottom: none; }
+.proof-list .lbl {
+  font-weight: 700;
+  color: var(--orange);
+  text-align: right;
+}
+.proof-list .just {
+  font-size: 0.82rem;
+  color: #555;
+  text-align: right;
+  white-space: nowrap;
+}
+.proof-list li.qed { background: #fdf3e7; border-radius: 6px; border-bottom: none; }
+
 #nav { position: fixed; bottom: 1.5rem; right: 1.5rem; display: flex; gap: 0.4rem; z-index: 100; }
 #nav button {
   background: var(--orange); color: #fff; border: none;
@@ -236,34 +289,47 @@ for vals, result in truth_table(simplified, [a, b, c, d, e]):
   <span class="slide-number">4 / 11</span>
 </section>
 
-<!-- ══ Slide 5 — Rules of Inference ══════════════════════════════════ -->
+<!-- ══ Slide 5 — Rules of Inference (fraction format) ════════════════ -->
 <section class="slide" id="s5">
   <h2 class="frame-title">Rules of Inference</h2>
-  <p>The most common rules are as follows. Unlike equivalence, the right-hand side is <em>weaker</em>.</p>
+  <p>Each rule is written as a <em>natural-deduction fraction</em>: <strong>premises above the bar, conclusion below</strong>. Unlike equivalence, the conclusion is <em>weaker</em> than the premises.</p>
 
-  <table class="truth-table" style="width:100%; margin:0.7rem 0; font-size:0.87rem;">
-    <thead>
-      <tr><th style="text-align:left;padding-left:0.6rem">Rule</th><th>Premises</th><th></th><th>Conclusion</th></tr>
-    </thead>
-    <tbody>
-      <tr><td style="text-align:left;padding-left:0.6rem">Modus Ponens</td>
-          <td>$p \;\wedge\; (p\to q)$</td><td>$\to$</td><td>$q$</td></tr>
-      <tr><td style="text-align:left;padding-left:0.6rem">Modus Tollens</td>
-          <td>$\neg q \;\wedge\; (p\to q)$</td><td>$\to$</td><td>$\neg p$</td></tr>
-      <tr><td style="text-align:left;padding-left:0.6rem">Hypothetical Syllogism</td>
-          <td>$(p\to q) \;\wedge\; (q\to r)$</td><td>$\to$</td><td>$p\to r$</td></tr>
-      <tr><td style="text-align:left;padding-left:0.6rem">Disjunctive Syllogism</td>
-          <td>$(p\vee q) \;\wedge\; \neg p$</td><td>$\to$</td><td>$q$</td></tr>
-      <tr><td style="text-align:left;padding-left:0.6rem">Addition</td>
-          <td>$p$</td><td>$\to$</td><td>$p\vee q$</td></tr>
-      <tr><td style="text-align:left;padding-left:0.6rem">Simplification</td>
-          <td>$p\wedge q$</td><td>$\to$</td><td>$p$</td></tr>
-      <tr><td style="text-align:left;padding-left:0.6rem">Conjunction</td>
-          <td>$p \;\wedge\; q$</td><td>$\to$</td><td>$p\wedge q$</td></tr>
-      <tr><td style="text-align:left;padding-left:0.6rem">Resolution</td>
-          <td>$(p\vee q) \;\wedge\; (\neg p\vee r)$</td><td>$\to$</td><td>$q\vee r$</td></tr>
-    </tbody>
-  </table>
+  <div class="rule-grid">
+    <div class="rule-card">
+      $\dfrac{p,\;\; p \to q}{q}$
+      <span class="rule-name">Modus Ponens</span>
+    </div>
+    <div class="rule-card">
+      $\dfrac{\neg q,\;\; p \to q}{\neg p}$
+      <span class="rule-name">Modus Tollens</span>
+    </div>
+    <div class="rule-card">
+      $\dfrac{p \to q,\;\; q \to r}{p \to r}$
+      <span class="rule-name">Hypothetical Syllogism</span>
+    </div>
+    <div class="rule-card">
+      $\dfrac{p \vee q,\;\; \neg p}{q}$
+      <span class="rule-name">Disjunctive Syllogism</span>
+    </div>
+    <div class="rule-card">
+      $\dfrac{p}{p \vee q}$
+      <span class="rule-name">Addition</span>
+    </div>
+    <div class="rule-card">
+      $\dfrac{p \wedge q}{p}$
+      <span class="rule-name">Simplification</span>
+    </div>
+    <div class="rule-card">
+      $\dfrac{p,\;\; q}{p \wedge q}$
+      <span class="rule-name">Conjunction</span>
+    </div>
+    <div class="rule-card">
+      $\dfrac{p \vee q,\;\; \neg p \vee r}{q \vee r}$
+      <span class="rule-name">Resolution</span>
+    </div>
+  </div>
+
+  <p style="margin-top:0.6rem;">Read the bar as "therefore": from the premises listed above the line, you may infer the conclusion below.</p>
 
   <div class="sympy-block">
     <span class="sympy-label">Python — verify all rules</span>
@@ -285,158 +351,231 @@ for name, f in checks.items():
   <span class="slide-number">5 / 11</span>
 </section>
 
-<!-- ══ Slide 6 — Example 1: Swimming ════════════════════════════════ -->
+<!-- ══ Slide 6 — Example 1: Propositional setup &amp; proof ═════════════ -->
 <section class="slide" id="s6">
   <h2 class="frame-title">Example 1</h2>
-  <p>Assume the following statements as true:</p>
-  <ul>
-    <li>You will go swim <strong>or</strong> go to the gym. &emsp; $\mathrm{Swim(you)} \vee \mathrm{Gym(you)}$</li>
-    <li>If you go swimming, you will need a swimsuit. &emsp; $\mathrm{Swim(you)} \to \mathrm{Swimsuit(you)}$</li>
-  </ul>
-  <p>Is it true that you will need a swimsuit or go to the gym? &ensp; $\mathrm{Swimsuit(you)} \vee \mathrm{Gym(you)}$</p>
-  <ul>
-    <li>Using a conditional equivalence: $\neg\,\mathrm{Swim(you)} \vee \mathrm{Swimsuit(you)}$</li>
-    <li>Using <strong>resolution</strong>: &ensp; <span class="concl">$\mathrm{Swimsuit(you)} \vee \mathrm{Gym(you)}$</span></li>
-  </ul>
+  <p>Let $p, q, r$ be propositional variables. Hypotheses:</p>
+
+  <table class="truth-table" style="width:60%; margin:0.6rem auto; font-size:0.95rem;">
+    <thead><tr><th style="text-align:left;padding-left:0.6rem">Label</th><th>Formula</th></tr></thead>
+    <tbody>
+      <tr><td style="text-align:left;padding-left:0.6rem">$H_1$</td><td>$p \vee q$</td></tr>
+      <tr><td style="text-align:left;padding-left:0.6rem">$H_2$</td><td>$p \to r$</td></tr>
+    </tbody>
+  </table>
+
+  <p>Goal: derive $\;\boxed{\,r \vee q\,}\;$ from $H_1, H_2$.</p>
+
+  <p>The conditional $p \to r$ is equivalent to $\neg p \vee r$. Apply <strong>Resolution</strong>:</p>
+
+  <div style="display:flex; justify-content:center; margin:0.7rem 0;">
+    <div class="rule-card" style="min-width:240px;">
+      $\dfrac{p \vee q,\;\; \neg p \vee r}{q \vee r}$
+      <span class="rule-name">Resolution</span>
+    </div>
+  </div>
+
+  <p>Hence $\;\;$<span class="concl">$r \vee q$</span>$\;\;$ follows. $\square$</p>
 
   <div class="sympy-block">
-    <span class="sympy-label">Python</span>
+    <span class="sympy-label">Python — entailment check</span>
     <span class="pane-code">from sympy import symbols, And, Or, Not, Implies
 from sympy.logic.inference import satisfiable
 
-Swim, Gym, Swimsuit = symbols('Swim Gym Swimsuit')
-premises   = And(Or(Swim, Gym), Implies(Swim, Swimsuit))
-conclusion = Or(Swimsuit, Gym)
+p, q, r = symbols('p q r')
+premises = And(Or(p, q), Implies(p, r))     # H1 ∧ H2
+goal     = Or(r, q)
 
-# Valid if premises & ~conclusion is unsatisfiable
-print(not satisfiable(And(premises, Not(conclusion))))  # True</span>
+# premises ⊨ goal  iff  premises ∧ ¬goal is unsatisfiable
+print(satisfiable(And(premises, Not(goal))) is False)   # True</span>
   </div>
   <span class="slide-number">6 / 11</span>
 </section>
 
-<!-- ══ Slide 7 — Example 2: NFT Setup ═══════════════════════════════ -->
+<!-- ══ Slide 7 — Example 2: Propositional setup ═════════════════════ -->
 <section class="slide" id="s7">
   <h2 class="frame-title">Example 2</h2>
-  <p>Assume the following statements as true:</p>
-  <ul>
-    <li>Your Invisible Rock #14 NFT can be sold for ≈4.32 ETH if you sell it.
-        &emsp; $\mathrm{Sell(Rock)} \to \mathrm{Get(4.32\,ETH)}$</li>
-    <li>4.32 ETH can be sold for $7000 at this time.
-        &emsp; $\mathrm{Get(4.32\,ETH)} \to \mathrm{Get(\$7000)}$</li>
-    <li>If you have $10 000, you can buy yourself a car.
-        &emsp; $\mathrm{Have(\$10\,000)} \to \mathrm{Buy(Car)}$</li>
-    <li>You saved $3000 in your savings account for a car.
-        &emsp; $\mathrm{Savings(\$3000)}$</li>
-  </ul>
-  <p>If you sell your Invisible Rock ($\mathrm{Sell(Rock)}$), can you buy yourself a car?</p>
+  <p>Let $p, q, r, s, t, u$ be propositional variables. Assume the following well-formed formulae as <em>hypotheses</em>:</p>
+
+  <table class="truth-table" style="width:90%; margin:0.7rem auto; font-size:0.95rem;">
+    <thead>
+      <tr><th style="text-align:left; padding-left:0.6rem">Label</th><th>Formula</th></tr>
+    </thead>
+    <tbody>
+      <tr><td style="text-align:left; padding-left:0.6rem">$H_1$</td><td>$p \to q$</td></tr>
+      <tr><td style="text-align:left; padding-left:0.6rem">$H_2$</td><td>$q \to r$</td></tr>
+      <tr><td style="text-align:left; padding-left:0.6rem">$H_3$</td><td>$(r \wedge s) \to t$</td></tr>
+      <tr><td style="text-align:left; padding-left:0.6rem">$H_4$</td><td>$t \to u$</td></tr>
+      <tr><td style="text-align:left; padding-left:0.6rem">$H_5$</td><td>$s$</td></tr>
+    </tbody>
+  </table>
+
+  <p>Show that, under these hypotheses, the well-formed formula
+  $\;\;\boxed{\;p \to u\;}\;$ is a logical consequence:</p>
+
+  $$\{\,p \to q,\;\; q \to r,\;\; (r \wedge s) \to t,\;\; t \to u,\;\; s\,\}\;\vdash\; p \to u$$
+
   <span class="slide-number">7 / 11</span>
 </section>
 
-<!-- ══ Slide 8 — Example 2: NFT Solution ════════════════════════════ -->
+<!-- ══ Slide 8 — Example 2: Formal proof (fraction format) ══════════ -->
 <section class="slide" id="s8">
   <h2 class="frame-title">Example 2 (continued)</h2>
-  <ol>
-    <li><strong>Hypothetical syllogism</strong>: &emsp; $\mathrm{Sell(Rock)} \to \mathrm{Get(\$7000)}$</li>
-    <li><strong>Modus ponens</strong>: &emsp; $\mathrm{Get(\$7000)}$</li>
-    <li><strong>Conjunction</strong>: &emsp; $\mathrm{Get(\$7000)} \wedge \mathrm{Savings(\$3000)}$</li>
-    <li><strong>Addition + Modus ponens</strong>: &emsp; <span class="concl">$\mathrm{Have(\$10\,000)}$</span></li>
-    <li><strong>Modus ponens</strong>: &emsp; <span class="concl">$\mathrm{Buy(Car)}$</span></li>
+  <p>Each inference step is written as a fraction $\dfrac{\text{premises}}{\text{conclusion}}$:</p>
+
+  <ol class="proof-list">
+    <li><span class="lbl">1.</span><span>$p \to q$</span><span class="just">$H_1$</span></li>
+    <li><span class="lbl">2.</span><span>$q \to r$</span><span class="just">$H_2$</span></li>
+    <li><span class="lbl">3.</span><span>$\dfrac{p \to q,\;\; q \to r}{p \to r}$</span><span class="just">Hyp. Syll. (1, 2)</span></li>
+    <li><span class="lbl">4.</span><span>$p$</span><span class="just">assumption</span></li>
+    <li><span class="lbl">5.</span><span>$\dfrac{p,\;\; p \to r}{r}$</span><span class="just">Modus Ponens (4, 3)</span></li>
+    <li><span class="lbl">6.</span><span>$s$</span><span class="just">$H_5$</span></li>
+    <li><span class="lbl">7.</span><span>$\dfrac{r,\;\; s}{r \wedge s}$</span><span class="just">Conjunction (5, 6)</span></li>
+    <li><span class="lbl">8.</span><span>$(r \wedge s) \to t$</span><span class="just">$H_3$</span></li>
+    <li><span class="lbl">9.</span><span>$\dfrac{r \wedge s,\;\; (r \wedge s) \to t}{t}$</span><span class="just">Modus Ponens (7, 8)</span></li>
+    <li><span class="lbl">10.</span><span>$t \to u$</span><span class="just">$H_4$</span></li>
+    <li><span class="lbl">11.</span><span>$\dfrac{t,\;\; t \to u}{u}$</span><span class="just">Modus Ponens (9, 10)</span></li>
+    <li class="qed"><span class="lbl">12.</span><span><span class="concl">$p \to u$</span></span><span class="just">$\to$-intro on (4)–(11) &nbsp;$\square$</span></li>
   </ol>
 
   <div class="sympy-block">
-    <span class="sympy-label">Python</span>
+    <span class="sympy-label">Python — entailment check with SymPy</span>
     <span class="pane-code">from sympy import symbols, And, Implies, Not
 from sympy.logic.inference import satisfiable
 
-SellRock, Get7000, Have10000, BuyCar, Savings = symbols(
-    'SellRock Get7000 Have10000 BuyCar Savings')
+p, q, r, s, t, u = symbols('p q r s t u')
 
 premises = And(
-    SellRock,
-    Implies(SellRock, Get7000),                  # hyp. syllogism (steps 1&amp;2)
-    Savings,
-    Implies(And(Get7000, Savings), Have10000),    # addition principle
-    Implies(Have10000, BuyCar),
+    Implies(p, q),                    # H1
+    Implies(q, r),                    # H2
+    Implies(And(r, s), t),            # H3
+    Implies(t, u),                    # H4
+    s,                                # H5
 )
-print(not satisfiable(And(premises, Not(BuyCar))))  # True</span>
+goal = Implies(p, u)
+
+# (premises ∧ ¬goal) must be unsatisfiable iff premises ⊨ goal
+print(satisfiable(And(premises, Not(goal))) is False)   # True  → entailed</span>
   </div>
   <span class="slide-number">8 / 11</span>
 </section>
 
-<!-- ══ Slide 9 — Rules for Quantified Statements ════════════════════ -->
+<!-- ══ Slide 9 — Rules for Quantified Statements (fraction format) ═══ -->
 <section class="slide" id="s9">
   <h2 class="frame-title">Rules for Quantified Statements</h2>
-  <p>Inference is also used for quantifiers:</p>
+  <p>Inference also has four rules for quantifiers. Let $P$ be a unary predicate and $c$ a constant.</p>
 
-  <table class="truth-table" style="width:95%; margin:0.6rem auto; font-size:0.87rem;">
-    <thead>
-      <tr><th style="text-align:left;padding-left:0.6rem">Rule</th><th>Premise</th><th></th><th>Conclusion</th></tr>
-    </thead>
+  <div class="rule-grid">
+    <div class="rule-card">
+      $\dfrac{\forall x\, P(x)}{P(c)}$
+      <span class="rule-name">Universal Instantiation</span>
+    </div>
+    <div class="rule-card">
+      $\dfrac{P(c)\;\;[\,c\text{ arbitrary}\,]}{\forall x\, P(x)}$
+      <span class="rule-name">Universal Generalization</span>
+    </div>
+    <div class="rule-card">
+      $\dfrac{\exists x\, P(x)}{P(c)\;\;[\,c\text{ fresh}\,]}$
+      <span class="rule-name">Existential Instantiation</span>
+    </div>
+    <div class="rule-card">
+      $\dfrac{P(c)}{\exists x\, P(x)}$
+      <span class="rule-name">Existential Generalization</span>
+    </div>
+  </div>
+
+  <p style="margin-top:0.6rem;"><strong>Side conditions:</strong>
+    in UG, $c$ must not occur free in any open assumption; in EI, $c$ must be a <em>fresh</em> name not used elsewhere.</p>
+
+  <h3 style="color:var(--orange); font-size:1.1rem; margin-top:0.8rem;">Worked example</h3>
+  <p>Let $H, L$ be unary predicates and $o$ a constant. Hypotheses:</p>
+  <table class="truth-table" style="width:60%; margin:0.4rem auto; font-size:0.95rem;">
+    <thead><tr><th style="text-align:left;padding-left:0.6rem">Label</th><th>Formula</th></tr></thead>
     <tbody>
-      <tr><td style="text-align:left;padding-left:0.6rem">Universal Instantiation</td>
-          <td>$\forall x\,P(x)$</td><td>$\to$</td><td>$P(c)$</td></tr>
-      <tr><td style="text-align:left;padding-left:0.6rem">Universal Generalization</td>
-          <td>$P(c)$ for arbitrary $c$</td><td>$\to$</td><td>$\forall x\,P(x)$</td></tr>
-      <tr><td style="text-align:left;padding-left:0.6rem">Existential Instantiation</td>
-          <td>$\exists x\,P(x)$</td><td>$\to$</td><td>$P(c)$ for some $c$</td></tr>
-      <tr><td style="text-align:left;padding-left:0.6rem">Existential Generalization</td>
-          <td>$P(c)$ for some $c$</td><td>$\to$</td><td>$\exists x\,P(x)$</td></tr>
+      <tr><td style="text-align:left;padding-left:0.6rem">$H_1$</td><td>$\forall x\,\bigl(H(x) \to L(x)\bigr)$</td></tr>
+      <tr><td style="text-align:left;padding-left:0.6rem">$H_2$</td><td>$H(o)$</td></tr>
     </tbody>
   </table>
+  <p>Derive $\;\boxed{\,L(o)\,}\;$:</p>
 
-  <p>All humans live on Earth: $\forall x\,(H(x)\to L(x))$. &ensp; You are human: $H(\text{you})$. &ensp; Therefore: <span class="concl">$L(\text{you})$</span></p>
+  <ol class="proof-list">
+    <li><span class="lbl">1.</span><span>$\forall x\,\bigl(H(x) \to L(x)\bigr)$</span><span class="just">$H_1$</span></li>
+    <li><span class="lbl">2.</span><span>$\dfrac{\forall x\,(H(x) \to L(x))}{H(o) \to L(o)}$</span><span class="just">Universal Instantiation</span></li>
+    <li><span class="lbl">3.</span><span>$H(o)$</span><span class="just">$H_2$</span></li>
+    <li class="qed"><span class="lbl">4.</span><span>$\dfrac{H(o),\;\; H(o) \to L(o)}{L(o)}$</span><span class="just">Modus Ponens &nbsp;$\square$</span></li>
+  </ol>
 
   <div class="sympy-block">
     <span class="sympy-label">Python — Z3</span>
     <span class="pane-code">from z3 import DeclareSort, Function, BoolSort, Const, ForAll, Implies, Solver, Not
 
 Person = DeclareSort('Person')
-you = Const('you', Person)
-x   = Const('x',   Person)
+o = Const('o', Person)
+x = Const('x', Person)
 H = Function('H', Person, BoolSort())
 L = Function('L', Person, BoolSort())
 
 s = Solver()
-s.add(ForAll([x], Implies(H(x), L(x))))  # ∀x: H(x) → L(x)
-s.add(H(you))                             # H(you)
-s.add(Not(L(you)))                        # assume ¬L(you) — contradiction?
-print(s.check())   # unsat  =>  L(you) is derived</span>
+s.add(ForAll([x], Implies(H(x), L(x))))   # H1 : ∀x. H(x) → L(x)
+s.add(H(o))                                # H2 : H(o)
+s.add(Not(L(o)))                           # assume ¬L(o) — should contradict
+print(s.check())   # unsat  →  L(o) follows</span>
   </div>
   <span class="slide-number">9 / 11</span>
 </section>
 
-<!-- ══ Slide 10 — Example: Exam & Director ═══════════════════════════ -->
+<!-- ══ Slide 10 — Example 3 (formal, natural-deduction style) ════════ -->
 <section class="slide" id="s10">
-  <h2 class="frame-title">Example: Exam &amp; Director</h2>
-  <p>Assume the following statements as true:</p>
-  <ul>
-    <li>If no one cheated last exam, no one would meet the director.
-        &emsp; $\neg\exists x\,\mathrm{Cheat}(x) \to \neg\exists x\,\mathrm{Director}(x)$</li>
-    <li>Octave, the class president, met the director. &emsp; <span class="concl">$\mathrm{Director(Octave)}$</span></li>
-    <li>No one cheated or someone will get a detention.
-        &emsp; $\neg\exists x\,\mathrm{Cheat}(x) \vee \exists x\,\mathrm{Detention}(x)$</li>
-  </ul>
-  <p>Will someone get a detention? Using existential generalization → modus tollens → disjunctive syllogism:</p>
-  <p style="text-align:center; margin:0.4rem 0">
-    $\exists x\,\mathrm{Director}(x)$ &ensp;⟹&ensp;
-    $\exists x\,\mathrm{Cheat}(x)$ &ensp;⟹&ensp;
-    <span class="concl">$\exists x\,\mathrm{Detention}(x)$</span>
-  </p>
+  <h2 class="frame-title">Example 3 — Existential reasoning</h2>
+  <p>Let $C(x), D(x), E(x)$ be unary predicates and $o$ a constant. Define the abbreviations</p>
+
+  <table class="truth-table" style="width:55%; margin:0.4rem auto; font-size:0.95rem;">
+    <thead><tr><th style="text-align:left;padding-left:0.6rem">Symbol</th><th>Stands for</th></tr></thead>
+    <tbody>
+      <tr><td style="text-align:left;padding-left:0.6rem">$p$</td><td>$\exists x\, C(x)$</td></tr>
+      <tr><td style="text-align:left;padding-left:0.6rem">$q$</td><td>$\exists x\, D(x)$</td></tr>
+      <tr><td style="text-align:left;padding-left:0.6rem">$r$</td><td>$\exists x\, E(x)$</td></tr>
+    </tbody>
+  </table>
+
+  <p>Hypotheses:</p>
+
+  <table class="truth-table" style="width:60%; margin:0.4rem auto; font-size:0.95rem;">
+    <thead><tr><th style="text-align:left;padding-left:0.6rem">Label</th><th>Formula</th></tr></thead>
+    <tbody>
+      <tr><td style="text-align:left;padding-left:0.6rem">$H_1$</td><td>$\neg p \to \neg q$</td></tr>
+      <tr><td style="text-align:left;padding-left:0.6rem">$H_2$</td><td>$D(o)$</td></tr>
+      <tr><td style="text-align:left;padding-left:0.6rem">$H_3$</td><td>$\neg p \vee r$</td></tr>
+    </tbody>
+  </table>
+
+  <p>Goal: derive $\;\boxed{\,r\,}\;$ (i.e. $\exists x\, E(x)$).</p>
+
+  <ol class="proof-list">
+    <li><span class="lbl">1.</span><span>$D(o)$</span><span class="just">$H_2$</span></li>
+    <li><span class="lbl">2.</span><span>$\dfrac{D(o)}{\exists x\, D(x)} \;\equiv\; q$</span><span class="just">Existential Generalization</span></li>
+    <li><span class="lbl">3.</span><span>$\dfrac{\neg p \to \neg q,\;\; q}{p}$</span><span class="just">Modus Tollens (H$_1$, 2)</span></li>
+    <li><span class="lbl">4.</span><span>$\dfrac{\neg p \vee r,\;\; p}{r}$</span><span class="just">Disjunctive Syllogism (H$_3$, 3)</span></li>
+    <li class="qed"><span class="lbl">5.</span><span><span class="concl">$r$</span>, i.e. $\exists x\, E(x)$</span><span class="just">conclusion &nbsp;$\square$</span></li>
+  </ol>
 
   <div class="sympy-block">
-    <span class="sympy-label">Python</span>
+    <span class="sympy-label">Python — entailment check</span>
     <span class="pane-code">from sympy import symbols, And, Or, Not, Implies
 from sympy.logic.inference import satisfiable
 
-ExCheat, ExDirector, ExDetention = symbols('ExCheat ExDirector ExDetention')
+# Propositional abstractions of the existentials
+p, q, r = symbols('p q r')
 
 premises = And(
-    Implies(Not(ExCheat), Not(ExDirector)),   # ¬ExCheat → ¬ExDirector
-    ExDirector,                               # Director(Octave) ⟹ ExDirector
-    Or(Not(ExCheat), ExDetention),            # ¬ExCheat ∨ ExDetention
+    Implies(Not(p), Not(q)),   # H1 : ¬p → ¬q
+    q,                          # H2 → q  (after Existential Generalization on D(o))
+    Or(Not(p), r),              # H3 : ¬p ∨ r
 )
-# Modus tollens: ExDirector ⟹ ExCheat; disj. syllogism ⟹ ExDetention
-print(not satisfiable(And(premises, Not(ExDetention))))  # True</span>
+goal = r
+
+# premises ⊨ goal  iff  premises ∧ ¬goal is unsatisfiable
+print(satisfiable(And(premises, Not(goal))) is False)   # True</span>
   </div>
   <span class="slide-number">10 / 11</span>
 </section>

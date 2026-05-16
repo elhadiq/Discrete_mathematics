@@ -99,7 +99,7 @@ MathJax = { tex: { inlineMath: [['$','$']] }, svg: { fontCache: 'global' } };
 
 <div class="page-header">
   <h1>Lesson 4 — Predicates and Quantifiers</h1>
-  <p>Exercises &nbsp;·&nbsp; Python lambdas + Z3 &nbsp;·&nbsp; Topics: predicates, universal quantifier ∀, existential quantifier ∃, negation of quantifiers, nested quantifiers, quantifier elimination, region membership</p>
+  <p>Exercises &nbsp;·&nbsp; Python lambdas + Z3 &nbsp;·&nbsp; Topics: predicates, universal quantifier ∀, existential quantifier ∃, negation of quantifiers, nested quantifiers, region membership</p>
   <p style="margin-top:10px;font-size:.92rem;color:#f9e4cc;letter-spacing:.02em;">Pr. Zouhair el Hadiq</p>
 </div>
 
@@ -206,24 +206,6 @@ MathJax = { tex: { inlineMath: [['$','$']] }, svg: { fontCache: 'global' } };
 <div class="exercise">
   <div class="ex-header">
     <span class="ex-number">Ex 7</span>
-    <span class="ex-title">Quantifier Elimination <span class="tag-z3">Z3 · Tactic('qe')</span></span>
-  </div>
-  <div class="ex-body">
-    <p>Use Z3's quantifier elimination tactic to simplify the statement:</p>
-    <p>$$\exists (x, y) \in \mathbb{R}^2,\quad x^2 + a \cdot y^2 \le 1 \;\land\; x - y \ge 2$$</p>
-    <p>This eliminates $x$ and $y$ and produces a constraint on the parameter $a$ alone.</p>
-    <ul>
-      <li>Declare <code>x, y, a = Reals('x y a')</code>.</li>
-      <li>Create a <code>Goal</code>, add the <code>Exists</code> formula, apply <code>Tactic('qe')</code>.</li>
-      <li>Print the resulting constraint on $a$.</li>
-    </ul>
-  </div>
-</div>
-
-<!-- Exercise 8 -->
-<div class="exercise">
-  <div class="ex-header">
-    <span class="ex-number">Ex 8</span>
     <span class="ex-title">Nested Quantifiers — Order Matters <span class="tag-z3">Z3 · ForAll · Exists</span></span>
   </div>
   <div class="ex-body">
@@ -236,10 +218,10 @@ MathJax = { tex: { inlineMath: [['$','$']] }, svg: { fontCache: 'global' } };
   </div>
 </div>
 
-<!-- Exercise 9 -->
+<!-- Exercise 8 -->
 <div class="exercise">
   <div class="ex-header">
-    <span class="ex-number">Ex 9</span>
+    <span class="ex-number">Ex 8</span>
     <span class="ex-title">Binary Predicate — Divisibility Relation <span class="tag">lambda</span></span>
   </div>
   <div class="ex-body">
@@ -252,10 +234,10 @@ MathJax = { tex: { inlineMath: [['$','$']] }, svg: { fontCache: 'global' } };
   </div>
 </div>
 
-<!-- Exercise 10 -->
+<!-- Exercise 9 -->
 <div class="exercise">
   <div class="ex-header">
-    <span class="ex-number">Ex 10</span>
+    <span class="ex-number">Ex 9</span>
     <span class="ex-title">Z3: Predicate over a Declared Sort <span class="tag-z3">Z3 · DeclareSort · Function</span></span>
   </div>
   <div class="ex-body">
@@ -270,10 +252,10 @@ MathJax = { tex: { inlineMath: [['$','$']] }, svg: { fontCache: 'global' } };
   </div>
 </div>
 
-<!-- Exercise 11 -->
+<!-- Exercise 10 -->
 <div class="exercise">
   <div class="ex-header">
-    <span class="ex-number">Ex 11</span>
+    <span class="ex-number">Ex 10</span>
     <span class="ex-title">Region Inclusion — R2 ⊆ R1 <span class="tag-z3">Z3 · Solver</span></span>
   </div>
   <div class="ex-body">

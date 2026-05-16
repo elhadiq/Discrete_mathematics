@@ -4,7 +4,7 @@ Practical Exercises (Python lambdas + Z3)
 
 Topics: predicates over finite domains, universal quantifier (∀),
         existential quantifier (∃), negation of quantifiers,
-        nested quantifiers, quantifier elimination, region membership.
+        nested quantifiers, region membership.
 
 Notes by Pr. Zouhair el Hadiq
 """
@@ -12,7 +12,7 @@ Notes by Pr. Zouhair el Hadiq
 from z3 import (
     Real, Reals, Int, Ints, Bool, BoolSort,
     ForAll, Exists, And, Or, Not, Implies,
-    Solver, Goal, Tactic, sat, unsat,
+    Solver, sat, unsat,
     prove, Function, DeclareSort, Const,
 )
 import math
@@ -123,27 +123,12 @@ print(f"  ¬(∃x: x²<0) — no witness exists: {s2.check()}")   # unsat
 
 
 # ══════════════════════════════════════════════════════════════════════
-# Exercise 7 — Quantifier elimination with Z3 Tactic('qe')
-# Find the values of parameter a for which ∃(x,y): x²+a·y²≤1 ∧ x-y≥2
-# ══════════════════════════════════════════════════════════════════════
-
-print("\nExercise 7 — Quantifier elimination (Tactic 'qe')")
-x, y, a = Reals('x y a')
-g = Goal()
-g.add(Exists([x, y], And(x**2 + a*y**2 <= 1, x - y >= 2)))
-qe = Tactic('qe')
-result = qe(g)
-print("  ∃(x,y): x²+a·y²≤1 ∧ x-y≥2  eliminates to:")
-print(f"  {result[0]}")
-
-
-# ══════════════════════════════════════════════════════════════════════
-# Exercise 8 — Nested quantifiers
+# Exercise 7 — Nested quantifiers
 # ∀x ∃y: x + y = 0  (over ℝ: always true, y = -x)
 # ∃x ∀y: x + y = 0  (false: no single x works for all y)
 # ══════════════════════════════════════════════════════════════════════
 
-print("\nExercise 8 — Nested quantifiers")
+print("\nExercise 7 — Nested quantifiers")
 x, y = Reals('x y')
 
 # ∀x ∃y: x+y=0  — should be provable
@@ -157,12 +142,12 @@ print(f"  ∃x ∀y: x+y=0 is {'valid' if s.check()==unsat else 'NOT valid (orde
 
 
 # ══════════════════════════════════════════════════════════════════════
-# Exercise 9 — Predicates with two variables (binary relation)
+# Exercise 8 — Predicates with two variables (binary relation)
 # R(x, y): "x divides y" over domain {1..6} × {1..6}.
 # Find all pairs where R holds, count them.
 # ══════════════════════════════════════════════════════════════════════
 
-print("\nExercise 9 — Binary predicate R(x,y): 'x divides y'")
+print("\nExercise 8 — Binary predicate R(x,y): 'x divides y'")
 domain = range(1, 7)
 R = lambda x, y: y % x == 0
 pairs = [(x, y) for x in domain for y in domain if R(x, y)]
@@ -171,12 +156,12 @@ print(f"  Total: {len(pairs)}")
 
 
 # ══════════════════════════════════════════════════════════════════════
-# Exercise 10 — Z3: predicate over a declared sort
+# Exercise 9 — Z3: predicate over a declared sort
 # "Every human is mortal."  H(x) → M(x) for all x.
 # Socrates is human.  Conclude Socrates is mortal.
 # ══════════════════════════════════════════════════════════════════════
 
-print("\nExercise 10 — Z3: Every human is mortal (Socrates)")
+print("\nExercise 9 — Z3: Every human is mortal (Socrates)")
 Person   = DeclareSort('Person')
 socrates = Const('socrates', Person)
 x_p      = Const('x', Person)
@@ -193,14 +178,14 @@ print(f"  Conclusion: Mortal(Socrates) is {'derivable' if result==unsat else 'no
 
 
 # ══════════════════════════════════════════════════════════════════════
-# Exercise 11 — Region membership (Z3)
+# Exercise 10 — Region membership (Z3)
 # Region R1: x² + y² ≤ 4        (disk of radius 2)
 # Region R2: x² + y² ≤ 1        (disk of radius 1)
 # Show R2 ⊆ R1, i.e., ¬∃(x,y): R2 ∧ ¬R1  should be unsat.
 # Also find a point in R1 but not R2.
 # ══════════════════════════════════════════════════════════════════════
 
-print("\nExercise 11 — Region inclusion R2 ⊆ R1 (Z3)")
+print("\nExercise 10 — Region inclusion R2 ⊆ R1 (Z3)")
 x, y = Reals('x y')
 R1 = x**2 + y**2 <= 4    # big disk
 R2 = x**2 + y**2 <= 1    # small disk
