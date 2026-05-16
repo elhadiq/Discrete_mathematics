@@ -186,7 +186,7 @@ body.slideshow .slide.active { display: block; }
   <h1>Predicates and Quantifiers</h1>
   <p class="subtitle">Discrete Mathematics — Lesson 4</p>
   <p style="font-size:1rem;color:#e67e22;margin-top:0.8rem;font-style:italic;font-weight:600;letter-spacing:.02em;">Notes By Pr. El Hadiq Zouhair</p>
-  <span class="slide-number">1 / 11</span>
+  <span class="slide-number">1 / 10</span>
 </section>
 
 <!-- ══ Slide 2 — Overview ════════════════════════════════════════════ -->
@@ -198,7 +198,7 @@ body.slideshow .slide.active { display: block; }
     <li>Universal truths can be differentiated from special cases.</li>
     <li>You will learn about predicates and quantifiers.</li>
   </ul>
-  <span class="slide-number">2 / 11</span>
+  <span class="slide-number">2 / 10</span>
 </section>
 
 <!-- ══ Slide 3 — Predicates ══════════════════════════════════════════ -->
@@ -227,7 +227,7 @@ pred = Implies(x + 2 > 4, x + 3 &lt; 4)
 results = [pred.subs(x, v) for v in [2, 3]]
 print(results)  # [True, False]</span>
   </div>
-  <span class="slide-number">3 / 11</span>
+  <span class="slide-number">3 / 10</span>
 </section>
 
 <!-- ══ Slide 4 — Example: Pythagorean ════════════════════════════════ -->
@@ -250,7 +250,7 @@ print(p(160, 241, 290))  # False</span>
   <ul>
     <li>To learn more about this equation, read about Pythagorean triples.</li>
   </ul>
-  <span class="slide-number">4 / 11</span>
+  <span class="slide-number">4 / 10</span>
 </section>
 
 <!-- ══ Slide 5 — Universal Quantifier ═══════════════════════════════ -->
@@ -280,7 +280,7 @@ prove(ForAll([x], x**2 >= 0))                  # proved</span>
     <span class="pane-code"># For all x >= 2: x >= 0  (encode domain as implication)
 prove(ForAll([x], Implies(x >= 2, x >= 0)))    # proved</span>
   </div>
-  <span class="slide-number">5 / 11</span>
+  <span class="slide-number">5 / 10</span>
 </section>
 
 <!-- ══ Slide 6 — Existential Quantifier ══════════════════════════════ -->
@@ -306,45 +306,11 @@ print(s.model())   # [x = 0]</span>
 
   <p>This is a special case of existence — it is unique, denoted $\exists!\,x$.</p>
 
-  <span class="slide-number">6 / 11</span>
+  <span class="slide-number">6 / 10</span>
 </section>
 
-<!-- ══ Slide 7 — Example: Region Inclusion ═══════════════════════════ -->
-<section class="slide" id="s7">
-  <h2 class="frame-title">Example: Region Inclusion</h2>
-  <p>Test whether region $R_1$ is contained in region $R_2$:</p>
 
-  <div class="setup-block">
-    <span class="setup-label">Python — imports (run once)</span>
-    <span class="pane-code">from z3 import Reals, And, Not, Solver
-import numpy as np, matplotlib.pyplot as plt</span>
-  </div>
-
-  <div class="sympy-block">
-    <span class="sympy-label">Python — Z3 proof</span>
-    <span class="pane-code">x, y = Reals('x y')
-R1_z3 = (2*x)**2 + y**2 + 2*x*y &lt;= 1
-R2_z3 = x**2 + y**2 &lt;= 2
-
-# Exists (x,y): R1 and not R2?
-s = Solver()
-s.add(And(R1_z3, Not(R2_z3)))
-print(s.check())   # unsat  =>  R1 ⊆ R2</span>
-  </div>
-
-  <div class="sympy-block">
-    <span class="sympy-label">Python — visualisation</span>
-    <span class="pane-code">X, Y = np.meshgrid(np.linspace(-2,2,500), np.linspace(-2,2,500))
-R1 = (2*X)**2 + Y**2 + 2*X*Y &lt;= 1
-R2 = X**2 + Y**2 &lt;= 2
-plt.contourf(X, Y, R2, levels=[.5,1.5], colors=['lightblue'], alpha=.5)
-plt.contourf(X, Y, R1, levels=[.5,1.5], colors=['orange'],    alpha=.7)
-plt.axis('equal'); plt.show()</span>
-  </div>
-  <span class="slide-number">7 / 11</span>
-</section>
-
-<!-- ══ Slide 8 — Equivalences ════════════════════════════════════════ -->
+<!-- ══ Slide 7 — Equivalences ════════════════════════════════════════ -->
 <section class="slide" id="s8">
   <h2 class="frame-title">Equivalences</h2>
   <p>Equivalences are also used for quantifiers, using <code>sympy.simplify</code> or <code>reduce_inequalities</code>:</p>
@@ -384,7 +350,7 @@ plt.axis('equal'); plt.show()</span>
     \Leftrightarrow\;&\forall v\;\exists w\;\forall x\;\forall y\;\neg\forall z\;P(v,w,x,y,z)\\
     \Leftrightarrow\;&\forall v\;\exists w\;\forall x\;\forall y\;\exists z\;\neg P(v,w,x,y,z)
   \end{aligned}$$
-  <span class="slide-number">8 / 11</span>
+  <span class="slide-number">7 / 10</span>
 </section>
 
 <!-- ══ Slide 9 — Nested Quantifiers ══════════════════════════════════ -->
@@ -421,10 +387,10 @@ plt.axis('equal'); plt.show()</span>
 
   <p>Everyone in this course likes a branch of mathematics:</p>
   <p>$$\forall\,s \in \mathrm{students}\;\; \exists\,b \in \mathrm{mathematics}\;\; \bigl(\mathrm{Likes}(s,\,b)\bigr)$$</p>
-  <span class="slide-number">9 / 11</span>
+  <span class="slide-number">8/ 10</span>
 </section>
 
-<!-- ══ Slide 10 — Examples: Translating ══════════════════════════════ -->
+<!-- ══ Slide 9 — Examples: Translating ══════════════════════════════ -->
 <section class="slide" id="s10">
   <h2 class="frame-title">Examples: Translating Statements to Logic</h2>
   <p>Translate the following statements in logic:</p>
@@ -442,7 +408,7 @@ plt.axis('equal'); plt.show()</span>
       $$\exists!\,x\;\bigl(\mathrm{Java}(x) \wedge \mathrm{SQL}(x) \wedge \mathrm{Python}(x)\bigr)$$
     </li>
   </ul>
-  <span class="slide-number">10 / 11</span>
+  <span class="slide-number">9 / 10</span>
 </section>
 
 <!-- ══ Slide 11 — Summary ════════════════════════════════════════════ -->
@@ -466,9 +432,8 @@ plt.axis('equal'); plt.show()</span>
     <span class="pane-code">from sympy import symbols, Implies                        # propositional predicates
 from z3 import Real, Reals, ForAll, Exists, And, Not, Implies as Imp
 from z3 import Solver, prove           # quantifiers
-import numpy as np, matplotlib.pyplot as plt              # visualisation</span>
   </div>
-  <span class="slide-number">11 / 11</span>
+  <span class="slide-number">10 / 10</span>
 </section>
 
 <!-- ── Navigation ─────────────────────────────────────────────────── -->
