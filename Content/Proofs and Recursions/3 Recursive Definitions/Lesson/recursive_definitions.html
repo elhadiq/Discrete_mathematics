@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Recursive Definitions — Discrete Mathematics</title>
+<script>
+  MathJax = {
+    tex: { inlineMath: [['$','$']], displayMath: [['$$','$$']] },
+    options: { skipHtmlTags: ['script','noscript','style','textarea'] }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --orange:    #e67e22;
+  --darkblue:  #2c3e50;
+  --lightbg:   #f4f9fc;
+  --border:    #dce3ea;
+  --py-fg:     #1f4e7a;
+  --py-bg:     #eaf3fb;
+  --py-border: #2a6fb3;
+  --py-head:   #2a6fb3;
+  --sp-fg:     #1e824c;
+  --sp-bg:     #e8f5ec;
+  --sp-border: #27ae60;
+  --sp-head:   #27ae60;
+  --su-fg:     #4a4aaa;
+  --su-bg:     #eeeeff;
+  --su-border: #6060cc;
+  --su-head:   #6060cc;
+  --out-fg:    #6e4b0a;
+  --out-bg:    #fff7e0;
+  --out-border:#e0b341;
+  --out-head:  #c89324;
+}
+
+body {
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  background: #e8edf2;
+  color: var(--darkblue);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem 1rem 5rem;
+  gap: 2rem;
+}
+
+.slide {
+  background: #fff;
+  width: 100%;
+  max-width: 940px;
+  border-radius: 10px;
+  box-shadow: 0 4px 18px rgba(0,0,0,.10);
+  padding: 2.2rem 2.8rem 1.8rem;
+  position: relative;
+}
+
+.slide-number {
+  position: absolute;
+  bottom: 0.7rem;
+  right: 1.2rem;
+  font-size: 0.72rem;
+  color: #aaa;
+}
+
+.slide.title-slide {
+  background: linear-gradient(145deg, #f4f9fc 60%, #e0eef7);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 240px;
+  text-align: center;
+  border-top: 6px solid var(--orange);
+}
+.slide.title-slide h1 { font-size: 1.9rem; color: var(--darkblue); margin-bottom: 0.4rem; }
+.slide.title-slide .subtitle { font-size: 1.15rem; color: #555; }
+
+h2.frame-title {
+  font-size: 1.65rem;
+  color: var(--orange);
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  padding-bottom: 0.35rem;
+  border-bottom: 2px solid #f9e4cc;
+}
+h3.sub-title {
+  font-size: 1.2rem;
+  color: var(--orange);
+  font-weight: 600;
+  margin: 0.9rem 0 0.4rem;
+}
+
+p { line-height: 1.7; margin: 0.45rem 0; }
+ul { margin: 0.4rem 0 0.4rem 1.4rem; line-height: 1.85; }
+ul li::marker { color: var(--orange); }
+
+.code-pair {
+  display: flex;
+  gap: 0.75rem;
+  margin: 0.7rem 0;
+}
+.code-pane {
+  flex: 1;
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1px solid transparent;
+  font-size: 0;
+}
+.pane-label {
+  display: block;
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  color: #fff;
+}
+.pane-code {
+  font-family: 'Consolas', 'Fira Code', monospace;
+  font-size: 0.83rem;
+  line-height: 1.6;
+  padding: 0.5rem 0.75rem;
+  white-space: pre;
+  display: block;
+  overflow-x: auto;
+}
+
+.python-pane  { border-color: var(--py-border); }
+.python-label { background: var(--py-head); }
+.python-pane .pane-code { background: var(--py-bg); color: var(--py-fg); }
+
+.sympy-pane  { border-color: var(--sp-border); }
+.sympy-label { background: var(--sp-head); }
+.sympy-pane .pane-code { background: var(--sp-bg); color: var(--sp-fg); }
+
+.setup-block, .python-block, .sympy-block {
+  border-radius: 6px;
+  overflow: hidden;
+  margin: 0.7rem 0;
+}
+.setup-block { border: 1px solid var(--su-border); }
+.setup-label {
+  display: block;
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  background: var(--su-head);
+  color: #fff;
+}
+.setup-block .pane-code {
+  background: var(--su-bg);
+  color: var(--su-fg);
+  font-family: 'Consolas', 'Fira Code', monospace;
+  font-size: 0.83rem;
+  line-height: 1.6;
+  padding: 0.5rem 0.75rem;
+  white-space: pre;
+  display: block;
+  overflow-x: auto;
+}
+
+.python-block { border: 1px solid var(--py-border); }
+.python-block .python-label { background: var(--py-head); }
+.python-block .pane-code {
+  background: var(--py-bg);
+  color: var(--py-fg);
+  font-family: 'Consolas', 'Fira Code', monospace;
+  font-size: 0.83rem;
+  line-height: 1.6;
+  padding: 0.5rem 0.75rem;
+  white-space: pre;
+  display: block;
+  overflow-x: auto;
+}
+
+.sympy-block { border: 1px solid var(--sp-border); }
+.sympy-block .sympy-label { background: var(--sp-head); }
+.sympy-block .pane-code {
+  background: var(--sp-bg);
+  color: var(--sp-fg);
+  font-family: 'Consolas', 'Fira Code', monospace;
+  font-size: 0.83rem;
+  line-height: 1.6;
+  padding: 0.5rem 0.75rem;
+  white-space: pre;
+  display: block;
+  overflow-x: auto;
+}
+
+.output-block {
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1px solid var(--out-border);
+  margin: 0.4rem 0 0.7rem;
+}
+.output-label {
+  display: block;
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  background: var(--out-head);
+  color: #fff;
+}
+.output-block .pane-code {
+  background: var(--out-bg);
+  color: var(--out-fg);
+  font-family: 'Consolas', 'Fira Code', monospace;
+  font-size: 0.83rem;
+  line-height: 1.6;
+  padding: 0.5rem 0.75rem;
+  white-space: pre;
+  display: block;
+  overflow-x: auto;
+}
+
+.note-box {
+  background: var(--lightbg);
+  border-left: 4px solid var(--orange);
+  border-radius: 4px;
+  padding: 0.6rem 0.9rem;
+  margin: 0.6rem 0;
+  font-style: italic;
+}
+
+.def-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0.5rem 0;
+  font-size: 0.95rem;
+}
+.def-table th, .def-table td {
+  border: 1px solid var(--border);
+  padding: 0.5rem 0.8rem;
+  text-align: left;
+  vertical-align: top;
+}
+.def-table th {
+  background: var(--lightbg);
+  color: var(--orange);
+  font-weight: 700;
+  width: 26%;
+  white-space: nowrap;
+}
+
+.step-card {
+  background: var(--lightbg);
+  border-left: 4px solid var(--orange);
+  border-radius: 6px;
+  padding: 0.6rem 0.9rem;
+  margin: 0.45rem 0;
+}
+.step-card .step-tag {
+  display: inline-block;
+  background: var(--orange);
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  padding: 2px 8px;
+  border-radius: 3px;
+  margin-right: 0.5rem;
+  text-transform: uppercase;
+}
+
+.tree-wrap { display:flex; justify-content:center; margin: 0.7rem 0; }
+.tree-wrap svg { background:#fafcff; border-radius:8px; }
+
+#nav { position: fixed; bottom: 1.5rem; right: 1.5rem; display: flex; gap: 0.4rem; z-index: 100; }
+#nav button {
+  background: var(--orange); color: #fff; border: none;
+  border-radius: 50%; width: 40px; height: 40px;
+  font-size: 1.1rem; cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,.25); transition: background .2s;
+}
+#nav button:hover { background: #cf6d17; }
+#nav #btn-scroll { border-radius: 20px; width: auto; padding: 0 12px; font-size: 0.8rem; }
+
+body.slideshow .slide         { display: none; }
+body.slideshow .slide.active  { display: block; }
+</style>
+</head>
+<body>
+
+<!-- ══ Slide 1: Title ════════════════════════════════════════════════ -->
+<section class="slide title-slide" id="s1">
+  <h1>Introduction to Discrete Mathematics</h1>
+  <p class="subtitle">Recursive Definitions</p>
+  <p style="font-size:1rem;color:#e67e22;margin-top:0.8rem;font-style:italic;font-weight:600;letter-spacing:.02em;">Notes By Pr. El Hadiq Zouhair</p>
+  <span class="slide-number">1 / 18</span>
+</section>
+
+<!-- ══ Slide 2: Overview ═════════════════════════════════════════════ -->
+<section class="slide" id="s2">
+  <h2 class="frame-title">Overview</h2>
+  <ul>
+    <li><strong>Recurrence</strong> is the definition of an $n^{\text{th}}$ element through some combination of previous elements.</li>
+    <li><strong>Recursion</strong> is intuitive for computers and counter-intuitive for humans.</li>
+    <li>Understanding recursion and its efficiency is important for <em>good programming</em>.</li>
+    <li>You will learn about <strong>recursive functions</strong>, <strong>recursive sets</strong>, <strong>recursive structures</strong>, <strong>structural induction</strong>, <strong>fixed points</strong>, <strong>fractals</strong>, <strong>cellular automata</strong>, and the <strong>scoping</strong> benefits of recursion.</li>
+  </ul>
+
+  <div class="setup-block">
+    <span class="setup-label">Python / SymPy — imports (run once)</span>
+    <span class="pane-code">from functools import lru_cache, reduce
+from itertools import islice
+from operator import mul
+import math
+from sympy import symbols, Function, rsolve, simplify, sqrt, Rational, factorial, oo
+k, n = symbols('k n', integer=True, positive=True)</span>
+  </div>
+  <span class="slide-number">2 / 18</span>
+</section>
+
+<!-- ══ Slide 3: Key Definitions ══════════════════════════════════════ -->
+<section class="slide" id="s3">
+  <h2 class="frame-title">Key Definitions</h2>
+  <table class="def-table">
+    <tr><th>Recursion</th><td>The technique of defining (or computing) something in terms of <em>smaller versions of itself</em>.</td></tr>
+    <tr><th>Recursive definition</th><td>A definition consisting of a <strong>base case</strong> (one or more starting values) and a <strong>recursive case</strong> (a rule expressing larger instances in terms of smaller ones).</td></tr>
+    <tr><th>Recurrence relation</th><td>An equation expressing a term $a_n$ as a function of preceding terms $a_{n-1}, a_{n-2}, \dots$</td></tr>
+    <tr><th>Base case / base step</th><td>The non-recursive starting value(s) — the "stop" condition.</td></tr>
+    <tr><th>Recursive / inductive case</th><td>The step expressing $f(n)$ via $f(n-1), \dots$</td></tr>
+    <tr><th>Well-founded recursion</th><td>Recursion where every chain of recursive calls is <em>finite</em> — i.e. eventually hits a base case. This is what guarantees termination.</td></tr>
+    <tr><th>Closed form</th><td>An explicit non-recursive formula for $a_n$ (e.g. Binet's formula for Fibonacci).</td></tr>
+    <tr><th>Structural induction</th><td>An induction principle over an inductively-defined set or data structure: prove the property on base elements, then on each combinator assuming it on its parts.</td></tr>
+    <tr><th>Memoization</th><td>Caching previously-computed recursive results to avoid recomputation — turns exponential calls into linear.</td></tr>
+    <tr><th>Tail call</th><td>A recursive call whose result is returned <em>directly</em> with no further work — can be optimised into a loop.</td></tr>
+    <tr><th>Fixed point</th><td>A point $x_0$ such that $f(x_0) = x_0$.</td></tr>
+    <tr><th>Attractor / fractal</th><td>An invariant set under repeated application of $f$; self-similar patterns arising from recursion.</td></tr>
+  </table>
+  <span class="slide-number">3 / 18</span>
+</section>
+
+<!-- ══ Slide 4: Recursive Functions ══════════════════════════════════ -->
+<section class="slide" id="s4">
+  <h2 class="frame-title">Recursive Functions</h2>
+  <p>Similar to induction, a recursive definition implies <strong>two parts</strong>:</p>
+  <div class="step-card"><span class="step-tag">BS</span><strong>Base step</strong> — specify the first value(s) of your function.</div>
+  <div class="step-card"><span class="step-tag">RS</span><strong>Recursive step</strong> — give the rule for finding the $n^{\text{th}}$ value using preceding values.</div>
+
+  <p><strong>Simple recurrence — powers of 2.</strong></p>
+  <div class="python-block">
+    <span class="python-label">Python — geometric recurrence</span>
+    <span class="pane-code">def f(n):
+    if n == 0:
+        return 1            # base step
+    return 2 * f(n - 1)     # recursive step
+
+print([f(n) for n in range(6)])     # [1, 2, 4, 8, 16, 32]</span>
+  </div>
+
+  <p><strong>Famous example — Fibonacci.</strong></p>
+  <div class="python-block">
+    <span class="python-label">Python — Fibonacci recurrence</span>
+    <span class="pane-code">def fib(n):
+    if n == 0: return 0
+    if n == 1: return 1
+    return fib(n-1) + fib(n-2)
+
+print([fib(n) for n in range(11)])
+# [0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55]</span>
+  </div>
+  <span class="slide-number">4 / 18</span>
+</section>
+
+<!-- ══ Slide 5: Solving a recurrence symbolically ════════════════════ -->
+<section class="slide" id="s5">
+  <h2 class="frame-title">From a recurrence to a closed form</h2>
+  <p>For linear recurrences with constant coefficients, SymPy can derive the closed form automatically with <code>rsolve</code>.</p>
+
+  <div class="sympy-block">
+    <span class="sympy-label">SymPy — Fibonacci (Binet's formula)</span>
+    <span class="pane-code">from sympy import Function, rsolve, symbols, simplify
+n = symbols('n', integer=True)
+f = Function('f')
+
+# f(n) = f(n-1) + f(n-2), f(0)=0, f(1)=1
+expr = rsolve(f(n) - f(n-1) - f(n-2), f(n), {f(0): 0, f(1): 1})
+print(simplify(expr))
+# sqrt(5)*(-(1/2 - sqrt(5)/2)**n + (1/2 + sqrt(5)/2)**n)/5</span>
+  </div>
+
+  <div class="sympy-block">
+    <span class="sympy-label">SymPy — Tower of Hanoi (T(n) = 2 T(n-1) + 1, T(0)=0)</span>
+    <span class="pane-code">from sympy import Function, rsolve, symbols, simplify
+n = symbols('n', integer=True)
+t = Function('t')
+print(simplify(rsolve(t(n) - 2*t(n-1) - 1, t(n), {t(0): 0})))
+# 2**n - 1</span>
+  </div>
+  <p class="note-box">The Hanoi recurrence proves you need at least $2^n - 1$ moves for $n$ disks.</p>
+  <span class="slide-number">5 / 18</span>
+</section>
+
+<!-- ══ Slide 6: Recursive Sets ═══════════════════════════════════════ -->
+<section class="slide" id="s6">
+  <h2 class="frame-title">Recursive Sets</h2>
+  <p>A <strong>recursive set definition</strong> implies:</p>
+  <div class="step-card"><span class="step-tag">BS</span><strong>Base step</strong> — specify the first element(s) of your set.</div>
+  <div class="step-card"><span class="step-tag">RS</span><strong>Recursive step</strong> — give the rule(s) for generating new elements from existing ones.</div>
+  <p>Then the set $S$ is the <em>smallest</em> set satisfying both — every element is reached by finitely many applications of the rules from the base.</p>
+
+  <h3 class="sub-title">Example — even integers</h3>
+  <ul>
+    <li>$0 \in S$</li>
+    <li>If $x \in S$ then $x + 2 \in S$ and $x - 2 \in S$.</li>
+  </ul>
+
+  <h3 class="sub-title">Example — powers of 2 (a recurrence on a sequence)</h3>
+  <div class="python-block">
+    <span class="python-label">Python — generate {1, 2, 4, 8, 16}</span>
+    <span class="pane-code">def powers_of_two(n):
+    out = [1]
+    for _ in range(n):
+        out.append(2 * out[-1])
+    return out
+
+print(powers_of_two(4))         # [1, 2, 4, 8, 16]</span>
+  </div>
+
+  <p><strong>Definitions through a recursive rule</strong> often look like comprehensions or list-builders in Python; they are also exactly what <code>itertools.accumulate</code> does.</p>
+  <span class="slide-number">6 / 18</span>
+</section>
+
+<!-- ══ Slide 7: Recursive Set — telescoping example ══════════════════ -->
+<section class="slide" id="s7">
+  <h2 class="frame-title">Worked example — telescoping recurrence</h2>
+  <p>Define the recursive function for the sequence
+  $s = \Bigl\{\dfrac{1}{1 \cdot 2},\, \dfrac{1}{2 \cdot 3},\, \dots,\, \dfrac{1}{n(n+1)}\Bigr\}$.</p>
+
+  <p style="text-align:center;">$s(n) = \dfrac{1}{n(n+1)} = \dfrac{(n-1)}{(n+1)} \cdot \dfrac{1}{(n-1)\,n} = \dfrac{n-1}{n+1}\, s(n-1)$</p>
+
+  <div class="python-block">
+    <span class="python-label">Python — direct vs recursive</span>
+    <span class="pane-code">from fractions import Fraction
+
+def s_direct(n):
+    return Fraction(1, n * (n + 1))
+
+def s_recursive(n, memo={1: Fraction(1, 2)}):
+    if n not in memo:
+        memo[n] = Fraction(n - 1, n + 1) * s_recursive(n - 1, memo)
+    return memo[n]
+
+print([s_direct(n)    for n in range(1, 11)])
+print([s_recursive(n) for n in range(1, 11)])
+# Both: [1/2, 1/6, 1/12, 1/20, 1/30, 1/42, 1/56, 1/72, 1/90, 1/110]</span>
+  </div>
+
+  <p class="note-box">Recurrences let you express infinitely many terms with <em>one</em> rule. The cost is that computing $s(n)$ requires unwinding all previous calls — unless you <em>memoise</em>.</p>
+  <span class="slide-number">7 / 18</span>
+</section>
+
+<!-- ══ Slide 8: Recursive Structures ═════════════════════════════════ -->
+<section class="slide" id="s8">
+  <h2 class="frame-title">Recursive Structures</h2>
+  <p>Many data structures in computer science are recursive in nature: linked lists, trees, graphs, JSON, expression syntax trees, etc.</p>
+  <div class="step-card"><span class="step-tag">BS</span><strong>Base step</strong> — specify your starting structure.</div>
+  <div class="step-card"><span class="step-tag">RS</span><strong>Recursive step</strong> — give the rule(s) for building the $n^{\text{th}}$ structure from preceding ones.</div>
+
+  <p>Consider a <strong>full binary tree</strong> with a root and two leaf nodes (level $n = 2$), where at each step <em>every</em> leaf becomes an internal node with two new leaves.</p>
+
+  <div class="tree-wrap">
+    <svg viewBox="0 0 400 240" width="380" height="220" xmlns="http://www.w3.org/2000/svg">
+      <g stroke="#c0395a" stroke-width="2" fill="none">
+        <line x1="200" y1="30"  x2="100" y2="100"/>
+        <line x1="200" y1="30"  x2="300" y2="100"/>
+        <line x1="100" y1="100" x2="60"  y2="180"/>
+        <line x1="100" y1="100" x2="140" y2="180"/>
+        <line x1="300" y1="100" x2="260" y2="180"/>
+        <line x1="300" y1="100" x2="340" y2="180"/>
+      </g>
+      <g fill="#c0395a">
+        <circle cx="200" cy="30"  r="14"/>
+        <circle cx="100" cy="100" r="12"/>
+        <circle cx="300" cy="100" r="12"/>
+      </g>
+      <g fill="#58a55c">
+        <circle cx="60"  cy="180" r="10"/>
+        <circle cx="140" cy="180" r="10"/>
+        <circle cx="260" cy="180" r="10"/>
+        <circle cx="340" cy="180" r="10"/>
+      </g>
+    </svg>
+  </div>
+
+  <div class="python-block">
+    <span class="python-label">Python — building a full binary tree recursively</span>
+    <span class="pane-code">def full_tree(n):
+    """Returns a nested tuple representing a full binary tree of depth n."""
+    if n == 1:
+        return ()                       # leaf
+    return (full_tree(n - 1), full_tree(n - 1))
+
+def count_nodes(t):
+    return 1 + sum(count_nodes(c) for c in t)
+
+print(count_nodes(full_tree(4)))         # 15 = 2^4 - 1</span>
+  </div>
+  <span class="slide-number">8 / 18</span>
+</section>
+
+<!-- ══ Slide 9: Structural Induction ═════════════════════════════════ -->
+<section class="slide" id="s9">
+  <h2 class="frame-title">Structural Induction</h2>
+  <p>Proving properties of recursive structures usually requires <strong>structural induction</strong>: prove the property on the base structure, then on each recursive rule assuming it holds on the sub-structures.</p>
+
+  <h3 class="sub-title">Claim — the full binary tree at level $n$ has $2^n - 1$ nodes and $2^{n-1}$ leaves</h3>
+  <div class="step-card"><span class="step-tag">BS</span>$n = 2$: 3 nodes total, 2 leaves. &nbsp; $2^2 - 1 = 3$ ✓, $\;2^{2-1} = 2$ ✓.</div>
+  <div class="step-card"><span class="step-tag">IH</span>All full trees of depth $i$ have $2^i - 1$ nodes and $2^{i-1}$ leaves, for all $2 \leq i \leq n$.</div>
+  <div class="step-card"><span class="step-tag">IS</span>The level-$(n+1)$ tree replaces each of the $2^{n-1}$ leaves of the level-$n$ tree by an internal node with 2 new leaves.
+    <ul>
+      <li>New leaves: $2 \cdot 2^{n-1} = 2^n$.</li>
+      <li>New nodes added: $2 \cdot 2^{n-1}$ (the leaves) $= 2^n$, plus the previous $2^n - 1$ nodes still present, gives $2^n + 2^n - 1 = 2^{n+1} - 1$. $\square$</li>
+    </ul>
+  </div>
+
+  <div class="python-block">
+    <span class="python-label">Python — empirical check</span>
+    <span class="pane-code">def count_leaves(t):
+    return 1 if t == () else sum(count_leaves(c) for c in t)
+
+for n in range(2, 8):
+    t = full_tree(n)
+    assert count_nodes(t)  == 2**n - 1
+    assert count_leaves(t) == 2**(n-1)
+print("Structural property verified for n in [2, 7] ✓")</span>
+  </div>
+  <span class="slide-number">9 / 18</span>
+</section>
+
+<!-- ══ Slide 10: Memoization & complexity ════════════════════════════ -->
+<section class="slide" id="s10">
+  <h2 class="frame-title">Memoization &amp; complexity</h2>
+  <p>Naïve recursion can be <em>catastrophically slow</em>. Fibonacci without memoization is $O(\varphi^n)$ because the same sub-calls happen exponentially many times.</p>
+
+  <div class="python-block">
+    <span class="python-label">Python — slow vs memoized Fibonacci</span>
+    <span class="pane-code">from functools import lru_cache
+import time
+
+def fib_slow(n):
+    return n if n &lt; 2 else fib_slow(n-1) + fib_slow(n-2)
+
+@lru_cache
+def fib_fast(n):
+    return n if n &lt; 2 else fib_fast(n-1) + fib_fast(n-2)
+
+t = time.perf_counter(); fib_slow(32); print("slow:", time.perf_counter() - t, "s")
+t = time.perf_counter(); fib_fast(500); print("fast:", time.perf_counter() - t, "s")</span>
+  </div>
+
+  <p>Memoization turns the exponential tree of calls into a linear chain — each $f(k)$ is computed once. This is the same idea as <em>dynamic programming</em>.</p>
+  <span class="slide-number">10 / 18</span>
+</section>
+
+<!-- ══ Slide 11: Tail recursion ══════════════════════════════════════ -->
+<section class="slide" id="s11">
+  <h2 class="frame-title">Tail recursion &amp; iterative form</h2>
+  <p>A <strong>tail call</strong> is a recursive call whose return value is returned directly (no extra work afterwards). Tail-recursive definitions can be mechanically rewritten as <em>loops</em>, eliminating call-stack growth.</p>
+
+  <div class="code-pair">
+    <div class="code-pane python-pane">
+      <span class="pane-label python-label">Python — non-tail (stacking)</span>
+      <span class="pane-code">def fact(n):
+    if n == 0:
+        return 1
+    return n * fact(n - 1)  # ← multiplication AFTER call</span>
+    </div>
+    <div class="code-pane python-pane">
+      <span class="pane-label python-label">Python — tail recursive form</span>
+      <span class="pane-code">def fact_tail(n, acc=1):
+    if n == 0:
+        return acc
+    return fact_tail(n - 1, acc * n)   # ← only the call</span>
+    </div>
+  </div>
+
+  <div class="python-block">
+    <span class="python-label">Python — equivalent iterative loop</span>
+    <span class="pane-code">def fact_iter(n):
+    acc = 1
+    for k in range(2, n + 1):
+        acc *= k
+    return acc
+
+print(fact_iter(10))     # 3628800</span>
+  </div>
+
+  <p class="note-box">CPython does not automatically optimize tail calls (unlike Scheme/OCaml). For deep recursions in Python, rewrite as a loop or use <code>sys.setrecursionlimit</code> with care.</p>
+  <span class="slide-number">11 / 18</span>
+</section>
+
+<!-- ══ Slide 12: Mutual recursion ════════════════════════════════════ -->
+<section class="slide" id="s12">
+  <h2 class="frame-title">Mutual recursion</h2>
+  <p>Two (or more) functions can be defined in terms of each other.</p>
+
+  <div class="python-block">
+    <span class="python-label">Python — even / odd</span>
+    <span class="pane-code">def is_even(n):
+    return True if n == 0 else is_odd(n - 1)
+
+def is_odd(n):
+    return False if n == 0 else is_even(n - 1)
+
+print(is_even(8), is_odd(7))      # True True</span>
+  </div>
+
+  <p>Other classic mutually-recursive pairs:</p>
+  <ul>
+    <li>The <strong>Hofstadter Female / Male</strong> sequences.</li>
+    <li>Parser combinators (an expression grammar refers to itself through "term" and "factor").</li>
+    <li>State machines whose states transition into each other.</li>
+  </ul>
+  <span class="slide-number">12 / 18</span>
+</section>
+
+<!-- ══ Slide 13: Fixed point ═════════════════════════════════════════ -->
+<section class="slide" id="s13">
+  <h2 class="frame-title">Fixed Points</h2>
+  <p>A <strong>fixed point</strong> of a function $f$ is a point $x_0$ such that $f(x_0) = x_0$.
+  Iterating $f$ from any seed produces a sequence $x_0, f(x_0), f(f(x_0)), \dots$ — its limit (if any) is a fixed point.</p>
+
+  <div class="python-block">
+    <span class="python-label">Python — iterate until fixed</span>
+    <span class="pane-code">def fixed_point(f, x0, max_iter=1000):
+    """Iterate f from x0 until x stops changing."""
+    x = x0
+    history = [x]
+    for _ in range(max_iter):
+        nxt = f(x)
+        history.append(nxt)
+        if nxt == x:
+            return nxt, history
+        x = nxt
+    return x, history     # may not have converged
+
+g = lambda n: 1 + (n - 1) // 2     # the example g(n)=1+⌊(n−1)/2⌋
+fp, hist = fixed_point(g, 1000)
+print(hist)        # [1000, 501, 251, 126, 64, 33, 17, 9, 5, 3, 2, 2]
+print("fixed point:", fp)          # 2</span>
+  </div>
+
+  <p>Some fixed points are <strong>convergent</strong>, some <strong>divergent</strong>, and some functions have <em>no</em> fixed points at all (e.g. $f(x) = x + 1$).</p>
+
+  <p><strong>Banach fixed-point theorem</strong>: every <em>contraction mapping</em> on a complete metric space has exactly one fixed point, and iteration converges to it from any starting point. This is the theoretical reason iterative methods (Newton, Picard) work.</p>
+  <span class="slide-number">13 / 18</span>
+</section>
+
+<!-- ══ Slide 14: Fractals ════════════════════════════════════════════ -->
+<section class="slide" id="s14">
+  <h2 class="frame-title">Fractals</h2>
+  <p>A <strong>fractal</strong> is an object or quantity that displays <em>self-similarity</em> on all scales. Usually, this beautiful phenomenon is the result of iterating a function over a domain — i.e. tracking fixed-point behaviour pixel-by-pixel.</p>
+  <ul>
+    <li><strong>Mandelbrot set</strong>: the set of complex $c$ for which $z_{n+1} = z_n^2 + c$, $z_0 = 0$ remains bounded.</li>
+    <li><strong>Julia set</strong>: for a fixed $c$, the boundary of the set of $z_0$ whose orbits stay bounded.</li>
+    <li><strong>Koch snowflake, Sierpinski triangle, dragon curve</strong>: produced by L-systems — recursive rewriting of symbols.</li>
+  </ul>
+
+  <div class="python-block">
+    <span class="python-label">Python — Mandelbrot escape time</span>
+    <span class="pane-code">def mandelbrot(c, max_iter=80):
+    z = 0
+    for k in range(max_iter):
+        z = z*z + c
+        if abs(z) &gt; 2:
+            return k          # escapes — colour by k
+    return max_iter           # in the set
+
+import numpy as np
+xs = np.linspace(-2.0, 1.0, 60)
+ys = np.linspace(-1.2, 1.2, 24)
+img = [[mandelbrot(complex(x, y)) for x in xs] for y in ys]
+# (plot with matplotlib.pyplot.imshow if desired)</span>
+  </div>
+  <span class="slide-number">14 / 18</span>
+</section>
+
+<!-- ══ Slide 15: Cellular Automaton ══════════════════════════════════ -->
+<section class="slide" id="s15">
+  <h2 class="frame-title">Cellular Automaton</h2>
+  <p>Recursion does not always create symmetry — it can also create <strong>complexity</strong>.</p>
+  <p>A <strong>cellular automaton</strong> is a collection of grid cells "coloured" according to a set of rules based on the colours of neighbouring cells. The new state at time $t+1$ is a deterministic function of the state at time $t$ — a recursive rule on a discrete grid.</p>
+
+  <div class="python-block">
+    <span class="python-label">Python — elementary CA, Wolfram rule 30</span>
+    <span class="pane-code">def ca_step(state, rule=30):
+    """One step of an elementary 1-D cellular automaton."""
+    n = len(state)
+    new = [0] * n
+    for i in range(n):
+        L = state[(i - 1) % n]
+        C = state[i]
+        R = state[(i + 1) % n]
+        idx = (L &lt;&lt; 2) | (C &lt;&lt; 1) | R          # bits LCR → 0..7
+        new[i] = (rule &gt;&gt; idx) &amp; 1
+    return new
+
+state = [0]*40 + [1] + [0]*40    # single seed cell
+for _ in range(15):
+    print(''.join('█' if c else ' ' for c in state))
+    state = ca_step(state, rule=30)</span>
+  </div>
+  <p class="note-box">The importance of cellular automata is famously discussed in Stephen Wolfram's <em>A New Kind of Science</em>. Rule 30 is conjectured to be <em>computationally irreducible</em>.</p>
+  <span class="slide-number">15 / 18</span>
+</section>
+
+<!-- ══ Slide 16: Scoping & engineering benefits ══════════════════════ -->
+<section class="slide" id="s16">
+  <h2 class="frame-title">Scoping — why recursion is powerful</h2>
+  <p>Recursion is powerful computationally due to the <strong>reduction of scope</strong>: each recursive call works on a <em>strictly smaller</em> sub-problem that doesn't see the others.</p>
+
+  <p>It is mainly used in programming for:</p>
+  <ul>
+    <li><strong>Time optimisation</strong> using limited overhead memory and <em>tail calls</em>.</li>
+    <li><strong>Simplifying branching</strong> — divide-and-conquer (merge sort, quick sort, binary search).</li>
+    <li><strong>Parallelisation and online algorithms</strong> — independent sub-problems run in parallel.</li>
+    <li><strong>Tree/graph traversal</strong>, parsing, backtracking (Sudoku, N-queens).</li>
+    <li><strong>Symbolic manipulation</strong> — expressions are recursive ASTs by nature; SymPy walks them recursively.</li>
+  </ul>
+
+  <div class="python-block">
+    <span class="python-label">Python — merge sort, divide-and-conquer</span>
+    <span class="pane-code">def merge_sort(a):
+    if len(a) &lt;= 1:
+        return a
+    m = len(a) // 2
+    L, R = merge_sort(a[:m]), merge_sort(a[m:])
+    out, i, j = [], 0, 0
+    while i &lt; len(L) and j &lt; len(R):
+        if L[i] &lt;= R[j]: out.append(L[i]); i += 1
+        else:            out.append(R[j]); j += 1
+    return out + L[i:] + R[j:]
+
+print(merge_sort([5, 2, 8, 1, 9, 3]))    # [1, 2, 3, 5, 8, 9]</span>
+  </div>
+  <span class="slide-number">16 / 18</span>
+</section>
+
+<!-- ══ Slide 17: Pitfalls ════════════════════════════════════════════ -->
+<section class="slide" id="s17">
+  <h2 class="frame-title">Common pitfalls</h2>
+  <ul>
+    <li><strong>Missing base case</strong> ⇒ infinite recursion (Python raises <code>RecursionError</code>).</li>
+    <li><strong>Non-decreasing recursion</strong> ⇒ recursion never reaches the base. Each call must approach the base on every branch.</li>
+    <li><strong>Exponential blow-up</strong> from re-computing the same sub-problems — memoize or convert to dynamic programming.</li>
+    <li><strong>Python recursion limit</strong> (default 1000). Use iteration or raise the limit cautiously.</li>
+    <li><strong>Mutating shared state</strong> inside a recursive function breaks scoping benefits — prefer pure functions.</li>
+  </ul>
+
+  <div class="python-block">
+    <span class="python-label">Python — checking the recursion limit</span>
+    <span class="pane-code">import sys
+print(sys.getrecursionlimit())     # usually 1000
+# sys.setrecursionlimit(10_000)   # use with caution</span>
+  </div>
+  <span class="slide-number">17 / 18</span>
+</section>
+
+<!-- ══ Slide 18: Summary ═════════════════════════════════════════════ -->
+<section class="slide" id="s18">
+  <h2 class="frame-title">Summary &amp; Quick Reference</h2>
+  <ul style="line-height:2;">
+    <li>Recursion is present in many constructs — <strong>functions, sets and structures</strong>.</li>
+    <li>Some applications of recursion form entire domains of research: <strong>fractals, cellular automata, dynamical systems</strong>.</li>
+    <li>When appropriate, use recursion to <em>optimize</em>, <em>simplify</em>, or <em>distribute</em> computational tasks.</li>
+    <li>This overview is a panorama — the next lesson addresses <strong>basic recurrences</strong> in greater depth for algorithm design.</li>
+  </ul>
+
+  <table class="def-table" style="margin-top:0.8rem;">
+    <tr><th>Concept</th><th>Python / SymPy</th></tr>
+    <tr><td>Memoization</td><td><code>@functools.lru_cache</code></td></tr>
+    <tr><td>Tail call</td><td>Rewrite as iterative loop (no auto-TCO in Python)</td></tr>
+    <tr><td>Solve linear recurrence</td><td><code>sympy.rsolve</code></td></tr>
+    <tr><td>Fixed point</td><td>Iterate $f$ until $f(x) = x$; SymPy: <code>nsolve</code></td></tr>
+    <tr><td>Structural induction</td><td>Pattern-match on the data type, recurse on sub-parts</td></tr>
+    <tr><td>Recursion limit</td><td><code>sys.setrecursionlimit</code></td></tr>
+    <tr><td>Divide &amp; conquer</td><td>Halve the input, recurse, combine (merge/quick sort, FFT, …)</td></tr>
+    <tr><td>Generating function (closed form for series)</td><td>SymPy: <code>summation</code>, <code>series</code></td></tr>
+  </table>
+  <span class="slide-number">18 / 18</span>
+</section>
+
+<div id="nav">
+  <button id="btn-prev" title="Previous">&#8592;</button>
+  <button id="btn-scroll" title="Toggle slideshow">Slideshow</button>
+  <button id="btn-next"  title="Next">&#8594;</button>
+</div>
+
+<script>
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  let current = 0, slideshowMode = false;
+  function enter(i) {
+    slides[current].classList.remove('active');
+    current = (i + slides.length) % slides.length;
+    slides[current].classList.add('active');
+    slides[current].scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+  document.getElementById('btn-prev').addEventListener('click', () => { if (slideshowMode) enter(current - 1); });
+  document.getElementById('btn-next').addEventListener('click', () => { if (slideshowMode) enter(current + 1); });
+  document.getElementById('btn-scroll').addEventListener('click', () => {
+    slideshowMode = !slideshowMode;
+    document.body.classList.toggle('slideshow', slideshowMode);
+    document.getElementById('btn-scroll').textContent = slideshowMode ? 'Scroll' : 'Slideshow';
+    if (slideshowMode) slides[current].classList.add('active');
+    else slides.forEach(s => s.classList.remove('active'));
+  });
+  document.addEventListener('keydown', e => {
+    if (!slideshowMode) return;
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') enter(current + 1);
+    if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   enter(current - 1);
+  });
+</script>
+</body>
+</html>

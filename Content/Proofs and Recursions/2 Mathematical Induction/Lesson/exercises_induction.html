@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mathematical Induction — Exercises</title>
+<script>
+  MathJax = {
+    tex: { inlineMath: [['$','$']], displayMath: [['$$','$$']] },
+    options: { skipHtmlTags: ['script','noscript','style','textarea'] }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --orange:    #e67e22;
+  --darkblue:  #2c3e50;
+  --lightbg:   #f4f9fc;
+  --border:    #dce3ea;
+  --py-fg:     #1f4e7a;
+  --py-bg:     #eaf3fb;
+  --py-border: #2a6fb3;
+  --py-head:   #2a6fb3;
+  --sp-fg:     #1e824c;
+  --sp-bg:     #e8f5ec;
+  --sp-border: #27ae60;
+  --sp-head:   #27ae60;
+  --out-fg:    #6e4b0a;
+  --out-bg:    #fff7e0;
+  --out-border:#e0b341;
+  --out-head:  #c89324;
+  --sol-bg:    #fdf6ee;
+  --sol-border:#e67e22;
+}
+
+body {
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  background: #e8edf2;
+  color: var(--darkblue);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem 1rem 5rem;
+  gap: 1.5rem;
+}
+
+.slide {
+  background: #fff;
+  width: 100%;
+  max-width: 940px;
+  border-radius: 10px;
+  box-shadow: 0 4px 18px rgba(0,0,0,.10);
+  padding: 2rem 2.4rem 1.6rem;
+  position: relative;
+}
+.slide.title-slide {
+  background: linear-gradient(145deg, #f4f9fc 60%, #e0eef7);
+  text-align: center;
+  border-top: 6px solid var(--orange);
+  padding: 2.5rem 2rem;
+}
+.slide.title-slide h1 { font-size: 1.9rem; color: var(--darkblue); margin-bottom: 0.4rem; }
+.slide.title-slide .subtitle { font-size: 1.15rem; color: #555; }
+
+h2.frame-title {
+  font-size: 1.45rem;
+  color: var(--orange);
+  font-weight: 700;
+  margin-bottom: 0.4rem;
+  padding-bottom: 0.3rem;
+  border-bottom: 2px solid #f9e4cc;
+}
+.ex-number {
+  display: inline-block;
+  background: var(--orange);
+  color: #fff;
+  font-weight: 700;
+  padding: 0.15em 0.6em;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  margin-right: 0.5rem;
+}
+.difficulty {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  padding: 0.1em 0.5em;
+  border-radius: 3px;
+  margin-left: 0.4rem;
+  vertical-align: middle;
+  text-transform: uppercase;
+}
+.easy   { background: #d4f4dd; color: #1e7a3b; }
+.medium { background: #fce4b6; color: #8a5400; }
+.hard   { background: #f8c8c8; color: #952020; }
+
+p { line-height: 1.7; margin: 0.4rem 0; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.4rem; line-height: 1.85; }
+ul li::marker, ol li::marker { color: var(--orange); }
+.statement { margin: 0.3rem 0 0.6rem; }
+
+.python-block, .sympy-block {
+  border-radius: 6px;
+  overflow: hidden;
+  margin: 0.6rem 0;
+}
+.python-block { border: 1px solid var(--py-border); }
+.sympy-block  { border: 1px solid var(--sp-border); }
+.python-label, .sympy-label, .output-label {
+  display: block;
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  color: #fff;
+}
+.python-label { background: var(--py-head); }
+.sympy-label  { background: var(--sp-head); }
+.python-block .pane-code, .sympy-block .pane-code {
+  font-family: 'Consolas', 'Fira Code', monospace;
+  font-size: 0.83rem;
+  line-height: 1.6;
+  padding: 0.5rem 0.75rem;
+  white-space: pre;
+  display: block;
+  overflow-x: auto;
+}
+.python-block .pane-code { background: var(--py-bg); color: var(--py-fg); }
+.sympy-block  .pane-code { background: var(--sp-bg); color: var(--sp-fg); }
+
+.output-block {
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1px solid var(--out-border);
+  margin: 0.4rem 0 0.6rem;
+}
+.output-label { background: var(--out-head); }
+.output-block .pane-code {
+  background: var(--out-bg);
+  color: var(--out-fg);
+  font-family: 'Consolas', 'Fira Code', monospace;
+  font-size: 0.83rem;
+  line-height: 1.6;
+  padding: 0.5rem 0.75rem;
+  white-space: pre;
+  display: block;
+  overflow-x: auto;
+}
+
+details.solution {
+  margin: 0.4rem 0 0.6rem;
+  background: var(--sol-bg);
+  border-left: 4px solid var(--sol-border);
+  border-radius: 4px;
+  padding: 0.5rem 0.8rem;
+}
+details.solution summary {
+  cursor: pointer;
+  font-weight: 700;
+  color: var(--orange);
+  list-style: none;
+  font-size: 0.9rem;
+  letter-spacing: 0.04em;
+}
+details.solution summary::before { content: "▸ "; }
+details.solution[open] summary::before { content: "▾ "; }
+details.solution > *:not(summary) { margin-top: 0.5rem; }
+
+.toc {
+  background: var(--lightbg);
+  border-left: 4px solid var(--orange);
+  padding: 0.8rem 1rem;
+  border-radius: 4px;
+}
+.toc a { color: var(--darkblue); text-decoration: none; }
+.toc a:hover { color: var(--orange); }
+</style>
+</head>
+<body>
+
+<section class="slide title-slide">
+  <h1>Mathematical Induction — Exercises</h1>
+  <p class="subtitle">With Python solutions</p>
+  <p style="font-size:1rem;color:#e67e22;margin-top:0.8rem;font-style:italic;font-weight:600;letter-spacing:.02em;">By Pr. El Hadiq Zouhair</p>
+</section>
+
+<section class="slide">
+  <h2 class="frame-title">Contents</h2>
+  <div class="toc">
+    <ol>
+      <li><a href="#ex1">Sum $1 + 2 + \dots + n$</a> <span class="difficulty easy">easy</span></li>
+      <li><a href="#ex2">Sum of squares $\sum i^2$</a> <span class="difficulty easy">easy</span></li>
+      <li><a href="#ex3">Sum of cubes $\sum i^3$</a> <span class="difficulty medium">medium</span></li>
+      <li><a href="#ex4">Sum of odd numbers $= n^2$</a> <span class="difficulty easy">easy</span></li>
+      <li><a href="#ex5">Geometric sum $\sum r^i$</a> <span class="difficulty medium">medium</span></li>
+      <li><a href="#ex6">$2^n &gt; n^2$ for $n \geq 5$</a> <span class="difficulty medium">medium</span></li>
+      <li><a href="#ex7">$n &lt; 2^n$ for $n \geq 1$</a> <span class="difficulty easy">easy</span></li>
+      <li><a href="#ex8">$|\mathcal{P}(S)| = 2^{|S|}$</a> <span class="difficulty medium">medium</span></li>
+      <li><a href="#ex9">$3 \mid n^3 - n$</a> <span class="difficulty medium">medium</span></li>
+      <li><a href="#ex10">$\sum 1/i^2 &lt; 2$</a> <span class="difficulty hard">hard</span></li>
+      <li><a href="#ex11">Strong induction — postage stamps (4, 5)</a> <span class="difficulty hard">hard</span></li>
+      <li><a href="#ex12">Strong induction — Fibonacci $\leq 2^n$</a> <span class="difficulty hard">hard</span></li>
+    </ol>
+  </div>
+</section>
+
+<!-- ══ Ex 1 ═════════════════════════════════════════════════════════ -->
+<section class="slide" id="ex1">
+  <h2 class="frame-title"><span class="ex-number">1</span>$\displaystyle\sum_{i=1}^{n} i = \dfrac{n(n+1)}{2}$ <span class="difficulty easy">easy</span></h2>
+  <p class="statement">Prove by induction for $n \geq 1$.</p>
+
+  <details class="solution"><summary>Solution</summary>
+  <p><strong>BS</strong> $(n = 1)$: $\sum_{i=1}^{1} i = 1 = \tfrac{1 \cdot 2}{2}$. ✓<br>
+     <strong>IH</strong>: assume $\sum_{i=1}^{k} i = \tfrac{k(k+1)}{2}$.<br>
+     <strong>IS</strong>: $\sum_{i=1}^{k+1} i = \tfrac{k(k+1)}{2} + (k+1) = \tfrac{(k+1)(k+2)}{2}$. $\square$</p>
+  <div class="python-block">
+    <span class="python-label">Python</span>
+    <span class="pane-code">for n in range(1, 1001):
+    assert sum(range(1, n+1)) == n*(n+1)//2
+print("ok ✓")</span>
+  </div>
+  </details>
+</section>
+
+<!-- ══ Ex 2 ═════════════════════════════════════════════════════════ -->
+<section class="slide" id="ex2">
+  <h2 class="frame-title"><span class="ex-number">2</span>$\displaystyle\sum_{i=1}^{n} i^2 = \dfrac{n(n+1)(2n+1)}{6}$ <span class="difficulty easy">easy</span></h2>
+  <p class="statement">Prove by induction.</p>
+
+  <details class="solution"><summary>Solution</summary>
+  <p><strong>BS</strong> $(n=1)$: $1 = \tfrac{1 \cdot 2 \cdot 3}{6}$. ✓<br>
+     <strong>IH</strong>: assume identity at $k$.<br>
+     <strong>IS</strong>: add $(k+1)^2$ to both sides and simplify to $\tfrac{(k+1)(k+2)(2k+3)}{6}$. $\square$</p>
+  <div class="sympy-block">
+    <span class="sympy-label">SymPy — symbolic check</span>
+    <span class="pane-code">from sympy import symbols, Sum, simplify
+i, n = symbols('i n', integer=True, positive=True)
+print(simplify(Sum(i**2, (i, 1, n)).doit()))
+# n*(n+1)*(2*n+1)/6</span>
+  </div>
+  </details>
+</section>
+
+<!-- ══ Ex 3 ═════════════════════════════════════════════════════════ -->
+<section class="slide" id="ex3">
+  <h2 class="frame-title"><span class="ex-number">3</span>$\displaystyle\sum_{i=1}^{n} i^3 = \Bigl(\dfrac{n(n+1)}{2}\Bigr)^2$ <span class="difficulty medium">medium</span></h2>
+  <p class="statement">Prove by induction and verify with SymPy.</p>
+
+  <details class="solution"><summary>Solution</summary>
+  <p><strong>BS</strong> $(n=1)$: $1 = 1$. ✓<br>
+     <strong>IH</strong>: $\sum_{i=1}^{k} i^3 = \bigl(\tfrac{k(k+1)}{2}\bigr)^2$.<br>
+     <strong>IS</strong>: $\sum_{i=1}^{k+1} i^3 = \bigl(\tfrac{k(k+1)}{2}\bigr)^2 + (k+1)^3 = \bigl(\tfrac{(k+1)(k+2)}{2}\bigr)^2$ &nbsp;(algebra). $\square$</p>
+  <div class="sympy-block">
+    <span class="sympy-label">SymPy</span>
+    <span class="pane-code">from sympy import symbols, Sum, simplify, factor
+i, n = symbols('i n', integer=True, positive=True)
+print(factor(simplify(Sum(i**3, (i, 1, n)).doit())))
+# n**2*(n + 1)**2/4</span>
+  </div>
+  </details>
+</section>
+
+<!-- ══ Ex 4 ═════════════════════════════════════════════════════════ -->
+<section class="slide" id="ex4">
+  <h2 class="frame-title"><span class="ex-number">4</span>$\displaystyle\sum_{i=1}^{n} (2i - 1) = n^2$ <span class="difficulty easy">easy</span></h2>
+  <p class="statement">Prove by induction.</p>
+
+  <details class="solution"><summary>Solution</summary>
+  <p><strong>BS</strong> $(n=1)$: $1 = 1^2$. ✓<br>
+     <strong>IS</strong>: $\sum_{i=1}^{k+1}(2i-1) = k^2 + (2(k+1) - 1) = k^2 + 2k + 1 = (k+1)^2$. $\square$</p>
+  <div class="python-block">
+    <span class="python-label">Python</span>
+    <span class="pane-code">for n in range(1, 501):
+    assert sum(2*i - 1 for i in range(1, n+1)) == n*n
+print("ok ✓")</span>
+  </div>
+  </details>
+</section>
+
+<!-- ══ Ex 5 ═════════════════════════════════════════════════════════ -->
+<section class="slide" id="ex5">
+  <h2 class="frame-title"><span class="ex-number">5</span>Geometric sum: $\displaystyle\sum_{i=0}^{n} r^i = \dfrac{r^{n+1} - 1}{r - 1}$ for $r \neq 1$ <span class="difficulty medium">medium</span></h2>
+  <p class="statement">Prove by induction on $n$.</p>
+
+  <details class="solution"><summary>Solution</summary>
+  <p><strong>BS</strong> $(n=0)$: $r^0 = 1 = \tfrac{r - 1}{r - 1}$. ✓<br>
+     <strong>IS</strong>:
+     $\displaystyle\sum_{i=0}^{k+1} r^i = \tfrac{r^{k+1} - 1}{r - 1} + r^{k+1} = \tfrac{r^{k+1} - 1 + r^{k+2} - r^{k+1}}{r - 1} = \tfrac{r^{k+2} - 1}{r - 1}.\;\square$</p>
+  <div class="sympy-block">
+    <span class="sympy-label">SymPy</span>
+    <span class="pane-code">from sympy import symbols, Sum, simplify
+i, n, r = symbols('i n r')
+print(simplify(Sum(r**i, (i, 0, n)).doit()))
+# (r**(n + 1) - 1)/(r - 1)</span>
+  </div>
+  </details>
+</section>
+
+<!-- ══ Ex 6 ═════════════════════════════════════════════════════════ -->
+<section class="slide" id="ex6">
+  <h2 class="frame-title"><span class="ex-number">6</span>$2^n &gt; n^2$ for $n \geq 5$ <span class="difficulty medium">medium</span></h2>
+  <p class="statement">Be careful with the starting index. Verify $n = 4$ does <em>not</em> work.</p>
+
+  <details class="solution"><summary>Solution</summary>
+  <p><strong>BS</strong> $(n=5)$: $32 &gt; 25$. ✓<br>
+     <strong>IH</strong>: $2^k &gt; k^2$ with $k \geq 5$.<br>
+     <strong>IS</strong>: $2^{k+1} = 2 \cdot 2^k &gt; 2 k^2$. Want $2k^2 \geq (k+1)^2 = k^2 + 2k + 1$, i.e. $k^2 \geq 2k + 1$.
+     For $k \geq 3$ that's true (e.g. $k = 3: 9 \geq 7$). So $2^{k+1} &gt; (k+1)^2$. $\square$</p>
+  <div class="python-block">
+    <span class="python-label">Python</span>
+    <span class="pane-code">for n in range(5, 30):
+    assert 2**n &gt; n*n
+print("ok for n ≥ 5 ✓")
+print(2**4, 4**2)   # 16  16 (equal: BS fails at n = 4)</span>
+  </div>
+  </details>
+</section>
+
+<!-- ══ Ex 7 ═════════════════════════════════════════════════════════ -->
+<section class="slide" id="ex7">
+  <h2 class="frame-title"><span class="ex-number">7</span>$n &lt; 2^n$ for $n \geq 1$ <span class="difficulty easy">easy</span></h2>
+  <p class="statement">Prove by induction.</p>
+
+  <details class="solution"><summary>Solution</summary>
+  <p><strong>BS</strong> $(n=1)$: $1 &lt; 2$. ✓<br>
+     <strong>IS</strong>: $k + 1 \leq k + k = 2k \;\underset{\text{IH}}{&lt;}\; 2 \cdot 2^k = 2^{k+1}$ &nbsp;(using $k \geq 1$). $\square$</p>
+  </details>
+</section>
+
+<!-- ══ Ex 8 ═════════════════════════════════════════════════════════ -->
+<section class="slide" id="ex8">
+  <h2 class="frame-title"><span class="ex-number">8</span>A set of $n$ elements has $2^n$ subsets <span class="difficulty medium">medium</span></h2>
+  <p class="statement">Prove by induction on $n$.</p>
+
+  <details class="solution"><summary>Solution</summary>
+  <p><strong>BS</strong> $(n=0)$: $\mathcal{P}(\varnothing) = \{\varnothing\}$, size 1 = $2^0$. ✓<br>
+     <strong>IS</strong>: pick one element $e$ of a $(k+1)$-set. Subsets split into those <em>containing</em> $e$ and those <em>not containing</em> $e$. Both are in bijection with subsets of a $k$-set, each contributing $2^k$ by IH. Total: $2 \cdot 2^k = 2^{k+1}$. $\square$</p>
+  <div class="python-block">
+    <span class="python-label">Python</span>
+    <span class="pane-code">from itertools import chain, combinations
+def P(s):
+    s = list(s)
+    return list(chain.from_iterable(combinations(s, r) for r in range(len(s)+1)))
+
+for n in range(0, 10):
+    assert len(P(range(n))) == 2 ** n
+print("ok on n ∈ [0, 9] ✓")</span>
+  </div>
+  </details>
+</section>
+
+<!-- ══ Ex 9 ═════════════════════════════════════════════════════════ -->
+<section class="slide" id="ex9">
+  <h2 class="frame-title"><span class="ex-number">9</span>$3 \mid n^3 - n$ for every $n \in \mathbb{N}$ <span class="difficulty medium">medium</span></h2>
+  <p class="statement">Prove by induction on $n \geq 0$.</p>
+
+  <details class="solution"><summary>Solution</summary>
+  <p><strong>BS</strong> $(n=0)$: $0^3 - 0 = 0$, divisible by 3. ✓<br>
+     <strong>IS</strong>: $(k+1)^3 - (k+1) = (k^3 + 3k^2 + 3k + 1) - (k + 1) = (k^3 - k) + 3(k^2 + k)$.
+     The first parenthesis is divisible by 3 by IH, the second is obviously divisible by 3. Sum is divisible by 3. $\square$</p>
+  <div class="python-block">
+    <span class="python-label">Python</span>
+    <span class="pane-code">for n in range(0, 500):
+    assert (n**3 - n) % 3 == 0
+print("ok ✓")</span>
+  </div>
+  </details>
+</section>
+
+<!-- ══ Ex 10 ════════════════════════════════════════════════════════ -->
+<section class="slide" id="ex10">
+  <h2 class="frame-title"><span class="ex-number">10</span>$\displaystyle\sum_{i=1}^{n} \dfrac{1}{i^2} \leq 2 - \dfrac{1}{n}$ for $n \geq 1$ <span class="difficulty hard">hard</span></h2>
+  <p class="statement">Stronger than $\sum 1/i^2 &lt; 2$ — the extra $-1/n$ is the trick that makes induction work.</p>
+
+  <details class="solution"><summary>Solution</summary>
+  <p><strong>BS</strong> $(n=1)$: $1 \leq 2 - 1 = 1$. ✓<br>
+     <strong>IS</strong>: $\sum_{i=1}^{k+1} 1/i^2 \leq (2 - 1/k) + 1/(k+1)^2$. We need to show this is $\leq 2 - 1/(k+1)$, i.e.
+     $-1/k + 1/(k+1)^2 \leq -1/(k+1)$.
+     Equivalently $\tfrac{1}{k} - \tfrac{1}{k+1} \geq \tfrac{1}{(k+1)^2}$, i.e. $\tfrac{1}{k(k+1)} \geq \tfrac{1}{(k+1)^2}$, which is true since $k(k+1) \leq (k+1)^2$. $\square$</p>
+  <p>As a corollary, $\sum_{i=1}^{n} 1/i^2 &lt; 2$ for all $n$; numerically the series converges to $\pi^2/6 \approx 1.6449$.</p>
+  <div class="python-block">
+    <span class="python-label">Python</span>
+    <span class="pane-code">for n in range(1, 10_000):
+    s = sum(1/i**2 for i in range(1, n+1))
+    assert s &lt;= 2 - 1/n + 1e-12
+print("ok ✓")</span>
+  </div>
+  </details>
+</section>
+
+<!-- ══ Ex 11 ════════════════════════════════════════════════════════ -->
+<section class="slide" id="ex11">
+  <h2 class="frame-title"><span class="ex-number">11</span>Strong induction — stamps of 4 and 5 cents <span class="difficulty hard">hard</span></h2>
+  <p class="statement">Prove that every postage value $n \geq 12$ cents can be made with stamps of 4¢ and 5¢ only. Verify with Python by brute force.</p>
+
+  <details class="solution"><summary>Solution</summary>
+  <p><strong>BS</strong>: $12 = 4+4+4,\;13 = 4+4+5,\;14 = 4+5+5,\;15 = 5+5+5$. ✓<br>
+     <strong>IH</strong>: every value in $\{12,\dots,k\}$ ($k \geq 15$) can be made.<br>
+     <strong>IS</strong>: $k+1 \geq 16$, so $(k+1) - 4 \geq 12$. By IH $(k+1) - 4$ can be made; add one 4¢ stamp. $\square$</p>
+  <div class="python-block">
+    <span class="python-label">Python — brute force check</span>
+    <span class="pane-code">def makes(n):
+    return any(4*a + 5*b == n for a in range(n//4 + 1) for b in range(n//5 + 1))
+
+for n in range(12, 100):
+    assert makes(n), f"failed at {n}"
+print("Every value in [12, 99] is reachable ✓")
+print("Counterexamples below 12:", [n for n in range(12) if not makes(n)])</span>
+  </div>
+  </details>
+</section>
+
+<!-- ══ Ex 12 ════════════════════════════════════════════════════════ -->
+<section class="slide" id="ex12">
+  <h2 class="frame-title"><span class="ex-number">12</span>Strong induction — $F_n \leq 2^n$ <span class="difficulty hard">hard</span></h2>
+  <p class="statement">The Fibonacci sequence is $F_0 = 0,\, F_1 = 1,\, F_n = F_{n-1} + F_{n-2}$ for $n \geq 2$.
+  Prove by strong induction that $F_n \leq 2^n$ for every $n \geq 0$.</p>
+
+  <details class="solution"><summary>Solution</summary>
+  <p><strong>BS</strong>: $F_0 = 0 \leq 1 = 2^0$ and $F_1 = 1 \leq 2 = 2^1$. ✓<br>
+     <strong>IH</strong>: $F_i \leq 2^i$ for all $i \leq k$ (with $k \geq 1$).<br>
+     <strong>IS</strong>: $F_{k+1} = F_k + F_{k-1} \leq 2^k + 2^{k-1} = 2^{k-1}(2 + 1) = 3 \cdot 2^{k-1} \leq 4 \cdot 2^{k-1} = 2^{k+1}$. $\square$</p>
+  <p>Two predecessors are used — that's exactly why <em>strong</em> induction is needed.</p>
+  <div class="python-block">
+    <span class="python-label">Python</span>
+    <span class="pane-code">from functools import lru_cache
+@lru_cache
+def F(n):
+    return n if n &lt; 2 else F(n-1) + F(n-2)
+
+for n in range(0, 60):
+    assert F(n) &lt;= 2**n
+print("F(n) ≤ 2^n on n ∈ [0, 59] ✓")</span>
+  </div>
+  </details>
+</section>
+
+<section class="slide">
+  <h2 class="frame-title">Going further</h2>
+  <ul>
+    <li>Prove $\sum_{i=1}^{n} i \cdot i! = (n+1)! - 1$ by induction.</li>
+    <li>Prove $n! &gt; 2^n$ for $n \geq 4$ (the lesson did the strict version).</li>
+    <li>Prove by strong induction: every integer $n \geq 2$ has a prime factorisation.</li>
+    <li>Spot the bug in the "all horses are the same colour" proof — which step fails?</li>
+  </ul>
+  <p style="margin-top:0.8rem;font-style:italic;color:#666;">Open the <a href="induction.html" style="color:var(--orange);font-weight:600;text-decoration:none;">main lesson</a> for the matching theory.</p>
+</section>
+
+</body>
+</html>

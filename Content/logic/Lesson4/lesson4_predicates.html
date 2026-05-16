@@ -292,7 +292,7 @@ prove(ForAll([x], Implies(x >= 2, x >= 0)))    # proved</span>
 
   <div class="setup-block">
     <span class="setup-label">Python — imports (run once)</span>
-    <span class="pane-code">from z3 import Real, Reals, And, Exists, Solver, Goal, Tactic, sat</span>
+    <span class="pane-code">from z3 import Real, Reals, And, Exists, Solver</span>
   </div>
 
   <div class="sympy-block">
@@ -305,16 +305,7 @@ print(s.model())   # [x = 0]</span>
   </div>
 
   <p>This is a special case of existence — it is unique, denoted $\exists!\,x$.</p>
-  <p>$$\exists\,x,y\;\bigl(x^2 + ay^2 \leq 1 \;\wedge\; x - y \geq 2\bigr)$$</p>
 
-  <div class="sympy-block">
-    <span class="sympy-label">Python</span>
-    <span class="pane-code">x, y, a = Reals('x y a')
-# Quantifier elimination: remove x, y to find condition on a
-g = Goal()
-g.add(Exists([x, y], And(x**2 + a*y**2 &lt;= 1, x - y >= 2)))
-print(Tactic('qe')(g))   # [[a &lt;= 1/3]]</span>
-  </div>
   <span class="slide-number">6 / 11</span>
 </section>
 
@@ -460,11 +451,10 @@ plt.axis('equal'); plt.show()</span>
   <ul style="line-height:2;">
     <li>Predicates are propositional functions with parameters.</li>
     <li>There are three quantifiers: Universal ($\forall$), Existence ($\exists$) and Uniqueness ($\exists!$).</li>
-    <li><strong>Z3</strong> directly mirrors Wolfram's <code>ForAll</code>, <code>Exists</code> and <code>Reduce</code>:
+    <li><strong>Z3</strong> directly mirrors  <code>ForAll</code>, <code>Exists</code>:
       <ul>
         <li>Universal: <code>prove(ForAll([x], ...))</code></li>
         <li>Existence: <code>Solver().check()</code> → <code>sat</code> / <code>unsat</code></li>
-        <li>Quantifier elimination: <code>Tactic('qe')</code></li>
       </ul>
     </li>
     <li>So far, propositions were taken as is.</li>
@@ -475,7 +465,7 @@ plt.axis('equal'); plt.show()</span>
     <span class="setup-label">Python — key imports for this lesson</span>
     <span class="pane-code">from sympy import symbols, Implies                        # propositional predicates
 from z3 import Real, Reals, ForAll, Exists, And, Not, Implies as Imp
-from z3 import Solver, Goal, Tactic, prove, sat           # quantifiers
+from z3 import Solver, prove           # quantifiers
 import numpy as np, matplotlib.pyplot as plt              # visualisation</span>
   </div>
   <span class="slide-number">11 / 11</span>

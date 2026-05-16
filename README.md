@@ -1,1 +1,1 @@
-# Discrete_mathematics
+# Discrete_mathematics by El Hadiq Zouhair
