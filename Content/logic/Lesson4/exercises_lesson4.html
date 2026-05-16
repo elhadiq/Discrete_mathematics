@@ -114,7 +114,6 @@ MathJax = { tex: { inlineMath: [['$','$']] }, svg: { fontCache: 'global' } };
     <ul>
       <li>Evaluate $P$ at every point in the domain.</li>
       <li>List all <strong>witnesses</strong> — elements for which $P(x)$ is True.</li>
-      <li>How many witnesses are there? What fraction of the domain do they cover?</li>
     </ul>
   </div>
 </div>
@@ -166,7 +165,7 @@ MathJax = { tex: { inlineMath: [['$','$']] }, svg: { fontCache: 'global' } };
       <li>Show that $\forall x \in \mathbb{R},\; x^2 > 0$ is <strong>not</strong> valid by finding a counterexample with a <code>Solver</code>.</li>
       <li>Print the counterexample value of $x$.</li>
     </ul>
-    <div class="hint"><strong>Hint:</strong> To find a counterexample to $\forall x\; P(x)$, add $\neg(\forall x\; P(x))$ to the solver and check for <code>sat</code>.</div>
+    <div class="hint"><strong>Hint:</strong> To find a counterexample to $\forall x\; P(x)$, add $x^2\leq 0$ to the solver and check for <code>model</code>.</div>
   </div>
 </div>
 
@@ -186,91 +185,7 @@ MathJax = { tex: { inlineMath: [['$','$']] }, svg: { fontCache: 'global' } };
   </div>
 </div>
 
-<!-- Exercise 6 -->
-<div class="exercise">
-  <div class="ex-header">
-    <span class="ex-number">Ex 6</span>
-    <span class="ex-title">Negation of Quantifiers <span class="tag-z3">Z3 · Solver</span></span>
-  </div>
-  <div class="ex-body">
-    <p>Demonstrate the duality laws using Z3:</p>
-    <ul>
-      <li>$\neg(\forall x,\; x > 0) \;\equiv\; \exists x,\; x \le 0$: find a witness for $x \le 0$ over $\mathbb{R}$.</li>
-      <li>$\neg(\exists x,\; x^2 < 0) \;\equiv\; \forall x,\; x^2 \ge 0$: show no witness for $x^2 < 0$ exists (result: <code>unsat</code>).</li>
-    </ul>
-    <div class="hint"><strong>Reminder:</strong> $\neg\forall x\; P(x) \equiv \exists x\; \neg P(x)$ and $\neg\exists x\; P(x) \equiv \forall x\; \neg P(x)$.</div>
-  </div>
-</div>
 
-<!-- Exercise 7 -->
-<div class="exercise">
-  <div class="ex-header">
-    <span class="ex-number">Ex 7</span>
-    <span class="ex-title">Nested Quantifiers — Order Matters <span class="tag-z3">Z3 · ForAll · Exists</span></span>
-  </div>
-  <div class="ex-body">
-    <p>Quantifier order changes the meaning. Compare the two statements over $\mathbb{R}$:</p>
-    <ul>
-      <li>$\forall x \;\exists y,\; x + y = 0$ — for every $x$ there is a $y$ (namely $y = -x$). Use <code>z3.prove</code>.</li>
-      <li>$\exists x \;\forall y,\; x + y = 0$ — one fixed $x$ works for every $y$. Check validity with a <code>Solver</code>.</li>
-    </ul>
-    <p>Which statement is valid? Which is not? Explain the difference.</p>
-  </div>
-</div>
-
-<!-- Exercise 8 -->
-<div class="exercise">
-  <div class="ex-header">
-    <span class="ex-number">Ex 8</span>
-    <span class="ex-title">Binary Predicate — Divisibility Relation <span class="tag">lambda</span></span>
-  </div>
-  <div class="ex-body">
-    <p>Define the binary predicate $R(x, y)$: "$x$ divides $y$" (i.e., $y \bmod x = 0$) over the domain $\{1, 2, 3, 4, 5, 6\} \times \{1, 2, 3, 4, 5, 6\}$.</p>
-    <ul>
-      <li>List all pairs $(x, y)$ for which $R(x, y)$ is True.</li>
-      <li>How many such pairs are there?</li>
-      <li>Is the relation <strong>reflexive</strong>? (Does $x \mid x$ for every $x$?)</li>
-    </ul>
-  </div>
-</div>
-
-<!-- Exercise 9 -->
-<div class="exercise">
-  <div class="ex-header">
-    <span class="ex-number">Ex 9</span>
-    <span class="ex-title">Z3: Predicate over a Declared Sort <span class="tag-z3">Z3 · DeclareSort · Function</span></span>
-  </div>
-  <div class="ex-body">
-    <p>Encode the classic syllogism in Z3 using an uninterpreted sort <code>Person</code>:</p>
-    <ul>
-      <li>Declare uninterpreted functions $H(\cdot)$ ("is human") and $M(\cdot)$ ("is mortal") mapping <code>Person → Bool</code>.</li>
-      <li>Add the universal axiom: $\forall x,\; H(x) \to M(x)$.</li>
-      <li>Add the fact: $H(\text{socrates})$.</li>
-      <li>Assume $\neg M(\text{socrates})$ and check for <code>unsat</code> — this proves $M(\text{socrates})$ follows.</li>
-    </ul>
-    <div class="hint"><strong>Hint:</strong> Use <code>DeclareSort</code>, <code>Const</code>, <code>Function</code>, <code>BoolSort</code> from Z3.</div>
-  </div>
-</div>
-
-<!-- Exercise 10 -->
-<div class="exercise">
-  <div class="ex-header">
-    <span class="ex-number">Ex 10</span>
-    <span class="ex-title">Region Inclusion — R2 ⊆ R1 <span class="tag-z3">Z3 · Solver</span></span>
-  </div>
-  <div class="ex-body">
-    <p>Define two regions in $\mathbb{R}^2$:</p>
-    <ul>
-      <li>$R_1$: the disk of radius 2 — $x^2 + y^2 \le 4$</li>
-      <li>$R_2$: the disk of radius 1 — $x^2 + y^2 \le 1$</li>
-    </ul>
-    <p>Use Z3 to:</p>
-    <ul>
-      <li>Prove $R_2 \subseteq R_1$ by showing no point can be in $R_2$ but outside $R_1$ (expected: <code>unsat</code>).</li>
-      <li>Find a point that is in $R_1$ but <strong>not</strong> in $R_2$ (expected: <code>sat</code>; print the witness).</li>
-    </ul>
-  </div>
-</div>
 
 </body>
 </html>
