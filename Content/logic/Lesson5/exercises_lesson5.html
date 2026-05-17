@@ -116,6 +116,45 @@ MathJax = { tex: { inlineMath: [['$','$']] }, svg: { fontCache: 'global' } };
     font-size: .97rem;
     line-height: 2;
   }
+
+  /* Gentzen-style fraction cards (premises above, conclusion below) ─── */
+  .rule-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+    gap: 12px;
+    margin: 12px 0;
+  }
+  .rule-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin: 12px 0;
+  }
+  .rule-card {
+    background: #f4f9fc;
+    border: 1px solid #dce3ea;
+    border-left: 4px solid #e67e22;
+    border-radius: 6px;
+    padding: 14px 10px 10px;
+    text-align: center;
+    min-width: 200px;
+  }
+  .rule-card.invalid {
+    border-left-color: #c0395a;
+    background: #fdf0f0;
+  }
+  .rule-card .rule-name {
+    display: block;
+    font-size: .72rem;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: #e67e22;
+    font-weight: 700;
+    margin-top: 8px;
+  }
+  .rule-card.invalid .rule-name { color: #c0395a; }
 </style>
 </head>
 <body>
@@ -126,24 +165,48 @@ MathJax = { tex: { inlineMath: [['$','$']] }, svg: { fontCache: 'global' } };
   <p style="margin-top:10px;font-size:.92rem;color:#f9e4cc;letter-spacing:.02em;">Pr. Zouhair el Hadiq</p>
 </div>
 
-<!-- Reference table -->
+<!-- Reference cards — Gentzen / natural-deduction layout -->
 <div class="exercise">
   <div class="ex-header">
     <span class="ex-number">Ref</span>
     <span class="ex-title">Rules of Inference — Quick Reference</span>
   </div>
   <div class="ex-body">
-    <table>
-      <tr><th>Rule</th><th>Premises</th><th>Conclusion</th></tr>
-      <tr><td>Modus Ponens</td><td>$p \;\wedge\; (p\to q)$</td><td>$q$</td></tr>
-      <tr><td>Modus Tollens</td><td>$\neg q \;\wedge\; (p\to q)$</td><td>$\neg p$</td></tr>
-      <tr><td>Hypothetical Syllogism</td><td>$(p\to q) \;\wedge\; (q\to r)$</td><td>$p\to r$</td></tr>
-      <tr><td>Disjunctive Syllogism</td><td>$(p\vee q) \;\wedge\; \neg p$</td><td>$q$</td></tr>
-      <tr><td>Addition</td><td>$p$</td><td>$p\vee q$</td></tr>
-      <tr><td>Simplification</td><td>$p\wedge q$</td><td>$p$</td></tr>
-      <tr><td>Conjunction</td><td>$p \;\wedge\; q$</td><td>$p\wedge q$</td></tr>
-      <tr><td>Resolution</td><td>$(p\vee q) \;\wedge\; (\neg p\vee r)$</td><td>$q\vee r$</td></tr>
-    </table>
+    <p>Each rule is shown in <strong>natural-deduction</strong> (Gentzen) form: premises above the bar, conclusion below.</p>
+    <div class="rule-grid">
+      <div class="rule-card">
+        $\dfrac{p,\;\; p \to q}{q}$
+        <span class="rule-name">Modus Ponens</span>
+      </div>
+      <div class="rule-card">
+        $\dfrac{\neg q,\;\; p \to q}{\neg p}$
+        <span class="rule-name">Modus Tollens</span>
+      </div>
+      <div class="rule-card">
+        $\dfrac{p \to q,\;\; q \to r}{p \to r}$
+        <span class="rule-name">Hypothetical Syllogism</span>
+      </div>
+      <div class="rule-card">
+        $\dfrac{p \vee q,\;\; \neg p}{q}$
+        <span class="rule-name">Disjunctive Syllogism</span>
+      </div>
+      <div class="rule-card">
+        $\dfrac{p}{p \vee q}$
+        <span class="rule-name">Addition</span>
+      </div>
+      <div class="rule-card">
+        $\dfrac{p \wedge q}{p}$
+        <span class="rule-name">Simplification</span>
+      </div>
+      <div class="rule-card">
+        $\dfrac{p,\;\; q}{p \wedge q}$
+        <span class="rule-name">Conjunction</span>
+      </div>
+      <div class="rule-card">
+        $\dfrac{p \vee q,\;\; \neg p \vee r}{q \vee r}$
+        <span class="rule-name">Resolution</span>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -163,9 +226,11 @@ MathJax = { tex: { inlineMath: [['$','$']] }, svg: { fontCache: 'global' } };
   </div>
   <div class="ex-body">
     <p>Verify the validity of <strong>Modus Ponens</strong> using the <code>valid</code> helper.</p>
-    <div class="inference-block">
-      Premises: &nbsp; $p$ &nbsp; and &nbsp; $p \to q$ <br>
-      Conclusion: &nbsp; $q$
+    <div class="rule-row">
+      <div class="rule-card">
+        $\dfrac{p,\;\; p \to q}{q}$
+        <span class="rule-name">Modus Ponens</span>
+      </div>
     </div>
     <ul>
       <li>Call <code>valid(And(p, Implies(p, q)), q)</code> and assert the result is <code>True</code>.</li>
@@ -182,9 +247,11 @@ MathJax = { tex: { inlineMath: [['$','$']] }, svg: { fontCache: 'global' } };
   </div>
   <div class="ex-body">
     <p>Verify <strong>Modus Tollens</strong>:</p>
-    <div class="inference-block">
-      Premises: &nbsp; $\neg q$ &nbsp; and &nbsp; $p \to q$ <br>
-      Conclusion: &nbsp; $\neg p$
+    <div class="rule-row">
+      <div class="rule-card">
+        $\dfrac{\neg q,\;\; p \to q}{\neg p}$
+        <span class="rule-name">Modus Tollens</span>
+      </div>
     </div>
     <ul>
       <li>Build the premises with <code>And(Not(q), Implies(p, q))</code> and check against <code>Not(p)</code>.</li>
@@ -201,9 +268,11 @@ MathJax = { tex: { inlineMath: [['$','$']] }, svg: { fontCache: 'global' } };
   </div>
   <div class="ex-body">
     <p>Verify <strong>Hypothetical Syllogism</strong>:</p>
-    <div class="inference-block">
-      Premises: &nbsp; $p \to q$ &nbsp; and &nbsp; $q \to r$ <br>
-      Conclusion: &nbsp; $p \to r$
+    <div class="rule-row">
+      <div class="rule-card">
+        $\dfrac{p \to q,\;\; q \to r}{p \to r}$
+        <span class="rule-name">Hypothetical Syllogism</span>
+      </div>
     </div>
     <ul>
       <li>Use three symbols $p, q, r$.</li>
@@ -220,9 +289,11 @@ MathJax = { tex: { inlineMath: [['$','$']] }, svg: { fontCache: 'global' } };
   </div>
   <div class="ex-body">
     <p>Verify <strong>Disjunctive Syllogism</strong>:</p>
-    <div class="inference-block">
-      Premises: &nbsp; $p \vee q$ &nbsp; and &nbsp; $\neg p$ <br>
-      Conclusion: &nbsp; $q$
+    <div class="rule-row">
+      <div class="rule-card">
+        $\dfrac{p \vee q,\;\; \neg p}{q}$
+        <span class="rule-name">Disjunctive Syllogism</span>
+      </div>
     </div>
     <ul>
       <li>In plain language: "It will rain or snow. It will not rain. Therefore it will snow." — verify this is valid.</li>
@@ -238,9 +309,15 @@ MathJax = { tex: { inlineMath: [['$','$']] }, svg: { fontCache: 'global' } };
   </div>
   <div class="ex-body">
     <p>Verify both rules:</p>
-    <div class="inference-block">
-      <strong>Addition:</strong> &nbsp; premise $p$ &nbsp;⟹&nbsp; conclusion $p \vee q$ <br>
-      <strong>Simplification:</strong> &nbsp; premise $p \wedge q$ &nbsp;⟹&nbsp; conclusion $p$
+    <div class="rule-row">
+      <div class="rule-card">
+        $\dfrac{p}{p \vee q}$
+        <span class="rule-name">Addition</span>
+      </div>
+      <div class="rule-card">
+        $\dfrac{p \wedge q}{p}$
+        <span class="rule-name">Simplification</span>
+      </div>
     </div>
     <ul>
       <li>For Addition: why is it valid to conclude a <em>weaker</em> statement from a stronger one?</li>
@@ -257,9 +334,15 @@ MathJax = { tex: { inlineMath: [['$','$']] }, svg: { fontCache: 'global' } };
   </div>
   <div class="ex-body">
     <p>Verify both rules:</p>
-    <div class="inference-block">
-      <strong>Conjunction:</strong> &nbsp; premises $p$ and $q$ &nbsp;⟹&nbsp; conclusion $p \wedge q$ <br>
-      <strong>Resolution:</strong> &nbsp; premises $p\vee q$ and $\neg p\vee r$ &nbsp;⟹&nbsp; conclusion $q\vee r$
+    <div class="rule-row">
+      <div class="rule-card">
+        $\dfrac{p,\;\; q}{p \wedge q}$
+        <span class="rule-name">Conjunction</span>
+      </div>
+      <div class="rule-card">
+        $\dfrac{p \vee q,\;\; \neg p \vee r}{q \vee r}$
+        <span class="rule-name">Resolution</span>
+      </div>
     </div>
     <ul>
       <li>Resolution is the basis of logic programming (Prolog) and SAT solvers. Why?</li>
@@ -311,9 +394,11 @@ MathJax = { tex: { inlineMath: [['$','$']] }, svg: { fontCache: 'global' } };
   </div>
   <div class="ex-body">
     <p>The following is a <strong>common logical fallacy</strong>. Show that it is <em>not</em> a valid argument:</p>
-    <div class="inference-block">
-      Premises: &nbsp; $p \to q$ &nbsp; and &nbsp; $q$ <br>
-      (Invalid) Conclusion: &nbsp; $p$
+    <div class="rule-row">
+      <div class="rule-card invalid">
+        $\dfrac{p \to q,\;\; q}{p}$
+        <span class="rule-name">✗ Affirming the Consequent</span>
+      </div>
     </div>
     <ul>
       <li>Use <code>valid</code> and assert the result is <code>False</code>.</li>
