@@ -1,0 +1,1097 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Operations on Sets — Full Course (Definitions &amp; Proofs)</title>
+<script>
+  MathJax = {
+    tex: { inlineMath: [['$','$']], displayMath: [['$$','$$']] },
+    options: { skipHtmlTags: ['script','noscript','style','textarea'] }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+<style>
+/* ── Reset & base ─────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --orange:    #e67e22;
+  --darkblue:  #2c3e50;
+  --lightbg:   #f4f9fc;
+  --rowred:    #ffe8e8;
+  --rowblue:   #e3eeff;
+  --border:    #dce3ea;
+
+  /* Python blue */
+  --py-fg:     #1f4e7a;
+  --py-bg:     #eaf3fb;
+  --py-border: #2a6fb3;
+  --py-head:   #2a6fb3;
+  /* SymPy green */
+  --sp-fg:     #1e824c;
+  --sp-bg:     #e8f5ec;
+  --sp-border: #27ae60;
+  --sp-head:   #27ae60;
+  /* Setup indigo */
+  --su-fg:     #4a4aaa;
+  --su-bg:     #eeeeff;
+  --su-border: #6060cc;
+  --su-head:   #6060cc;
+  /* Output amber */
+  --out-fg:    #6e4b0a;
+  --out-bg:    #fff7e0;
+  --out-border:#e0b341;
+  --out-head:  #c89324;
+
+  /* Definition / Theorem / Proof / Example */
+  --def-fg:    #1c3a5c;
+  --def-bg:    #eaf1f9;
+  --def-border:#3b6fa0;
+  --thm-fg:    #6e3a07;
+  --thm-bg:    #fff2e0;
+  --thm-border:#e67e22;
+  --prf-fg:    #444;
+  --prf-bg:    #f7f7fa;
+  --prf-border:#9aa1a8;
+  --ex-fg:     #1d6b40;
+  --ex-bg:     #e9f7ee;
+  --ex-border: #2e9c5e;
+}
+
+body {
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  background: #e8edf2;
+  color: var(--darkblue);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem 1rem 5rem;
+  gap: 2rem;
+}
+
+/* ── Slide card ──────────────────────────────────────────────────── */
+.slide {
+  background: #fff;
+  width: 100%;
+  max-width: 940px;
+  border-radius: 10px;
+  box-shadow: 0 4px 18px rgba(0,0,0,.10);
+  padding: 2.2rem 2.8rem 1.8rem;
+  position: relative;
+}
+.slide-number {
+  position: absolute;
+  bottom: 0.7rem;
+  right: 1.2rem;
+  font-size: 0.72rem;
+  color: #aaa;
+}
+
+/* ── Title slide ─────────────────────────────────────────────────── */
+.slide.title-slide {
+  background: linear-gradient(145deg, #f4f9fc 60%, #e0eef7);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 240px;
+  text-align: center;
+  border-top: 6px solid var(--orange);
+}
+.slide.title-slide h1 { font-size: 1.95rem; color: var(--darkblue); margin-bottom: 0.4rem; }
+.slide.title-slide .subtitle { font-size: 1.15rem; color: #555; }
+
+/* ── Frame titles ────────────────────────────────────────────────── */
+h2.frame-title {
+  font-size: 1.6rem;
+  color: var(--orange);
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  padding-bottom: 0.35rem;
+  border-bottom: 2px solid #f9e4cc;
+}
+h3.sub-title {
+  font-size: 1.18rem;
+  color: var(--orange);
+  font-weight: 600;
+  margin: 1rem 0 0.4rem;
+}
+
+p   { line-height: 1.7; margin: 0.45rem 0; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.4rem; line-height: 1.85; }
+ul li::marker, ol li::marker { color: var(--orange); }
+
+strong { color: #1a2a38; }
+
+/* ── Definition / Theorem / Proof / Example boxes ────────────────── */
+.def-box, .thm-box, .prf-box, .ex-box, .note-box {
+  border-radius: 6px;
+  padding: 0.7rem 1rem;
+  margin: 0.8rem 0;
+  line-height: 1.65;
+}
+.def-box {
+  background: var(--def-bg);
+  border-left: 5px solid var(--def-border);
+  color: var(--def-fg);
+}
+.thm-box {
+  background: var(--thm-bg);
+  border-left: 5px solid var(--thm-border);
+  color: var(--thm-fg);
+}
+.prf-box {
+  background: var(--prf-bg);
+  border-left: 3px solid var(--prf-border);
+  color: var(--prf-fg);
+  font-size: 0.95rem;
+}
+.ex-box {
+  background: var(--ex-bg);
+  border-left: 5px solid var(--ex-border);
+  color: var(--ex-fg);
+}
+.note-box {
+  background: var(--lightbg);
+  border-left: 4px solid var(--orange);
+  font-style: italic;
+}
+.box-label {
+  display: inline-block;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-size: 0.78rem;
+  margin-right: 0.4rem;
+}
+.def-box .box-label { color: var(--def-border); }
+.thm-box .box-label { color: var(--thm-border); }
+.prf-box .box-label { color: #666; }
+.ex-box  .box-label { color: var(--ex-border); }
+
+.prf-box::after {
+  content: "∎";
+  display: inline-block;
+  float: right;
+  font-weight: 700;
+  color: var(--prf-border);
+  margin-top: -1.4rem;
+}
+
+/* ── Code blocks ─────────────────────────────────────────────────── */
+.code-pair { display: flex; gap: 0.75rem; margin: 0.7rem 0; }
+.code-pane { flex: 1; border-radius: 6px; overflow: hidden; border: 1px solid transparent; font-size: 0; }
+.pane-label {
+  display: block;
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  color: #fff;
+}
+.pane-code {
+  font-family: 'Consolas', 'Fira Code', monospace;
+  font-size: 0.83rem;
+  line-height: 1.6;
+  padding: 0.5rem 0.75rem;
+  white-space: pre;
+  display: block;
+  overflow-x: auto;
+}
+.python-pane  { border-color: var(--py-border); }
+.python-label { background: var(--py-head); }
+.python-pane .pane-code { background: var(--py-bg); color: var(--py-fg); }
+.sympy-pane  { border-color: var(--sp-border); }
+.sympy-label { background: var(--sp-head); }
+.sympy-pane .pane-code { background: var(--sp-bg); color: var(--sp-fg); }
+
+.python-block, .sympy-block, .setup-block, .output-block {
+  border-radius: 6px; overflow: hidden; margin: 0.7rem 0;
+}
+.python-block { border: 1px solid var(--py-border); }
+.python-block .pane-code { background: var(--py-bg); color: var(--py-fg);
+  font-family: 'Consolas', 'Fira Code', monospace; font-size: 0.83rem; line-height: 1.6;
+  padding: 0.5rem 0.75rem; white-space: pre; display: block; overflow-x: auto; }
+.sympy-block { border: 1px solid var(--sp-border); }
+.sympy-block .pane-code { background: var(--sp-bg); color: var(--sp-fg);
+  font-family: 'Consolas', 'Fira Code', monospace; font-size: 0.83rem; line-height: 1.6;
+  padding: 0.5rem 0.75rem; white-space: pre; display: block; overflow-x: auto; }
+.setup-block { border: 1px solid var(--su-border); }
+.setup-label { display: block; font-size: 0.65rem; font-weight: 800; letter-spacing: 0.12em;
+  text-transform: uppercase; padding: 3px 10px; background: var(--su-head); color: #fff; }
+.setup-block .pane-code { background: var(--su-bg); color: var(--su-fg);
+  font-family: 'Consolas', 'Fira Code', monospace; font-size: 0.83rem; line-height: 1.6;
+  padding: 0.5rem 0.75rem; white-space: pre; display: block; overflow-x: auto; }
+.output-block { border: 1px solid var(--out-border); }
+.output-label { display: block; font-size: 0.65rem; font-weight: 800; letter-spacing: 0.12em;
+  text-transform: uppercase; padding: 3px 10px; background: var(--out-head); color: #fff; }
+.output-block .pane-code { background: var(--out-bg); color: var(--out-fg);
+  font-family: 'Consolas', 'Fira Code', monospace; font-size: 0.83rem; line-height: 1.6;
+  padding: 0.5rem 0.75rem; white-space: pre; display: block; overflow-x: auto; }
+
+/* ── Tables ──────────────────────────────────────────────────────── */
+.truth-table { border-collapse: collapse; margin: 0.75rem auto; font-size: 0.92rem; }
+.truth-table th, .truth-table td {
+  border: 1px solid var(--border); padding: 0.4rem 1rem; text-align: center;
+}
+.truth-table th { background: var(--lightbg); font-weight: 600; }
+.truth-table tr.row-t { background: var(--rowred); }
+.truth-table tr.row-f { background: var(--rowblue); }
+
+.identities-table { border-collapse: collapse; width: 100%; margin: 0.5rem 0; font-size: 0.92rem; }
+.identities-table th, .identities-table td { border: 1px solid var(--border); padding: 0.45rem 0.7rem; }
+.identities-table th { background: var(--lightbg); color: var(--orange); font-weight: 700; text-align: left; width: 28%; }
+
+/* ── Venn ────────────────────────────────────────────────────────── */
+.venn-wrap { display: flex; justify-content: center; margin: 0.8rem 0; }
+.venn-wrap svg { max-width: 100%; height: auto; }
+
+/* ── Slide-show nav ──────────────────────────────────────────────── */
+#nav { position: fixed; bottom: 1.5rem; right: 1.5rem; display: flex; gap: 0.4rem; z-index: 100; }
+#nav button {
+  background: var(--orange); color: #fff; border: none;
+  border-radius: 50%; width: 40px; height: 40px;
+  font-size: 1.1rem; cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,.25); transition: background .2s;
+}
+#nav button:hover { background: #cf6d17; }
+#nav #btn-scroll { border-radius: 20px; width: auto; padding: 0 12px; font-size: 0.8rem; }
+
+body.slideshow .slide        { display: none; }
+body.slideshow .slide.active { display: block; }
+</style>
+</head>
+<body>
+
+<!-- ══ Slide 1 — Title ════════════════════════════════════════════ -->
+<section class="slide title-slide" id="s1">
+  <h1>Operations on Sets — A Full Course</h1>
+  <p class="subtitle">Definitions, Theorems, Proofs &amp; Python</p>
+  <p style="font-size:1rem;color:#e67e22;margin-top:0.8rem;font-style:italic;font-weight:600;letter-spacing:.02em;">Notes By Pr. El Hadiq Zouhair</p>
+  <span class="slide-number">1 / 24</span>
+</section>
+
+<!-- ══ Slide 2 — Why ═════════════════════════════════════════════ -->
+<section class="slide" id="s2">
+  <h2 class="frame-title">Why Operations on Sets?</h2>
+  <p>In the previous lesson we defined what a set <em>is</em>. Now we learn how to <strong>combine</strong> sets to produce new sets. These combinations — union, intersection, complement, difference, symmetric difference — are the everyday verbs of mathematics, logic, and computer science.</p>
+  <ul>
+    <li>In <strong>logic</strong>, set operations mirror the connectives: $\cup \leftrightarrow \vee$, $\cap \leftrightarrow \wedge$, $\,'\, \leftrightarrow \neg$.</li>
+    <li>In <strong>databases</strong>, SQL <code>UNION</code>, <code>INTERSECT</code>, <code>EXCEPT</code> are the exact same operations.</li>
+    <li>In <strong>Python</strong>, the built-in <code>set</code> exposes them as the operators <code>|</code>, <code>&amp;</code>, <code>-</code>, <code>^</code>.</li>
+  </ul>
+
+  <div class="setup-block">
+    <span class="setup-label">Imports used throughout this lesson</span>
+    <span class="pane-code">from itertools import combinations, product
+from sympy import (FiniteSet, EmptySet, Union, Intersection, Complement,
+                   Symbol, symbols, And, Or, Not, simplify, Equivalent, S)
+A, B, C, D = symbols('A B C D')</span>
+  </div>
+  <span class="slide-number">2 / 24</span>
+</section>
+
+<!-- ══ Slide 3 — Universe ═══════════════════════════════════════ -->
+<section class="slide" id="s3">
+  <h2 class="frame-title">The Universe of Discourse</h2>
+
+  <div class="def-box">
+    <span class="box-label">Definition</span>
+    A <strong>universe</strong> (or <strong>universal set</strong>) $U$ is a fixed set, agreed upon in context, containing every element under consideration. All sets in a discussion are taken to be subsets of $U$.
+  </div>
+
+  <p>The universe is what makes the <em>complement</em> operation meaningful: without $U$ there is no "everything else". We always pick $U$ explicitly before computing complements.</p>
+
+  <div class="ex-box">
+    <span class="box-label">Examples</span>
+    <ul style="margin-top:0.3rem;">
+      <li>For divisibility problems on small integers: $U = \{1, 2, \dots, 100\}$.</li>
+      <li>For real-analysis problems: $U = \mathbb{R}$.</li>
+      <li>For database queries: $U =$ the entire table or schema.</li>
+    </ul>
+  </div>
+
+  <div class="note-box">
+    Two different choices of universe give two <em>different</em> complements. If $A = \{2,4\}$, then $A' = \{1,3,5\}$ when $U=\{1,2,3,4,5\}$ but $A' = \{1,3,5,6,7,8,9,10\}$ when $U=\{1,\dots,10\}$.
+  </div>
+  <span class="slide-number">3 / 24</span>
+</section>
+
+<!-- ══ Slide 4 — Union ═════════════════════════════════════════ -->
+<section class="slide" id="s4">
+  <h2 class="frame-title">Union</h2>
+
+  <div class="def-box">
+    <span class="box-label">Definition</span>
+    The <strong>union</strong> of two sets $A$ and $B$ is the set of all elements that belong to $A$, to $B$, or to both:
+    $$A \cup B \;=\; \{\, x \mid x \in A \;\vee\; x \in B \,\}.$$
+  </div>
+
+  <div class="venn-wrap">
+    <svg viewBox="0 0 360 200" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="140" cy="100" r="65" fill="#fbd9b1" stroke="#2c3e50" stroke-width="1.5"/>
+      <circle cx="220" cy="100" r="65" fill="#fbd9b1" stroke="#2c3e50" stroke-width="1.5"/>
+      <text x="95"  y="105" font-size="14" fill="#2c3e50">A</text>
+      <text x="255" y="105" font-size="14" fill="#2c3e50">B</text>
+      <text x="180" y="185" font-size="12" fill="#7a4a18" text-anchor="middle">A ∪ B (shaded)</text>
+    </svg>
+  </div>
+
+  <div class="ex-box">
+    <span class="box-label">Example</span>
+    $\{1,2,3\}\cup\{3,4,5\} = \{1,2,3,4,5\}$. Notice that $3$ appears in both inputs but only <em>once</em> in the result — sets do not record multiplicity.
+  </div>
+
+  <h3 class="sub-title">N-ary union</h3>
+  <p>For a family $\{A_i\}_{i\in I}$ we write $\displaystyle \bigcup_{i\in I} A_i = \{\, x \mid \exists i \in I,\; x \in A_i \,\}$.</p>
+
+  <div class="code-pair">
+    <div class="code-pane python-pane">
+      <span class="pane-label python-label">Python</span>
+      <span class="pane-code">A, B = {1, 2, 3}, {3, 4, 5}
+print(A | B)                # {1, 2, 3, 4, 5}
+
+# n-ary
+L = [{1, 2}, {2, 3}, {3, 4}]
+print(set().union(*L))      # {1, 2, 3, 4}</span>
+    </div>
+    <div class="code-pane sympy-pane">
+      <span class="pane-label sympy-label">SymPy</span>
+      <span class="pane-code">from sympy import FiniteSet, Union
+A = FiniteSet(1, 2, 3)
+B = FiniteSet(3, 4, 5)
+print(Union(A, B))          # {1, 2, 3, 4, 5}</span>
+    </div>
+  </div>
+  <span class="slide-number">4 / 24</span>
+</section>
+
+<!-- ══ Slide 5 — Intersection ══════════════════════════════════ -->
+<section class="slide" id="s5">
+  <h2 class="frame-title">Intersection</h2>
+
+  <div class="def-box">
+    <span class="box-label">Definition</span>
+    The <strong>intersection</strong> of $A$ and $B$ is the set of elements common to both:
+    $$A \cap B \;=\; \{\, x \mid x \in A \;\wedge\; x \in B \,\}.$$
+    $A$ and $B$ are <strong>disjoint</strong> iff $A \cap B = \varnothing$.
+  </div>
+
+  <div class="venn-wrap">
+    <svg viewBox="0 0 360 200" xmlns="http://www.w3.org/2000/svg">
+      <defs><clipPath id="iA1"><circle cx="140" cy="100" r="65"/></clipPath></defs>
+      <circle cx="140" cy="100" r="65" fill="none" stroke="#2c3e50" stroke-width="1.5"/>
+      <circle cx="220" cy="100" r="65" fill="none" stroke="#2c3e50" stroke-width="1.5"/>
+      <g clip-path="url(#iA1)"><circle cx="220" cy="100" r="65" fill="#fbd9b1"/></g>
+      <text x="95"  y="105" font-size="14" fill="#2c3e50">A</text>
+      <text x="255" y="105" font-size="14" fill="#2c3e50">B</text>
+      <text x="180" y="185" font-size="12" fill="#7a4a18" text-anchor="middle">A ∩ B</text>
+    </svg>
+  </div>
+
+  <p>For a family: $\displaystyle \bigcap_{i\in I} A_i = \{\, x \mid \forall i\in I,\; x \in A_i \,\}$.</p>
+
+  <div class="code-pair">
+    <div class="code-pane python-pane">
+      <span class="pane-label python-label">Python</span>
+      <span class="pane-code">A, B = {1, 2, 3}, {3, 4, 5}
+print(A &amp; B)                # {3}
+
+L = [{1, 2, 3}, {2, 3, 4}, {3, 4, 5}]
+print(set.intersection(*L)) # {3}</span>
+    </div>
+    <div class="code-pane sympy-pane">
+      <span class="pane-label sympy-label">SymPy</span>
+      <span class="pane-code">from sympy import Intersection
+print(Intersection(A, B))   # {3}</span>
+    </div>
+  </div>
+
+  <div class="note-box">
+    <strong>Precedence reminder:</strong> $\cap$ binds tighter than $\cup$. So $A\cup B\cap C$ means $A\cup(B\cap C)$, just as $a + b\cdot c$ means $a + (b\cdot c)$.
+  </div>
+  <span class="slide-number">5 / 24</span>
+</section>
+
+<!-- ══ Slide 6 — Difference & Complement ══════════════════════ -->
+<section class="slide" id="s6">
+  <h2 class="frame-title">Difference and Complement</h2>
+
+  <div class="def-box">
+    <span class="box-label">Definitions</span>
+    <ul style="margin-top:0.3rem;">
+      <li><strong>Difference:</strong> $A \setminus B = \{\, x \mid x \in A \;\wedge\; x \notin B \,\}$.</li>
+      <li><strong>Complement</strong> (in universe $U$): $A' = A^c = \overline{A} = U \setminus A$.</li>
+    </ul>
+  </div>
+
+  <p>Difference is asymmetric: in general $A\setminus B \neq B\setminus A$. Complement is just a "shortcut" for the difference $U\setminus A$.</p>
+
+  <div class="venn-wrap">
+    <svg viewBox="0 0 360 200" xmlns="http://www.w3.org/2000/svg">
+      <rect x="20" y="20" width="320" height="160" fill="#fdebd1" stroke="#2c3e50" stroke-width="1.2"/>
+      <circle cx="180" cy="100" r="60" fill="#fff" stroke="#2c3e50" stroke-width="1.5"/>
+      <text x="180" y="105" font-size="14" fill="#2c3e50" text-anchor="middle">A</text>
+      <text x="40"  y="40"  font-size="12" fill="#7a4a18">U \ A = A'</text>
+    </svg>
+  </div>
+
+  <div class="thm-box">
+    <span class="box-label">Theorem</span>
+    $A \setminus B = A \cap B'$.
+  </div>
+  <div class="prf-box">
+    <span class="box-label">Proof.</span>
+    For any $x \in U$:
+    $$x \in A\setminus B \;\Leftrightarrow\; x\in A \wedge x\notin B \;\Leftrightarrow\; x\in A \wedge x\in B' \;\Leftrightarrow\; x \in A\cap B'.$$
+    By extensionality, $A\setminus B = A\cap B'$.
+  </div>
+
+  <div class="python-block">
+    <span class="pane-label python-label">Python — three equivalent ways</span>
+    <span class="pane-code">U = set(range(1, 11))
+A = {1, 3, 5, 7, 9}
+B = {2, 3, 5, 7}
+
+print(A - B)               # {1, 9}            difference
+print(A &amp; (U - B))         # {1, 9}            A ∩ B'
+print(U - A)               # {2, 4, 6, 8, 10}  complement of A</span>
+  </div>
+  <span class="slide-number">6 / 24</span>
+</section>
+
+<!-- ══ Slide 7 — Symmetric difference ══════════════════════════ -->
+<section class="slide" id="s7">
+  <h2 class="frame-title">Symmetric Difference</h2>
+
+  <div class="def-box">
+    <span class="box-label">Definition</span>
+    The <strong>symmetric difference</strong> of $A$ and $B$ is the set of elements in <em>exactly one</em> of them:
+    $$A \,\triangle\, B \;=\; (A \setminus B) \cup (B \setminus A).$$
+  </div>
+
+  <div class="thm-box">
+    <span class="box-label">Theorem (equivalent forms)</span>
+    $A \triangle B \;=\; (A \cup B) \setminus (A \cap B) \;=\; (A \cap B') \cup (A' \cap B).$
+  </div>
+  <div class="prf-box">
+    <span class="box-label">Proof.</span>
+    Using $A\setminus B = A\cap B'$ (previous slide):
+    $(A\setminus B)\cup(B\setminus A) = (A\cap B')\cup(B\cap A')$, which is the third form.<br>
+    For the second form, note that $x \in (A\cup B)\setminus(A\cap B)$ means $x$ is in $A$ or $B$ but not in both — exactly the definition of $x \in A\triangle B$.
+  </div>
+
+  <div class="thm-box">
+    <span class="box-label">Theorem (properties of $\triangle$)</span>
+    For all sets $A, B, C$:
+    <ol style="margin-top:0.3rem;">
+      <li>$A \triangle A = \varnothing$ &nbsp;(self-cancelling)</li>
+      <li>$A \triangle \varnothing = A$ &nbsp;(identity element)</li>
+      <li>$A \triangle B = B \triangle A$ &nbsp;(commutative)</li>
+      <li>$(A \triangle B) \triangle C = A \triangle (B \triangle C)$ &nbsp;(associative)</li>
+    </ol>
+  </div>
+
+  <div class="python-block">
+    <span class="pane-label python-label">Python — symmetric difference operator <code>^</code></span>
+    <span class="pane-code">A, B, C = {1, 2, 3, 4}, {3, 4, 5, 6}, {5, 6, 7, 8}
+print(A ^ B)                              # {1, 2, 5, 6}
+print((A | B) - (A &amp; B))                  # same
+print(A ^ A, A ^ set())                   # set()  ;  {1,2,3,4}
+print((A ^ B) ^ C == A ^ (B ^ C))         # True  (associative)</span>
+  </div>
+  <span class="slide-number">7 / 24</span>
+</section>
+
+<!-- ══ Slide 8 — N-ary operations ═════════════════════════════ -->
+<section class="slide" id="s8">
+  <h2 class="frame-title">N-ary Operations (Indexed Families)</h2>
+
+  <div class="def-box">
+    <span class="box-label">Definition</span>
+    Let $\{A_i\}_{i\in I}$ be an indexed family of sets.
+    $$\bigcup_{i\in I} A_i = \{\, x \mid \exists i\in I,\; x\in A_i\,\}, \qquad
+      \bigcap_{i\in I} A_i = \{\, x \mid \forall i\in I,\; x\in A_i\,\}.$$
+    When $I = \{1, 2, \dots, n\}$ we may write $A_1\cup A_2\cup\cdots\cup A_n$ or $\bigcup_{i=1}^{n} A_i$.
+  </div>
+
+  <div class="thm-box">
+    <span class="box-label">Theorem (generalised associativity)</span>
+    Union and intersection are associative, so the expressions $A_1\cup A_2\cup\cdots\cup A_n$ and $A_1\cap\cdots\cap A_n$ are unambiguous (no parentheses needed).
+  </div>
+  <div class="prf-box">
+    <span class="box-label">Proof sketch.</span>
+    For union, $x \in A_1\cup\cdots\cup A_n$ in <em>any</em> parenthesisation iff $\exists i,\; x\in A_i$. Since the right-hand side does not depend on the way we associate, all parenthesisations yield the same set. Same argument for intersection with $\forall$ in place of $\exists$.
+  </div>
+
+  <div class="python-block">
+    <span class="pane-label python-label">Python — n-ary union and intersection</span>
+    <span class="pane-code">L = [{1, 2, 3}, {2, 3, 4}, {3, 4, 5}, {3, 5, 7}]
+
+print(set().union(*L))          # {1, 2, 3, 4, 5, 7}
+print(set.intersection(*L))     # {3}
+
+# Equivalent using functools.reduce
+from functools import reduce
+import operator
+print(reduce(operator.or_,  L))  # union
+print(reduce(operator.and_, L))  # intersection</span>
+  </div>
+  <span class="slide-number">8 / 24</span>
+</section>
+
+<!-- ══ Slide 9 — Precedence ═══════════════════════════════════ -->
+<section class="slide" id="s9">
+  <h2 class="frame-title">Operator Precedence</h2>
+
+  <div class="def-box">
+    <span class="box-label">Convention</span>
+    From highest to lowest priority:
+    <ol style="margin-top:0.3rem;">
+      <li><strong>Complement</strong> $\;'$</li>
+      <li><strong>Intersection</strong> $\;\cap$</li>
+      <li><strong>Union</strong> $\;\cup$</li>
+    </ol>
+    Operations of equal priority associate to the left. Parentheses always override.
+  </div>
+
+  <p>This mirrors the logic precedence $\neg &gt; \wedge &gt; \vee$, which in turn mirrors arithmetic $-\;&gt;\;\cdot\;&gt;\;+$.</p>
+
+  <div class="ex-box">
+    <span class="box-label">Example</span>
+    With $U=\{1..10\}$, $A=\{1,2,3\}$, $B=\{2,3,4\}$, $C=\{3,4,5\}$:
+    <ul style="margin-top:0.3rem;">
+      <li>$A \cup B \cap C \;=\; A \cup (B\cap C) = \{1,2,3\}\cup\{3,4\} = \{1,2,3,4\}$.</li>
+      <li>$(A\cup B)\cap C = \{1,2,3,4\}\cap\{3,4,5\} = \{3,4\}$.</li>
+      <li>$A' \cap B \cup C \;=\; (A'\cap B)\cup C = \{4\}\cup\{3,4,5\} = \{3,4,5\}$.</li>
+    </ul>
+  </div>
+
+  <div class="python-block">
+    <span class="pane-label python-label">Python — checking each reading</span>
+    <span class="pane-code">U = set(range(1, 11))
+A, B, C = {1,2,3}, {2,3,4}, {3,4,5}
+
+print(A | (B &amp; C))           # {1, 2, 3, 4}
+print((A | B) &amp; C)           # {3, 4}
+print(((U - A) &amp; B) | C)     # {3, 4, 5}</span>
+  </div>
+  <span class="slide-number">9 / 24</span>
+</section>
+
+<!-- ══ Slide 10 — Element-chasing technique ════════════════════ -->
+<section class="slide" id="s10">
+  <h2 class="frame-title">How We Prove Set Identities</h2>
+
+  <p>Every identity in this lesson is proved by the same general technique:</p>
+
+  <div class="def-box">
+    <span class="box-label">Method (element-chasing)</span>
+    To prove $X = Y$, show <strong>both</strong>:
+    <ol style="margin-top:0.3rem;">
+      <li>$X \subseteq Y$ — pick an arbitrary $x \in X$ and deduce $x \in Y$.</li>
+      <li>$Y \subseteq X$ — pick an arbitrary $x \in Y$ and deduce $x \in X$.</li>
+    </ol>
+    Then by extensionality, $X = Y$. Often a chain of biconditionals $x\in X\Leftrightarrow\cdots\Leftrightarrow x\in Y$ does both directions at once.
+  </div>
+
+  <div class="thm-box">
+    <span class="box-label">Worked example — $A\cap(A\cup B) = A$ (absorption)</span>
+  </div>
+  <div class="prf-box">
+    <span class="box-label">Proof.</span>
+    "⊆": If $x \in A\cap(A\cup B)$, then in particular $x \in A$.<br>
+    "⊇": If $x \in A$, then $x \in A\cup B$ (by definition of union), and $x \in A$, so $x \in A\cap(A\cup B)$.<br>
+    Both inclusions hold, so $A\cap(A\cup B) = A$.
+  </div>
+
+  <p>Alternatively, the chain of equivalences is:
+  $x \in A\cap(A\cup B) \Leftrightarrow x\in A \wedge (x\in A\vee x\in B) \Leftrightarrow x\in A$ (since $p\wedge(p\vee q)\equiv p$).</p>
+  <span class="slide-number">10 / 24</span>
+</section>
+
+<!-- ══ Slide 11 — Identities catalog ══════════════════════════ -->
+<section class="slide" id="s11">
+  <h2 class="frame-title">Set Identities — The Complete Catalogue</h2>
+
+  <table class="identities-table">
+    <tr><th>Identity</th>           <td>$A \cap U = A,\quad A \cup \varnothing = A$</td></tr>
+    <tr><th>Domination</th>         <td>$A \cup U = U,\quad A \cap \varnothing = \varnothing$</td></tr>
+    <tr><th>Idempotency</th>        <td>$A \cup A = A,\quad A \cap A = A$</td></tr>
+    <tr><th>Double complement</th>  <td>$(A')' = A$</td></tr>
+    <tr><th>Commutativity</th>      <td>$A \cup B = B \cup A,\quad A \cap B = B \cap A$</td></tr>
+    <tr><th>Associativity</th>      <td>$A\cup(B\cup C) = (A\cup B)\cup C$,&nbsp; $A\cap(B\cap C) = (A\cap B)\cap C$</td></tr>
+    <tr><th>Distributivity</th>     <td>$A\cup(B\cap C) = (A\cup B)\cap(A\cup C)$,&nbsp; $A\cap(B\cup C) = (A\cap B)\cup(A\cap C)$</td></tr>
+    <tr><th>De Morgan</th>          <td>$(A\cap B)' = A'\cup B',\quad (A\cup B)' = A'\cap B'$</td></tr>
+    <tr><th>Absorption</th>         <td>$A\cup(A\cap B) = A,\quad A\cap(A\cup B) = A$</td></tr>
+    <tr><th>Complement</th>         <td>$A\cup A' = U,\quad A\cap A' = \varnothing$</td></tr>
+    <tr><th>Splitting</th>          <td>$(A\cap B)\cup(A\cap B') = A$</td></tr>
+  </table>
+
+  <div class="note-box">
+    Each row has two "dual" statements: swap $\cup\leftrightarrow\cap$ and $U\leftrightarrow\varnothing$ and you get the other one. This is the <strong>duality principle</strong> of Boolean algebra.
+  </div>
+  <span class="slide-number">11 / 24</span>
+</section>
+
+<!-- ══ Slide 12 — Proof: distributivity ═══════════════════════ -->
+<section class="slide" id="s12">
+  <h2 class="frame-title">Proof — Distributivity of $\cap$ over $\cup$</h2>
+
+  <div class="thm-box">
+    <span class="box-label">Theorem</span>
+    $A \cap (B \cup C) \;=\; (A \cap B) \cup (A \cap C).$
+  </div>
+
+  <div class="prf-box">
+    <span class="box-label">Proof.</span>
+    For any $x$:
+    \begin{align*}
+      x \in A\cap(B\cup C)
+      &amp;\Leftrightarrow x\in A \wedge (x\in B \vee x\in C) &amp;\text{(defs of $\cap, \cup$)}\\
+      &amp;\Leftrightarrow (x\in A \wedge x\in B) \vee (x\in A \wedge x\in C) &amp;\text{(distrib. of $\wedge$ over $\vee$)}\\
+      &amp;\Leftrightarrow x \in (A\cap B) \vee x\in(A\cap C)\\
+      &amp;\Leftrightarrow x \in (A\cap B)\cup(A\cap C).
+    \end{align*}
+    Hence both sets contain the same elements; by extensionality they are equal.
+  </div>
+
+  <p>The dual identity $A \cup (B \cap C) = (A\cup B)\cap(A\cup C)$ is proved the same way, swapping $\cap\leftrightarrow\cup$ and $\wedge\leftrightarrow\vee$.</p>
+
+  <div class="python-block">
+    <span class="pane-label python-label">Python — exhaustive check on $U=\{1,2,3\}$</span>
+    <span class="pane-code">from itertools import combinations
+U = {1, 2, 3}
+subsets = [set(c) for r in range(len(U)+1) for c in combinations(U, r)]
+
+count = 0
+for A in subsets:
+    for B in subsets:
+        for C in subsets:
+            assert A &amp; (B | C) == (A &amp; B) | (A &amp; C)
+            count += 1
+print(f"Distributivity verified on {count} triples.")   # 8**3 = 512</span>
+  </div>
+  <span class="slide-number">12 / 24</span>
+</section>
+
+<!-- ══ Slide 13 — De Morgan ═══════════════════════════════════ -->
+<section class="slide" id="s13">
+  <h2 class="frame-title">Proof — De Morgan's Laws</h2>
+
+  <div class="thm-box">
+    <span class="box-label">Theorem (De Morgan)</span>
+    For all $A, B \subseteq U$:
+    $$(A \cup B)' = A' \cap B', \qquad (A \cap B)' = A' \cup B'.$$
+  </div>
+
+  <div class="prf-box">
+    <span class="box-label">Proof of $(A\cup B)' = A'\cap B'$.</span>
+    For any $x \in U$:
+    \begin{align*}
+      x \in (A\cup B)'
+      &amp;\Leftrightarrow x \notin A\cup B\\
+      &amp;\Leftrightarrow \neg(x\in A \vee x\in B)\\
+      &amp;\Leftrightarrow \neg(x\in A) \wedge \neg(x\in B) &amp;\text{(De Morgan in logic)}\\
+      &amp;\Leftrightarrow x \in A' \wedge x \in B'\\
+      &amp;\Leftrightarrow x \in A'\cap B'.
+    \end{align*}
+  </div>
+
+  <p>The second law follows from the first by substituting $A,B$ with $A',B'$ and using $(A')' = A$:
+  $(A'\cup B')' = A''\cap B'' = A\cap B$, hence $A'\cup B' = (A\cap B)'$.</p>
+
+  <div class="python-block">
+    <span class="pane-label python-label">Python — empirical proof on $|U|=4$ (256 pairs)</span>
+    <span class="pane-code">from itertools import combinations
+U = {1, 2, 3, 4}
+S = [set(c) for r in range(5) for c in combinations(U, r)]
+for A in S:
+    for B in S:
+        assert U - (A | B) == (U - A) &amp; (U - B)
+        assert U - (A &amp; B) == (U - A) | (U - B)
+print("De Morgan: both laws hold for all 256 (A,B).")</span>
+  </div>
+  <span class="slide-number">13 / 24</span>
+</section>
+
+<!-- ══ Slide 14 — Membership tables ═══════════════════════════ -->
+<section class="slide" id="s14">
+  <h2 class="frame-title">Membership Tables — Sets ↔ Logic</h2>
+
+  <p>A <strong>membership table</strong> is a truth table where the rows enumerate the possible cases "is element $x$ in $A$? in $B$? …". Each column shows whether $x$ belongs to a given set expression.</p>
+
+  <table class="truth-table">
+    <thead><tr><th>$A$</th><th>$B$</th><th>$A\cup B$</th><th>$A\cap B$</th><th>$A'$</th><th>$(A\cap B)'$</th><th>$A'\cup B'$</th></tr></thead>
+    <tbody>
+      <tr class="row-t"><td>1</td><td>1</td><td>1</td><td>1</td><td>0</td><td>0</td><td>0</td></tr>
+      <tr class="row-f"><td>1</td><td>0</td><td>1</td><td>0</td><td>0</td><td>1</td><td>1</td></tr>
+      <tr class="row-t"><td>0</td><td>1</td><td>1</td><td>0</td><td>1</td><td>1</td><td>1</td></tr>
+      <tr class="row-f"><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>1</td><td>1</td></tr>
+    </tbody>
+  </table>
+
+  <p>The last two columns are <strong>identical</strong> — this is De Morgan again, this time proved at the truth-table level.</p>
+
+  <div class="def-box">
+    <span class="box-label">Method</span>
+    To prove $X = Y$, build the membership table for the expressions $X$ and $Y$. If the two columns are identical, the identity holds.
+  </div>
+
+  <div class="python-block">
+    <span class="pane-label python-label">Python — print a membership table</span>
+    <span class="pane-code">from itertools import product
+print(f"{'A':&gt;3}{'B':&gt;3}{'(A∩B)\\'':&gt;10}{'A\\'∪B\\'':&gt;10}")
+for a, b in product([1, 0], repeat=2):
+    lhs = int(not (a and b))
+    rhs = int((not a) or (not b))
+    print(f"{a:&gt;3}{b:&gt;3}{lhs:&gt;10}{rhs:&gt;10}")</span>
+  </div>
+  <span class="slide-number">14 / 24</span>
+</section>
+
+<!-- ══ Slide 15 — Sets ↔ Logic dictionary ═════════════════════ -->
+<section class="slide" id="s15">
+  <h2 class="frame-title">The Sets ↔ Logic Dictionary</h2>
+
+  <p>Every set identity is the "shadow" of a propositional tautology. Replace the connectives according to this dictionary and you can prove either side from the other:</p>
+
+  <table class="identities-table">
+    <tr><th>Set world</th>                        <td>Logic world</td></tr>
+    <tr><td>$A \cup B$</td>                       <td>$P \vee Q$</td></tr>
+    <tr><td>$A \cap B$</td>                       <td>$P \wedge Q$</td></tr>
+    <tr><td>$A'$</td>                             <td>$\neg P$</td></tr>
+    <tr><td>$A \setminus B$</td>                  <td>$P \wedge \neg Q$</td></tr>
+    <tr><td>$A \triangle B$</td>                  <td>$P \oplus Q$ (xor)</td></tr>
+    <tr><td>$A \subseteq B$</td>                  <td>$P \Rightarrow Q$</td></tr>
+    <tr><td>$A = B$</td>                          <td>$P \Leftrightarrow Q$</td></tr>
+    <tr><td>$U$ &nbsp;(universe)</td>             <td>$\top$ (true)</td></tr>
+    <tr><td>$\varnothing$</td>                    <td>$\bot$ (false)</td></tr>
+  </table>
+
+  <div class="note-box">
+    Concretely: De Morgan in logic is $\neg(P\vee Q) \equiv \neg P\wedge\neg Q$. Translate via the table and you get $(A\cup B)' = A'\cap B'$.
+  </div>
+  <span class="slide-number">15 / 24</span>
+</section>
+
+<!-- ══ Slide 16 — Inclusion–exclusion ═════════════════════════ -->
+<section class="slide" id="s16">
+  <h2 class="frame-title">Inclusion–Exclusion (Counting with Operations)</h2>
+
+  <div class="thm-box">
+    <span class="box-label">Theorem (two sets)</span>
+    For finite $A, B$: $\;\;|A\cup B| = |A| + |B| - |A\cap B|.$
+  </div>
+  <div class="prf-box">
+    <span class="box-label">Proof.</span>
+    Partition $A\cup B$ into three pairwise disjoint pieces: $A\setminus B,\;B\setminus A,\;A\cap B$.
+    Then $|A\cup B| = |A\setminus B|+|B\setminus A|+|A\cap B|.$
+    From $A = (A\setminus B)\cup(A\cap B)$ (disjoint), $|A\setminus B| = |A|-|A\cap B|$. Similarly $|B\setminus A|=|B|-|A\cap B|$.
+    Substituting and simplifying gives $|A|+|B|-|A\cap B|$.
+  </div>
+
+  <div class="thm-box">
+    <span class="box-label">Theorem (three sets)</span>
+    $|A\cup B\cup C| = |A|+|B|+|C| -|A\cap B|-|A\cap C|-|B\cap C| + |A\cap B\cap C|.$
+  </div>
+
+  <div class="ex-box">
+    <span class="box-label">Worked example — streaming services</span>
+    A survey of 200 people about services $N, P, D$:
+    $|N|=120, |P|=90, |D|=70$; $|N\cap P|=50, |N\cap D|=30, |P\cap D|=25$; $|N\cap P\cap D|=15$.<br>
+    Number using <strong>at least one</strong>:
+    $120+90+70-50-30-25+15 = 190.$<br>
+    Using <strong>none</strong>: $200-190 = 10.$<br>
+    Using <strong>exactly one</strong>: $|N|+|P|+|D| - 2(|N\cap P|+|N\cap D|+|P\cap D|) + 3|N\cap P\cap D| = 280-210+45=115.$<br>
+    Using <strong>exactly two</strong>: $(|N\cap P|+|N\cap D|+|P\cap D|) - 3|N\cap P\cap D| = 105-45 = 60.$<br>
+    (Check: $115+60+15+10=200.$ ✓)
+  </div>
+  <span class="slide-number">16 / 24</span>
+</section>
+
+<!-- ══ Slide 17 — 8 Venn regions ══════════════════════════════ -->
+<section class="slide" id="s17">
+  <h2 class="frame-title">The 8 Regions of a 3-Set Venn Diagram</h2>
+
+  <p>For three sets $A, B, C$ in a universe $U$, the Venn diagram has $2^3 = 8$ regions, one per combination "in or not in" each set. Each region is described by exactly one of:</p>
+
+  <table class="truth-table" style="font-size:0.85rem;">
+    <thead><tr><th>$A$</th><th>$B$</th><th>$C$</th><th>Region (set expression)</th></tr></thead>
+    <tbody>
+      <tr><td>0</td><td>0</td><td>0</td><td>$A'\cap B'\cap C'$ &nbsp;(outside everything)</td></tr>
+      <tr><td>0</td><td>0</td><td>1</td><td>$A'\cap B'\cap C$</td></tr>
+      <tr><td>0</td><td>1</td><td>0</td><td>$A'\cap B\cap C'$</td></tr>
+      <tr><td>0</td><td>1</td><td>1</td><td>$A'\cap B\cap C$</td></tr>
+      <tr><td>1</td><td>0</td><td>0</td><td>$A\cap B'\cap C'$</td></tr>
+      <tr><td>1</td><td>0</td><td>1</td><td>$A\cap B'\cap C$</td></tr>
+      <tr><td>1</td><td>1</td><td>0</td><td>$A\cap B\cap C'$</td></tr>
+      <tr><td>1</td><td>1</td><td>1</td><td>$A\cap B\cap C$ &nbsp;(all three)</td></tr>
+    </tbody>
+  </table>
+
+  <p>These 8 regions <strong>partition</strong> the universe $U$: their pairwise intersection is $\varnothing$ and their union is $U$.</p>
+
+  <div class="python-block">
+    <span class="pane-label python-label">Python — enumerate the 8 regions</span>
+    <span class="pane-code">from itertools import product
+
+def venn_regions(A, B, C, U=None):
+    U = U or (A | B | C)
+    regions = {}
+    for bits in product([0, 1], repeat=3):
+        sel = [(A, B, C)[i] if b else (U - (A, B, C)[i]) for i, b in enumerate(bits)]
+        regions[bits] = sel[0] &amp; sel[1] &amp; sel[2]
+    return regions
+
+G, H, I = set(range(1,8)), set(range(3,10)), set(range(5,12))
+for k, r in venn_regions(G, H, I).items():
+    print(k, "→", sorted(r))</span>
+  </div>
+  <span class="slide-number">17 / 24</span>
+</section>
+
+<!-- ══ Slide 18 — Worked example ══════════════════════════════ -->
+<section class="slide" id="s18">
+  <h2 class="frame-title">Worked Example — Combining Operations</h2>
+
+  <p>Let $G=\{1,\dots,7\}$, $H=\{3,\dots,9\}$, $I=\{5,\dots,11\}$ with universe $U = G\cup H\cup I$.</p>
+
+  <div class="ex-box">
+    <span class="box-label">Goal</span>
+    Find $(G\cup H) \cap I'$ &nbsp;(elements in $G$ or $H$ but <em>not</em> in $I$).
+  </div>
+
+  <p><strong>By hand.</strong> $G\cup H = \{1,\dots,9\}$. The complement $I' = U\setminus I = \{1,2,3,4\}$. The intersection is therefore $\{1,2,3,4\}$.</p>
+
+  <div class="python-block">
+    <span class="pane-label python-label">Python — confirms the calculation</span>
+    <span class="pane-code">G = set(range(1, 8))
+H = set(range(3, 10))
+I = set(range(5, 12))
+U = G | H | I
+
+answer = (G | H) &amp; (U - I)
+print(sorted(answer))            # [1, 2, 3, 4]</span>
+  </div>
+
+  <div class="thm-box">
+    <span class="box-label">Connection</span>
+    The result equals the region where the membership pattern is "$G$ or $H$, but not $I$", which corresponds to the Venn rows $(1,0,0), (1,1,0), (0,1,0)$ from the previous slide. The union of those three regions is exactly $\{1,2\}\cup\{3,4\}\cup\varnothing = \{1,2,3,4\}$.
+  </div>
+  <span class="slide-number">18 / 24</span>
+</section>
+
+<!-- ══ Slide 19 — Inclusion-exclusion alt proof ═══════════════ -->
+<section class="slide" id="s19">
+  <h2 class="frame-title">Proving Identities Computationally</h2>
+
+  <p>For finite identities involving only $\cup,\cap,',\setminus,\triangle$, three independent techniques can be used:</p>
+
+  <ol>
+    <li><strong>Element-chasing</strong> — the rigorous mathematical proof.</li>
+    <li><strong>Membership table</strong> — the same proof in tabular form.</li>
+    <li><strong>Symbolic simplification (SymPy)</strong> — let the computer reduce both sides to a canonical form.</li>
+  </ol>
+
+  <div class="sympy-block">
+    <span class="pane-label sympy-label">SymPy — boolean simplification</span>
+    <span class="pane-code">from sympy import symbols, And, Or, Not, simplify, Equivalent
+A, B = symbols('A B')
+
+# Absorption: A ∪ (A ∩ B) ≡ A
+print(simplify(Equivalent(Or(A, And(A, B)), A)))   # True
+
+# Splitting: (A ∩ B) ∪ (A ∩ B') ≡ A
+print(simplify(Equivalent(Or(And(A, B), And(A, Not(B))), A)))   # True
+
+# De Morgan: ¬(A ∩ B) ≡ ¬A ∨ ¬B
+print(simplify(Equivalent(Not(And(A, B)), Or(Not(A), Not(B)))))  # True</span>
+  </div>
+
+  <div class="note-box">
+    A returned value of <code>True</code> from SymPy means the boolean expression is a tautology — equivalently, the corresponding set identity is valid for every choice of $A, B, \dots$.
+  </div>
+  <span class="slide-number">19 / 24</span>
+</section>
+
+<!-- ══ Slide 20 — Random property check ═══════════════════════ -->
+<section class="slide" id="s20">
+  <h2 class="frame-title">Property Testing with Random Inputs</h2>
+
+  <p>For large universes a full enumeration is impractical, but a <strong>randomised check</strong> is still convincing. Inclusion–exclusion is a great target:</p>
+
+  <div class="python-block">
+    <span class="pane-label python-label">Python — verify |A ∪ B| = |A| + |B| − |A ∩ B| on 1000 random pairs</span>
+    <span class="pane-code">import random
+random.seed(42)
+U = list(range(1, 21))                 # universe {1..20}
+
+def random_subset():
+    return {x for x in U if random.random() &lt; 0.5}
+
+for _ in range(1000):
+    A, B = random_subset(), random_subset()
+    assert len(A | B) == len(A) + len(B) - len(A &amp; B)
+print("Inclusion–Exclusion holds on 1000 random (A, B).")</span>
+  </div>
+
+  <div class="thm-box">
+    <span class="box-label">Cautionary remark</span>
+    Random testing builds confidence but is <em>not</em> a proof — only the element-chasing argument from the previous slides is. Use random tests to find <em>counter-examples</em>, and proofs to <em>confirm</em>.
+  </div>
+  <span class="slide-number">20 / 24</span>
+</section>
+
+<!-- ══ Slide 21 — Algebra: Boolean ring ═══════════════════════ -->
+<section class="slide" id="s21">
+  <h2 class="frame-title">The Algebra of Sets — A Boolean Algebra</h2>
+
+  <p>Let $U$ be a fixed universe. The collection $\mathcal{P}(U)$ of all subsets of $U$, together with the operations $\cup, \cap, '$ and the constants $\varnothing, U$, forms a structure called a <strong>Boolean algebra</strong>.</p>
+
+  <div class="def-box">
+    <span class="box-label">Definition</span>
+    A <strong>Boolean algebra</strong> $(B, \vee, \wedge, ', 0, 1)$ is a set $B$ with two binary operations, one unary operation and two distinguished elements satisfying: commutativity, associativity, distributivity (both ways), identity ($x\vee 0 = x,\; x\wedge 1 = x$), and complement ($x\vee x' = 1,\; x\wedge x' = 0$).
+  </div>
+
+  <div class="thm-box">
+    <span class="box-label">Theorem</span>
+    $(\mathcal{P}(U), \cup, \cap, ', \varnothing, U)$ is a Boolean algebra.
+  </div>
+  <div class="prf-box">
+    <span class="box-label">Proof sketch.</span>
+    All ten axioms are exactly the identities of Slide 11, which we have either proved (or can prove) by element-chasing.
+  </div>
+
+  <div class="note-box">
+    Propositional logic forms <em>another</em> Boolean algebra $(\{\top,\bot\}, \vee, \wedge, \neg, \bot, \top)$. The Sets ↔ Logic dictionary of Slide 15 is an <em>isomorphism</em> of Boolean algebras — that is the deep reason set identities and logical equivalences look identical.
+  </div>
+  <span class="slide-number">21 / 24</span>
+</section>
+
+<!-- ══ Slide 22 — Worked simplification ═══════════════════════ -->
+<section class="slide" id="s22">
+  <h2 class="frame-title">Worked Example — Simplifying an Expression</h2>
+
+  <div class="ex-box">
+    <span class="box-label">Problem</span>
+    Show that
+    $$\bigl[(A\cap B)\cup C\cup D\bigr] \cap (B'\cup C) \;\equiv\; (B'\cap D) \cup C.$$
+  </div>
+
+  <h3 class="sub-title">Approach 1 — algebraic simplification</h3>
+  <p>Distribute the outer intersection:</p>
+  <p>$[(A\cap B)\cap(B'\cup C)] \cup [C\cap(B'\cup C)] \cup [D\cap(B'\cup C)].$</p>
+  <p>By absorption, $C \cap (B'\cup C) = C$. The first bracket simplifies because $A\cap B\cap B' = \varnothing$, leaving $A\cap B\cap C$, which is absorbed into $C$. The third bracket is $(D\cap B')\cup(D\cap C)$; the second part $D\cap C$ is again absorbed into $C$. The remainder is $C \cup (B'\cap D)$. $\;\Box$</p>
+
+  <h3 class="sub-title">Approach 2 — exhaustive truth-table check</h3>
+  <div class="python-block">
+    <span class="pane-label python-label">Python — 16 truth assignments</span>
+    <span class="pane-code">from itertools import product
+def lhs(a, b, c, d): return (((a and b) or c or d) and ((not b) or c))
+def rhs(a, b, c, d): return ((not b) and d) or c
+
+ok = all(lhs(*v) == rhs(*v) for v in product([True, False], repeat=4))
+print("Equivalent?", ok)         # True</span>
+  </div>
+
+  <div class="sympy-block">
+    <span class="pane-label sympy-label">SymPy — same identity, fully symbolic</span>
+    <span class="pane-code">from sympy import symbols, And, Or, Not, simplify, Equivalent
+A, B, C, D = symbols('A B C D')
+L = And(Or(And(A, B), C, D), Or(Not(B), C))
+R = Or(And(Not(B), D), C)
+print(simplify(Equivalent(L, R)))    # True</span>
+  </div>
+  <span class="slide-number">22 / 24</span>
+</section>
+
+<!-- ══ Slide 23 — Summary ═════════════════════════════════════ -->
+<section class="slide" id="s23">
+  <h2 class="frame-title">Summary — What You Now Know</h2>
+
+  <ul style="line-height:2;">
+    <li><strong>Union</strong> $A\cup B$, <strong>intersection</strong> $A\cap B$, <strong>complement</strong> $A'$, <strong>difference</strong> $A\setminus B$, <strong>symmetric difference</strong> $A\triangle B$ — six core operations defined via $\in$ and the logical connectives.</li>
+    <li><strong>Precedence</strong>: $\,' \;&gt;\; \cap \;&gt;\; \cup$.</li>
+    <li><strong>Element-chasing</strong> is the universal proof technique. Membership tables and SymPy give two complementary checks.</li>
+    <li>The 10 fundamental <strong>identities</strong> (identity, domination, idempotency, commutativity, associativity, distributivity, De Morgan, absorption, complement, double complement) make $\mathcal{P}(U)$ into a <strong>Boolean algebra</strong>, isomorphic to propositional logic.</li>
+    <li><strong>Inclusion–Exclusion</strong>: $|A\cup B| = |A|+|B|-|A\cap B|$ and its 3-set generalisation — the basis of counting arguments.</li>
+    <li>The <strong>8-region Venn partition</strong> of a 3-set universe gives a complete picture and turns abstract set algebra into a visual exercise.</li>
+  </ul>
+
+  <div class="setup-block" style="margin-top:0.8rem;">
+    <span class="setup-label">Recap — key tools</span>
+    <span class="pane-code">from itertools import combinations, product
+from functools import reduce
+import operator
+from sympy import (FiniteSet, EmptySet, Union, Intersection, Complement,
+                   symbols, And, Or, Not, simplify, Equivalent)</span>
+  </div>
+  <span class="slide-number">23 / 24</span>
+</section>
+
+<!-- ══ Slide 24 — Going further ═══════════════════════════════ -->
+<section class="slide" id="s24">
+  <h2 class="frame-title">Going Further</h2>
+
+  <h3 class="sub-title">Practice</h3>
+  <ul>
+    <li>Re-do the 12 exercises in <a href="exercises_operations_on_sets_enonces.html" style="color:var(--orange);font-weight:600;text-decoration:none;">exercises_operations_on_sets_enonces.html</a> with this theory in mind; check against <a href="exercises_operations_on_sets.html" style="color:var(--orange);font-weight:600;text-decoration:none;">exercises_operations_on_sets.html</a>.</li>
+    <li>Prove the second distributive law $A\cup(B\cap C) = (A\cup B)\cap(A\cup C)$ by element-chasing.</li>
+    <li>Generalise <code>venn_regions</code> to $n$ sets — there are $2^n$ regions.</li>
+    <li>Prove $A\triangle B = (A\cap B')\cup(A'\cap B)$ symbolically with SymPy.</li>
+  </ul>
+
+  <h3 class="sub-title">Bridges to other lessons</h3>
+  <p>The next lesson "<strong>Relations and Functions</strong>" defines a relation as a subset of $A\times B$ — every operation we just learned will be re-used on these subsets. The "Sequences and Series" lesson will then use Inclusion–Exclusion to count finite sequences satisfying multiple constraints.</p>
+
+  <div class="note-box">
+    The cleanest way to remember any set identity: write it in logic via the dictionary, prove the logical tautology by a 2- or 4-row truth table, then translate back. The two worlds are <em>the same</em> Boolean algebra in different costumes.
+  </div>
+
+  <p style="text-align:center;margin-top:1rem;font-size:1rem;color:#e67e22;font-style:italic;font-weight:600;letter-spacing:.02em;">Notes By Pr. El Hadiq Zouhair</p>
+  <span class="slide-number">24 / 24</span>
+</section>
+
+<!-- ── Navigation ────────────────────────────────────────────── -->
+<div id="nav">
+  <button id="btn-prev" title="Previous">&#8592;</button>
+  <button id="btn-scroll" title="Toggle slideshow">Slideshow</button>
+  <button id="btn-next"  title="Next">&#8594;</button>
+</div>
+
+<script>
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  let current = 0, slideshowMode = false;
+
+  function enter(i) {
+    slides[current].classList.remove('active');
+    current = (i + slides.length) % slides.length;
+    slides[current].classList.add('active');
+    slides[current].scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  document.getElementById('btn-prev').addEventListener('click', () => {
+    if (slideshowMode) enter(current - 1);
+  });
+  document.getElementById('btn-next').addEventListener('click', () => {
+    if (slideshowMode) enter(current + 1);
+  });
+  document.getElementById('btn-scroll').addEventListener('click', () => {
+    slideshowMode = !slideshowMode;
+    document.body.classList.toggle('slideshow', slideshowMode);
+    document.getElementById('btn-scroll').textContent = slideshowMode ? 'Scroll' : 'Slideshow';
+    if (slideshowMode) slides[current].classList.add('active');
+    else slides.forEach(s => s.classList.remove('active'));
+  });
+
+  document.addEventListener('keydown', e => {
+    if (!slideshowMode) return;
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') enter(current + 1);
+    if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   enter(current - 1);
+  });
+</script>
+</body>
+</html>

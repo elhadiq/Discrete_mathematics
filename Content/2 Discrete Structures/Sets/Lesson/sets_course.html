@@ -1,0 +1,1145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sets — Full Course (Definitions &amp; Proofs)</title>
+<script>
+  MathJax = {
+    tex: { inlineMath: [['$','$']], displayMath: [['$$','$$']] },
+    options: { skipHtmlTags: ['script','noscript','style','textarea'] }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+<style>
+/* ── Reset & base ─────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --orange:    #e67e22;
+  --darkblue:  #2c3e50;
+  --lightbg:   #f4f9fc;
+  --rowred:    #ffe8e8;
+  --rowblue:   #e3eeff;
+  --border:    #dce3ea;
+
+  /* Python blue */
+  --py-fg:     #1f4e7a;
+  --py-bg:     #eaf3fb;
+  --py-border: #2a6fb3;
+  --py-head:   #2a6fb3;
+  /* SymPy green */
+  --sp-fg:     #1e824c;
+  --sp-bg:     #e8f5ec;
+  --sp-border: #27ae60;
+  --sp-head:   #27ae60;
+  /* Setup indigo */
+  --su-fg:     #4a4aaa;
+  --su-bg:     #eeeeff;
+  --su-border: #6060cc;
+  --su-head:   #6060cc;
+  /* Output amber */
+  --out-fg:    #6e4b0a;
+  --out-bg:    #fff7e0;
+  --out-border:#e0b341;
+  --out-head:  #c89324;
+
+  /* Definition / Theorem / Proof / Example */
+  --def-fg:    #1c3a5c;
+  --def-bg:    #eaf1f9;
+  --def-border:#3b6fa0;
+  --thm-fg:    #6e3a07;
+  --thm-bg:    #fff2e0;
+  --thm-border:#e67e22;
+  --prf-fg:    #444;
+  --prf-bg:    #f7f7fa;
+  --prf-border:#9aa1a8;
+  --ex-fg:     #1d6b40;
+  --ex-bg:     #e9f7ee;
+  --ex-border: #2e9c5e;
+}
+
+body {
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  background: #e8edf2;
+  color: var(--darkblue);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem 1rem 5rem;
+  gap: 2rem;
+}
+
+/* ── Slide card ──────────────────────────────────────────────────── */
+.slide {
+  background: #fff;
+  width: 100%;
+  max-width: 940px;
+  border-radius: 10px;
+  box-shadow: 0 4px 18px rgba(0,0,0,.10);
+  padding: 2.2rem 2.8rem 1.8rem;
+  position: relative;
+}
+.slide-number {
+  position: absolute;
+  bottom: 0.7rem;
+  right: 1.2rem;
+  font-size: 0.72rem;
+  color: #aaa;
+}
+
+/* ── Title slide ─────────────────────────────────────────────────── */
+.slide.title-slide {
+  background: linear-gradient(145deg, #f4f9fc 60%, #e0eef7);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 240px;
+  text-align: center;
+  border-top: 6px solid var(--orange);
+}
+.slide.title-slide h1 { font-size: 1.95rem; color: var(--darkblue); margin-bottom: 0.4rem; }
+.slide.title-slide .subtitle { font-size: 1.15rem; color: #555; }
+
+/* ── Frame titles ────────────────────────────────────────────────── */
+h2.frame-title {
+  font-size: 1.6rem;
+  color: var(--orange);
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  padding-bottom: 0.35rem;
+  border-bottom: 2px solid #f9e4cc;
+}
+h3.sub-title {
+  font-size: 1.18rem;
+  color: var(--orange);
+  font-weight: 600;
+  margin: 1rem 0 0.4rem;
+}
+
+p   { line-height: 1.7; margin: 0.45rem 0; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.4rem; line-height: 1.85; }
+ul li::marker, ol li::marker { color: var(--orange); }
+
+strong { color: #1a2a38; }
+
+/* ── Definition / Theorem / Proof / Example boxes ────────────────── */
+.def-box, .thm-box, .prf-box, .ex-box, .note-box {
+  border-radius: 6px;
+  padding: 0.7rem 1rem;
+  margin: 0.8rem 0;
+  line-height: 1.65;
+}
+.def-box {
+  background: var(--def-bg);
+  border-left: 5px solid var(--def-border);
+  color: var(--def-fg);
+}
+.thm-box {
+  background: var(--thm-bg);
+  border-left: 5px solid var(--thm-border);
+  color: var(--thm-fg);
+}
+.prf-box {
+  background: var(--prf-bg);
+  border-left: 3px solid var(--prf-border);
+  color: var(--prf-fg);
+  font-size: 0.95rem;
+}
+.ex-box {
+  background: var(--ex-bg);
+  border-left: 5px solid var(--ex-border);
+  color: var(--ex-fg);
+}
+.note-box {
+  background: var(--lightbg);
+  border-left: 4px solid var(--orange);
+  font-style: italic;
+}
+.box-label {
+  display: inline-block;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-size: 0.78rem;
+  margin-right: 0.4rem;
+}
+.def-box .box-label { color: var(--def-border); }
+.thm-box .box-label { color: var(--thm-border); }
+.prf-box .box-label { color: #666; }
+.ex-box  .box-label { color: var(--ex-border); }
+
+.prf-box::after {
+  content: "∎";
+  display: inline-block;
+  float: right;
+  font-weight: 700;
+  color: var(--prf-border);
+  margin-top: -1.4rem;
+}
+
+/* ── Code blocks (Python, SymPy, Setup, Output) ──────────────────── */
+.code-pair { display: flex; gap: 0.75rem; margin: 0.7rem 0; }
+.code-pane { flex: 1; border-radius: 6px; overflow: hidden; border: 1px solid transparent; font-size: 0; }
+.pane-label {
+  display: block;
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  color: #fff;
+}
+.pane-code {
+  font-family: 'Consolas', 'Fira Code', monospace;
+  font-size: 0.83rem;
+  line-height: 1.6;
+  padding: 0.5rem 0.75rem;
+  white-space: pre;
+  display: block;
+  overflow-x: auto;
+}
+.python-pane  { border-color: var(--py-border); }
+.python-label { background: var(--py-head); }
+.python-pane .pane-code { background: var(--py-bg); color: var(--py-fg); }
+.sympy-pane  { border-color: var(--sp-border); }
+.sympy-label { background: var(--sp-head); }
+.sympy-pane .pane-code { background: var(--sp-bg); color: var(--sp-fg); }
+
+.python-block, .sympy-block, .setup-block, .output-block {
+  border-radius: 6px; overflow: hidden; margin: 0.7rem 0;
+}
+.python-block { border: 1px solid var(--py-border); }
+.python-block .pane-code { background: var(--py-bg); color: var(--py-fg);
+  font-family: 'Consolas', 'Fira Code', monospace; font-size: 0.83rem; line-height: 1.6;
+  padding: 0.5rem 0.75rem; white-space: pre; display: block; overflow-x: auto; }
+.sympy-block { border: 1px solid var(--sp-border); }
+.sympy-block .pane-code { background: var(--sp-bg); color: var(--sp-fg);
+  font-family: 'Consolas', 'Fira Code', monospace; font-size: 0.83rem; line-height: 1.6;
+  padding: 0.5rem 0.75rem; white-space: pre; display: block; overflow-x: auto; }
+.setup-block { border: 1px solid var(--su-border); }
+.setup-label { display: block; font-size: 0.65rem; font-weight: 800; letter-spacing: 0.12em;
+  text-transform: uppercase; padding: 3px 10px; background: var(--su-head); color: #fff; }
+.setup-block .pane-code { background: var(--su-bg); color: var(--su-fg);
+  font-family: 'Consolas', 'Fira Code', monospace; font-size: 0.83rem; line-height: 1.6;
+  padding: 0.5rem 0.75rem; white-space: pre; display: block; overflow-x: auto; }
+.output-block { border: 1px solid var(--out-border); }
+.output-label { display: block; font-size: 0.65rem; font-weight: 800; letter-spacing: 0.12em;
+  text-transform: uppercase; padding: 3px 10px; background: var(--out-head); color: #fff; }
+.output-block .pane-code { background: var(--out-bg); color: var(--out-fg);
+  font-family: 'Consolas', 'Fira Code', monospace; font-size: 0.83rem; line-height: 1.6;
+  padding: 0.5rem 0.75rem; white-space: pre; display: block; overflow-x: auto; }
+
+/* ── Tables ──────────────────────────────────────────────────────── */
+.truth-table { border-collapse: collapse; margin: 0.75rem auto; font-size: 0.92rem; }
+.truth-table th, .truth-table td {
+  border: 1px solid var(--border); padding: 0.4rem 1rem; text-align: center;
+}
+.truth-table th { background: var(--lightbg); font-weight: 600; }
+
+/* ── Venn ────────────────────────────────────────────────────────── */
+.venn-wrap { display: flex; justify-content: center; margin: 0.8rem 0; }
+.venn-wrap svg { max-width: 100%; height: auto; }
+
+/* ── Slide-show nav ──────────────────────────────────────────────── */
+#nav { position: fixed; bottom: 1.5rem; right: 1.5rem; display: flex; gap: 0.4rem; z-index: 100; }
+#nav button {
+  background: var(--orange); color: #fff; border: none;
+  border-radius: 50%; width: 40px; height: 40px;
+  font-size: 1.1rem; cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,.25); transition: background .2s;
+}
+#nav button:hover { background: #cf6d17; }
+#nav #btn-scroll { border-radius: 20px; width: auto; padding: 0 12px; font-size: 0.8rem; }
+
+body.slideshow .slide        { display: none; }
+body.slideshow .slide.active { display: block; }
+</style>
+</head>
+<body>
+
+<!-- ══ Slide 1 — Title ════════════════════════════════════════════ -->
+<section class="slide title-slide" id="s1">
+  <h1>Sets — A Full Course</h1>
+  <p class="subtitle">Definitions, Theorems, Proofs &amp; Python</p>
+  <p style="font-size:1rem;color:#e67e22;margin-top:0.8rem;font-style:italic;font-weight:600;letter-spacing:.02em;">Notes By Pr. El Hadiq Zouhair</p>
+  <span class="slide-number">1 / 25</span>
+</section>
+
+<!-- ══ Slide 2 — Why study sets ══════════════════════════════════ -->
+<section class="slide" id="s2">
+  <h2 class="frame-title">Why Study Sets?</h2>
+  <p>Set theory is the <strong>foundational language</strong> of modern mathematics and computer science. Virtually every other structure — numbers, functions, graphs, relations, sequences, languages, databases — is ultimately built out of sets.</p>
+  <ul>
+    <li>In <strong>mathematics</strong>: sets define numbers ($\mathbb{N}, \mathbb{Z}, \mathbb{Q}, \mathbb{R}, \mathbb{C}$), give us functions ($f \subseteq A \times B$), and underpin probability, topology and logic.</li>
+    <li>In <strong>computer science</strong>: types are sets of values, databases are relations (sets of tuples), and many algorithms operate on sets (search, deduplication, joins, hashing).</li>
+    <li>In <strong>Python</strong>: the built-in <code>set</code>, <code>frozenset</code>, <code>dict</code> and SymPy's <code>FiniteSet</code> let us experiment with set theory directly.</li>
+  </ul>
+
+  <div class="note-box">
+    Goal of this course: present sets <em>rigorously</em> — every notion gets a formal definition, every non-trivial claim gets a proof — and then verify it in Python so you can <em>see</em> the theory at work.
+  </div>
+  <span class="slide-number">2 / 25</span>
+</section>
+
+<!-- ══ Slide 3 — Naive definition ════════════════════════════════ -->
+<section class="slide" id="s3">
+  <h2 class="frame-title">What Is a Set?</h2>
+
+  <div class="def-box">
+    <span class="box-label">Definition (intuitive, Cantor 1874)</span>
+    A <strong>set</strong> is a well-defined collection of distinct objects, considered as a whole. The objects belonging to a set are called its <strong>elements</strong> (or <strong>members</strong>).
+  </div>
+
+  <p>Two key properties follow immediately from this informal definition:</p>
+  <ol>
+    <li><strong>No order.</strong> A set has no first element, no second element, etc. $\{1,2,3\}=\{3,2,1\}=\{2,1,3\}$.</li>
+    <li><strong>No repetition.</strong> An element is either in the set or it is not — it cannot appear "twice". $\{1,1,3,9\}=\{1,3,9\}$.</li>
+  </ol>
+
+  <p>We write $x \in A$ to mean "$x$ is an element of $A$", and $x \notin A$ to mean "$x$ is not an element of $A$".</p>
+
+  <div class="ex-box">
+    <span class="box-label">Example</span>
+    Let $A = \{2, 4, 6, 8\}$. Then $4 \in A$, $5 \notin A$, $\{4\} \notin A$ (because $A$ does not contain the <em>set</em> $\{4\}$ — only the <em>number</em> $4$).
+  </div>
+  <span class="slide-number">3 / 25</span>
+</section>
+
+<!-- ══ Slide 4 — Notation ════════════════════════════════════════ -->
+<section class="slide" id="s4">
+  <h2 class="frame-title">Two Ways to Describe a Set</h2>
+
+  <h3 class="sub-title">1. Roster (extensional) notation</h3>
+  <p>List the elements between braces:</p>
+  <p style="text-align:center;">$A = \{2, 4, 6, 8\}, \quad V = \{a, e, i, o, u\}$</p>
+  <p>For obvious patterns we may use "…": $\mathbb{N}=\{0,1,2,3,\dots\}$.</p>
+
+  <h3 class="sub-title">2. Set-builder (intensional) notation</h3>
+  <p>Describe the elements by a property $P$:</p>
+  <p style="text-align:center;">$\{\, x \mid P(x) \,\} \quad\text{or}\quad \{\, x \in U \mid P(x) \,\}$</p>
+  <p>Read as: "the set of all $x$ (in $U$) such that $P(x)$ holds".</p>
+
+  <div class="ex-box">
+    <span class="box-label">Examples</span>
+    <ul style="margin-top:0.3rem;">
+      <li>$\{\, n \in \mathbb{N} \mid n \text{ is even} \,\} = \{0, 2, 4, 6, \dots\}$</li>
+      <li>$\{\, x \in \mathbb{R} \mid x^2 = 2 \,\} = \{ -\sqrt{2},\, \sqrt{2}\,\}$</li>
+      <li>$\{\, x \in \mathbb{Q} \mid x^2 = 2 \,\} = \varnothing$ &nbsp;(no rational squares to 2)</li>
+    </ul>
+  </div>
+
+  <div class="python-block">
+    <span class="pane-label python-label">Python — set-builder via comprehension</span>
+    <span class="pane-code">evens     = {n for n in range(20) if n % 2 == 0}
+squares10 = {n*n for n in range(1, 11)}
+print(evens)
+print(squares10)</span>
+  </div>
+  <span class="slide-number">4 / 25</span>
+</section>
+
+<!-- ══ Slide 5 — Extensionality & equality ═════════════════════ -->
+<section class="slide" id="s5">
+  <h2 class="frame-title">Equality of Sets</h2>
+
+  <div class="def-box">
+    <span class="box-label">Axiom of extensionality</span>
+    Two sets are equal if and only if they have exactly the same elements:
+    $$A = B \;\Longleftrightarrow\; \forall x\;(x \in A \,\Leftrightarrow\, x \in B).$$
+  </div>
+
+  <p>This is <em>the</em> rule that tells us "a set is determined by its elements". In particular, the order in which we list the elements and any repetitions are irrelevant.</p>
+
+  <h3 class="sub-title">Standard proof technique: double inclusion</h3>
+  <p>To prove $A = B$, it suffices to prove the two inclusions:</p>
+  <p style="text-align:center;">$A \subseteq B$ &nbsp; <strong>and</strong> &nbsp; $B \subseteq A$.</p>
+
+  <div class="thm-box">
+    <span class="box-label">Theorem</span>
+    $\{1,1,3,9\} = \{1,3,9\}$.
+  </div>
+  <div class="prf-box">
+    <span class="box-label">Proof.</span>
+    Let $A=\{1,1,3,9\}$ and $B=\{1,3,9\}$. Pick any $x\in A$. Then $x \in \{1,3,9\}$ (the only values listed are 1, 3, 9), hence $x\in B$. Conversely, every $x \in B$ is among the values $1,3,9$ listed in $A$, so $x\in A$. Therefore $A\subseteq B$ and $B\subseteq A$, hence by extensionality $A=B$.
+  </div>
+  <span class="slide-number">5 / 25</span>
+</section>
+
+<!-- ══ Slide 6 — Important sets ════════════════════════════════ -->
+<section class="slide" id="s6">
+  <h2 class="frame-title">Important Named Sets</h2>
+  <table class="truth-table" style="width:100%;">
+    <thead>
+      <tr><th>Symbol</th><th>Name</th><th>Definition</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>$\varnothing$ or $\{\}$</td><td>Empty set</td><td>set with no elements</td></tr>
+      <tr><td>$\mathbb{N}$</td><td>Natural numbers</td><td>$\{0, 1, 2, 3, \dots\}$</td></tr>
+      <tr><td>$\mathbb{N}^*$</td><td>Positive integers</td><td>$\{1, 2, 3, \dots\}$</td></tr>
+      <tr><td>$\mathbb{Z}$</td><td>Integers</td><td>$\{\dots,-2,-1,0,1,2,\dots\}$</td></tr>
+      <tr><td>$\mathbb{Q}$</td><td>Rationals</td><td>$\{p/q \mid p\in\mathbb{Z},\, q\in\mathbb{Z},\, q\neq 0\}$</td></tr>
+      <tr><td>$\mathbb{R}$</td><td>Reals</td><td>all points on the real line</td></tr>
+      <tr><td>$\mathbb{C}$</td><td>Complex numbers</td><td>$\{a+bi \mid a,b\in\mathbb{R}\}$</td></tr>
+    </tbody>
+  </table>
+
+  <p>These are nested as follows:</p>
+  <p style="text-align:center;font-size:1.05rem;">$\mathbb{N} \;\subset\; \mathbb{Z} \;\subset\; \mathbb{Q} \;\subset\; \mathbb{R} \;\subset\; \mathbb{C}$</p>
+
+  <div class="code-pair">
+    <div class="code-pane python-pane">
+      <span class="pane-label python-label">Python — finite</span>
+      <span class="pane-code">empty = set()              # ∅
+evens = {0, 2, 4, 6, 8}    # finite subset of N
+print(len(empty), len(evens))</span>
+    </div>
+    <div class="code-pane sympy-pane">
+      <span class="pane-label sympy-label">SymPy — infinite sets</span>
+      <span class="pane-code">from sympy import S
+print(2 in S.Integers)     # True
+print(0.5 in S.Naturals0)  # False
+print(0.5 in S.Rationals)  # True</span>
+    </div>
+  </div>
+  <span class="slide-number">6 / 25</span>
+</section>
+
+<!-- ══ Slide 7 — Cardinality ═══════════════════════════════════ -->
+<section class="slide" id="s7">
+  <h2 class="frame-title">Cardinality</h2>
+
+  <div class="def-box">
+    <span class="box-label">Definition</span>
+    The <strong>cardinality</strong> of a set $S$, written $|S|$ (or $\#S$, $\operatorname{card}(S)$), is the number of distinct elements it contains. A set is:
+    <ul style="margin-top:0.3rem;">
+      <li><strong>finite</strong> if $|S| = n$ for some $n \in \mathbb{N}$;</li>
+      <li><strong>infinite</strong> otherwise.</li>
+    </ul>
+  </div>
+
+  <div class="ex-box">
+    <span class="box-label">Examples</span>
+    $|\varnothing| = 0$, $|\{a\}| = 1$, $|\{a, b, c\}| = 3$. The set $\mathbb{N}$ is infinite — formally $|\mathbb{N}| = \aleph_0$ (aleph-null).
+  </div>
+
+  <div class="python-block">
+    <span class="pane-label python-label">Python — cardinality</span>
+    <span class="pane-code">S = {1, 3, 9, 1, 4}     # duplicates removed automatically
+print(S)                # {1, 3, 4, 9}
+print(len(S))           # 4    →  |S| = 4</span>
+  </div>
+
+  <p>A subtle but important point: cardinality counts <em>distinct</em> elements, even when they are sets themselves.</p>
+
+  <div class="ex-box">
+    <span class="box-label">Example (nested sets)</span>
+    $|\{\varnothing\}| = 1$ &nbsp;(one element, namely the empty set).<br>
+    $|\{\varnothing,\, \{\varnothing\}\}| = 2$ &nbsp;(two distinct elements: $\varnothing$ and $\{\varnothing\}$).
+  </div>
+  <span class="slide-number">7 / 25</span>
+</section>
+
+<!-- ══ Slide 8 — Subsets ═══════════════════════════════════════ -->
+<section class="slide" id="s8">
+  <h2 class="frame-title">Subsets, Proper Subsets, Supersets</h2>
+
+  <div class="def-box">
+    <span class="box-label">Definition</span>
+    $A$ is a <strong>subset</strong> of $B$, written $A \subseteq B$, iff every element of $A$ is also an element of $B$:
+    $$A \subseteq B \;\Longleftrightarrow\; \forall x \,(x \in A \,\Rightarrow\, x \in B).$$
+    $A$ is a <strong>proper subset</strong> of $B$, written $A \subsetneq B$ (or $A \subset B$), iff $A \subseteq B$ and $A \neq B$.<br>
+    $B$ is a <strong>superset</strong> of $A$ iff $A \subseteq B$; we then write $B \supseteq A$.
+  </div>
+
+  <h3 class="sub-title">Basic properties</h3>
+  <div class="thm-box">
+    <span class="box-label">Theorem</span>
+    For any sets $A, B, C$:
+    <ol style="margin-top:0.3rem;">
+      <li><strong>Reflexivity:</strong> $A \subseteq A$.</li>
+      <li><strong>Antisymmetry:</strong> if $A \subseteq B$ and $B \subseteq A$ then $A = B$.</li>
+      <li><strong>Transitivity:</strong> if $A \subseteq B$ and $B \subseteq C$ then $A \subseteq C$.</li>
+    </ol>
+  </div>
+  <div class="prf-box">
+    <span class="box-label">Proof.</span>
+    (1) For any $x$, $x \in A \Rightarrow x \in A$ trivially, so $A \subseteq A$.
+    (2) This is the axiom of extensionality.
+    (3) Take $x \in A$. Since $A \subseteq B$, we have $x \in B$. Since $B \subseteq C$, we have $x \in C$. Thus $A \subseteq C$.
+  </div>
+
+  <div class="python-block">
+    <span class="pane-label python-label">Python — subset / proper subset</span>
+    <span class="pane-code">A, B = {2, 4}, {2, 4, 6}
+print(A &lt;= B)   # True  → A ⊆ B
+print(A &lt;  B)   # True  → A ⊊ B (proper)
+print(A == B)   # False</span>
+  </div>
+  <span class="slide-number">8 / 25</span>
+</section>
+
+<!-- ══ Slide 9 — The empty set ═════════════════════════════════ -->
+<section class="slide" id="s9">
+  <h2 class="frame-title">The Empty Set</h2>
+
+  <div class="def-box">
+    <span class="box-label">Definition</span>
+    The <strong>empty set</strong>, written $\varnothing$ or $\{\}$, is the unique set containing no elements: $\forall x\;(x \notin \varnothing)$.
+  </div>
+
+  <div class="thm-box">
+    <span class="box-label">Theorem (uniqueness of $\varnothing$)</span>
+    There is exactly one empty set.
+  </div>
+  <div class="prf-box">
+    <span class="box-label">Proof.</span>
+    Suppose $\varnothing_1$ and $\varnothing_2$ are both empty. For every $x$ we have $x\in\varnothing_1 \Leftrightarrow \bot \Leftrightarrow x\in\varnothing_2$ (both biconditionals are vacuously true). By extensionality, $\varnothing_1 = \varnothing_2$.
+  </div>
+
+  <div class="thm-box">
+    <span class="box-label">Theorem</span>
+    For every set $A$, $\varnothing \subseteq A$.
+  </div>
+  <div class="prf-box">
+    <span class="box-label">Proof.</span>
+    We must show $\forall x\,(x\in\varnothing \Rightarrow x\in A)$. The hypothesis $x\in\varnothing$ is always false, so the implication is <em>vacuously true</em>. Hence $\varnothing \subseteq A$.
+  </div>
+
+  <div class="note-box">
+    Don't confuse $\varnothing$ and $\{\varnothing\}$: $|\varnothing|=0$ but $|\{\varnothing\}|=1$. The set $\{\varnothing\}$ contains one element — the empty set itself.
+  </div>
+  <span class="slide-number">9 / 25</span>
+</section>
+
+<!-- ══ Slide 10 — Power set ════════════════════════════════════ -->
+<section class="slide" id="s10">
+  <h2 class="frame-title">Power Set</h2>
+
+  <div class="def-box">
+    <span class="box-label">Definition</span>
+    The <strong>power set</strong> of $S$, written $\mathcal{P}(S)$ or $2^S$, is the set of <em>all</em> subsets of $S$:
+    $$\mathcal{P}(S) \;=\; \{\, X \mid X \subseteq S \,\}.$$
+  </div>
+
+  <div class="ex-box">
+    <span class="box-label">Example</span>
+    For $S = \{a, b, c\}$:
+    $$\mathcal{P}(S) = \{\,\varnothing,\, \{a\},\, \{b\},\, \{c\},\, \{a,b\},\, \{a,c\},\, \{b,c\},\, \{a,b,c\}\,\}.$$
+    $|\mathcal{P}(S)| = 8 = 2^3$.
+  </div>
+
+  <div class="thm-box">
+    <span class="box-label">Theorem</span>
+    If $|S| = n$ (finite), then $|\mathcal{P}(S)| = 2^n$.
+  </div>
+  <div class="prf-box">
+    <span class="box-label">Proof (induction on $n$).</span>
+    <strong>Base case</strong> $n = 0$: then $S = \varnothing$ and $\mathcal{P}(\varnothing) = \{\varnothing\}$, so $|\mathcal{P}(\varnothing)| = 1 = 2^0$. ✓<br>
+    <strong>Inductive step.</strong> Assume any set of size $n$ has $2^n$ subsets. Let $S$ have size $n+1$. Pick any $a \in S$ and let $S' = S \setminus \{a\}$ with $|S'|=n$. Every subset $X$ of $S$ is of exactly one of two kinds:
+    <ul style="margin:0.2rem 0 0.2rem 1.2rem;">
+      <li>$X \subseteq S'$ (does not contain $a$) — by IH there are $2^n$ of these;</li>
+      <li>$X = Y \cup \{a\}$ with $Y \subseteq S'$ (contains $a$) — again $2^n$.</li>
+    </ul>
+    These two kinds are disjoint and exhaust $\mathcal{P}(S)$, so $|\mathcal{P}(S)| = 2^n + 2^n = 2^{n+1}$. ✓
+  </div>
+
+  <div class="python-block">
+    <span class="pane-label python-label">Python — power set via itertools</span>
+    <span class="pane-code">from itertools import chain, combinations
+
+def powerset(s):
+    s = list(s)
+    return list(chain.from_iterable(
+        combinations(s, r) for r in range(len(s) + 1)))
+
+print(len(powerset({'a','b','c'})))   # 8 = 2**3</span>
+  </div>
+  <span class="slide-number">10 / 25</span>
+</section>
+
+<!-- ══ Slide 11 — Union & intersection (def) ══════════════════ -->
+<section class="slide" id="s11">
+  <h2 class="frame-title">Union and Intersection</h2>
+
+  <div class="def-box">
+    <span class="box-label">Definition</span>
+    <ul style="margin-top:0.3rem;">
+      <li><strong>Union:</strong> $A \cup B = \{\, x \mid x \in A \;\vee\; x \in B \,\}$.</li>
+      <li><strong>Intersection:</strong> $A \cap B = \{\, x \mid x \in A \;\wedge\; x \in B \,\}$.</li>
+      <li>$A$ and $B$ are <strong>disjoint</strong> iff $A \cap B = \varnothing$.</li>
+    </ul>
+  </div>
+
+  <div class="venn-wrap">
+    <svg viewBox="0 0 720 200" xmlns="http://www.w3.org/2000/svg">
+      <!-- Union -->
+      <g>
+        <circle cx="80"  cy="100" r="55" fill="#fbd9b1" stroke="#2c3e50"/>
+        <circle cx="135" cy="100" r="55" fill="#fbd9b1" stroke="#2c3e50"/>
+        <text x="40"  y="105" font-size="13" fill="#2c3e50">A</text>
+        <text x="170" y="105" font-size="13" fill="#2c3e50">B</text>
+        <text x="105" y="175" font-size="13" fill="#7a4a18" text-anchor="middle">A ∪ B</text>
+      </g>
+      <!-- Intersection -->
+      <g transform="translate(260,0)">
+        <defs>
+          <clipPath id="cA2"><circle cx="80" cy="100" r="55"/></clipPath>
+        </defs>
+        <circle cx="80"  cy="100" r="55" fill="none" stroke="#2c3e50"/>
+        <circle cx="135" cy="100" r="55" fill="none" stroke="#2c3e50"/>
+        <g clip-path="url(#cA2)"><circle cx="135" cy="100" r="55" fill="#fbd9b1"/></g>
+        <text x="40"  y="105" font-size="13" fill="#2c3e50">A</text>
+        <text x="170" y="105" font-size="13" fill="#2c3e50">B</text>
+        <text x="108" y="175" font-size="13" fill="#7a4a18" text-anchor="middle">A ∩ B</text>
+      </g>
+      <!-- Disjoint -->
+      <g transform="translate(520,0)">
+        <circle cx="50"  cy="100" r="45" fill="#fbd9b1" stroke="#2c3e50"/>
+        <circle cx="160" cy="100" r="45" fill="#fbd9b1" stroke="#2c3e50"/>
+        <text x="40"  y="105" font-size="13" fill="#2c3e50">A</text>
+        <text x="150" y="105" font-size="13" fill="#2c3e50">B</text>
+        <text x="105" y="175" font-size="13" fill="#7a4a18" text-anchor="middle">A ∩ B = ∅</text>
+      </g>
+    </svg>
+  </div>
+
+  <div class="code-pair">
+    <div class="code-pane python-pane">
+      <span class="pane-label python-label">Python — built-in</span>
+      <span class="pane-code">A = {1, 2, 3, 4, 5}
+B = {4, 5, 6, 7, 8}
+print(A | B)   # union
+print(A &amp; B)   # intersection
+print(A.isdisjoint({9, 10}))  # True</span>
+    </div>
+    <div class="code-pane sympy-pane">
+      <span class="pane-label sympy-label">SymPy</span>
+      <span class="pane-code">from sympy import FiniteSet, Union, Intersection
+A = FiniteSet(1,2,3,4,5)
+B = FiniteSet(4,5,6,7,8)
+print(Union(A,B))
+print(Intersection(A,B))</span>
+    </div>
+  </div>
+  <span class="slide-number">11 / 25</span>
+</section>
+
+<!-- ══ Slide 12 — Difference & symmetric difference ════════════ -->
+<section class="slide" id="s12">
+  <h2 class="frame-title">Difference, Symmetric Difference, Complement</h2>
+
+  <div class="def-box">
+    <span class="box-label">Definitions</span>
+    <ul style="margin-top:0.3rem;">
+      <li><strong>Difference:</strong> $A \setminus B = \{\, x \mid x \in A \,\wedge\, x \notin B \,\}$.</li>
+      <li><strong>Symmetric difference:</strong> $A \triangle B = (A \setminus B) \cup (B \setminus A)$.</li>
+      <li><strong>Complement</strong> (relative to a universe $U$): $\overline{A} = A^c = U \setminus A$.</li>
+    </ul>
+  </div>
+
+  <div class="thm-box">
+    <span class="box-label">Theorem (equivalent form of $\triangle$)</span>
+    $A \triangle B = (A \cup B) \setminus (A \cap B)$.
+  </div>
+  <div class="prf-box">
+    <span class="box-label">Proof.</span>
+    For any $x$:
+    \begin{align*}
+      x \in (A\setminus B)\cup(B\setminus A)
+      &amp;\Leftrightarrow (x\in A\wedge x\notin B)\vee(x\in B\wedge x\notin A)\\
+      &amp;\Leftrightarrow (x\in A\vee x\in B)\wedge \neg(x\in A\wedge x\in B)\\
+      &amp;\Leftrightarrow x\in A\cup B \;\wedge\; x\notin A\cap B\\
+      &amp;\Leftrightarrow x\in (A\cup B)\setminus(A\cap B).
+    \end{align*}
+    Hence the two sets contain exactly the same elements; by extensionality they are equal.
+  </div>
+
+  <div class="python-block">
+    <span class="pane-label python-label">Python — three operators</span>
+    <span class="pane-code">A, B = {1, 2, 3, 4}, {3, 4, 5, 6}
+print(A - B)        # {1, 2}     A \ B
+print(B - A)        # {5, 6}     B \ A
+print(A ^ B)        # {1, 2, 5, 6}   symmetric difference
+print((A | B) - (A &amp; B))  # same {1, 2, 5, 6}</span>
+  </div>
+  <span class="slide-number">12 / 25</span>
+</section>
+
+<!-- ══ Slide 13 — Algebraic laws ═══════════════════════════════ -->
+<section class="slide" id="s13">
+  <h2 class="frame-title">Algebraic Laws of Set Operations</h2>
+
+  <table class="truth-table" style="width:100%;">
+    <thead>
+      <tr><th>Law</th><th>Union form</th><th>Intersection form</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Commutative</td><td>$A\cup B = B\cup A$</td><td>$A\cap B = B\cap A$</td></tr>
+      <tr><td>Associative</td><td>$(A\cup B)\cup C = A\cup(B\cup C)$</td><td>$(A\cap B)\cap C = A\cap(B\cap C)$</td></tr>
+      <tr><td>Distributive</td><td>$A\cup(B\cap C)=(A\cup B)\cap(A\cup C)$</td><td>$A\cap(B\cup C)=(A\cap B)\cup(A\cap C)$</td></tr>
+      <tr><td>Identity</td><td>$A\cup\varnothing = A$</td><td>$A\cap U = A$</td></tr>
+      <tr><td>Domination</td><td>$A\cup U = U$</td><td>$A\cap\varnothing = \varnothing$</td></tr>
+      <tr><td>Idempotent</td><td>$A\cup A = A$</td><td>$A\cap A = A$</td></tr>
+      <tr><td>Absorption</td><td>$A\cup(A\cap B) = A$</td><td>$A\cap(A\cup B) = A$</td></tr>
+      <tr><td>Complement</td><td>$A\cup A^c = U$</td><td>$A\cap A^c = \varnothing$</td></tr>
+      <tr><td>Double complement</td><td colspan="2">$(A^c)^c = A$</td></tr>
+    </tbody>
+  </table>
+
+  <div class="thm-box" style="margin-top:0.8rem;">
+    <span class="box-label">Theorem (distributivity of $\cap$ over $\cup$)</span>
+    $A \cap (B \cup C) = (A \cap B) \cup (A \cap C)$.
+  </div>
+  <div class="prf-box">
+    <span class="box-label">Proof.</span>
+    For any $x$:
+    \begin{align*}
+      x \in A\cap(B\cup C)
+      &amp;\Leftrightarrow x\in A \wedge (x\in B \vee x\in C)\\
+      &amp;\Leftrightarrow (x\in A \wedge x\in B)\vee(x\in A \wedge x\in C) \quad\text{(distrib. of $\wedge$ over $\vee$)}\\
+      &amp;\Leftrightarrow x\in (A\cap B) \vee x\in(A\cap C)\\
+      &amp;\Leftrightarrow x\in (A\cap B)\cup(A\cap C).
+    \end{align*}
+    Conclude by extensionality.
+  </div>
+  <span class="slide-number">13 / 25</span>
+</section>
+
+<!-- ══ Slide 14 — De Morgan's laws ═════════════════════════════ -->
+<section class="slide" id="s14">
+  <h2 class="frame-title">De Morgan's Laws</h2>
+
+  <div class="thm-box">
+    <span class="box-label">Theorem (De Morgan)</span>
+    For any sets $A, B$ in a universe $U$:
+    $$\overline{A\cup B} = \overline{A}\cap\overline{B}, \qquad \overline{A\cap B} = \overline{A}\cup\overline{B}.$$
+  </div>
+
+  <div class="prf-box">
+    <span class="box-label">Proof of the first identity.</span>
+    For any $x \in U$:
+    \begin{align*}
+      x \in \overline{A\cup B}
+      &amp;\Leftrightarrow x\notin A\cup B \\
+      &amp;\Leftrightarrow \neg(x\in A \vee x\in B)\\
+      &amp;\Leftrightarrow \neg(x\in A)\wedge\neg(x\in B) \quad\text{(De Morgan for logic)}\\
+      &amp;\Leftrightarrow x\in\overline{A}\wedge x\in\overline{B}\\
+      &amp;\Leftrightarrow x\in \overline{A}\cap\overline{B}.
+    \end{align*}
+    The second identity follows by replacing $A,B$ with $\overline{A},\overline{B}$ and using double complement.
+  </div>
+
+  <div class="python-block">
+    <span class="pane-label python-label">Python — empirical verification on small universes</span>
+    <span class="pane-code">from itertools import product
+U = set(range(6))
+def complement(X): return U - X
+
+for A in [set(x) for r in range(7) for x in __import__('itertools').combinations(U, r)]:
+    for B in [set(x) for r in range(7) for x in __import__('itertools').combinations(U, r)]:
+        assert complement(A | B) == complement(A) &amp; complement(B)
+        assert complement(A &amp; B) == complement(A) | complement(B)
+print("De Morgan verified for every (A,B) ⊆ U with |U|=6")</span>
+  </div>
+  <span class="slide-number">14 / 25</span>
+</section>
+
+<!-- ══ Slide 15 — Inclusion–Exclusion ══════════════════════════ -->
+<section class="slide" id="s15">
+  <h2 class="frame-title">The Inclusion–Exclusion Principle</h2>
+
+  <div class="thm-box">
+    <span class="box-label">Theorem (two sets)</span>
+    For any finite sets $A, B$:
+    $$|A \cup B| \;=\; |A| + |B| - |A \cap B|.$$
+  </div>
+
+  <div class="prf-box">
+    <span class="box-label">Proof.</span>
+    Partition $A \cup B$ into three pairwise disjoint pieces:
+    $A\setminus B, \quad B\setminus A, \quad A\cap B.$
+    Then
+    $$|A\cup B| = |A\setminus B| + |B\setminus A| + |A\cap B|.$$
+    Also $A = (A\setminus B)\cup(A\cap B)$ disjointly, so $|A| = |A\setminus B| + |A\cap B|$, hence $|A\setminus B| = |A| - |A\cap B|$. Similarly $|B\setminus A| = |B| - |A\cap B|$. Substituting:
+    $$|A\cup B| = (|A|-|A\cap B|) + (|B|-|A\cap B|) + |A\cap B| = |A|+|B|-|A\cap B|.$$
+  </div>
+
+  <div class="thm-box">
+    <span class="box-label">Theorem (three sets)</span>
+    $$|A\cup B\cup C| = |A|+|B|+|C| - |A\cap B| - |A\cap C| - |B\cap C| + |A\cap B\cap C|.$$
+  </div>
+
+  <div class="ex-box">
+    <span class="box-label">Application — class of 100 students</span>
+    60 Math, 50 Physics, 40 CS; 30 (M∩P), 20 (M∩C), 15 (P∩C); 10 (M∩P∩C).<br>
+    $|M\cup P\cup C| = 60+50+40-30-20-15+10 = 95.$<br>
+    Students studying <em>none</em>: $100 - 95 = 5$.
+  </div>
+  <span class="slide-number">15 / 25</span>
+</section>
+
+<!-- ══ Slide 16 — Partitions ═══════════════════════════════════ -->
+<section class="slide" id="s16">
+  <h2 class="frame-title">Partitions</h2>
+
+  <div class="def-box">
+    <span class="box-label">Definition</span>
+    A <strong>partition</strong> of a set $S$ is a collection $\mathcal{P} = \{P_1, P_2, \dots, P_k\}$ of non-empty subsets of $S$ such that:
+    <ol style="margin-top:0.3rem;">
+      <li><strong>Cover:</strong> $P_1 \cup P_2 \cup \cdots \cup P_k = S$;</li>
+      <li><strong>Pairwise disjoint:</strong> $P_i \cap P_j = \varnothing$ whenever $i \neq j$.</li>
+    </ol>
+    The $P_i$ are called the <strong>blocks</strong> of the partition.
+  </div>
+
+  <div class="ex-box">
+    <span class="box-label">Example</span>
+    A partition of $\{1,2,3,4,5,6\}$ into three blocks of size 2: $\{\{1,2\},\{3,4\},\{5,6\}\}$.<br>
+    A partition into evens / odds: $\{\{2,4,6\},\{1,3,5\}\}$.
+  </div>
+
+  <div class="note-box">
+    A <strong>cover</strong> drops the disjointness requirement: the blocks may overlap as long as their union is still $S$.
+  </div>
+
+  <div class="python-block">
+    <span class="pane-label python-label">Python — partition into chunks of size n</span>
+    <span class="pane-code">def partition(seq, n):
+    seq = list(seq)
+    return [seq[i:i+n] for i in range(0, len(seq), n)]
+
+P = partition(range(1, 13), 4)
+print(P)                                    # disjoint blocks
+print(set().union(*map(set, P)) == set(range(1, 13)))  # True (covers)</span>
+  </div>
+  <span class="slide-number">16 / 25</span>
+</section>
+
+<!-- ══ Slide 17 — Cartesian product ════════════════════════════ -->
+<section class="slide" id="s17">
+  <h2 class="frame-title">Cartesian Product</h2>
+
+  <div class="def-box">
+    <span class="box-label">Definition</span>
+    The <strong>Cartesian product</strong> of two sets $A$ and $B$ is the set of <strong>ordered pairs</strong>:
+    $$A \times B = \{\, (a, b) \mid a \in A,\; b \in B \,\}.$$
+    More generally $A_1 \times A_2 \times \cdots \times A_n = \{(a_1, \dots, a_n) \mid a_i \in A_i\}$. We write $A^n$ for $A \times A \times \cdots \times A$ ($n$ times).
+  </div>
+
+  <div class="thm-box">
+    <span class="box-label">Theorem</span>
+    For finite sets, $|A \times B| = |A| \cdot |B|$. More generally $|A^n| = |A|^n$.
+  </div>
+  <div class="prf-box">
+    <span class="box-label">Proof.</span>
+    To build a pair $(a, b)\in A\times B$ we make two independent choices: $a$ from $A$ ($|A|$ options) and $b$ from $B$ ($|B|$ options). By the multiplication principle the total number of pairs is $|A|\cdot|B|$. The general statement $|A^n|=|A|^n$ follows by induction on $n$.
+  </div>
+
+  <div class="thm-box">
+    <span class="box-label">Theorem</span>
+    $A \times \varnothing = \varnothing \times A = \varnothing$ for every set $A$.
+  </div>
+  <div class="prf-box">
+    <span class="box-label">Proof.</span>
+    A pair $(a,b) \in A\times\varnothing$ would require $b\in\varnothing$, which is impossible. Hence $A\times\varnothing$ has no elements; by uniqueness of the empty set it equals $\varnothing$. Symmetric for $\varnothing\times A$.
+  </div>
+
+  <div class="code-pair">
+    <div class="code-pane python-pane">
+      <span class="pane-label python-label">Python — itertools.product</span>
+      <span class="pane-code">from itertools import product
+A, B = {1, 3, 5}, {'x', 'y'}
+P = list(product(A, B))
+print(P, len(P))    # 3 * 2 = 6 pairs</span>
+    </div>
+    <div class="code-pane sympy-pane">
+      <span class="pane-label sympy-label">SymPy — ProductSet</span>
+      <span class="pane-code">from sympy import FiniteSet, ProductSet
+A = FiniteSet(1, 3, 5)
+B = FiniteSet('x', 'y')
+print(list(ProductSet(A, B)))</span>
+    </div>
+  </div>
+  <span class="slide-number">17 / 25</span>
+</section>
+
+<!-- ══ Slide 18 — Countable sets ═══════════════════════════════ -->
+<section class="slide" id="s18">
+  <h2 class="frame-title">Countable Sets</h2>
+
+  <div class="def-box">
+    <span class="box-label">Definition</span>
+    A set $S$ is <strong>countable</strong> if it is finite, or there exists a bijection $f : \mathbb{N} \to S$. Otherwise $S$ is <strong>uncountable</strong>.
+  </div>
+
+  <div class="thm-box">
+    <span class="box-label">Theorem</span>
+    $\mathbb{Z}$ is countable.
+  </div>
+  <div class="prf-box">
+    <span class="box-label">Proof.</span>
+    Define $f : \mathbb{N} \to \mathbb{Z}$ by
+    $$f(n)=\begin{cases} n/2, &amp; n \text{ even},\\ -(n+1)/2, &amp; n \text{ odd}.\end{cases}$$
+    Then $f(0)=0$, $f(1)=-1$, $f(2)=1$, $f(3)=-2$, $f(4)=2$, …
+    The function $f$ is injective (different $n$ give different signs/sizes) and surjective (every integer is reached). Hence $f$ is a bijection and $\mathbb{Z}$ is countable.
+  </div>
+
+  <div class="thm-box">
+    <span class="box-label">Theorem (without proof)</span>
+    $\mathbb{Q}$ is countable. ($\mathbb{N}\times\mathbb{N}$ can be enumerated by diagonals, and each rational $p/q$ corresponds to a pair $(p,q)$.)
+  </div>
+
+  <div class="python-block">
+    <span class="pane-label python-label">Python — bijection N → Z</span>
+    <span class="pane-code">def f(n):  # N -> Z
+    return n // 2 if n % 2 == 0 else -(n + 1) // 2
+
+def f_inv(z):  # Z -> N
+    return 2*z if z &gt;= 0 else -2*z - 1
+
+print([f(n) for n in range(10)])
+print([f_inv(z) for z in [0, -1, 1, -2, 2, -3, 3]])
+print(all(f_inv(f(n)) == n for n in range(100)))   # True</span>
+  </div>
+  <span class="slide-number">18 / 25</span>
+</section>
+
+<!-- ══ Slide 19 — Uncountable / Cantor ═════════════════════════ -->
+<section class="slide" id="s19">
+  <h2 class="frame-title">Uncountable Sets — Cantor's Diagonal Argument</h2>
+
+  <div class="thm-box">
+    <span class="box-label">Theorem (Cantor, 1891)</span>
+    The set $\mathbb{R}$ (and even the interval $(0,1)$) is uncountable.
+  </div>
+  <div class="prf-box">
+    <span class="box-label">Proof (sketch, by contradiction).</span>
+    Suppose $(0,1)$ were countable. Then we could list <em>all</em> of its elements in a sequence $r_1, r_2, r_3, \dots$ Write each in decimal form:
+    $$r_1 = 0.d_{11}d_{12}d_{13}\dots,\;\; r_2 = 0.d_{21}d_{22}d_{23}\dots,\;\; r_3 = 0.d_{31}d_{32}d_{33}\dots$$
+    Construct a new real $x = 0.x_1 x_2 x_3\dots$ where
+    $$x_k = \begin{cases} 5, &amp; d_{kk} \neq 5,\\ 6, &amp; d_{kk} = 5.\end{cases}$$
+    Then $x \in (0,1)$ but $x$ differs from every $r_k$ in the $k$-th decimal digit. So $x$ is not in our list — contradicting the assumption that every real in $(0,1)$ was listed. Hence $(0,1)$ is uncountable, and so is $\mathbb{R} \supseteq (0,1)$.
+  </div>
+
+  <div class="thm-box">
+    <span class="box-label">Corollary</span>
+    There are <strong>more reals than integers</strong>: $|\mathbb{N}| &lt; |\mathbb{R}|$. There is a strict hierarchy of infinite cardinalities (Cantor's theorem $|S| &lt; |\mathcal{P}(S)|$ for every $S$).
+  </div>
+  <span class="slide-number">19 / 25</span>
+</section>
+
+<!-- ══ Slide 20 — Russell's paradox ════════════════════════════ -->
+<section class="slide" id="s20">
+  <h2 class="frame-title">A Warning — Russell's Paradox</h2>
+
+  <p>Cantor's "naive" definition says we can form any set of the form $\{x \mid P(x)\}$ for any property $P$. Russell (1901) showed this is too permissive.</p>
+
+  <div class="thm-box">
+    <span class="box-label">Theorem (Russell, 1901)</span>
+    Let $R = \{\, x \mid x \notin x \,\}$ — the "set of all sets that do not contain themselves". Then both $R \in R$ and $R \notin R$ lead to a contradiction.
+  </div>
+
+  <div class="prf-box">
+    <span class="box-label">Proof.</span>
+    Suppose $R \in R$. By definition of $R$, that means $R \notin R$ — contradiction.<br>
+    Suppose instead $R \notin R$. Then $R$ satisfies the property defining $R$, so $R \in R$ — contradiction.<br>
+    Either way we derive a contradiction, so $R$ cannot exist as a set.
+  </div>
+
+  <div class="note-box">
+    The resolution is <strong>axiomatic set theory</strong> (Zermelo–Fraenkel with the Axiom of Choice, <em>ZFC</em>): we cannot freely form $\{x\mid P(x)\}$. Instead the Axiom of Separation only allows $\{x \in A \mid P(x)\}$ <em>inside</em> an already-existing set $A$. For everyday discrete math this distinction never bites — but it is good to know the foundation.
+  </div>
+  <span class="slide-number">20 / 25</span>
+</section>
+
+<!-- ══ Slide 21 — Functions as sets (bridge) ═══════════════════ -->
+<section class="slide" id="s21">
+  <h2 class="frame-title">Functions Are Sets Too</h2>
+
+  <div class="def-box">
+    <span class="box-label">Definition</span>
+    A <strong>function</strong> $f : A \to B$ is a subset $f \subseteq A \times B$ such that for every $a \in A$ there exists exactly one $b \in B$ with $(a,b) \in f$. We then write $f(a) = b$.
+  </div>
+
+  <p>Functions are <em>special</em> binary relations (themselves subsets of $A \times B$). Different flavours:</p>
+  <ul>
+    <li><strong>Injective</strong> ("one-to-one"): $f(a_1)=f(a_2) \Rightarrow a_1=a_2$.</li>
+    <li><strong>Surjective</strong> ("onto"): $\forall b\in B,\; \exists a\in A,\; f(a)=b$.</li>
+    <li><strong>Bijective</strong>: both injective and surjective — used in the previous slide to count infinities.</li>
+  </ul>
+
+  <div class="ex-box">
+    <span class="box-label">Example</span>
+    $f : \mathbb{Z} \to \mathbb{Z},\; f(n) = 2n$ is injective (different $n$ give different $2n$) but not surjective (no odd number is reached).
+  </div>
+
+  <div class="note-box">
+    This is why sets are <em>foundational</em>: once we have sets we get pairs, then relations, then functions, then sequences, then everything else. The next lesson "<em>Operations on Sets</em>" builds on this directly.
+  </div>
+  <span class="slide-number">21 / 25</span>
+</section>
+
+<!-- ══ Slide 22 — Intervals & SymPy ════════════════════════════ -->
+<section class="slide" id="s22">
+  <h2 class="frame-title">Intervals — Infinite Sets in SymPy</h2>
+
+  <div class="def-box">
+    <span class="box-label">Definition</span>
+    Let $a, b \in \mathbb{R}$ with $a \le b$. The <strong>intervals</strong> are:
+    <ul style="margin-top:0.3rem;">
+      <li>Closed: $[a, b] = \{x \in \mathbb{R} \mid a \le x \le b\}$</li>
+      <li>Open: $(a, b) = \{x \in \mathbb{R} \mid a &lt; x &lt; b\}$</li>
+      <li>Half-open: $[a, b) = \{x \mid a \le x &lt; b\}$, $(a, b] = \{x \mid a &lt; x \le b\}$</li>
+      <li>Unbounded: $[a, +\infty), (-\infty, b], (-\infty, +\infty)$.</li>
+    </ul>
+  </div>
+
+  <div class="sympy-block">
+    <span class="pane-label sympy-label">SymPy — intervals</span>
+    <span class="pane-code">from sympy import Interval, Union, Intersection, Complement, oo
+
+I1 = Interval(0, 5)              # [0, 5]
+I2 = Interval.Lopen(3, 8)        # (3, 8]
+I3 = Interval.Ropen(10, 12)      # [10, 12)
+
+print(Union(I1, I2))             # [0, 8]
+print(Intersection(I1, I2))      # (3, 5]
+print(Complement(Union(I1, I2, I3), Interval(4, 11)))
+# → Union([0, 4), (11, 12))</span>
+  </div>
+
+  <div class="ex-box">
+    <span class="box-label">Exercise (to do yourself)</span>
+    Compute $[0,5] \cap (3,8]$ on paper, then check with SymPy. Hint: the result is $(3, 5]$.
+  </div>
+  <span class="slide-number">22 / 25</span>
+</section>
+
+<!-- ══ Slide 23 — Practical view ═══════════════════════════════ -->
+<section class="slide" id="s23">
+  <h2 class="frame-title">Sets in Practice — Datasets &amp; Dictionaries</h2>
+
+  <p>Beyond pure mathematics, sets show up in software as <em>collections</em>:</p>
+  <ul>
+    <li><strong>Lists / tuples</strong> — ordered, allow duplicates: $[1,1,3]$.</li>
+    <li><strong>Sets</strong> — unordered, distinct: $\{1,3\}$.</li>
+    <li><strong>Dictionaries (associations)</strong> — maps keys to values: $\{a\mapsto x,\ b\mapsto y\}$.</li>
+    <li><strong>Datasets</strong> — lists of dictionaries, or tables (rows of attribute → value).</li>
+  </ul>
+
+  <div class="code-pair">
+    <div class="code-pane python-pane">
+      <span class="pane-label python-label">Python — dictionary</span>
+      <span class="pane-code">d = {"a": "x", "b": "y", "c": "z"}
+print(d["a"])               # 'x'
+print(set(d.keys()))        # {'a','b','c'}</span>
+    </div>
+    <div class="code-pane python-pane">
+      <span class="pane-label python-label">Python — dataset (list of dicts)</span>
+      <span class="pane-code">titanic = [
+  {"class":"1st","age":29,"survived":True},
+  {"class":"3rd","age":27,"survived":False},
+]
+print([r for r in titanic if r["survived"]])</span>
+    </div>
+  </div>
+
+  <div class="note-box">
+    The same conceptual machinery — membership ($\in$), union, intersection, projection ($\pi$) — powers SQL, pandas DataFrames, and the relational model of databases.
+  </div>
+  <span class="slide-number">23 / 25</span>
+</section>
+
+<!-- ══ Slide 24 — Summary ══════════════════════════════════════ -->
+<section class="slide" id="s24">
+  <h2 class="frame-title">Summary — What You Now Know</h2>
+
+  <ul style="line-height:2;">
+    <li>A set is a collection of distinct elements — order and multiplicity are irrelevant (extensionality).</li>
+    <li>The empty set $\varnothing$ is unique and is a subset of every set.</li>
+    <li>The power set $\mathcal{P}(S)$ contains $2^{|S|}$ subsets — proved by induction.</li>
+    <li>Set operations $\cup, \cap, \setminus, \triangle, {}^c$ obey a clean algebra: commutative, associative, distributive, De Morgan.</li>
+    <li>Inclusion–exclusion gives $|A\cup B|=|A|+|B|-|A\cap B|$ — basis of counting arguments.</li>
+    <li>Cartesian products grow multiplicatively: $|A\times B|=|A|\cdot|B|$.</li>
+    <li>Countable infinities (like $\mathbb{Z},\mathbb{Q}$) match $\mathbb{N}$ via a bijection; $\mathbb{R}$ is strictly bigger (Cantor).</li>
+    <li>Naive set comprehension leads to Russell's paradox — axiomatic set theory (ZFC) is the fix.</li>
+    <li>In Python: built-in <code>set</code>, <code>frozenset</code>, <code>dict</code>, and SymPy's <code>FiniteSet</code> / <code>Interval</code> / <code>ProductSet</code>.</li>
+  </ul>
+
+  <div class="setup-block" style="margin-top:0.8rem;">
+    <span class="setup-label">Recap — key imports</span>
+    <span class="pane-code">from itertools import chain, combinations, product
+from fractions import Fraction
+from sympy import (FiniteSet, EmptySet, Integers, Naturals0,
+                   Rationals, Reals, Complexes,
+                   Interval, Union, Intersection, Complement, ProductSet, S)</span>
+  </div>
+  <span class="slide-number">24 / 25</span>
+</section>
+
+<!-- ══ Slide 25 — Going further ════════════════════════════════ -->
+<section class="slide" id="s25">
+  <h2 class="frame-title">Going Further</h2>
+
+  <h3 class="sub-title">Practice</h3>
+  <ul>
+    <li>Re-do the 12 exercises in <a href="exercises_sets_enonces.html" style="color:var(--orange);font-weight:600;text-decoration:none;">exercises_sets_enonces.html</a> with this theory in mind — then check against <a href="exercises_sets.html" style="color:var(--orange);font-weight:600;text-decoration:none;">exercises_sets.html</a>.</li>
+    <li>Prove De Morgan's second law $\overline{A\cap B} = \overline{A}\cup\overline{B}$ by the double-inclusion method.</li>
+    <li>Prove by induction that for any finite sets $A_1,\dots,A_n$, $|A_1 \times \cdots \times A_n| = \prod |A_i|$.</li>
+  </ul>
+
+  <h3 class="sub-title">Next lesson</h3>
+  <p>Once sets are mastered, the next lesson develops the <strong>computations</strong> on them — relations, equivalence classes, partitions induced by relations, functions, sequences and series.</p>
+
+  <div class="note-box">
+    A note on rigor: every "obvious" identity on sets corresponds to a tautology in propositional logic via the dictionary
+    $\cup \leftrightarrow \vee,\; \cap \leftrightarrow \wedge,\; {}^c \leftrightarrow \neg$.
+    If you can prove a logical tautology on a truth table, you can prove the corresponding set identity by element-chasing — that is the unifying idea of this lesson.
+  </div>
+
+  <p style="text-align:center;margin-top:1rem;font-size:1rem;color:#e67e22;font-style:italic;font-weight:600;letter-spacing:.02em;">Notes By Pr. El Hadiq Zouhair</p>
+  <span class="slide-number">25 / 25</span>
+</section>
+
+<!-- ── Navigation ──────────────────────────────────────────────── -->
+<div id="nav">
+  <button id="btn-prev" title="Previous">&#8592;</button>
+  <button id="btn-scroll" title="Toggle slideshow">Slideshow</button>
+  <button id="btn-next"  title="Next">&#8594;</button>
+</div>
+
+<script>
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  let current = 0, slideshowMode = false;
+
+  function enter(i) {
+    slides[current].classList.remove('active');
+    current = (i + slides.length) % slides.length;
+    slides[current].classList.add('active');
+    slides[current].scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  document.getElementById('btn-prev').addEventListener('click', () => {
+    if (slideshowMode) enter(current - 1);
+  });
+  document.getElementById('btn-next').addEventListener('click', () => {
+    if (slideshowMode) enter(current + 1);
+  });
+  document.getElementById('btn-scroll').addEventListener('click', () => {
+    slideshowMode = !slideshowMode;
+    document.body.classList.toggle('slideshow', slideshowMode);
+    document.getElementById('btn-scroll').textContent = slideshowMode ? 'Scroll' : 'Slideshow';
+    if (slideshowMode) slides[current].classList.add('active');
+    else slides.forEach(s => s.classList.remove('active'));
+  });
+
+  document.addEventListener('keydown', e => {
+    if (!slideshowMode) return;
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') enter(current + 1);
+    if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   enter(current - 1);
+  });
+</script>
+</body>
+</html>

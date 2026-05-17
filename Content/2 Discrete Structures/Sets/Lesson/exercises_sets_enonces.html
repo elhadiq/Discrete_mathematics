@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sets — Exercises (énoncés)</title>
+<script>
+  MathJax = {
+    tex: { inlineMath: [['$','$']], displayMath: [['$$','$$']] },
+    options: { skipHtmlTags: ['script','noscript','style','textarea'] }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --orange:    #e67e22;
+  --darkblue:  #2c3e50;
+  --lightbg:   #f4f9fc;
+  --border:    #dce3ea;
+}
+
+body {
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  background: #e8edf2;
+  color: var(--darkblue);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem 1rem 5rem;
+  gap: 1.5rem;
+}
+
+.slide {
+  background: #fff;
+  width: 100%;
+  max-width: 940px;
+  border-radius: 10px;
+  box-shadow: 0 4px 18px rgba(0,0,0,.10);
+  padding: 2rem 2.4rem 1.6rem;
+  position: relative;
+}
+
+.slide.title-slide {
+  background: linear-gradient(145deg, #f4f9fc 60%, #e0eef7);
+  text-align: center;
+  border-top: 6px solid var(--orange);
+  padding: 2.5rem 2rem;
+}
+.slide.title-slide h1 { font-size: 1.9rem; color: var(--darkblue); margin-bottom: 0.4rem; }
+.slide.title-slide .subtitle { font-size: 1.15rem; color: #555; }
+
+h2.frame-title {
+  font-size: 1.45rem;
+  color: var(--orange);
+  font-weight: 700;
+  margin-bottom: 0.4rem;
+  padding-bottom: 0.3rem;
+  border-bottom: 2px solid #f9e4cc;
+}
+.ex-number {
+  display: inline-block;
+  background: var(--orange);
+  color: #fff;
+  font-weight: 700;
+  padding: 0.15em 0.6em;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  margin-right: 0.5rem;
+}
+.difficulty {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  padding: 0.1em 0.5em;
+  border-radius: 3px;
+  margin-left: 0.4rem;
+  vertical-align: middle;
+  text-transform: uppercase;
+}
+.easy   { background: #d4f4dd; color: #1e7a3b; }
+.medium { background: #fce4b6; color: #8a5400; }
+.hard   { background: #f8c8c8; color: #952020; }
+
+p { line-height: 1.7; margin: 0.4rem 0; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.4rem; line-height: 1.85; }
+ul li::marker, ol li::marker { color: var(--orange); }
+
+.statement { margin: 0.3rem 0 0.6rem; }
+
+.toc {
+  background: var(--lightbg);
+  border-left: 4px solid var(--orange);
+  padding: 0.8rem 1rem;
+  border-radius: 4px;
+}
+.toc a { color: var(--darkblue); text-decoration: none; }
+.toc a:hover { color: var(--orange); }
+
+.answer-space {
+  border: 1.5px dashed #c9d4dd;
+  border-radius: 6px;
+  min-height: 70px;
+  margin: 0.6rem 0;
+  background: #fafcfe;
+  padding: 0.6rem 0.8rem;
+  color: #aab;
+  font-style: italic;
+  font-size: 0.85rem;
+}
+</style>
+</head>
+<body>
+
+<!-- ══ Title ════════════════════════════════════════════════════════ -->
+<section class="slide title-slide">
+  <h1>Discrete Mathematics — Sets</h1>
+  <p class="subtitle">Exercises (énoncés)</p>
+  <p style="font-size:1rem;color:#e67e22;margin-top:0.8rem;font-style:italic;font-weight:600;letter-spacing:.02em;">By Pr. El Hadiq Zouhair</p>
+</section>
+
+<!-- ══ TOC ══════════════════════════════════════════════════════════ -->
+<section class="slide">
+  <h2 class="frame-title">Contents</h2>
+  <div class="toc">
+    <ol>
+      <li><a href="#ex1">Definition, cardinality, deduplication</a> <span class="difficulty easy">easy</span></li>
+      <li><a href="#ex2">Built-in <code>set</code> operations (∪, ∩, −)</a> <span class="difficulty easy">easy</span></li>
+      <li><a href="#ex3">Membership in $\mathbb{Z}$, $\mathbb{N}$, $\mathbb{Q}$</a> <span class="difficulty easy">easy</span></li>
+      <li><a href="#ex4">Subset / proper subset / superset</a> <span class="difficulty medium">medium</span></li>
+      <li><a href="#ex5">Power set</a> <span class="difficulty medium">medium</span></li>
+      <li><a href="#ex6">Partition into chunks</a> <span class="difficulty medium">medium</span></li>
+      <li><a href="#ex7">Cartesian product</a> <span class="difficulty medium">medium</span></li>
+      <li><a href="#ex8">Symmetric difference</a> <span class="difficulty medium">medium</span></li>
+      <li><a href="#ex9">Venn — inclusion–exclusion</a> <span class="difficulty hard">hard</span></li>
+      <li><a href="#ex10">SymPy intervals &amp; unions</a> <span class="difficulty medium">medium</span></li>
+      <li><a href="#ex11">Countability of $\mathbb{Z}$</a> <span class="difficulty hard">hard</span></li>
+      <li><a href="#ex12">Empty set traps</a> <span class="difficulty hard">hard</span></li>
+    </ol>
+  </div>
+</section>
+
+<!-- ══ Exercise 1 ═══════════════════════════════════════════════════ -->
+<section class="slide" id="ex1">
+  <h2 class="frame-title"><span class="ex-number">1</span>Definition, cardinality &amp; deduplication <span class="difficulty easy">easy</span></h2>
+  <p class="statement">Given the list <code>L = [3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5]</code>:</p>
+  <ol>
+    <li>Convert it to a <strong>set</strong> $S$.</li>
+    <li>Compute the cardinality $|S|$.</li>
+    <li>Return the elements in <strong>sorted</strong> order.</li>
+  </ol>
+ 
+</section>
+
+<!-- ══ Exercise 2 ═══════════════════════════════════════════════════ -->
+<section class="slide" id="ex2">
+  <h2 class="frame-title"><span class="ex-number">2</span>Union, intersection, difference <span class="difficulty easy">easy</span></h2>
+  <p class="statement">Let $A = \{1, 2, 3, 4, 5\}$ and $B = \{4, 5, 6, 7, 8\}$. Compute, using Python built-ins:</p>
+  <ul>
+    <li>$A \cup B$, $A \cap B$, $A \setminus B$, $B \setminus A$.</li>
+    <li>Verify that $|A \cup B| = |A| + |B| - |A \cap B|$.</li>
+  </ul>
+ 
+</section>
+
+<!-- ══ Exercise 3 ═══════════════════════════════════════════════════ -->
+<section class="slide" id="ex3">
+  <h2 class="frame-title"><span class="ex-number">3</span>Membership in $\mathbb{Z}$, $\mathbb{N}$, $\mathbb{Q}$ <span class="difficulty easy">easy</span></h2>
+  <p class="statement">For each value, decide whether it belongs to $\mathbb{Z}$, $\mathbb{N}$, $\mathbb{Q}$, or none (use SymPy):</p>
+  <p><code>-3</code>, &nbsp; <code>0</code>, &nbsp; <code>Fraction(7, 2)</code>, &nbsp; <code>sqrt(2)</code>, &nbsp; <code>pi</code>.</p>
+ 
+</section>
+
+<!-- ══ Exercise 4 ═══════════════════════════════════════════════════ -->
+<section class="slide" id="ex4">
+  <h2 class="frame-title"><span class="ex-number">4</span>Subset / proper subset / superset <span class="difficulty medium">medium</span></h2>
+  <p class="statement">Let $A = \{2, 4\}$, $B = \{2, 4, 6\}$, $C = \{2, 4\}$. Decide:</p>
+  <ol>
+    <li>Is $A \subseteq B$? Is $A \subset B$ (proper)?</li>
+    <li>Is $A \subseteq C$? Is $A \subset C$?</li>
+    <li>Is $B \supseteq A$?</li>
+  </ol>
+ 
+</section>
+
+<!-- ══ Exercise 5 ═══════════════════════════════════════════════════ -->
+<section class="slide" id="ex5">
+  <h2 class="frame-title"><span class="ex-number">5</span>Power set <span class="difficulty medium">medium</span></h2>
+  <p class="statement">Write a function <code>powerset(s)</code> that returns the list of all subsets of $s$.
+  Test on $S = \{a, b, c\}$ and confirm $|\mathcal{P}(S)| = 2^{|S|}$.</p>
+ 
+</section>
+
+<!-- ══ Exercise 6 ═══════════════════════════════════════════════════ -->
+<section class="slide" id="ex6">
+  <h2 class="frame-title"><span class="ex-number">6</span>Partition <span class="difficulty medium">medium</span></h2>
+  <p class="statement">Partition <code>range(1, 13)</code> into groups of 4 (disjoint). Then build a <em>cover</em> of size 4 with step 2 (overlapping). Verify:</p>
+  <ul>
+    <li>Disjoint partition → union equals the original set, intersection of any two parts is $\varnothing$.</li>
+    <li>Cover → union still equals the set, but parts overlap.</li>
+  </ul>
+ 
+</section>
+
+<!-- ══ Exercise 7 ═══════════════════════════════════════════════════ -->
+<section class="slide" id="ex7">
+  <h2 class="frame-title"><span class="ex-number">7</span>Cartesian product <span class="difficulty medium">medium</span></h2>
+  <p class="statement">Let $A = \{1, 3, 5\}$ and $B = \{x, y\}$.</p>
+  <ol>
+    <li>Compute $A \times B$.</li>
+    <li>Confirm $|A \times B| = |A| \cdot |B|$.</li>
+    <li>Compute $A \times A \times A$ (i.e. <code>product(A, repeat=3)</code>) and check $|A^3| = |A|^3$.</li>
+  </ol>
+ 
+</section>
+
+<!-- ══ Exercise 8 ═══════════════════════════════════════════════════ -->
+<section class="slide" id="ex8">
+  <h2 class="frame-title"><span class="ex-number">8</span>Symmetric difference <span class="difficulty medium">medium</span></h2>
+  <p class="statement">The symmetric difference is $A \,\triangle\, B = (A \setminus B) \cup (B \setminus A)$. With
+  $A = \{1,2,3,4\}$, $B = \{3,4,5,6\}$:</p>
+  <ol>
+    <li>Compute $A \,\triangle\, B$ two ways: by the formula and via the <code>^</code> operator.</li>
+    <li>Verify $A \,\triangle\, B = (A \cup B) \setminus (A \cap B)$.</li>
+  </ol>
+ 
+</section>
+
+<!-- ══ Exercise 9 ═══════════════════════════════════════════════════ -->
+<section class="slide" id="ex9">
+  <h2 class="frame-title"><span class="ex-number">9</span>Inclusion–Exclusion (3 sets) <span class="difficulty hard">hard</span></h2>
+  <p class="statement">In a class of 100 students:</p>
+  <ul>
+    <li>60 study Math, 50 study Physics, 40 study CS.</li>
+    <li>30 study Math &amp; Physics, 20 study Math &amp; CS, 15 study Physics &amp; CS.</li>
+    <li>10 study all three.</li>
+  </ul>
+  <p>Compute the number who study at least one subject, and the number who study <em>none</em>.</p>
+  <p>$$|M \cup P \cup C| = |M|+|P|+|C| - |M\cap P| - |M\cap C| - |P\cap C| + |M\cap P\cap C|$$</p>
+ 
+</section>
+
+<!-- ══ Exercise 10 ══════════════════════════════════════════════════ -->
+<section class="slide" id="ex10">
+  <h2 class="frame-title"><span class="ex-number">10</span>Intervals &amp; unions in SymPy <span class="difficulty medium">medium</span></h2>
+  <p class="statement">Using <code>sympy.Interval</code>:</p>
+  <ol>
+    <li>Build $I_1 = [0, 5]$, $I_2 = (3, 8]$, $I_3 = [10, 12)$.</li>
+    <li>Compute $I_1 \cup I_2$ and $I_1 \cap I_2$.</li>
+    <li>Compute $(I_1 \cup I_2 \cup I_3) \setminus [4, 11]$.</li>
+  </ol>
+ 
+</section>
+
+<!-- ══ Exercise 11 ══════════════════════════════════════════════════ -->
+<section class="slide" id="ex11">
+  <h2 class="frame-title"><span class="ex-number">11</span>Countability of $\mathbb{Z}$ <span class="difficulty hard">hard</span></h2>
+  <p class="statement">Write a bijection $f : \mathbb{N} \to \mathbb{Z}$ as a Python function. Print $f(0), f(1), \dots, f(9)$.
+  Then check that the inverse $f^{-1}$ also maps each integer back to its original index.</p>
+ 
+</section>
+
+<!-- ══ Exercise 12 ══════════════════════════════════════════════════ -->
+<section class="slide" id="ex12">
+  <h2 class="frame-title"><span class="ex-number">12</span>Empty set traps <span class="difficulty hard">hard</span></h2>
+  <p class="statement">For each item, predict the answer <em>before</em> running it:</p>
+  <ol>
+    <li>$|\varnothing|$ and $|\{\varnothing\}|$ and $|\{\varnothing, \{\varnothing\}\}|$.</li>
+    <li>$\mathcal{P}(\varnothing)$ and $\mathcal{P}(\mathcal{P}(\varnothing))$.</li>
+    <li>$\varnothing \times \{2, 4, 6, 8\}$.</li>
+    <li>Is $\varnothing \subseteq A$ for every set $A$?</li>
+  </ol>
+ 
+</section>
+
+<!-- ══ Wrap-up ══════════════════════════════════════════════════════ -->
+<section class="slide">
+  <h2 class="frame-title">Going further</h2>
+  <ul>
+    <li>Re-do exercises 2, 5, 7 with <code>sympy.FiniteSet</code> instead of <code>set</code>.</li>
+    <li>Implement a generator that lists subsets of $\mathbb{N}$ of cardinality $k$ in lexicographic order.</li>
+    <li>Visualize Venn diagrams from exercise 9 with <code>matplotlib_venn.venn3</code>.</li>
+    <li>Prove (in code, by exhaustive check) De Morgan's laws on small sets: $(A \cup B)^c = A^c \cap B^c$.</li>
+  </ul>
+  <p style="margin-top:0.8rem;font-style:italic;color:#666;">Open the <a href="sets.html" style="color:var(--orange);font-weight:600;text-decoration:none;">main lesson</a> for the matching theory.</p>
+</section>
+
+</body>
+</html>
