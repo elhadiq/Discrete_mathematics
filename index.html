@@ -224,6 +224,16 @@ body {
 }
 .lesson-card .l-links a.lecture { background: #fdf3e7; border-color: #f9e4cc; color: var(--orange); }
 .lesson-card .l-links a.lecture:hover { background: var(--orange); color: #fff; }
+.lesson-card .l-links a.optional {
+  background: #eaf3fb;
+  border: 1px dashed #2a6fb3;
+  color: #1f4e7a;
+}
+.lesson-card .l-links a.optional:hover {
+  background: #2a6fb3;
+  color: #fff;
+  border-style: solid;
+}
 
 /* ── Footer ───────────────────────────────────────────────────────── */
 .footer {
@@ -396,6 +406,7 @@ body {
         <div class="l-links">
           <a class="lecture" href="Content/logic/Lesson5/lesson5_inference.html">📖 Lecture</a>
           <a href="Content/logic/Lesson5/exercises_lesson5.html">✏️ Exercises</a>
+          <a class="optional" href="Content/logic/Lesson5/exercises_lesson5_simulation.html" title="Optional — implement each inference rule as a Python function">🧪 Simulation (optional)</a>
         </div>
       </div>
 
