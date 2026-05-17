@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Lesson 5 — Simulating Rules of Inference</title>
+<script>
+MathJax = {
+  tex: { inlineMath: [['$','$']], processEscapes: true },
+  svg: { fontCache: 'global' }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background: #e8edf2;
+  color: #1a1a2e;
+  padding: 40px 20px 60px;
+}
+.page-header {
+  max-width: 880px;
+  margin: 0 auto 36px;
+  border-top: 5px solid #e67e22;
+  background: linear-gradient(135deg, #1a1a2e 0%, #2c3e6b 100%);
+  color: #fff;
+  border-radius: 10px;
+  padding: 32px 36px;
+}
+.page-header h1 { font-size: 1.8rem; margin-bottom: 6px; color: #f0a500; }
+.page-header p  { font-size: 1rem; opacity: .85; }
+.page-header .crumb {
+  font-size: .82rem; color: #f9e4cc; letter-spacing: .04em;
+  margin-bottom: 10px;
+}
+.exercise {
+  max-width: 880px;
+  margin: 0 auto 22px;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 3px 12px rgba(0,0,0,.10);
+  overflow: hidden;
+}
+.ex-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 24px;
+  background: #fdf3e7;
+  border-bottom: 2px solid #f9e4cc;
+}
+.ex-number {
+  background: #e67e22;
+  color: #fff;
+  font-weight: 700;
+  font-size: .85rem;
+  padding: 4px 10px;
+  border-radius: 20px;
+  white-space: nowrap;
+}
+.ex-title { font-size: 1.05rem; font-weight: 700; color: #e67e22; }
+.ex-body  { padding: 20px 24px; }
+.ex-body p  { margin-bottom: 10px; line-height: 1.65; }
+.ex-body ul, .ex-body ol { margin: 8px 0 10px 22px; line-height: 1.75; }
+.ex-body li { margin-bottom: 4px; }
+
+.tag {
+  display: inline-block;
+  font-size: .78rem;
+  background: #eaf4ea;
+  color: #27ae60;
+  border: 1px solid #b2dfb2;
+  border-radius: 12px;
+  padding: 2px 9px;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+.tag-z3 {
+  display: inline-block;
+  font-size: .78rem;
+  background: #e8eaff;
+  color: #6060cc;
+  border: 1px solid #c0c4f0;
+  border-radius: 12px;
+  padding: 2px 9px;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+
+/* Gentzen fraction cards */
+.rule-row {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin: 14px 0;
+}
+.rule-card {
+  background: #f4f9fc;
+  border: 1px solid #dce3ea;
+  border-left: 4px solid #e67e22;
+  border-radius: 6px;
+  padding: 14px 12px 10px;
+  text-align: center;
+  min-width: 220px;
+}
+.rule-card .rule-name {
+  display: block;
+  font-size: .72rem;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: #e67e22;
+  font-weight: 700;
+  margin-top: 8px;
+}
+
+/* Code stubs */
+.codebox {
+  font-family: 'Consolas','Fira Code',monospace;
+  font-size: .83rem;
+  background: #eaf3fb;
+  color: #1f4e7a;
+  border: 1px solid #2a6fb3;
+  border-radius: 6px;
+  padding: 10px 14px;
+  white-space: pre;
+  overflow-x: auto;
+  line-height: 1.55;
+  margin: 10px 0;
+}
+.codebox .lbl {
+  display: block;
+  background: #2a6fb3;
+  color: #fff;
+  margin: -10px -14px 8px;
+  padding: 3px 10px;
+  font-size: .65rem;
+  font-weight: 800;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+.hint {
+  margin-top: 14px;
+  padding: 10px 14px;
+  background: #f0f4ff;
+  border-left: 4px solid #6060cc;
+  border-radius: 0 6px 6px 0;
+  font-size: .92rem;
+  color: #444;
+}
+.hint strong { color: #6060cc; }
+
+.toc {
+  max-width: 880px;
+  margin: 0 auto 26px;
+  background: #fff;
+  border-left: 4px solid #e67e22;
+  border-radius: 6px;
+  padding: 14px 20px;
+  font-size: .92rem;
+}
+.toc a { color: #1a1a2e; text-decoration: none; }
+.toc a:hover { color: #e67e22; }
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <div class="crumb">Logic · Lesson 5 · Companion to <code>exercises_lesson5.html</code></div>
+  <h1>Simulating Rules of Inference</h1>
+  <p>Implement each rule as a Python function: <strong>given the premises, return the conclusion</strong>. The goal is not to <em>check</em> validity but to <em>simulate</em> the rule and chain it with others.</p>
+  <p style="margin-top:10px;font-size:.92rem;color:#f9e4cc;letter-spacing:.02em;">Pr. Zouhair el Hadiq</p>
+</div>
+
+<!-- TOC -->
+<div class="toc">
+  <strong>Contents</strong>
+  &nbsp;·&nbsp; <a href="#ex0">Setup</a>
+  &nbsp;·&nbsp; <a href="#ex1">Modus Ponens</a>
+  &nbsp;·&nbsp; <a href="#ex2">Modus Tollens</a>
+  &nbsp;·&nbsp; <a href="#ex3">Hyp. Syllogism</a>
+  &nbsp;·&nbsp; <a href="#ex4">Disj. Syllogism</a>
+  &nbsp;·&nbsp; <a href="#ex5">Addition</a>
+  &nbsp;·&nbsp; <a href="#ex6">Simplification</a>
+  &nbsp;·&nbsp; <a href="#ex7">Conjunction</a>
+  &nbsp;·&nbsp; <a href="#ex8">Resolution</a>
+  &nbsp;·&nbsp; <a href="#ex9">Registry</a>
+  &nbsp;·&nbsp; <a href="#ex10">Chain proof</a>
+  &nbsp;·&nbsp; <a href="#ex11">Quantifier rules</a>
+  &nbsp;·&nbsp; <a href="#ex12">Mini natural-deduction engine</a>
+</div>
+
+<!-- ════ Setup ════════════════════════════════════════════════════════ -->
+<div class="exercise" id="ex0">
+  <div class="ex-header">
+    <span class="ex-number">Setup</span>
+    <span class="ex-title">Common imports &amp; the <code>Rule</code> abstraction <span class="tag">SymPy</span></span>
+  </div>
+  <div class="ex-body">
+    <p>Every exercise below assumes:</p>
+    <div class="codebox"><span class="lbl">Python — preamble</span>from dataclasses import dataclass
+from typing import Callable, Tuple
+from sympy import symbols, And, Or, Not, Implies
+from sympy.logic.boolalg import Boolean
+from sympy.logic.inference import satisfiable
+
+# Generic propositional atoms used throughout
+p, q, r, s, t, u = symbols('p q r s t u')
+
+
+class InferenceError(Exception):
+    """Raised when a rule's premises don't fit its pattern."""
+
+
+@dataclass
+class Rule:
+    name: str
+    arity: int                              # how many premises it takes
+    apply: Callable[..., Boolean]           # function: premises -> conclusion
+
+    def __call__(self, *premises):
+        if len(premises) != self.arity:
+            raise InferenceError(
+                f"{self.name} expects {self.arity} premise(s), got {len(premises)}"
+            )
+        return self.apply(*premises)
+</div>
+    <p>Each exercise asks you to fill in an <code>apply</code> function and wrap it in a <code>Rule</code>.</p>
+    <div class="hint"><strong>Conventions:</strong> use <code>isinstance(x, Implies)</code> / <code>And</code> / <code>Or</code> / <code>Not</code> to pattern-match; use <code>x.args</code> to access sub-formulae; raise <code>InferenceError</code> when the premises don't match the rule's pattern.</div>
+  </div>
+</div>
+
+<!-- ════ Ex 1 — Modus Ponens ═══════════════════════════════════════════ -->
+<div class="exercise" id="ex1">
+  <div class="ex-header">
+    <span class="ex-number">Ex 1</span>
+    <span class="ex-title">Modus Ponens <span class="tag">SymPy</span></span>
+  </div>
+  <div class="ex-body">
+    <div class="rule-row">
+      <div class="rule-card">
+        $\dfrac{p,\;\; p \to q}{q}$
+        <span class="rule-name">Modus Ponens</span>
+      </div>
+    </div>
+    <p>Implement <code>modus_ponens(prem1, prem2) -&gt; q</code>. Either order should be accepted (the rule should figure out which premise is the implication).</p>
+    <div class="codebox"><span class="lbl">Skeleton</span>def mp_apply(a, b):
+    """Return q from premises (p, p→q) or (p→q, p)."""
+    # 1. Identify which of a, b is an Implies; let imp be that one and fact the other.
+    # 2. Check that imp.args[0] == fact;  else raise InferenceError.
+    # 3. Return imp.args[1].
+    ...
+
+MP = Rule(name="Modus Ponens", arity=2, apply=mp_apply)
+
+# Test:
+assert MP(p, Implies(p, q)) == q
+assert MP(Implies(p, q), p) == q
+print("Modus Ponens simulated:", MP(p, Implies(p, q)))</div>
+  </div>
+</div>
+
+<!-- ════ Ex 2 — Modus Tollens ══════════════════════════════════════════ -->
+<div class="exercise" id="ex2">
+  <div class="ex-header">
+    <span class="ex-number">Ex 2</span>
+    <span class="ex-title">Modus Tollens <span class="tag">SymPy</span></span>
+  </div>
+  <div class="ex-body">
+    <div class="rule-row">
+      <div class="rule-card">
+        $\dfrac{\neg q,\;\; p \to q}{\neg p}$
+        <span class="rule-name">Modus Tollens</span>
+      </div>
+    </div>
+    <p>Implement <code>modus_tollens(prem1, prem2) -&gt; Not(p)</code>. The premises can be given in either order.</p>
+    <div class="codebox"><span class="lbl">Skeleton</span>def mt_apply(a, b):
+    """Return Not(p) from premises (¬q, p→q) or (p→q, ¬q)."""
+    # 1. Find the Implies among a, b; call it imp.
+    # 2. The other premise should be Not(imp.args[1]); else raise.
+    # 3. Return Not(imp.args[0]).
+    ...
+
+MT = Rule(name="Modus Tollens", arity=2, apply=mt_apply)
+
+# Test:
+assert MT(Not(q), Implies(p, q)) == Not(p)
+print("Modus Tollens simulated:", MT(Not(q), Implies(p, q)))</div>
+  </div>
+</div>
+
+<!-- ════ Ex 3 — Hypothetical Syllogism ═════════════════════════════════ -->
+<div class="exercise" id="ex3">
+  <div class="ex-header">
+    <span class="ex-number">Ex 3</span>
+    <span class="ex-title">Hypothetical Syllogism <span class="tag">SymPy</span></span>
+  </div>
+  <div class="ex-body">
+    <div class="rule-row">
+      <div class="rule-card">
+        $\dfrac{p \to q,\;\; q \to r}{p \to r}$
+        <span class="rule-name">Hyp. Syllogism</span>
+      </div>
+    </div>
+    <p>Implement <code>hyp_syll(imp1, imp2) -&gt; Implies(p, r)</code>. The two implications must chain — the consequent of one must equal the antecedent of the other.</p>
+    <div class="codebox"><span class="lbl">Skeleton</span>def hs_apply(a, b):
+    """Return Implies(p, r) from (p→q, q→r) in any order."""
+    # 1. Both a, b must be Implies; let ((pA, qA), (pB, qB)) = (a.args, b.args).
+    # 2. If qA == pB:  return Implies(pA, qB)
+    # 3. Elif qB == pA: return Implies(pB, qA)
+    # 4. Else raise InferenceError.
+    ...
+
+HS = Rule(name="Hypothetical Syllogism", arity=2, apply=hs_apply)
+
+assert HS(Implies(p, q), Implies(q, r)) == Implies(p, r)
+assert HS(Implies(q, r), Implies(p, q)) == Implies(p, r)
+print("Hyp. Syll. simulated:", HS(Implies(p, q), Implies(q, r)))</div>
+  </div>
+</div>
+
+<!-- ════ Ex 4 — Disjunctive Syllogism ══════════════════════════════════ -->
+<div class="exercise" id="ex4">
+  <div class="ex-header">
+    <span class="ex-number">Ex 4</span>
+    <span class="ex-title">Disjunctive Syllogism <span class="tag">SymPy</span></span>
+  </div>
+  <div class="ex-body">
+    <div class="rule-row">
+      <div class="rule-card">
+        $\dfrac{p \vee q,\;\; \neg p}{q}$
+        <span class="rule-name">Disj. Syllogism</span>
+      </div>
+    </div>
+    <p>Implement <code>disj_syll(disj, neg) -&gt; q</code>. The function must also handle <code>(¬q, p ∨ q) → p</code> (the cancelled side can be either disjunct).</p>
+    <div class="codebox"><span class="lbl">Skeleton</span>def ds_apply(a, b):
+    """Return the surviving disjunct from (a∨b, ¬a) or (a∨b, ¬b)."""
+    # 1. Identify the Or-formula and the Not-formula among a, b.
+    # 2. Let neg.args[0] be the cancelled atom x.
+    # 3. Check x ∈ disj.args; the surviving args are the rest.
+    # 4. If a single arg survives, return it; otherwise return Or(*rest).
+    ...
+
+DS = Rule(name="Disjunctive Syllogism", arity=2, apply=ds_apply)
+
+assert DS(Or(p, q), Not(p)) == q
+assert DS(Or(p, q), Not(q)) == p
+print("Disj. Syll. simulated:", DS(Or(p, q), Not(p)))</div>
+  </div>
+</div>
+
+<!-- ════ Ex 5 — Addition ═══════════════════════════════════════════════ -->
+<div class="exercise" id="ex5">
+  <div class="ex-header">
+    <span class="ex-number">Ex 5</span>
+    <span class="ex-title">Addition <span class="tag">SymPy</span></span>
+  </div>
+  <div class="ex-body">
+    <div class="rule-row">
+      <div class="rule-card">
+        $\dfrac{p}{p \vee q}$
+        <span class="rule-name">Addition</span>
+      </div>
+    </div>
+    <p>Unlike the other rules, Addition <em>introduces</em> a new formula. Implement <code>addition(p_formula, extra) -&gt; Or(p_formula, extra)</code> with arity 2: the second argument is the disjunct you choose to add.</p>
+    <div class="codebox"><span class="lbl">Skeleton</span>def add_apply(a, extra):
+    """Return Or(a, extra) — no constraint on extra."""
+    return Or(a, extra)
+
+ADD = Rule(name="Addition", arity=2, apply=add_apply)
+
+assert ADD(p, q) == Or(p, q)
+print("Addition simulated:", ADD(p, q))</div>
+  </div>
+</div>
+
+<!-- ════ Ex 6 — Simplification ═════════════════════════════════════════ -->
+<div class="exercise" id="ex6">
+  <div class="ex-header">
+    <span class="ex-number">Ex 6</span>
+    <span class="ex-title">Simplification <span class="tag">SymPy</span></span>
+  </div>
+  <div class="ex-body">
+    <div class="rule-row">
+      <div class="rule-card">
+        $\dfrac{p \wedge q}{p}$
+        <span class="rule-name">Simplification</span>
+      </div>
+    </div>
+    <p>Implement <code>simplification(conj, side='left')</code> returning either the left or the right operand of an <code>And</code>. Use arity 1 (the second parameter is a keyword option).</p>
+    <div class="codebox"><span class="lbl">Skeleton</span>def simp_left(conj):
+    if not isinstance(conj, And):
+        raise InferenceError("Simplification: premise is not a conjunction")
+    return conj.args[0]
+
+def simp_right(conj):
+    if not isinstance(conj, And):
+        raise InferenceError("Simplification: premise is not a conjunction")
+    return conj.args[-1]
+
+SIMP_L = Rule("Simplification (left)",  1, simp_left)
+SIMP_R = Rule("Simplification (right)", 1, simp_right)
+
+assert SIMP_L(And(p, q)) == p
+assert SIMP_R(And(p, q)) == q
+print("Simplification simulated:", SIMP_L(And(p, q)))</div>
+  </div>
+</div>
+
+<!-- ════ Ex 7 — Conjunction ════════════════════════════════════════════ -->
+<div class="exercise" id="ex7">
+  <div class="ex-header">
+    <span class="ex-number">Ex 7</span>
+    <span class="ex-title">Conjunction <span class="tag">SymPy</span></span>
+  </div>
+  <div class="ex-body">
+    <div class="rule-row">
+      <div class="rule-card">
+        $\dfrac{p,\;\; q}{p \wedge q}$
+        <span class="rule-name">Conjunction</span>
+      </div>
+    </div>
+    <p>Implement <code>conjunction(a, b) -&gt; And(a, b)</code>. The simplest rule of all.</p>
+    <div class="codebox"><span class="lbl">Skeleton</span>def conj_apply(a, b):
+    return And(a, b)
+
+CONJ = Rule("Conjunction", 2, conj_apply)
+
+assert CONJ(p, q) == And(p, q)
+print("Conjunction simulated:", CONJ(p, q))</div>
+  </div>
+</div>
+
+<!-- ════ Ex 8 — Resolution ═════════════════════════════════════════════ -->
+<div class="exercise" id="ex8">
+  <div class="ex-header">
+    <span class="ex-number">Ex 8</span>
+    <span class="ex-title">Resolution <span class="tag">SymPy</span></span>
+  </div>
+  <div class="ex-body">
+    <div class="rule-row">
+      <div class="rule-card">
+        $\dfrac{p \vee q,\;\; \neg p \vee r}{q \vee r}$
+        <span class="rule-name">Resolution</span>
+      </div>
+    </div>
+    <p>Implement <code>resolution(c1, c2) -&gt; Or(...)</code>. Both premises are clauses (each a literal or an <code>Or</code> of literals). The function must find a complementary pair — a literal $\ell$ in one clause whose negation $\neg \ell$ is in the other — and return the disjunction of the remaining literals.</p>
+    <div class="codebox"><span class="lbl">Skeleton</span>def literals(clause):
+    """Treat a single literal as a 1-element Or."""
+    return list(clause.args) if isinstance(clause, Or) else [clause]
+
+def negate(lit):
+    return lit.args[0] if isinstance(lit, Not) else Not(lit)
+
+def res_apply(c1, c2):
+    L1, L2 = literals(c1), literals(c2)
+    # Find any literal x in L1 such that negate(x) is in L2
+    for x in L1:
+        if negate(x) in L2:
+            rest1 = [y for y in L1 if y != x]
+            rest2 = [y for y in L2 if y != negate(x)]
+            combined = rest1 + rest2
+            if not combined:
+                return None              # empty clause (contradiction)
+            return combined[0] if len(combined) == 1 else Or(*combined)
+    raise InferenceError("Resolution: no complementary literal")
+
+RES = Rule("Resolution", 2, res_apply)
+
+assert RES(Or(p, q), Or(Not(p), r)) == Or(q, r)
+print("Resolution simulated:", RES(Or(p, q), Or(Not(p), r)))</div>
+  </div>
+</div>
+
+<!-- ════ Ex 9 — Rule registry ══════════════════════════════════════════ -->
+<div class="exercise" id="ex9">
+  <div class="ex-header">
+    <span class="ex-number">Ex 9</span>
+    <span class="ex-title">Rule registry &amp; dispatcher <span class="tag">SymPy</span></span>
+  </div>
+  <div class="ex-body">
+    <p>Collect every <code>Rule</code> from exercises 1–8 in a dictionary keyed by name. Then write</p>
+    <div class="codebox"><span class="lbl">Skeleton</span>RULES = {r.name: r for r in [MP, MT, HS, DS, ADD, SIMP_L, SIMP_R, CONJ, RES]}
+
+def apply(rule_name, *premises):
+    """Look up a rule by name and apply it to the given premises."""
+    if rule_name not in RULES:
+        raise InferenceError(f"unknown rule {rule_name!r}")
+    return RULES[rule_name](*premises)
+
+# Quick check
+assert apply("Modus Ponens", p, Implies(p, q)) == q
+print("Registry contains:", sorted(RULES))</div>
+    <ul>
+      <li>Verify that for every rule, applying it then asking SymPy <code>satisfiable(And(*premises, Not(conclusion)))</code> returns <code>False</code> — i.e. the simulated conclusion is logically entailed.</li>
+      <li>Print one line per rule confirming this.</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ════ Ex 10 — Chain proof ═══════════════════════════════════════════ -->
+<div class="exercise" id="ex10">
+  <div class="ex-header">
+    <span class="ex-number">Ex 10</span>
+    <span class="ex-title">Chain the rules to derive a goal <span class="tag">SymPy</span></span>
+  </div>
+  <div class="ex-body">
+    <p>Reproduce the proof from the lesson (slide 8) by <em>simulation</em>. Given:</p>
+    <ul>
+      <li>$H_1: p \to q,\quad H_2: q \to r,\quad H_3: (r \wedge s) \to t,\quad H_4: t \to u,\quad H_5: s$</li>
+      <li>Assumption: $p$</li>
+    </ul>
+    <p>Use your simulated rules to build the proof step by step and finish at $u$:</p>
+    <div class="codebox"><span class="lbl">Skeleton</span># Premises and assumption
+H1, H2, H3, H4, H5 = (
+    Implies(p, q), Implies(q, r),
+    Implies(And(r, s), t), Implies(t, u), s,
+)
+
+step3  = apply("Hypothetical Syllogism", H1, H2)      # p → r
+step5  = apply("Modus Ponens", p, step3)              # r
+step7  = apply("Conjunction", step5, H5)              # r ∧ s
+step9  = apply("Modus Ponens", step7, H3)             # t
+step11 = apply("Modus Ponens", step9, H4)             # u
+
+print("Derived:", step11)
+assert step11 == u</div>
+    <ul>
+      <li>Print each intermediate conclusion with its step number, mimicking the lesson's numbered proof list.</li>
+      <li>Confirm the final step equals <code>u</code>.</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ════ Ex 11 — Quantifier rules ══════════════════════════════════════ -->
+<div class="exercise" id="ex11">
+  <div class="ex-header">
+    <span class="ex-number">Ex 11</span>
+    <span class="ex-title">Quantifier rules — UI &amp; EG <span class="tag">SymPy</span></span>
+  </div>
+  <div class="ex-body">
+    <div class="rule-row">
+      <div class="rule-card">
+        $\dfrac{\forall x\, P(x)}{P(c)}$
+        <span class="rule-name">Universal Instantiation</span>
+      </div>
+      <div class="rule-card">
+        $\dfrac{P(c)}{\exists x\, P(x)}$
+        <span class="rule-name">Existential Generalization</span>
+      </div>
+    </div>
+    <p>SymPy's <code>ForAll</code> / <code>Exists</code> are limited; we simulate them with an explicit predicate + substitution.</p>
+    <div class="codebox"><span class="lbl">Skeleton</span>from sympy import Function, Lambda, Symbol, Dummy
+
+def universal_instantiation(forall_body, var, c):
+    """forall_body is P(x); we substitute the bound var by constant c."""
+    return forall_body.subs(var, c)
+
+def existential_generalization(P_of_c, c, var):
+    """Represent ∃x P(x) by a Lambda(var, …) wrapped in a marker."""
+    # Build a fresh body by replacing every occurrence of c with var
+    body = P_of_c.subs(c, var)
+    return ("∃", var, body)         # a tagged tuple is enough for simulation
+
+UI = Rule("Universal Instantiation", 3, universal_instantiation)
+EG = Rule("Existential Generalization", 3, existential_generalization)
+
+x = Symbol('x')
+o = Symbol('o')
+P = Function('P')
+
+# UI test: from P(x) (interpreted as ∀x P(x)), conclude P(o)
+assert UI(P(x), x, o) == P(o)
+
+# EG test: from P(o) conclude ∃x P(x)
+assert EG(P(o), o, x) == ("∃", x, P(x))
+print("Quantifier rules simulated correctly.")</div>
+    <div class="hint"><strong>Side conditions:</strong> in your <code>UI</code>, accept <em>any</em> constant; in <code>UG</code> (not implemented here) you would require the constant be arbitrary (i.e. not occurring in any open assumption); in <code>EI</code> the chosen constant must be <em>fresh</em>.</div>
+  </div>
+</div>
+
+<!-- ════ Ex 12 — Mini natural-deduction engine ═════════════════════════ -->
+<div class="exercise" id="ex12">
+  <div class="ex-header">
+    <span class="ex-number">Ex 12</span>
+    <span class="ex-title">Mini natural-deduction engine <span class="tag">SymPy</span></span>
+  </div>
+  <div class="ex-body">
+    <p>Combine everything into a tiny proof checker that takes a proof <em>script</em> — a list of steps where each step is either a premise or <code>(rule_name, [indices into earlier steps])</code> — and produces a numbered transcript.</p>
+    <div class="codebox"><span class="lbl">Skeleton</span>def run_proof(script):
+    """
+    script = [
+        ("premise", H1),
+        ("premise", H2),
+        ("rule", "Hypothetical Syllogism", [0, 1]),
+        ("premise", p),
+        ("rule", "Modus Ponens", [3, 2]),
+        ...
+    ]
+    Returns the list of derived formulae (one per step).
+    """
+    derived = []
+    for i, step in enumerate(script):
+        kind = step[0]
+        if kind == "premise":
+            formula = step[1]
+            tag = "premise"
+        else:
+            _, name, ids = step
+            args = [derived[k] for k in ids]
+            formula = apply(name, *args)
+            tag = f"{name} on {ids}"
+        derived.append(formula)
+        print(f"{i:>2}. {formula}    [{tag}]")
+    return derived
+
+# Run the slide-8 proof
+script = [
+    ("premise", Implies(p, q)),                                # 0  H1
+    ("premise", Implies(q, r)),                                # 1  H2
+    ("rule", "Hypothetical Syllogism", [0, 1]),                # 2  p→r
+    ("premise", p),                                            # 3  assumption
+    ("rule", "Modus Ponens", [3, 2]),                          # 4  r
+    ("premise", s),                                            # 5  H5
+    ("rule", "Conjunction", [4, 5]),                           # 6  r∧s
+    ("premise", Implies(And(r, s), t)),                        # 7  H3
+    ("rule", "Modus Ponens", [6, 7]),                          # 8  t
+    ("premise", Implies(t, u)),                                # 9  H4
+    ("rule", "Modus Ponens", [8, 9]),                          # 10 u
+]
+trace = run_proof(script)
+assert trace[-1] == u</div>
+    <ul>
+      <li>Extend the engine to print a fraction $\dfrac{\text{premises used}}{\text{conclusion}}$ for each step.</li>
+      <li>Add error reporting: when a rule raises <code>InferenceError</code>, prefix the offending line with <code>FAIL:</code> and continue.</li>
+      <li>(Bonus) Build a <code>proof_to_latex(script)</code> function that emits a natural-deduction tree in LaTeX (`bussproofs` package).</li>
+    </ul>
+  </div>
+</div>
+
+<div style="max-width:880px; margin: 28px auto 0; text-align:center; color:#777; font-size:.86rem;">
+  Companion file to <a href="exercises_lesson5.html" style="color:#e67e22;">exercises_lesson5.html</a>
+  · main lesson: <a href="lesson5_inference.html" style="color:#e67e22;">lesson5_inference.html</a>
+</div>
+
+</body>
+</html>
