@@ -1,0 +1,1052 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rules of Inference — Full Course — Discrete Mathematics</title>
+<script>
+  MathJax = {
+    tex: { inlineMath: [['$','$']], displayMath: [['$$','$$']], processEscapes: true },
+    options: { skipHtmlTags: ['script','noscript','style','textarea'] }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --orange:    #e67e22;
+  --darkblue:  #2c3e50;
+  --lightbg:   #f4f9fc;
+  --rowred:    #ffe8e8;
+  --rowblue:   #e3eeff;
+  --border:    #dce3ea;
+  --py-fg:     #1f4e7a;
+  --py-bg:     #eaf3fb;
+  --py-border: #2a6fb3;
+  --py-head:   #2a6fb3;
+  --sp-fg:     #1e824c;
+  --sp-bg:     #e8f5ec;
+  --sp-border: #27ae60;
+  --sp-head:   #27ae60;
+  --su-fg:     #4a4aaa;
+  --su-bg:     #eeeeff;
+  --su-border: #6060cc;
+  --su-head:   #6060cc;
+  --out-fg:    #6e4b0a;
+  --out-bg:    #fff7e0;
+  --out-border:#e0b341;
+  --out-head:  #c89324;
+}
+
+body {
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  background: #e8edf2;
+  color: var(--darkblue);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem 1rem 5rem;
+  gap: 2rem;
+}
+
+.slide {
+  background: #fff;
+  width: 100%;
+  max-width: 940px;
+  border-radius: 10px;
+  box-shadow: 0 4px 18px rgba(0,0,0,.10);
+  padding: 2.2rem 2.8rem 1.8rem;
+  position: relative;
+}
+.slide-number {
+  position: absolute;
+  bottom: 0.7rem;
+  right: 1.2rem;
+  font-size: 0.72rem;
+  color: #aaa;
+}
+
+.slide.title-slide {
+  background: linear-gradient(145deg, #f4f9fc 60%, #e0eef7);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 240px;
+  text-align: center;
+  border-top: 6px solid var(--orange);
+}
+.slide.title-slide h1 { font-size: 1.9rem; color: var(--darkblue); margin-bottom: 0.4rem; }
+.slide.title-slide .subtitle { font-size: 1.15rem; color: #555; }
+.slide.title-slide .author   { font-size: 1rem; color: var(--orange); margin-top: 0.7rem; font-style: italic; }
+
+h2.frame-title {
+  font-size: 1.55rem;
+  color: var(--orange);
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  padding-bottom: 0.35rem;
+  border-bottom: 2px solid #f9e4cc;
+}
+h3.sub-title {
+  font-size: 1.05rem;
+  color: var(--orange);
+  font-weight: 600;
+  margin: 0.7rem 0 0.3rem;
+}
+
+p { line-height: 1.7; margin: 0.45rem 0; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.4rem; line-height: 1.8; }
+ul li::marker, ol li::marker { color: var(--orange); }
+code { background: #f0f3f7; color: #1f4e7a; padding: 0 .25em; border-radius: 3px; font-family: 'Consolas','Fira Code',monospace; }
+
+/* ── Coloured callout boxes ───────────────────────────────────────── */
+.note-box, .def-box, .thm-box, .proof-box, .ex-box, .fallacy-box, .sc-box {
+  border-radius: 6px;
+  padding: 0.7rem 1rem;
+  margin: 0.6rem 0;
+  line-height: 1.7;
+}
+.note-box     { background: #fff5e8; border-left: 4px solid var(--orange); font-style: italic; }
+.def-box      { background: #eaf3fb; border-left: 4px solid var(--py-border); }
+.def-box::before     { content: "Definition. "; font-weight: 700; color: var(--py-border); }
+.thm-box      { background: #fff7e0; border-left: 4px solid var(--out-border); }
+.thm-box::before     { content: "Theorem. "; font-weight: 700; color: var(--out-head); }
+.proof-box    { background: #f4f9fc; border-left: 4px solid var(--darkblue); }
+.proof-box::before   { content: "Proof. "; font-weight: 700; color: var(--darkblue); }
+.ex-box       { background: #e8f5ec; border-left: 4px solid var(--sp-border); }
+.ex-box::before      { content: "Example. "; font-weight: 700; color: var(--sp-border); }
+.fallacy-box  { background: #ffe8e8; border-left: 4px solid #c0395a; }
+.fallacy-box::before { content: "Fallacy. "; font-weight: 700; color: #c0395a; }
+.sc-box       { background: #fff7e0; border-left: 4px solid var(--out-border); font-style: italic; }
+.sc-box::before      { content: "Side condition. "; font-weight: 700; color: var(--out-head); font-style: normal; }
+
+/* ── Code blocks ──────────────────────────────────────────────────── */
+.python-block, .setup-block, .sympy-block, .output-block {
+  border-radius: 6px;
+  overflow: hidden;
+  margin: 0.6rem 0;
+  border: 1px solid;
+}
+.pane-label {
+  display: block;
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  color: #fff;
+}
+.pane-code {
+  font-family: 'Consolas','Fira Code',monospace;
+  font-size: 0.83rem;
+  line-height: 1.6;
+  padding: 0.5rem 0.75rem;
+  white-space: pre;
+  display: block;
+}
+.python-block { border-color: var(--py-border); }
+.python-block .pane-label { background: var(--py-head); }
+.python-block .pane-code  { background: var(--py-bg); color: var(--py-fg); }
+.sympy-block  { border-color: var(--sp-border); }
+.sympy-block  .pane-label { background: var(--sp-head); }
+.sympy-block  .pane-code  { background: var(--sp-bg); color: var(--sp-fg); }
+.setup-block  { border-color: var(--su-border); }
+.setup-block  .pane-label { background: var(--su-head); }
+.setup-block  .pane-code  { background: var(--su-bg); color: var(--su-fg); }
+
+/* ── Tables ───────────────────────────────────────────────────────── */
+.truth-table, .ref-table {
+  border-collapse: collapse;
+  margin: 0.6rem auto;
+  font-size: 0.9rem;
+  width: 100%;
+}
+.truth-table th, .truth-table td,
+.ref-table th,  .ref-table td {
+  border: 1px solid var(--border);
+  padding: 0.4rem 0.75rem;
+  text-align: left;
+  vertical-align: top;
+}
+.truth-table th, .ref-table th { background: var(--lightbg); font-weight: 600; color: var(--darkblue); }
+.truth-table tr.row-t { background: var(--rowred); }
+.truth-table tr.row-f { background: var(--rowblue); }
+.center td, .center th { text-align: center; }
+
+/* ── Rule cards (fraction format) ─────────────────────────────────── */
+.rule-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 0.7rem;
+  margin: 0.6rem 0;
+}
+.rule-card {
+  background: var(--lightbg);
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--orange);
+  border-radius: 6px;
+  padding: 0.7rem 0.6rem 0.5rem;
+  text-align: center;
+}
+.rule-card.invalid {
+  border-left-color: #c0395a;
+  background: #ffe8e8;
+}
+.rule-card .rule-name {
+  display: block;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--orange);
+  font-weight: 700;
+  margin-top: 0.45rem;
+}
+.rule-card.invalid .rule-name { color: #c0395a; }
+
+/* ── Proof lists ──────────────────────────────────────────────────── */
+.proof-list { list-style: none; padding-left: 0; margin: 0.5rem 0; }
+.proof-list li {
+  display: grid;
+  grid-template-columns: 1.8rem 1fr auto;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.22rem 0.4rem;
+  border-bottom: 1px dashed var(--border);
+}
+.proof-list li:last-child { border-bottom: none; }
+.proof-list .lbl  { font-weight: 700; color: var(--orange); text-align: right; }
+.proof-list .just { font-size: 0.82rem; color: #555; text-align: right; white-space: nowrap; }
+.proof-list li.qed { background: #fdf3e7; border-radius: 6px; border-bottom: none; }
+.concl { color: var(--orange); font-weight: 700; }
+
+/* ── Slideshow nav ────────────────────────────────────────────────── */
+#nav { position: fixed; bottom: 1.5rem; right: 1.5rem; display: flex; gap: 0.4rem; z-index: 100; }
+#nav button {
+  background: var(--orange); color: #fff; border: none;
+  border-radius: 50%; width: 40px; height: 40px;
+  font-size: 1.1rem; cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,.25); transition: background .2s;
+}
+#nav button:hover { background: #cf6d17; }
+#nav #btn-scroll { border-radius: 20px; width: auto; padding: 0 12px; font-size: 0.8rem; }
+
+body.slideshow .slide        { display: none; }
+body.slideshow .slide.active { display: block; }
+
+.ref-cite { color: #777; font-size: 0.85rem; font-style: italic; }
+.chip {
+  display: inline-block;
+  background: #f9e4cc;
+  color: #8a4a0e;
+  padding: 0 .45em;
+  border-radius: 4px;
+  font-weight: 600;
+  font-size: .9em;
+}
+</style>
+</head>
+<body>
+
+<!-- ══ Slide 1 — Title ════════════════════════════════════════════════ -->
+<section class="slide title-slide" id="s1">
+  <h1>Rules of Inference</h1>
+  <p class="subtitle">Discrete Mathematics — Lesson 5 (Full Course)</p>
+  <p style="font-size:1rem;color:#e67e22;margin-top:0.8rem;font-style:italic;font-weight:600;letter-spacing:.02em;">Notes By Pr. El Hadiq Zouhair</p>
+  <span class="slide-number">1 / 30</span>
+</section>
+
+<!-- ══ Slide 2 — Outline ═════════════════════════════════════════════ -->
+<section class="slide" id="s2">
+  <h2 class="frame-title">Outline of the course</h2>
+  <ol>
+    <li>Foundations — argument, premises, conclusion, validity, soundness.</li>
+    <li>Logical consequence $\Gamma \models \varphi$ and the deduction theorem.</li>
+    <li>Syntactic vs semantic derivation: $\vdash$ vs $\models$.</li>
+    <li>Why inference rules? — efficiency over truth tables.</li>
+    <li>The eight propositional rules — each one stated, proved valid, illustrated.</li>
+    <li>The two classical fallacies — proved <em>invalid</em> by counter-example.</li>
+    <li>Building a natural-deduction proof — structure and notation.</li>
+    <li>Two worked propositional proofs (Resolution-based; six-variable cascade).</li>
+    <li>The four quantifier rules — UI, UG, EI, EG — with proofs and side conditions.</li>
+    <li>Counter-examples showing why the side conditions are necessary.</li>
+    <li>A mixed propositional / predicate worked example.</li>
+    <li>Derived rules (constructive dilemma, destructive dilemma).</li>
+    <li>Soundness theorem (proved) and completeness theorem (statement + sketch).</li>
+    <li>Summary, Wolfram → Python reference, bibliography.</li>
+  </ol>
+  <p class="ref-cite">References: Rosen 8e §1.6; Velleman 3e §3.1–3.3; Mendelson 6e ch. 1–2; Cori &amp; Lascar vol. 1 ch. 2; Lalement <em>Logique, réduction, résolution</em>.</p>
+  <span class="slide-number">2 / 30</span>
+</section>
+
+<!-- ══ Slide 3 — Argument & validity ═════════════════════════════════ -->
+<section class="slide" id="s3">
+  <h2 class="frame-title">1.1 Argument, premises, conclusion, validity</h2>
+
+  <div class="def-box">
+    An <strong>argument</strong> is a finite list of formulas $\varphi_1, \varphi_2, \ldots, \varphi_n$ — called <em>premises</em> (or <em>hypotheses</em>) — together with a distinguished formula $\psi$ — the <em>conclusion</em>. We write it in <em>natural-deduction</em> fraction form:
+    $$\dfrac{\varphi_1,\;\varphi_2,\;\ldots,\;\varphi_n}{\psi}.$$
+    The argument is <strong>valid</strong> if in every valuation (interpretation) that makes all premises true, the conclusion is also true. Equivalently, $\{\varphi_1, \dots, \varphi_n\} \models \psi$.
+  </div>
+
+  <div class="note-box">
+    Validity is a structural property of the <em>form</em> of the argument — it has nothing to do with the real-world truth of the premises. An argument can be valid with false premises, and invalid with true premises.
+  </div>
+
+  <p>Reading the fraction bar: <em>"from $\varphi_1, \dots, \varphi_n$ we may infer $\psi$"</em>.</p>
+  <p class="ref-cite">Rosen 8e §1.6, p. 73; Mendelson 6e §1.5.</p>
+  <span class="slide-number">3 / 30</span>
+</section>
+
+<!-- ══ Slide 4 — Sound argument ══════════════════════════════════════ -->
+<section class="slide" id="s4">
+  <h2 class="frame-title">1.2 Soundness of an argument</h2>
+
+  <div class="def-box">
+    An argument is <strong>sound</strong> iff it is <em>valid</em> <strong>and</strong> all of its premises are actually true (in the intended interpretation). Soundness implies that the conclusion is true.
+  </div>
+
+  <table class="ref-table">
+    <thead><tr><th>Validity</th><th>Premises true?</th><th>Conclusion guaranteed?</th><th>Sound?</th></tr></thead>
+    <tbody>
+      <tr><td>Valid</td><td>All true</td><td>Yes</td><td><strong>Sound</strong></td></tr>
+      <tr><td>Valid</td><td>Some false</td><td>No (irrelevant)</td><td>Not sound</td></tr>
+      <tr><td>Invalid</td><td>Anything</td><td>No</td><td>Not sound</td></tr>
+    </tbody>
+  </table>
+
+  <div class="ex-box">
+    "All primes are odd; $2$ is prime; therefore $2$ is odd." The argument-<em>form</em> $\forall x(P(x) \to Q(x)),\;P(c)\;\vdash\;Q(c)$ is valid. But the first premise is false, so the argument is <strong>not sound</strong> — the conclusion happens to be false.
+  </div>
+
+  <p>In this course we focus on <em>validity</em>: a purely structural check that the inference is correct. Soundness is left to the user, who must verify the premises are true in the situation at hand.</p>
+  <p class="ref-cite">Velleman 3e §1.5; Rosen 8e §1.6.</p>
+  <span class="slide-number">4 / 30</span>
+</section>
+
+<!-- ══ Slide 5 — Entailment & deduction theorem ══════════════════════ -->
+<section class="slide" id="s5">
+  <h2 class="frame-title">2. Logical consequence and the deduction theorem</h2>
+
+  <div class="def-box">
+    Let $\Gamma$ be a set of formulas and $\varphi$ a formula. We say <strong>$\varphi$ is a logical consequence of $\Gamma$</strong> (or <em>$\Gamma$ entails $\varphi$</em>), written $\Gamma \models \varphi$, iff every valuation that makes all formulas of $\Gamma$ true also makes $\varphi$ true.
+  </div>
+
+  <div class="thm-box">
+    <strong>Deduction theorem (semantic).</strong> For any $\Gamma, \varphi, \psi$,
+    $$\Gamma \cup \{\varphi\} \models \psi \;\;\Longleftrightarrow\;\; \Gamma \models \varphi \to \psi.$$
+  </div>
+  <div class="proof-box">
+    <strong>(⇒)</strong> Suppose $\Gamma \cup \{\varphi\} \models \psi$. Let $v$ be any valuation satisfying $\Gamma$. Two cases:
+    if $v(\varphi) = \mathtt F$, then $v(\varphi \to \psi) = \mathtt T$ vacuously;
+    if $v(\varphi) = \mathtt T$, then $v$ satisfies $\Gamma \cup \{\varphi\}$, hence $v(\psi) = \mathtt T$, hence $v(\varphi \to \psi) = \mathtt T$.<br>
+    <strong>(⇐)</strong> Suppose $\Gamma \models \varphi \to \psi$. Let $v$ satisfy $\Gamma \cup \{\varphi\}$. Then $v(\varphi \to \psi) = \mathtt T$ (by hypothesis) and $v(\varphi) = \mathtt T$ (since $\varphi \in \Gamma \cup \{\varphi\}$), so $v(\psi) = \mathtt T$. $\square$
+  </div>
+
+  <p class="ref-cite">Mendelson 6e §1.5, Theorem 1.10; Cori &amp; Lascar vol. 1 ch. 2.</p>
+  <span class="slide-number">5 / 30</span>
+</section>
+
+<!-- ══ Slide 6 — Syntactic vs semantic ═══════════════════════════════ -->
+<section class="slide" id="s6">
+  <h2 class="frame-title">3. Syntactic ($\vdash$) vs semantic ($\models$)</h2>
+
+  <div class="def-box">
+    Fix a finite set $\mathcal{R}$ of inference rules. A <strong>derivation</strong> (or <em>proof</em>) of $\psi$ from $\Gamma$ is a finite sequence of formulas $\varphi_1, \varphi_2, \ldots, \varphi_n = \psi$ such that each $\varphi_i$ is either an element of $\Gamma$, an axiom, or follows from earlier $\varphi_j$'s by a rule of $\mathcal{R}$. We write $\Gamma \vdash \psi$ when such a derivation exists.
+  </div>
+
+  <p>The relation $\Gamma \models \psi$ is <em>semantic</em> (about valuations). The relation $\Gamma \vdash \psi$ is <em>syntactic</em> (about formal proofs). They are connected by two foundational theorems:</p>
+
+  <table class="ref-table">
+    <thead><tr><th>Direction</th><th>Theorem</th><th>Meaning</th></tr></thead>
+    <tbody>
+      <tr><td>$\vdash \Rightarrow \models$</td><td><strong>Soundness</strong></td><td>Every theorem is true: derivations preserve validity (slide 26).</td></tr>
+      <tr><td>$\models \Rightarrow \vdash$</td><td><strong>Completeness</strong></td><td>Every truth is provable: anything entailed is also derivable (slide 27).</td></tr>
+    </tbody>
+  </table>
+  <p class="ref-cite">Mendelson 6e §1.6 (soundness), §2.4 (completeness); Cori &amp; Lascar vol. 1.</p>
+  <span class="slide-number">6 / 30</span>
+</section>
+
+<!-- ══ Slide 7 — Why inference rules vs truth tables ═════════════════ -->
+<section class="slide" id="s7">
+  <h2 class="frame-title">4. Why inference rules? — vs truth tables</h2>
+
+  <p>For a formula on $n$ propositional variables, a truth table has $2^n$ rows.</p>
+
+  <table class="ref-table center">
+    <thead><tr><th>$n$ atoms</th><th>Rows</th></tr></thead>
+    <tbody>
+      <tr><td>5</td><td>32</td></tr>
+      <tr><td>10</td><td>1 024</td></tr>
+      <tr><td>20</td><td>$\approx 10^6$</td></tr>
+      <tr><td>50</td><td>$\approx 10^{15}$</td></tr>
+      <tr><td>100</td><td>$\approx 10^{30}$</td></tr>
+    </tbody>
+  </table>
+
+  <div class="note-box">
+    Truth-table checking is <em>complete</em> (it always works) but exponential. Rules of inference give a structured, often-polynomial way to manipulate symbols and reach the conclusion <strong>without</strong> enumerating valuations — exactly how human mathematicians prove things.
+  </div>
+
+  <p>Beyond efficiency, inference rules also generalise to <strong>predicate logic</strong>, where the universe may be infinite and truth tables make no sense at all.</p>
+  <p class="ref-cite">Rosen 8e §1.6, p. 73; Lalement, ch. 3.</p>
+  <span class="slide-number">7 / 30</span>
+</section>
+
+<!-- ══ Slide 8 — The eight propositional rules ═══════════════════════ -->
+<section class="slide" id="s8">
+  <h2 class="frame-title">5. The eight propositional rules — overview</h2>
+
+  <p>Each rule is written as $\dfrac{\text{premises}}{\text{conclusion}}$. We prove the validity of each one in the next eight slides.</p>
+
+  <div class="rule-grid">
+    <div class="rule-card">$\dfrac{p,\;\; p \to q}{q}$<span class="rule-name">Modus Ponens</span></div>
+    <div class="rule-card">$\dfrac{\neg q,\;\; p \to q}{\neg p}$<span class="rule-name">Modus Tollens</span></div>
+    <div class="rule-card">$\dfrac{p \to q,\;\; q \to r}{p \to r}$<span class="rule-name">Hyp. Syllogism</span></div>
+    <div class="rule-card">$\dfrac{p \vee q,\;\; \neg p}{q}$<span class="rule-name">Disj. Syllogism</span></div>
+    <div class="rule-card">$\dfrac{p}{p \vee q}$<span class="rule-name">Addition</span></div>
+    <div class="rule-card">$\dfrac{p \wedge q}{p}$<span class="rule-name">Simplification</span></div>
+    <div class="rule-card">$\dfrac{p,\;\; q}{p \wedge q}$<span class="rule-name">Conjunction</span></div>
+    <div class="rule-card">$\dfrac{p \vee q,\;\; \neg p \vee r}{q \vee r}$<span class="rule-name">Resolution</span></div>
+  </div>
+
+  <p>General validity criterion: $\dfrac{\varphi_1,\ldots,\varphi_n}{\psi}$ is valid iff the formula $\varphi_1 \wedge \cdots \wedge \varphi_n \wedge \neg\psi$ is <em>unsatisfiable</em> — i.e. there is no valuation making the premises true and the conclusion false simultaneously. We will use this criterion in every proof below.</p>
+  <p class="ref-cite">Rosen 8e §1.6, Table 1, p. 75.</p>
+  <span class="slide-number">8 / 30</span>
+</section>
+
+<!-- ══ Slide 9 — Modus Ponens ════════════════════════════════════════ -->
+<section class="slide" id="s9">
+  <h2 class="frame-title">5.1 Modus Ponens (MP)</h2>
+
+  <div class="thm-box">
+    $\{p,\; p \to q\} \;\models\; q.$ &nbsp;Equivalently: $(p \wedge (p \to q)) \to q$ is a tautology.
+  </div>
+
+  <div class="proof-box">
+    <strong>Semantic argument.</strong> Let $v$ be any valuation satisfying both premises: $v(p) = \mathtt T$ and $v(p \to q) = \mathtt T$. Suppose, for contradiction, that $v(q) = \mathtt F$. Then $v(p \to q) = \mathtt T \to \mathtt F = \mathtt F$, contradicting $v(p \to q) = \mathtt T$. Hence $v(q) = \mathtt T$. <br>
+    <strong>Truth-table argument.</strong> Enumerate the four valuations of $(p, q)$ and check the column $(p \wedge (p \to q)) \to q$:
+    <table class="truth-table center" style="font-size:0.85rem; margin-top:0.4rem;">
+      <thead><tr><th>$p$</th><th>$q$</th><th>$p \to q$</th><th>$p \wedge (p \to q)$</th><th>$\Rightarrow q$</th></tr></thead>
+      <tbody>
+        <tr class="row-t"><td>T</td><td>T</td><td>T</td><td>T</td><td>T</td></tr>
+        <tr class="row-t"><td>T</td><td>F</td><td>F</td><td>F</td><td>T</td></tr>
+        <tr class="row-t"><td>F</td><td>T</td><td>T</td><td>F</td><td>T</td></tr>
+        <tr class="row-t"><td>F</td><td>F</td><td>T</td><td>F</td><td>T</td></tr>
+      </tbody>
+    </table>
+    The last column is all $\mathtt T$. $\square$
+  </div>
+  <p class="ref-cite">Rosen 8e §1.6 p. 74; Mendelson 6e §1.5.</p>
+  <span class="slide-number">9 / 30</span>
+</section>
+
+<!-- ══ Slide 10 — Modus Tollens ══════════════════════════════════════ -->
+<section class="slide" id="s10">
+  <h2 class="frame-title">5.2 Modus Tollens (MT)</h2>
+
+  <div class="thm-box">
+    $\{\neg q,\; p \to q\} \;\models\; \neg p.$
+  </div>
+
+  <div class="proof-box">
+    Let $v$ satisfy both premises: $v(\neg q) = \mathtt T$ (so $v(q) = \mathtt F$) and $v(p \to q) = \mathtt T$. Suppose $v(p) = \mathtt T$. Then $v(p \to q) = \mathtt T \to \mathtt F = \mathtt F$, contradicting $v(p \to q) = \mathtt T$. Hence $v(p) = \mathtt F$, i.e. $v(\neg p) = \mathtt T$. $\square$
+  </div>
+
+  <div class="note-box">
+    <strong>Alternative proof.</strong> Recall the contrapositive equivalence $p \to q \;\equiv\; \neg q \to \neg p$ (proved in Lesson 2). Substituting into the premise gives $\{\neg q,\; \neg q \to \neg p\} \models \neg p$ — which is exactly Modus Ponens on $\neg q$ and $\neg q \to \neg p$.
+  </div>
+
+  <div class="ex-box">
+    From "If I work, I am tired" and "I am not tired", we conclude "I do not work".
+  </div>
+  <p class="ref-cite">Rosen 8e §1.6 p. 75.</p>
+  <span class="slide-number">10 / 30</span>
+</section>
+
+<!-- ══ Slide 11 — Hypothetical Syllogism ═════════════════════════════ -->
+<section class="slide" id="s11">
+  <h2 class="frame-title">5.3 Hypothetical Syllogism (HS)</h2>
+
+  <div class="thm-box">
+    $\{p \to q,\; q \to r\} \;\models\; p \to r.$
+  </div>
+
+  <div class="proof-box">
+    Let $v$ satisfy both premises. We show $v(p \to r) = \mathtt T$ by cases on $v(p)$.<br>
+    <em>Case $v(p) = \mathtt F$.</em> Then $v(p \to r) = \mathtt T$ vacuously.<br>
+    <em>Case $v(p) = \mathtt T$.</em> Since $v(p \to q) = \mathtt T$ and $v(p) = \mathtt T$, by the truth table of $\to$ we get $v(q) = \mathtt T$. Since $v(q \to r) = \mathtt T$ and $v(q) = \mathtt T$, similarly $v(r) = \mathtt T$. Hence $v(p \to r) = \mathtt T \to \mathtt T = \mathtt T$. $\square$
+  </div>
+
+  <p>This is the formal version of "transitivity of implication". Chaining HS gives the general principle:</p>
+  $$\{p_1 \to p_2,\; p_2 \to p_3,\; \ldots,\; p_{n-1} \to p_n\} \;\models\; p_1 \to p_n.$$
+
+  <p class="ref-cite">Rosen 8e §1.6 p. 75; Velleman 3e §1.2.</p>
+  <span class="slide-number">11 / 30</span>
+</section>
+
+<!-- ══ Slide 12 — Disjunctive Syllogism ══════════════════════════════ -->
+<section class="slide" id="s12">
+  <h2 class="frame-title">5.4 Disjunctive Syllogism (DS)</h2>
+
+  <div class="thm-box">
+    $\{p \vee q,\; \neg p\} \;\models\; q.$
+  </div>
+
+  <div class="proof-box">
+    Let $v$ satisfy both premises: $v(p \vee q) = \mathtt T$ and $v(\neg p) = \mathtt T$, i.e. $v(p) = \mathtt F$. From the truth table of $\vee$, $v(p \vee q) = \mathtt T$ with $v(p) = \mathtt F$ forces $v(q) = \mathtt T$. $\square$
+  </div>
+
+  <div class="ex-box">
+    From "I left my keys in the car or in the office" and "they are not in the car", we conclude "they are in the office".
+  </div>
+
+  <p>By symmetry of $\vee$, the dual form is also valid: $\{p \vee q,\; \neg q\} \models p$.</p>
+  <p class="ref-cite">Rosen 8e §1.6 p. 75.</p>
+  <span class="slide-number">12 / 30</span>
+</section>
+
+<!-- ══ Slide 13 — Addition & Simplification ══════════════════════════ -->
+<section class="slide" id="s13">
+  <h2 class="frame-title">5.5 / 5.6 Addition and Simplification</h2>
+
+  <div class="thm-box">
+    <strong>Addition.</strong> $\;p \models p \vee q.$
+  </div>
+  <div class="proof-box">
+    If $v(p) = \mathtt T$, then $v(p \vee q) = \mathtt T \vee v(q) = \mathtt T$ regardless of $v(q)$. $\square$
+  </div>
+
+  <div class="thm-box">
+    <strong>Simplification.</strong> $\;p \wedge q \models p.$
+  </div>
+  <div class="proof-box">
+    If $v(p \wedge q) = \mathtt T$, then by the truth table of $\wedge$ both $v(p) = \mathtt T$ and $v(q) = \mathtt T$. In particular $v(p) = \mathtt T$. By symmetry, the dual $p \wedge q \models q$ also holds. $\square$
+  </div>
+
+  <div class="note-box">
+    Addition <em>weakens</em>: from $p$ alone you can conclude something less informative ($p \vee q$). Simplification <em>extracts</em>: from a conjunction you can pull out either conjunct. These two rules let you reshape the conclusion to match the next inference step.
+  </div>
+  <p class="ref-cite">Rosen 8e §1.6 p. 75.</p>
+  <span class="slide-number">13 / 30</span>
+</section>
+
+<!-- ══ Slide 14 — Conjunction ════════════════════════════════════════ -->
+<section class="slide" id="s14">
+  <h2 class="frame-title">5.7 Conjunction (Adjunction)</h2>
+
+  <div class="thm-box">
+    $\{p,\; q\} \;\models\; p \wedge q.$
+  </div>
+  <div class="proof-box">
+    If a valuation $v$ satisfies both premises, then $v(p) = \mathtt T$ and $v(q) = \mathtt T$, hence by the truth table of $\wedge$, $v(p \wedge q) = \mathtt T \wedge \mathtt T = \mathtt T$. $\square$
+  </div>
+
+  <p>This is the converse of Simplification: it lets you <em>combine</em> two already-derived facts into a single conjunction, often to match the antecedent of a future implication of the form $p \wedge q \to r$.</p>
+
+  <div class="ex-box">
+    In the cascade proof of slide 17 we will use Conjunction to combine $r$ (derived at step 5) and $s$ (premise $H_5$) into $r \wedge s$ — exactly the antecedent of hypothesis $H_3: (r \wedge s) \to t$.
+  </div>
+  <p class="ref-cite">Rosen 8e §1.6 p. 75.</p>
+  <span class="slide-number">14 / 30</span>
+</section>
+
+<!-- ══ Slide 15 — Resolution ═════════════════════════════════════════ -->
+<section class="slide" id="s15">
+  <h2 class="frame-title">5.8 Resolution</h2>
+
+  <div class="thm-box">
+    $\{p \vee q,\; \neg p \vee r\} \;\models\; q \vee r.$
+  </div>
+
+  <div class="proof-box">
+    Let $v$ satisfy both clauses. We split by the value of $v(p)$.<br>
+    <em>Case $v(p) = \mathtt T$.</em> Then $v(\neg p) = \mathtt F$, so $v(\neg p \vee r) = \mathtt T$ forces $v(r) = \mathtt T$. Hence $v(q \vee r) = \mathtt T$.<br>
+    <em>Case $v(p) = \mathtt F$.</em> Then $v(p \vee q) = \mathtt T$ forces $v(q) = \mathtt T$. Hence $v(q \vee r) = \mathtt T$.<br>
+    In both cases $v(q \vee r) = \mathtt T$. $\square$
+  </div>
+
+  <div class="note-box">
+    <strong>Why Resolution matters.</strong> Resolution is the single inference rule used by automated theorem provers and modern SAT solvers (DPLL/CDCL). Combined with CNF normalisation (Lesson 2), <em>resolution refutation</em> is a complete decision procedure for propositional unsatisfiability.
+  </div>
+
+  <p>Sub-cases: $\{p,\; \neg p \vee r\} \models r$ (a special case with $q$ replaced by $\bot$) is exactly Modus Ponens written in disjunctive form, since $\neg p \vee r \equiv p \to r$.</p>
+  <p class="ref-cite">Rosen 8e §1.6 p. 75; Lalement, ch. 3.</p>
+  <span class="slide-number">15 / 30</span>
+</section>
+
+<!-- ══ Slide 16 — Fallacies ══════════════════════════════════════════ -->
+<section class="slide" id="s16">
+  <h2 class="frame-title">6. The two classical fallacies — proved invalid</h2>
+
+  <h3 class="sub-title">Affirming the consequent</h3>
+  <div class="rule-grid" style="grid-template-columns: 1fr;">
+    <div class="rule-card invalid">$\dfrac{p \to q,\; q}{p}$<span class="rule-name">Invalid</span></div>
+  </div>
+  <div class="proof-box">
+    Take the valuation $v(p) = \mathtt F$, $v(q) = \mathtt T$. Then $v(p \to q) = \mathtt F \to \mathtt T = \mathtt T$ and $v(q) = \mathtt T$, so both premises hold; yet $v(p) = \mathtt F$, so the conclusion fails. The argument is invalid. $\square$
+  </div>
+
+  <h3 class="sub-title">Denying the antecedent</h3>
+  <div class="rule-grid" style="grid-template-columns: 1fr;">
+    <div class="rule-card invalid">$\dfrac{p \to q,\; \neg p}{\neg q}$<span class="rule-name">Invalid</span></div>
+  </div>
+  <div class="proof-box">
+    Take the same valuation $v(p) = \mathtt F$, $v(q) = \mathtt T$. Then $v(p \to q) = \mathtt T$, $v(\neg p) = \mathtt T$ — both premises hold; yet $v(\neg q) = \mathtt F$, so the conclusion fails. The argument is invalid. $\square$
+  </div>
+
+  <div class="fallacy-box">
+    A single counter-example valuation is enough to refute an argument form. Memorise this valuation $v(p) = \mathtt F,\; v(q) = \mathtt T$ — it breaks both fallacies.
+  </div>
+  <p class="ref-cite">Rosen 8e §1.6 p. 77; Velleman 3e §1.2.</p>
+  <span class="slide-number">16 / 30</span>
+</section>
+
+<!-- ══ Slide 17 — Building a natural-deduction proof ═════════════════ -->
+<section class="slide" id="s17">
+  <h2 class="frame-title">7. Building a natural-deduction proof</h2>
+
+  <div class="def-box">
+    A <strong>natural-deduction proof</strong> of $\Gamma \vdash \psi$ is a numbered list of formulas $\varphi_1, \varphi_2, \ldots, \varphi_n = \psi$ where each $\varphi_i$ is justified by one of:
+    <ul>
+      <li><strong>Hypothesis</strong> — $\varphi_i \in \Gamma$;</li>
+      <li><strong>Assumption</strong> — introduced for $\to$-introduction or $\neg$-introduction (will be discharged later);</li>
+      <li><strong>Rule application</strong> — $\varphi_i$ is the conclusion of one of the eight inference rules applied to previously listed lines.</li>
+    </ul>
+    The right-hand <em>justification</em> column names the rule and cites the line numbers used.
+  </div>
+
+  <p>Practical workflow:</p>
+  <ol>
+    <li>Write the hypotheses $H_1, H_2, \ldots$ as the first lines.</li>
+    <li>Identify what the goal looks like — if it is $\alpha \to \beta$, plan an $\to$-intro at the end (assume $\alpha$, derive $\beta$).</li>
+    <li>Forward-chain: at each step, look for a rule whose premises are already on the page, and add its conclusion as a new line.</li>
+    <li>Stop when the goal $\psi$ appears as the last line.</li>
+  </ol>
+
+  <p class="ref-cite">Velleman 3e §3.1; Mendelson 6e §1.6.</p>
+  <span class="slide-number">17 / 30</span>
+</section>
+
+<!-- ══ Slide 18 — Example 1 (Resolution) ═════════════════════════════ -->
+<section class="slide" id="s18">
+  <h2 class="frame-title">8.1 Example 1 — proof by Resolution</h2>
+
+  <p>Let $p, q, r$ be propositional variables. Hypotheses:</p>
+
+  <table class="truth-table" style="width:60%; margin:0.4rem auto; font-size:0.95rem;">
+    <thead><tr><th style="text-align:left;padding-left:0.6rem">Label</th><th>Formula</th></tr></thead>
+    <tbody>
+      <tr><td style="text-align:left;padding-left:0.6rem">$H_1$</td><td>$p \vee q$</td></tr>
+      <tr><td style="text-align:left;padding-left:0.6rem">$H_2$</td><td>$p \to r$</td></tr>
+    </tbody>
+  </table>
+
+  <p>Goal: derive $r \vee q$.</p>
+
+  <ol class="proof-list">
+    <li><span class="lbl">1.</span><span>$p \vee q$</span><span class="just">$H_1$</span></li>
+    <li><span class="lbl">2.</span><span>$p \to r$</span><span class="just">$H_2$</span></li>
+    <li><span class="lbl">3.</span><span>$\neg p \vee r$</span><span class="just">implication identity on (2)</span></li>
+    <li><span class="lbl">4.</span><span>$\dfrac{p \vee q,\;\; \neg p \vee r}{q \vee r}$</span><span class="just">Resolution (1, 3)</span></li>
+    <li class="qed"><span class="lbl">5.</span><span><span class="concl">$r \vee q$</span></span><span class="just">commutativity of $\vee$ &nbsp;$\square$</span></li>
+  </ol>
+
+  <div class="sympy-block">
+    <span class="pane-label">Python — entailment check</span>
+    <span class="pane-code">from sympy import symbols, And, Or, Not, Implies
+from sympy.logic.inference import satisfiable
+
+p, q, r = symbols('p q r')
+premises = And(Or(p, q), Implies(p, r))
+goal     = Or(r, q)
+print(satisfiable(And(premises, Not(goal))) is False)   # True — entailed</span>
+  </div>
+  <p class="ref-cite">Rosen 8e §1.6 Example 4.</p>
+  <span class="slide-number">18 / 30</span>
+</section>
+
+<!-- ══ Slide 19 — Example 2 (cascade) ════════════════════════════════ -->
+<section class="slide" id="s19">
+  <h2 class="frame-title">8.2 Example 2 — six-variable cascade</h2>
+
+  <p>Variables $p, q, r, s, t, u$. Hypotheses:</p>
+  <table class="truth-table" style="width:75%; margin:0.4rem auto; font-size:0.95rem;">
+    <thead><tr><th style="text-align:left;padding-left:0.6rem">Label</th><th>Formula</th></tr></thead>
+    <tbody>
+      <tr><td style="text-align:left;padding-left:0.6rem">$H_1$</td><td>$p \to q$</td></tr>
+      <tr><td style="text-align:left;padding-left:0.6rem">$H_2$</td><td>$q \to r$</td></tr>
+      <tr><td style="text-align:left;padding-left:0.6rem">$H_3$</td><td>$(r \wedge s) \to t$</td></tr>
+      <tr><td style="text-align:left;padding-left:0.6rem">$H_4$</td><td>$t \to u$</td></tr>
+      <tr><td style="text-align:left;padding-left:0.6rem">$H_5$</td><td>$s$</td></tr>
+    </tbody>
+  </table>
+  <p>Goal: derive $p \to u$.</p>
+
+  <ol class="proof-list">
+    <li><span class="lbl">1.</span><span>$p \to q$</span><span class="just">$H_1$</span></li>
+    <li><span class="lbl">2.</span><span>$q \to r$</span><span class="just">$H_2$</span></li>
+    <li><span class="lbl">3.</span><span>$\dfrac{p \to q,\;\; q \to r}{p \to r}$</span><span class="just">HS (1, 2)</span></li>
+    <li><span class="lbl">4.</span><span>$p$</span><span class="just">assumption (for $\to$-intro)</span></li>
+    <li><span class="lbl">5.</span><span>$\dfrac{p,\;\; p \to r}{r}$</span><span class="just">MP (4, 3)</span></li>
+    <li><span class="lbl">6.</span><span>$s$</span><span class="just">$H_5$</span></li>
+    <li><span class="lbl">7.</span><span>$\dfrac{r,\;\; s}{r \wedge s}$</span><span class="just">Conjunction (5, 6)</span></li>
+    <li><span class="lbl">8.</span><span>$(r \wedge s) \to t$</span><span class="just">$H_3$</span></li>
+    <li><span class="lbl">9.</span><span>$\dfrac{r \wedge s,\;\; (r \wedge s) \to t}{t}$</span><span class="just">MP (7, 8)</span></li>
+    <li><span class="lbl">10.</span><span>$t \to u$</span><span class="just">$H_4$</span></li>
+    <li><span class="lbl">11.</span><span>$\dfrac{t,\;\; t \to u}{u}$</span><span class="just">MP (9, 10)</span></li>
+    <li class="qed"><span class="lbl">12.</span><span><span class="concl">$p \to u$</span></span><span class="just">$\to$-intro discharging (4)–(11) &nbsp;$\square$</span></li>
+  </ol>
+  <p class="ref-cite">Rosen 8e §1.6 Example 5.</p>
+  <span class="slide-number">19 / 30</span>
+</section>
+
+<!-- ══ Slide 20 — Universal Instantiation ════════════════════════════ -->
+<section class="slide" id="s20">
+  <h2 class="frame-title">9.1 Universal Instantiation (UI)</h2>
+
+  <div class="thm-box">
+    For any term $c$ of the language,
+    $\;\dfrac{\forall x\, P(x)}{P(c)}.$
+  </div>
+
+  <div class="proof-box">
+    Fix an interpretation $\mathcal{M} = (U, \cdot^{\mathcal{M}})$ in which $\forall x\, P(x)$ holds. By the semantics of $\forall$, $P^{\mathcal{M}}(a)$ is true for every $a \in U$. Let $a := c^{\mathcal{M}}$, the element of $U$ denoted by the term $c$. Then $P^{\mathcal{M}}(c^{\mathcal{M}})$ is true, i.e. $\mathcal{M} \models P(c)$. $\square$
+  </div>
+
+  <div class="ex-box">
+    From $\forall x \in \mathbb{R}\,(x^2 \geq 0)$ apply UI with $c := -3$ to conclude $(-3)^2 \geq 0$, i.e. $9 \geq 0$.
+  </div>
+
+  <div class="sc-box">
+    No side condition on $c$: any term (variable, constant, or compound term like $f(t_1, \dots, t_n)$) is allowed, provided the substitution $P(x)[c/x]$ is <em>capture-avoiding</em> (Lesson 4, §1.7).
+  </div>
+  <p class="ref-cite">Rosen 8e §1.6 Table 2; Velleman 3e §3.3.</p>
+  <span class="slide-number">20 / 30</span>
+</section>
+
+<!-- ══ Slide 21 — Universal Generalization ═══════════════════════════ -->
+<section class="slide" id="s21">
+  <h2 class="frame-title">9.2 Universal Generalization (UG)</h2>
+
+  <div class="thm-box">
+    If $P(c)$ has been derived and $c$ is an <em>arbitrary</em> constant (see side condition), then
+    $\;\dfrac{P(c)}{\forall x\, P(x)}.$
+  </div>
+
+  <div class="proof-box">
+    The justification is a meta-argument about derivations. Suppose we have a derivation of $P(c)$ from $\Gamma$ in which $c$ never appears in $\Gamma$ and is never named otherwise. The derivation uses no fact specific to $c$ — every step works for any element of $U$. Hence the same derivation, with $c$ replaced everywhere by any element $a \in U$, would yield $P(a)$. Therefore $P^{\mathcal{M}}(a)$ holds for every $a$, i.e. $\mathcal{M} \models \forall x\,P(x)$. $\square$
+  </div>
+
+  <div class="sc-box">
+    $c$ must be <strong>arbitrary</strong>: it must not occur free in any hypothesis still active in the proof, and it must not have been introduced by Existential Instantiation. In practice, every proof starting with "<em>Let $c$ be an arbitrary element of $U$…</em>" is preparing to invoke UG.
+  </div>
+
+  <div class="ex-box">
+    To prove $\forall x \in \mathbb{R}\,(x \geq 0 \to x^2 \geq 0)$: <em>Let $c$ be an arbitrary real number.</em> Suppose $c \geq 0$. Then $c \cdot c \geq 0 \cdot c = 0$. By UG, $\forall x \in \mathbb{R}\,(x \geq 0 \to x^2 \geq 0)$.
+  </div>
+  <p class="ref-cite">Mendelson 6e §2.4; Rosen 8e §1.6 Table 2.</p>
+  <span class="slide-number">21 / 30</span>
+</section>
+
+<!-- ══ Slide 22 — Existential Instantiation ══════════════════════════ -->
+<section class="slide" id="s22">
+  <h2 class="frame-title">9.3 Existential Instantiation (EI)</h2>
+
+  <div class="thm-box">
+    $\;\dfrac{\exists x\, P(x)}{P(c)}\;$ where $c$ is a <em>fresh</em> constant.
+  </div>
+
+  <div class="proof-box">
+    By the semantics of $\exists$, if $\mathcal{M} \models \exists x\, P(x)$ then there is some element $a \in U$ with $P^{\mathcal{M}}(a)$. Introduce a new constant symbol $c$ and extend the interpretation by $c^{\mathcal{M}} := a$. Then $\mathcal{M} \models P(c)$. The freshness of $c$ ensures the extension does not conflict with prior interpretations. $\square$
+  </div>
+
+  <div class="sc-box">
+    $c$ must be <strong>fresh</strong>: it must not have been used anywhere earlier in the proof, in the hypotheses, or in the goal. The constant names the witness whose existence has just been asserted; we are not allowed to assume anything else about it.
+  </div>
+
+  <div class="note-box">
+    EI is the formal version of "Pick such an $x$ and call it $c$". Once you have $P(c)$, you reason about $c$ as if it were a specific (but unknown) element.
+  </div>
+  <p class="ref-cite">Rosen 8e §1.6 Table 2; Velleman 3e §3.3.</p>
+  <span class="slide-number">22 / 30</span>
+</section>
+
+<!-- ══ Slide 23 — Existential Generalization ═════════════════════════ -->
+<section class="slide" id="s23">
+  <h2 class="frame-title">9.4 Existential Generalization (EG)</h2>
+
+  <div class="thm-box">
+    For any term $c$,
+    $\;\dfrac{P(c)}{\exists x\, P(x)}.$
+  </div>
+
+  <div class="proof-box">
+    If $\mathcal{M} \models P(c)$, then $P^{\mathcal{M}}(c^{\mathcal{M}})$ holds. Setting $a := c^{\mathcal{M}}$, we have an element $a \in U$ with $P^{\mathcal{M}}(a)$, hence $\mathcal{M} \models \exists x\, P(x)$. $\square$
+  </div>
+
+  <p>No side condition: any concrete witness justifies existence. EG is the symbolic encoding of "from $7^2 + 24^2 = 25^2$ we conclude $\exists x\,\exists y\,\exists z\,(x^2 + y^2 = z^2)$".</p>
+
+  <h3 class="sub-title">Summary of the four quantifier rules</h3>
+  <div class="rule-grid">
+    <div class="rule-card">$\dfrac{\forall x\, P(x)}{P(c)}$<span class="rule-name">Univ. Instantiation</span></div>
+    <div class="rule-card">$\dfrac{P(c)\,[\,c\,\text{arbitrary}\,]}{\forall x\, P(x)}$<span class="rule-name">Univ. Generalization</span></div>
+    <div class="rule-card">$\dfrac{\exists x\, P(x)}{P(c)\,[\,c\,\text{fresh}\,]}$<span class="rule-name">Exist. Instantiation</span></div>
+    <div class="rule-card">$\dfrac{P(c)}{\exists x\, P(x)}$<span class="rule-name">Exist. Generalization</span></div>
+  </div>
+  <p class="ref-cite">Rosen 8e §1.6 Table 2.</p>
+  <span class="slide-number">23 / 30</span>
+</section>
+
+<!-- ══ Slide 24 — Side-condition counter-examples ════════════════════ -->
+<section class="slide" id="s24">
+  <h2 class="frame-title">10. Why the side conditions are necessary</h2>
+
+  <h3 class="sub-title">UG without "arbitrary" fails</h3>
+  <p>From $\;H(c)\;$ (where $c$ is a particular named constant in the hypotheses, e.g. "Socrates is human"), applying UG would yield $\;\forall x\,H(x)\;$ ("everybody is human") — clearly invalid. The side condition <em>"$c$ does not occur in any active hypothesis"</em> blocks this incorrect step.</p>
+
+  <h3 class="sub-title">EI without "fresh" fails</h3>
+  <div class="fallacy-box">
+    Suppose we have $\exists x\,P(x)$ and $\exists x\,Q(x)$. If we instantiate <em>both</em> with the same name $c$, we wrongly derive $P(c) \wedge Q(c)$, hence $\exists x\,(P(x) \wedge Q(x))$.
+  </div>
+  <div class="proof-box">
+    Counter-example on $U = \{1, 2\}$ with $P(x) := (x = 1)$ and $Q(x) := (x = 2)$. Then $\exists x\,P(x)$ and $\exists x\,Q(x)$ both hold (witnesses $1$ and $2$), but no element of $U$ satisfies both — there is no $x$ with $x = 1 \wedge x = 2$. The "shared $c$" derivation is invalid because the second EI must introduce a <em>different</em> fresh name. $\square$
+  </div>
+
+  <p>This is the same issue as the failed equivalence $\exists x(P \wedge Q) \not\equiv \exists x P \wedge \exists x Q$ from Lesson 4 §8.2.</p>
+  <p class="ref-cite">Mendelson 6e §2.4; Velleman 3e §3.3.</p>
+  <span class="slide-number">24 / 30</span>
+</section>
+
+<!-- ══ Slide 25 — Mixed example ══════════════════════════════════════ -->
+<section class="slide" id="s25">
+  <h2 class="frame-title">11. Mixed propositional / predicate example</h2>
+
+  <p>Let $C(x), D(x), E(x)$ be unary predicates and $o$ a constant. Abbreviate</p>
+  <table class="truth-table" style="width:55%; margin:0.4rem auto; font-size:0.95rem;">
+    <thead><tr><th style="text-align:left;padding-left:0.6rem">Symbol</th><th>Stands for</th></tr></thead>
+    <tbody>
+      <tr><td style="text-align:left;padding-left:0.6rem">$p$</td><td>$\exists x\, C(x)$</td></tr>
+      <tr><td style="text-align:left;padding-left:0.6rem">$q$</td><td>$\exists x\, D(x)$</td></tr>
+      <tr><td style="text-align:left;padding-left:0.6rem">$r$</td><td>$\exists x\, E(x)$</td></tr>
+    </tbody>
+  </table>
+
+  <p>Hypotheses: $H_1: \neg p \to \neg q,\;\;\; H_2: D(o),\;\;\; H_3: \neg p \vee r$. Goal: derive $r$.</p>
+
+  <ol class="proof-list">
+    <li><span class="lbl">1.</span><span>$D(o)$</span><span class="just">$H_2$</span></li>
+    <li><span class="lbl">2.</span><span>$\dfrac{D(o)}{\exists x\, D(x)} \equiv q$</span><span class="just">EG (1)</span></li>
+    <li><span class="lbl">3.</span><span>$\neg p \to \neg q$</span><span class="just">$H_1$</span></li>
+    <li><span class="lbl">4.</span><span>$\dfrac{\neg p \to \neg q,\;\; q}{p}$</span><span class="just">MT (3, 2) — contrapositive form</span></li>
+    <li><span class="lbl">5.</span><span>$\neg p \vee r$</span><span class="just">$H_3$</span></li>
+    <li class="qed"><span class="lbl">6.</span><span><span class="concl">$\dfrac{\neg p \vee r,\;\; p}{r}$</span></span><span class="just">DS (5, 4) &nbsp;$\square$</span></li>
+  </ol>
+
+  <div class="sympy-block">
+    <span class="pane-label">Python — entailment check</span>
+    <span class="pane-code">from sympy import symbols, And, Or, Not, Implies
+from sympy.logic.inference import satisfiable
+
+p, q, r = symbols('p q r')
+premises = And(Implies(Not(p), Not(q)),   # H1
+               q,                          # q follows from EG on D(o)
+               Or(Not(p), r))              # H3
+print(satisfiable(And(premises, Not(r))) is False)   # True — r is entailed</span>
+  </div>
+  <p class="ref-cite">Rosen 8e §1.6 Example 16.</p>
+  <span class="slide-number">25 / 30</span>
+</section>
+
+<!-- ══ Slide 26 — Derived rules ══════════════════════════════════════ -->
+<section class="slide" id="s26">
+  <h2 class="frame-title">12. Derived rules — constructive &amp; destructive dilemma</h2>
+
+  <p>Beyond the eight basic rules, several <em>derived</em> rules are convenient. Each is a shorthand for a short proof from the basic rules.</p>
+
+  <div class="thm-box">
+    <strong>Constructive dilemma.</strong> $\;\{(p \to q) \wedge (r \to s),\;\; p \vee r\} \;\models\; q \vee s.$
+  </div>
+  <div class="proof-box">
+    Given the premises, suppose $v$ satisfies them. By DS / case analysis on $p \vee r$: if $v(p)$, then by MP on $p \to q$ we get $v(q)$, hence $v(q \vee s)$; if $v(r)$, then by MP on $r \to s$ we get $v(s)$, hence $v(q \vee s)$. $\square$
+  </div>
+
+  <div class="thm-box">
+    <strong>Destructive dilemma.</strong> $\;\{(p \to q) \wedge (r \to s),\;\; \neg q \vee \neg s\} \;\models\; \neg p \vee \neg r.$
+  </div>
+  <div class="proof-box">
+    By case analysis on $\neg q \vee \neg s$: if $v(\neg q)$, then by MT on $p \to q$ we get $v(\neg p)$, hence $v(\neg p \vee \neg r)$; if $v(\neg s)$, then by MT on $r \to s$ we get $v(\neg r)$, hence $v(\neg p \vee \neg r)$. $\square$
+  </div>
+
+  <div class="thm-box">
+    <strong>Absorption.</strong> $\;p \to q \;\models\; p \to (p \wedge q).$
+  </div>
+  <div class="proof-box">
+    Assume $p$. By MP on $p \to q$ derive $q$. By Conjunction derive $p \wedge q$. Discharge the assumption by $\to$-intro to obtain $p \to (p \wedge q)$. $\square$
+  </div>
+  <p class="ref-cite">Rosen 8e §1.6 Ex. 11–14; Mendelson 6e §1.6.</p>
+  <span class="slide-number">26 / 30</span>
+</section>
+
+<!-- ══ Slide 27 — Soundness theorem ══════════════════════════════════ -->
+<section class="slide" id="s27">
+  <h2 class="frame-title">13.1 Soundness theorem (proved)</h2>
+
+  <div class="thm-box">
+    <strong>Soundness.</strong> For every finite set $\Gamma$ of propositional formulas and every formula $\psi$,
+    $$\Gamma \vdash \psi \;\;\Longrightarrow\;\; \Gamma \models \psi.$$
+    In words: every formula derivable by the eight rules is also a logical consequence of $\Gamma$.
+  </div>
+
+  <div class="proof-box">
+    By induction on the length $n$ of the derivation $\varphi_1, \varphi_2, \ldots, \varphi_n = \psi$.<br>
+    <em>Base case $n = 1$.</em> Then $\varphi_1$ is either a hypothesis (in which case trivially $\Gamma \models \varphi_1$) or an axiom (a tautology, true in every valuation). In both cases $\Gamma \models \varphi_1$.<br>
+    <em>Inductive step.</em> Assume every formula appearing before $\varphi_n$ is entailed by $\Gamma$. If $\varphi_n$ is a hypothesis or axiom, the base argument applies. Otherwise $\varphi_n$ was obtained from some earlier $\varphi_{i_1}, \ldots, \varphi_{i_k}$ by a rule $\mathcal{R}$. By the inductive hypothesis, $\Gamma \models \varphi_{i_j}$ for each $j$, so any valuation satisfying $\Gamma$ also satisfies all premises of $\mathcal{R}$. By the validity of $\mathcal{R}$ (proved on slides 9–15), the conclusion $\varphi_n$ is also satisfied. Hence $\Gamma \models \varphi_n$. $\square$
+  </div>
+
+  <div class="note-box">
+    Soundness reduces the correctness of the whole proof system to the correctness of each individual rule — exactly what we verified, one rule at a time, in slides 9–15.
+  </div>
+  <p class="ref-cite">Mendelson 6e Theorem 1.13; Cori &amp; Lascar vol. 1.</p>
+  <span class="slide-number">27 / 30</span>
+</section>
+
+<!-- ══ Slide 28 — Completeness theorem ═══════════════════════════════ -->
+<section class="slide" id="s28">
+  <h2 class="frame-title">13.2 Completeness theorem (statement &amp; sketch)</h2>
+
+  <div class="thm-box">
+    <strong>Completeness (Post 1921 / Gödel 1929 for first-order logic).</strong> For every finite set $\Gamma$ and every formula $\psi$,
+    $$\Gamma \models \psi \;\;\Longleftrightarrow\;\; \Gamma \vdash \psi.$$
+    Hence semantic entailment and syntactic derivability coincide.
+  </div>
+
+  <p><strong>Sketch of proof (propositional case).</strong> The non-trivial direction is $\models \Rightarrow \vdash$. The standard <em>Henkin-style</em> argument runs as follows.</p>
+  <ol>
+    <li>Assume $\Gamma \not\vdash \psi$. We construct a valuation satisfying $\Gamma$ but falsifying $\psi$, contradicting $\Gamma \models \psi$.</li>
+    <li>By Zorn / Lindenbaum, extend $\Gamma \cup \{\neg \psi\}$ to a maximal consistent set $\Gamma^*$ (one that proves no contradiction yet adding any formula to it would).</li>
+    <li>Define $v(p) := \mathtt T$ iff $p \in \Gamma^*$. By maximality and consistency, $v$ extends to all formulas and $v(\chi) = \mathtt T \Leftrightarrow \chi \in \Gamma^*$.</li>
+    <li>Then $v$ satisfies $\Gamma$ and falsifies $\psi$ — contradiction. Hence $\Gamma \vdash \psi$.</li>
+  </ol>
+
+  <p>For first-order logic, Gödel's 1929 completeness theorem extends this construction; the Henkin proof additionally produces witnesses for existential statements via fresh constants. Note: this is <em>completeness</em>, not Gödel's later <em>incompleteness</em> theorem, which concerns Peano arithmetic.</p>
+  <p class="ref-cite">Mendelson 6e §1.6 / §2.5; Cori &amp; Lascar vol. 1 ch. 4.</p>
+  <span class="slide-number">28 / 30</span>
+</section>
+
+<!-- ══ Slide 29 — Wolfram → Python reference ═════════════════════════ -->
+<section class="slide" id="s29">
+  <h2 class="frame-title">14. Wolfram → Python quick reference</h2>
+
+  <table class="ref-table">
+    <thead><tr><th>Task</th><th>Wolfram</th><th>Python (SymPy / Z3)</th></tr></thead>
+    <tbody>
+      <tr><td>Check a tautology</td><td><code>TautologyQ[expr]</code></td><td><code>not satisfiable(Not(expr))</code></td></tr>
+      <tr><td>Check entailment $\Gamma \models \psi$</td><td><code>Resolve[Implies[And@@G, psi]]</code></td><td><code>satisfiable(And(G, Not(psi))) is False</code></td></tr>
+      <tr><td>Modus Ponens</td><td>—</td><td><code>And(Implies(p,q), p)</code> implies <code>q</code></td></tr>
+      <tr><td>Find a model</td><td><code>FindInstance</code></td><td><code>satisfiable(expr)</code> returns a dict</td></tr>
+      <tr><td>First-order entailment</td><td><code>Resolve[ForAll[…]]</code></td><td><code>z3.Solver()</code> / <code>z3.prove()</code></td></tr>
+    </tbody>
+  </table>
+
+  <div class="setup-block">
+    <span class="pane-label">Python — generic entailment helper</span>
+    <span class="pane-code">from sympy import And, Not
+from sympy.logic.inference import satisfiable
+
+def entails(premises, goal):
+    """Return True iff premises ⊨ goal."""
+    return satisfiable(And(premises, Not(goal))) is False</span>
+  </div>
+
+  <div class="sympy-block">
+    <span class="pane-label">Python — verify all eight propositional rules</span>
+    <span class="pane-code">from sympy import symbols, And, Or, Not, Implies
+p, q, r = symbols('p q r')
+checks = {
+    'Modus Ponens'     : (And(p, Implies(p, q)),                 q),
+    'Modus Tollens'    : (And(Not(q), Implies(p, q)),            Not(p)),
+    'Hyp. Syllogism'   : (And(Implies(p, q), Implies(q, r)),     Implies(p, r)),
+    'Disj. Syllogism'  : (And(Or(p, q), Not(p)),                 q),
+    'Addition'         : (p,                                     Or(p, q)),
+    'Simplification'   : (And(p, q),                             p),
+    'Conjunction'      : (And(p, q),                             And(p, q)),
+    'Resolution'       : (And(Or(p, q), Or(Not(p), r)),          Or(q, r)),
+}
+for name, (G, psi) in checks.items():
+    print(f'{name:<18} {entails(G, psi)}')         # all True</span>
+  </div>
+  <span class="slide-number">29 / 30</span>
+</section>
+
+<!-- ══ Slide 30 — Summary & bibliography ═════════════════════════════ -->
+<section class="slide" id="s30">
+  <h2 class="frame-title">Summary &amp; bibliography</h2>
+
+  <h3 class="sub-title">What we proved</h3>
+  <ul>
+    <li>The eight propositional rules — MP, MT, HS, DS, Addition, Simplification, Conjunction, Resolution — each shown valid by a direct semantic argument (slides 9–15).</li>
+    <li>The two classical fallacies are <em>invalid</em>, refuted by the single counter-valuation $v(p)=\mathtt F,\;v(q)=\mathtt T$ (slide 16).</li>
+    <li>The four quantifier rules — UI, UG, EI, EG — with their side conditions (slides 20–23); concrete counter-examples for what goes wrong when the conditions fail (slide 24).</li>
+    <li>Three derived rules: constructive dilemma, destructive dilemma, absorption (slide 26).</li>
+    <li><strong>Soundness</strong> of the system: $\Gamma \vdash \psi \Rightarrow \Gamma \models \psi$ (slide 27).</li>
+    <li><strong>Completeness</strong> (statement + Henkin sketch): $\Gamma \models \psi \Rightarrow \Gamma \vdash \psi$ (slide 28).</li>
+  </ul>
+
+  <h3 class="sub-title">Bibliography</h3>
+  <ul>
+    <li>K. H. Rosen. <em>Discrete Mathematics and Its Applications</em>, 8th ed., McGraw-Hill, 2019 — §1.6 (rules of inference, Tables 1 &amp; 2), §1.7 (proof methods).</li>
+    <li>D. J. Velleman. <em>How To Prove It</em>, 3rd ed., Cambridge UP, 2019 — §3.1–3.3 (proof strategies for $\to$, $\forall$, $\exists$).</li>
+    <li>E. Mendelson. <em>Introduction to Mathematical Logic</em>, 6th ed., CRC Press, 2015 — §1.5–1.6 (soundness), §2.4–2.5 (completeness of first-order logic).</li>
+    <li>R. Cori &amp; D. Lascar. <em>Mathematical Logic, vol. 1</em>, Oxford UP, 2000 — ch. 2 (formal proofs), ch. 4 (completeness theorem).</li>
+    <li>R. Lalement. <em>Logique, réduction, résolution</em>, Masson, 1990 — ch. 3 (resolution as a complete proof method).</li>
+    <li>E. Post (1921). <em>Introduction to a General Theory of Elementary Propositions</em> — original completeness proof for propositional logic.</li>
+    <li>K. Gödel (1929). <em>Über die Vollständigkeit des Logikkalküls</em> — completeness theorem for first-order logic.</li>
+  </ul>
+
+  <p style="margin-top:1rem;color:#e67e22;font-style:italic;font-weight:600;">Notes By Pr. El Hadiq Zouhair</p>
+  <span class="slide-number">30 / 30</span>
+</section>
+
+<!-- ── Navigation ─────────────────────────────────────────────────── -->
+<div id="nav">
+  <button id="btn-prev"   title="Previous">&#8592;</button>
+  <button id="btn-scroll" title="Toggle slideshow">Slideshow</button>
+  <button id="btn-next"   title="Next">&#8594;</button>
+</div>
+
+<script>
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  let current = 0, slideshowMode = false;
+
+  function enter(i) {
+    slides[current].classList.remove('active');
+    current = (i + slides.length) % slides.length;
+    slides[current].classList.add('active');
+    slides[current].scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  document.getElementById('btn-prev').addEventListener('click', () => {
+    if (slideshowMode) enter(current - 1);
+  });
+  document.getElementById('btn-next').addEventListener('click', () => {
+    if (slideshowMode) enter(current + 1);
+  });
+  document.getElementById('btn-scroll').addEventListener('click', () => {
+    slideshowMode = !slideshowMode;
+    document.body.classList.toggle('slideshow', slideshowMode);
+    document.getElementById('btn-scroll').textContent = slideshowMode ? 'Scroll' : 'Slideshow';
+    if (slideshowMode) slides[current].classList.add('active');
+    else slides.forEach(s => s.classList.remove('active'));
+  });
+
+  document.addEventListener('keydown', e => {
+    if (!slideshowMode) return;
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') enter(current + 1);
+    if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   enter(current - 1);
+  });
+</script>
+</body>
+</html>

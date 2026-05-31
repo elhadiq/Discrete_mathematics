@@ -1,0 +1,1082 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Relations and Functions — Full Course v2 — Discrete Mathematics</title>
+<script>
+  MathJax = {
+    tex: { inlineMath: [['$','$']], displayMath: [['$$','$$']], processEscapes: true },
+    options: { skipHtmlTags: ['script','noscript','style','textarea'] }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --orange:    #e67e22;
+  --darkblue:  #2c3e50;
+  --lightbg:   #f4f9fc;
+  --rowred:    #ffe8e8;
+  --rowblue:   #e3eeff;
+  --border:    #dce3ea;
+  --py-fg:     #1f4e7a;
+  --py-bg:     #eaf3fb;
+  --py-border: #2a6fb3;
+  --py-head:   #2a6fb3;
+  --sp-fg:     #1e824c;
+  --sp-bg:     #e8f5ec;
+  --sp-border: #27ae60;
+  --sp-head:   #27ae60;
+  --su-fg:     #4a4aaa;
+  --su-bg:     #eeeeff;
+  --su-border: #6060cc;
+  --su-head:   #6060cc;
+  --out-fg:    #6e4b0a;
+  --out-bg:    #fff7e0;
+  --out-border:#e0b341;
+  --out-head:  #c89324;
+}
+
+body {
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  background: #e8edf2;
+  color: var(--darkblue);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem 1rem 5rem;
+  gap: 2rem;
+}
+
+.slide {
+  background: #fff;
+  width: 100%;
+  max-width: 940px;
+  border-radius: 10px;
+  box-shadow: 0 4px 18px rgba(0,0,0,.10);
+  padding: 2.2rem 2.8rem 1.8rem;
+  position: relative;
+}
+.slide-number {
+  position: absolute;
+  bottom: 0.7rem;
+  right: 1.2rem;
+  font-size: 0.72rem;
+  color: #aaa;
+}
+
+.slide.title-slide {
+  background: linear-gradient(145deg, #f4f9fc 60%, #e0eef7);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 240px;
+  text-align: center;
+  border-top: 6px solid var(--orange);
+}
+.slide.title-slide h1 { font-size: 1.9rem; color: var(--darkblue); margin-bottom: 0.4rem; }
+.slide.title-slide .subtitle { font-size: 1.15rem; color: #555; }
+.slide.title-slide .author   { font-size: 1rem; color: var(--orange); margin-top: 0.7rem; font-style: italic; }
+
+h2.frame-title {
+  font-size: 1.55rem;
+  color: var(--orange);
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  padding-bottom: 0.35rem;
+  border-bottom: 2px solid #f9e4cc;
+}
+h3.sub-title {
+  font-size: 1.05rem;
+  color: var(--orange);
+  font-weight: 600;
+  margin: 0.7rem 0 0.3rem;
+}
+
+p { line-height: 1.7; margin: 0.45rem 0; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.4rem; line-height: 1.8; }
+ul li::marker, ol li::marker { color: var(--orange); }
+code { background: #f0f3f7; color: #1f4e7a; padding: 0 .25em; border-radius: 3px; font-family: 'Consolas','Fira Code',monospace; }
+
+/* ── Coloured boxes ────────────────────────────────────────────────── */
+.note-box, .def-box, .thm-box, .proof-box, .ex-box, .ce-box, .cor-box {
+  border-radius: 6px;
+  padding: 0.7rem 1rem;
+  margin: 0.6rem 0;
+  line-height: 1.7;
+}
+.note-box  { background: #fff5e8; border-left: 4px solid var(--orange); font-style: italic; }
+.def-box   { background: #eaf3fb; border-left: 4px solid var(--py-border); }
+.def-box::before  { content: "Definition. "; font-weight: 700; color: var(--py-border); }
+.thm-box   { background: #fff7e0; border-left: 4px solid var(--out-border); }
+.thm-box::before  { content: "Theorem. "; font-weight: 700; color: var(--out-head); }
+.cor-box   { background: #fff7e0; border-left: 4px solid var(--out-border); }
+.cor-box::before  { content: "Corollary. "; font-weight: 700; color: var(--out-head); }
+.proof-box { background: #f4f9fc; border-left: 4px solid var(--darkblue); }
+.proof-box::before { content: "Proof. "; font-weight: 700; color: var(--darkblue); }
+.ex-box    { background: #e8f5ec; border-left: 4px solid var(--sp-border); }
+.ex-box::before    { content: "Example. "; font-weight: 700; color: var(--sp-border); }
+.ce-box    { background: #ffe8e8; border-left: 4px solid #c0395a; }
+.ce-box::before    { content: "Counter-example. "; font-weight: 700; color: #c0395a; }
+
+/* ── Code blocks ──────────────────────────────────────────────────── */
+.python-block, .setup-block, .sympy-block, .output-block {
+  border-radius: 6px;
+  overflow: hidden;
+  margin: 0.6rem 0;
+  border: 1px solid;
+}
+.pane-label {
+  display: block;
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  color: #fff;
+}
+.pane-code {
+  font-family: 'Consolas','Fira Code',monospace;
+  font-size: 0.83rem;
+  line-height: 1.6;
+  padding: 0.5rem 0.75rem;
+  white-space: pre;
+  display: block;
+  overflow-x: auto;
+}
+.python-block { border-color: var(--py-border); }
+.python-block .pane-label { background: var(--py-head); }
+.python-block .pane-code  { background: var(--py-bg); color: var(--py-fg); }
+.sympy-block  { border-color: var(--sp-border); }
+.sympy-block  .pane-label { background: var(--sp-head); }
+.sympy-block  .pane-code  { background: var(--sp-bg); color: var(--sp-fg); }
+.setup-block  { border-color: var(--su-border); }
+.setup-block  .pane-label { background: var(--su-head); }
+.setup-block  .pane-code  { background: var(--su-bg); color: var(--su-fg); }
+.output-block { border-color: var(--out-border); }
+.output-block .pane-label { background: var(--out-head); }
+.output-block .pane-code  { background: var(--out-bg); color: var(--out-fg); }
+
+/* ── Tables ───────────────────────────────────────────────────────── */
+.truth-table, .ref-table {
+  border-collapse: collapse;
+  margin: 0.6rem auto;
+  font-size: 0.9rem;
+  width: 100%;
+}
+.truth-table th, .truth-table td,
+.ref-table th,  .ref-table td {
+  border: 1px solid var(--border);
+  padding: 0.4rem 0.75rem;
+  text-align: left;
+  vertical-align: top;
+}
+.truth-table th, .ref-table th { background: var(--lightbg); font-weight: 600; color: var(--darkblue); }
+.truth-table tr.row-t { background: var(--rowred); }
+.truth-table tr.row-f { background: var(--rowblue); }
+.center td, .center th { text-align: center; }
+
+/* ── Slideshow nav ────────────────────────────────────────────────── */
+#nav { position: fixed; bottom: 1.5rem; right: 1.5rem; display: flex; gap: 0.4rem; z-index: 100; }
+#nav button {
+  background: var(--orange); color: #fff; border: none;
+  border-radius: 50%; width: 40px; height: 40px;
+  font-size: 1.1rem; cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,.25); transition: background .2s;
+}
+#nav button:hover { background: #cf6d17; }
+#nav #btn-scroll { border-radius: 20px; width: auto; padding: 0 12px; font-size: 0.8rem; }
+
+body.slideshow .slide        { display: none; }
+body.slideshow .slide.active { display: block; }
+
+.ref-cite { color: #777; font-size: 0.85rem; font-style: italic; }
+.chip {
+  display: inline-block;
+  background: #f9e4cc;
+  color: #8a4a0e;
+  padding: 0 .45em;
+  border-radius: 4px;
+  font-weight: 600;
+  font-size: .9em;
+}
+</style>
+</head>
+<body>
+
+<!-- ══ Slide 1 — Title ════════════════════════════════════════════════ -->
+<section class="slide title-slide" id="s1">
+  <h1>Relations and Functions</h1>
+  <p class="subtitle">Discrete Mathematics — Session 2 (Full Course v2)</p>
+  <p style="font-size:1rem;color:#e67e22;margin-top:0.8rem;font-style:italic;font-weight:600;letter-spacing:.02em;">Notes By Pr. El Hadiq Zouhair</p>
+  <span class="slide-number">1 / 32</span>
+</section>
+
+<!-- ══ Slide 2 — Outline ═════════════════════════════════════════════ -->
+<section class="slide" id="s2">
+  <h2 class="frame-title">Outline of the course</h2>
+  <ol>
+    <li><strong>Part I — Relations.</strong> Cartesian product, binary and $n$-ary relations, representations (set, matrix, digraph), operations, composition.</li>
+    <li>Properties of binary relations on a set: reflexive, irreflexive, symmetric, antisymmetric, asymmetric, transitive — with formal definitions, counter-examples, and proofs.</li>
+    <li>Special relations: equivalence relations and the partition theorem (proved); partial / total / strict / well orders.</li>
+    <li>Closures of a relation: reflexive, symmetric, transitive (constructive proofs).</li>
+    <li><strong>Part II — Functions.</strong> Function as a special relation; equality, restriction, image, preimage.</li>
+    <li>Injection, surjection, bijection — definitions and characterisations.</li>
+    <li>Composition of functions — associativity (proved), behaviour of injection / surjection / bijection under composition (proved).</li>
+    <li>Inverse function — existence theorem ($f$ invertible iff $f$ bijective), uniqueness, properties (proved).</li>
+    <li>Image and preimage of sets — distribution over $\cup$, $\cap$, $\setminus$ (proved, with the failure cases).</li>
+    <li>Cardinality via bijections — finite, countable, uncountable; Cantor's theorem (proved).</li>
+    <li>Summary, Wolfram → Python reference, bibliography.</li>
+  </ol>
+  <p class="ref-cite">References: Rosen 8e §§9.1–9.6, §2.3; Velleman 3e ch. 4–5; Halmos, <em>Naive Set Theory</em>; Cori &amp; Lascar vol. 1.</p>
+  <span class="slide-number">2 / 32</span>
+</section>
+
+<!-- ══ Slide 3 — Cartesian product ═══════════════════════════════════ -->
+<section class="slide" id="s3">
+  <h2 class="frame-title">1.1 Cartesian product — recap</h2>
+
+  <div class="def-box">
+    Given two sets $A$ and $B$, their <strong>Cartesian product</strong> is
+    $$A \times B \;:=\; \{\,(a, b) \;:\; a \in A,\; b \in B\,\}.$$
+    The elements $(a, b)$ are <em>ordered pairs</em>: $(a,b) = (a',b')$ iff $a = a'$ and $b = b'$.
+  </div>
+
+  <div class="thm-box">
+    If $|A| = m$ and $|B| = n$ are finite, then $|A \times B| = m \cdot n$.
+  </div>
+  <div class="proof-box">
+    Enumerate $A = \{a_1, \dots, a_m\}$. For each $a_i$ there are exactly $|B| = n$ pairs $(a_i, b)$ with $b \in B$. These $m$ collections are pairwise disjoint (different first components). By the sum / product rule for finite sets, $|A \times B| = \sum_{i=1}^{m} n = m \cdot n$. $\square$
+  </div>
+
+  <p>For $n$ sets the construction iterates: $A_1 \times A_2 \times \cdots \times A_n$ is the set of $n$-tuples $(a_1, \dots, a_n)$ with $a_i \in A_i$.</p>
+
+  <div class="ex-box">
+    $\{1,2\} \times \{a,b,c\} = \{(1,a),(1,b),(1,c),(2,a),(2,b),(2,c)\}$ — six elements.
+  </div>
+  <p class="ref-cite">Rosen 8e §2.1, p. 130.</p>
+  <span class="slide-number">3 / 32</span>
+</section>
+
+<!-- ══ Slide 4 — Binary and n-ary relations ══════════════════════════ -->
+<section class="slide" id="s4">
+  <h2 class="frame-title">1.2 Binary and $n$-ary relations</h2>
+
+  <div class="def-box">
+    A <strong>binary relation</strong> from $A$ to $B$ is any subset $R \subseteq A \times B$. We write $a\,R\,b$ (or $(a,b) \in R$) to mean "$a$ is related to $b$". When $A = B$ we speak of a <em>binary relation on $A$</em>.<br>
+    Generally, an <strong>$n$-ary relation</strong> on $A_1, \dots, A_n$ is a subset $R \subseteq A_1 \times \cdots \times A_n$.
+  </div>
+
+  <p>Two extreme cases on $A \times B$ deserve names:</p>
+  <ul>
+    <li>$\varnothing \subseteq A \times B$ — the <em>empty relation</em>: nothing is related to anything.</li>
+    <li>$A \times B$ itself — the <em>universal (full) relation</em>: everything is related to everything.</li>
+  </ul>
+
+  <div class="thm-box">
+    There are exactly $2^{mn}$ binary relations from $A$ to $B$ when $|A|=m$, $|B|=n$.
+  </div>
+  <div class="proof-box">
+    A binary relation is a subset of $A \times B$, which has $mn$ elements. The number of subsets of a set of size $k$ is $2^k$, so the count is $2^{mn}$. $\square$
+  </div>
+  <p class="ref-cite">Rosen 8e §9.1, p. 597.</p>
+  <span class="slide-number">4 / 32</span>
+</section>
+
+<!-- ══ Slide 5 — Representations of a relation ═══════════════════════ -->
+<section class="slide" id="s5">
+  <h2 class="frame-title">1.3 Representations of a relation</h2>
+
+  <p>Take $A = \{1, 2, 3\}$, $B = \{a, b\}$, and $R = \{(1,a), (1,b), (3,a)\}$.</p>
+
+  <h3 class="sub-title">As a set of ordered pairs</h3>
+  <p>$R = \{(1,a), (1,b), (3,a)\}$.</p>
+
+  <h3 class="sub-title">As a Boolean matrix $M_R$</h3>
+  <p>Rows indexed by $A$, columns by $B$; entry $1$ iff $(a_i, b_j) \in R$.</p>
+  <table class="truth-table center" style="max-width:300px;">
+    <thead><tr><th></th><th>$a$</th><th>$b$</th></tr></thead>
+    <tbody>
+      <tr><th>$1$</th><td>$1$</td><td>$1$</td></tr>
+      <tr><th>$2$</th><td>$0$</td><td>$0$</td></tr>
+      <tr><th>$3$</th><td>$1$</td><td>$0$</td></tr>
+    </tbody>
+  </table>
+
+  <h3 class="sub-title">As a directed graph (digraph), when $A = B$</h3>
+  <p>Vertices = elements of $A$; draw an arrow $u \to v$ iff $(u, v) \in R$. Loops $u \to u$ are allowed when $(u,u) \in R$.</p>
+
+  <div class="setup-block">
+    <span class="pane-label">Python — represent a relation</span>
+    <span class="pane-code"># As a set of tuples
+R = {(1,'a'), (1,'b'), (3,'a')}
+
+# As a Boolean matrix (rows=A, cols=B)
+import numpy as np
+A, B = [1,2,3], ['a','b']
+M = np.array([[(a,b) in R for b in B] for a in A], dtype=int)
+print(M)</span>
+  </div>
+  <p class="ref-cite">Rosen 8e §9.3.</p>
+  <span class="slide-number">5 / 32</span>
+</section>
+
+<!-- ══ Slide 6 — Operations on relations ═════════════════════════════ -->
+<section class="slide" id="s6">
+  <h2 class="frame-title">1.4 Operations on relations</h2>
+
+  <div class="def-box">
+    Let $R, S \subseteq A \times B$ and $T \subseteq B \times C$.
+    <ul>
+      <li><strong>Union</strong>: $R \cup S = \{(a,b) : (a,b) \in R \;\text{or}\; (a,b) \in S\}$.</li>
+      <li><strong>Intersection</strong>: $R \cap S = \{(a,b) : (a,b) \in R \;\text{and}\; (a,b) \in S\}$.</li>
+      <li><strong>Complement</strong>: $\bar R = (A \times B) \setminus R$.</li>
+      <li><strong>Inverse</strong>: $R^{-1} = \{(b,a) : (a,b) \in R\} \subseteq B \times A$.</li>
+      <li><strong>Composition</strong>: $T \circ R = \{(a,c) : \exists b \in B,\; (a,b) \in R \wedge (b,c) \in T\} \subseteq A \times C$.</li>
+    </ul>
+  </div>
+
+  <div class="thm-box">
+    Composition of binary relations is associative: $(U \circ T) \circ R \;=\; U \circ (T \circ R)$.
+  </div>
+  <div class="proof-box">
+    Take $(a,d) \in (U \circ T) \circ R$ iff $\exists b\, ((a,b) \in R \wedge (b,d) \in U \circ T)$ iff $\exists b\,\exists c\,((a,b) \in R \wedge (b,c) \in T \wedge (c,d) \in U)$. This last formula is symmetric in the two parenthesisations, so it also equals $\exists c\,((a,c) \in T \circ R \wedge (c,d) \in U)$, i.e. $(a,d) \in U \circ (T \circ R)$. $\square$
+  </div>
+
+  <div class="thm-box">
+    $\;(R^{-1})^{-1} = R\;$ and $\;(T \circ R)^{-1} = R^{-1} \circ T^{-1}\;$ (note the order reversal).
+  </div>
+  <p class="ref-cite">Rosen 8e §9.1, p. 600; Halmos, §§7–8.</p>
+  <span class="slide-number">6 / 32</span>
+</section>
+
+<!-- ══ Slide 7 — Properties of relations ═════════════════════════════ -->
+<section class="slide" id="s7">
+  <h2 class="frame-title">2.1 Properties of binary relations on $A$</h2>
+
+  <p>Let $R \subseteq A \times A$.</p>
+  <table class="ref-table">
+    <thead><tr><th>Property</th><th>Definition</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Reflexive</strong></td><td>$\forall a \in A,\; (a,a) \in R$.</td></tr>
+      <tr><td><strong>Irreflexive</strong></td><td>$\forall a \in A,\; (a,a) \notin R$.</td></tr>
+      <tr><td><strong>Symmetric</strong></td><td>$\forall a,b \in A,\; (a,b) \in R \to (b,a) \in R$.</td></tr>
+      <tr><td><strong>Antisymmetric</strong></td><td>$\forall a,b \in A,\; ((a,b) \in R \wedge (b,a) \in R) \to a = b$.</td></tr>
+      <tr><td><strong>Asymmetric</strong></td><td>$\forall a,b \in A,\; (a,b) \in R \to (b,a) \notin R$.</td></tr>
+      <tr><td><strong>Transitive</strong></td><td>$\forall a,b,c \in A,\; ((a,b) \in R \wedge (b,c) \in R) \to (a,c) \in R$.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="note-box">
+    "Irreflexive" $\neq$ "not reflexive". A relation can fail reflexivity without being irreflexive — e.g. on $A = \{1,2\}$ the relation $\{(1,1)\}$ has $(1,1) \in R$ (so not irreflexive) but $(2,2) \notin R$ (so not reflexive either). The two properties are stronger than the negations of each other.
+  </div>
+  <p class="ref-cite">Rosen 8e §9.1, pp. 599–602.</p>
+  <span class="slide-number">7 / 32</span>
+</section>
+
+<!-- ══ Slide 8 — Symmetric vs antisymmetric vs asymmetric ════════════ -->
+<section class="slide" id="s8">
+  <h2 class="frame-title">2.2 Symmetric vs antisymmetric vs asymmetric</h2>
+
+  <div class="thm-box">
+    $R$ is asymmetric iff $R$ is both irreflexive and antisymmetric.
+  </div>
+  <div class="proof-box">
+    <strong>(⇒)</strong> Assume $R$ asymmetric. If $(a,a) \in R$, asymmetry gives $(a,a) \notin R$, contradiction; hence $R$ irreflexive. If $(a,b),(b,a) \in R$ then asymmetry on $(a,b)$ gives $(b,a) \notin R$, contradiction unless $a = b$; but then $(a,a) \in R$, again contradicted by irreflexivity. So $a$ and $b$ cannot both be related — antisymmetry is satisfied vacuously when both directions never hold. <br>
+    <strong>(⇐)</strong> Assume $R$ irreflexive and antisymmetric. If $(a,b) \in R$ and $(b,a) \in R$, antisymmetry gives $a = b$, but then $(a,a) \in R$ contradicts irreflexivity. So $(b,a) \notin R$ — $R$ is asymmetric. $\square$
+  </div>
+
+  <div class="ex-box">
+    <ul>
+      <li>"$=$" on any set: reflexive, symmetric, antisymmetric, transitive.</li>
+      <li>"$\leq$" on $\mathbb{R}$: reflexive, antisymmetric, transitive (a partial order).</li>
+      <li>"$&lt;$" on $\mathbb{R}$: irreflexive, asymmetric, transitive (a strict order).</li>
+      <li>"$\perp$" (perpendicularity) on lines in the plane: irreflexive, symmetric, not transitive.</li>
+      <li>"$|$" (divides) on $\mathbb{N}^*$: reflexive, antisymmetric, transitive (partial order).</li>
+    </ul>
+  </div>
+  <p class="ref-cite">Rosen 8e §9.1, p. 601; Velleman 3e §4.5.</p>
+  <span class="slide-number">8 / 32</span>
+</section>
+
+<!-- ══ Slide 9 — Equivalence relations ═══════════════════════════════ -->
+<section class="slide" id="s9">
+  <h2 class="frame-title">3.1 Equivalence relations</h2>
+
+  <div class="def-box">
+    A binary relation $R$ on $A$ is an <strong>equivalence relation</strong> iff it is <em>reflexive</em>, <em>symmetric</em>, and <em>transitive</em>. We then write $a \sim b$ for $(a,b) \in R$.
+  </div>
+
+  <div class="def-box">
+    For each $a \in A$, the <strong>equivalence class</strong> of $a$ modulo $\sim$ is
+    $$[a] \;:=\; \{\,x \in A \;:\; x \sim a\,\}.$$
+    The set of all equivalence classes is the <strong>quotient set</strong> $A / \sim$.
+  </div>
+
+  <div class="ex-box">
+    Congruence mod $n$ on $\mathbb{Z}$: $a \sim_n b \;\Leftrightarrow\; n \mid (a-b)$. Classes are $[0], [1], \dots, [n-1]$ — the $n$ residue classes. $\mathbb{Z}/\sim_n = \mathbb{Z}/n\mathbb{Z}$.
+  </div>
+
+  <div class="ce-box">
+    "$\leq$" on $\mathbb{R}$ is reflexive and transitive but <em>not</em> symmetric, so it is not an equivalence relation.
+  </div>
+  <p class="ref-cite">Rosen 8e §9.5; Velleman 3e §4.6.</p>
+  <span class="slide-number">9 / 32</span>
+</section>
+
+<!-- ══ Slide 10 — Partition theorem ══════════════════════════════════ -->
+<section class="slide" id="s10">
+  <h2 class="frame-title">3.2 The fundamental partition theorem</h2>
+
+  <div class="def-box">
+    A <strong>partition</strong> of $A$ is a collection $\{A_i\}_{i \in I}$ of non-empty subsets of $A$ such that $A = \bigcup_{i \in I} A_i$ and $A_i \cap A_j = \varnothing$ whenever $i \neq j$.
+  </div>
+
+  <div class="thm-box">
+    Let $A$ be a non-empty set. The equivalence relations on $A$ are in bijection with the partitions of $A$:
+    <ul>
+      <li>Given $\sim$, the equivalence classes $\{[a] : a \in A\}$ form a partition.</li>
+      <li>Given a partition $\{A_i\}$, the relation "$a \sim b$ iff $a$ and $b$ lie in the same block" is an equivalence.</li>
+    </ul>
+  </div>
+
+  <div class="proof-box">
+    <strong>(Equivalence ⇒ Partition.)</strong> Reflexivity gives $a \in [a]$, so every class is non-empty and $A = \bigcup_a [a]$.<br>
+    Suppose $[a] \cap [b] \neq \varnothing$; pick $c \in [a] \cap [b]$. Then $c \sim a$ and $c \sim b$. By symmetry $a \sim c$, then by transitivity with $c \sim b$ we get $a \sim b$. Hence for any $x \in [a]$, $x \sim a \sim b$ gives $x \in [b]$. By symmetry $[b] \subseteq [a]$. So $[a] = [b]$. Therefore distinct classes are disjoint.<br>
+    <strong>(Partition ⇒ Equivalence.)</strong> Reflexivity: $a$ is in its own block. Symmetry: if $a, b$ in the same block then $b, a$ in the same block. Transitivity: blocks are sets, so "same block" is transitive. $\square$
+  </div>
+  <p class="ref-cite">Rosen 8e §9.5 Theorem 1, p. 661; Halmos, §11.</p>
+  <span class="slide-number">10 / 32</span>
+</section>
+
+<!-- ══ Slide 11 — Partial, total, strict orders ══════════════════════ -->
+<section class="slide" id="s11">
+  <h2 class="frame-title">3.3 Partial, total and strict orders</h2>
+
+  <div class="def-box">
+    $R$ on $A$ is a <strong>partial order</strong> (poset relation) iff it is reflexive, antisymmetric, and transitive. We write $\leq$ and call $(A, \leq)$ a <em>partially ordered set</em>.<br>
+    A <strong>total (linear) order</strong> additionally satisfies the <em>trichotomy</em>: $\forall a, b \in A,\; a \leq b \vee b \leq a$.<br>
+    A <strong>strict order</strong> $&lt;$ is irreflexive and transitive (hence asymmetric, by the theorem of slide 8).<br>
+    A <strong>well-order</strong> is a total order in which every non-empty subset has a least element.
+  </div>
+
+  <table class="ref-table">
+    <thead><tr><th>Example</th><th>Type</th></tr></thead>
+    <tbody>
+      <tr><td>$(\mathbb{N}, \leq)$</td><td>well-order (and total order).</td></tr>
+      <tr><td>$(\mathbb{Z}, \leq)$</td><td>total order, not well-order ($\mathbb{Z}$ itself has no least element).</td></tr>
+      <tr><td>$(\mathbb{N}^*, \mid)$ — divisibility</td><td>partial order, not total ($2 \nmid 3$ and $3 \nmid 2$).</td></tr>
+      <tr><td>$(\mathcal{P}(X), \subseteq)$</td><td>partial order; total only if $|X| \leq 1$.</td></tr>
+    </tbody>
+  </table>
+
+  <p>A poset can be visualised by a <strong>Hasse diagram</strong>: vertices are elements; an edge $a \to b$ is drawn (upward) iff $a &lt; b$ and there is no $c$ with $a &lt; c &lt; b$. Reflexive loops and transitive edges are omitted.</p>
+  <p class="ref-cite">Rosen 8e §9.6; Velleman 3e §4.6.</p>
+  <span class="slide-number">11 / 32</span>
+</section>
+
+<!-- ══ Slide 12 — Closures of a relation ═════════════════════════════ -->
+<section class="slide" id="s12">
+  <h2 class="frame-title">4. Reflexive, symmetric, transitive closures</h2>
+
+  <div class="def-box">
+    Let $R \subseteq A \times A$ and let $\mathcal{P}$ be a property of relations. The <strong>$\mathcal{P}$-closure</strong> of $R$, denoted $R^{\mathcal{P}}$, is the smallest relation containing $R$ that satisfies $\mathcal{P}$. (It is the intersection of all $\mathcal{P}$-relations containing $R$.)
+  </div>
+
+  <div class="thm-box">
+    Let $\Delta_A = \{(a,a) : a \in A\}$ be the diagonal of $A$. Then:
+    <ul>
+      <li><strong>Reflexive closure</strong>: $r(R) = R \cup \Delta_A$.</li>
+      <li><strong>Symmetric closure</strong>: $s(R) = R \cup R^{-1}$.</li>
+      <li><strong>Transitive closure</strong>: $t(R) = \bigcup_{n \geq 1} R^n$, where $R^1 = R$ and $R^{n+1} = R \circ R^n$.</li>
+    </ul>
+  </div>
+
+  <div class="proof-box">
+    <strong>Reflexive.</strong> $R \cup \Delta_A$ is reflexive (contains $\Delta_A$) and contains $R$. Any reflexive relation $S \supseteq R$ must contain $\Delta_A$ and $R$, hence $S \supseteq R \cup \Delta_A$. So $r(R) = R \cup \Delta_A$.<br>
+    <strong>Symmetric.</strong> $R \cup R^{-1}$ is symmetric: $(a,b) \in R \cup R^{-1}$ iff $(a,b) \in R$ or $(b,a) \in R$, iff $(b,a) \in R^{-1}$ or $(b,a) \in R$. Any symmetric $S \supseteq R$ contains both $R$ and $R^{-1}$. So $s(R) = R \cup R^{-1}$.<br>
+    <strong>Transitive.</strong> Let $T := \bigcup_{n \geq 1} R^n$. $T \supseteq R$. If $(a,b) \in R^m$ and $(b,c) \in R^n$, then $(a,c) \in R^{n+m} \subseteq T$, so $T$ is transitive. Conversely any transitive $S \supseteq R$ satisfies $S \supseteq R^n$ for all $n$ (by induction on $n$), hence $S \supseteq T$. $\square$
+  </div>
+
+  <div class="cor-box">
+    For finite $|A| = n$, $\;t(R) = \bigcup_{k=1}^{n} R^k$. (No path of length $&gt; n-1$ can connect two vertices without revisiting one — Warshall's algorithm.)
+  </div>
+  <p class="ref-cite">Rosen 8e §9.4; Halmos, §8.</p>
+  <span class="slide-number">12 / 32</span>
+</section>
+
+<!-- ══ Slide 13 — Functions: formal definition ═══════════════════════ -->
+<section class="slide" id="s13">
+  <h2 class="frame-title">5.1 Function — formal definition</h2>
+
+  <div class="def-box">
+    A <strong>function</strong> $f$ from $A$ to $B$, written $f: A \to B$, is a binary relation $f \subseteq A \times B$ satisfying two conditions:
+    <ol>
+      <li><em>Totality</em>: for every $a \in A$, there exists $b \in B$ with $(a, b) \in f$.</li>
+      <li><em>Single-valuedness</em>: if $(a, b) \in f$ and $(a, b') \in f$, then $b = b'$.</li>
+    </ol>
+    The set $A$ is the <strong>domain</strong>, $B$ is the <strong>codomain</strong>. The unique $b$ with $(a,b) \in f$ is denoted $f(a)$, the <em>image</em> (or <em>value</em>) of $a$ under $f$.
+  </div>
+
+  <div class="def-box">
+    The <strong>image (range)</strong> of $f$ is $\mathrm{Im}(f) := \{\,f(a) : a \in A\,\} \subseteq B$. Two functions $f, g : A \to B$ are <strong>equal</strong> iff $f(a) = g(a)$ for every $a \in A$ — equivalently, iff $f = g$ as sets of ordered pairs.
+  </div>
+
+  <div class="ce-box">
+    The relation $R = \{(1, a), (1, b)\}$ on $\{1,2\} \to \{a, b\}$ is <em>not</em> a function: it fails single-valuedness ($1$ has two images) and fails totality ($2$ has no image).
+  </div>
+  <p class="ref-cite">Rosen 8e §2.3, p. 142; Velleman 3e §5.1.</p>
+  <span class="slide-number">13 / 32</span>
+</section>
+
+<!-- ══ Slide 14 — Restriction, extension, identity ═══════════════════ -->
+<section class="slide" id="s14">
+  <h2 class="frame-title">5.2 Restriction, extension, identity, constant functions</h2>
+
+  <div class="def-box">
+    Let $f: A \to B$ and $A' \subseteq A$. The <strong>restriction</strong> of $f$ to $A'$ is $f\!\restriction_{A'} : A' \to B$ defined by $(f\!\restriction_{A'})(a) := f(a)$ for $a \in A'$. Conversely, $f$ is an <strong>extension</strong> of $g$ if $g = f\!\restriction_{\mathrm{dom}(g)}$.
+  </div>
+
+  <div class="def-box">
+    <strong>Identity function</strong> on $A$: $\mathrm{id}_A : A \to A$, $\mathrm{id}_A(a) = a$. <br>
+    <strong>Constant function</strong>: $c_b : A \to B$, $c_b(a) = b$ for all $a$, where $b \in B$ is a fixed value.
+  </div>
+
+  <div class="thm-box">
+    For any $f: A \to B$, $\;f \circ \mathrm{id}_A = f$ and $\mathrm{id}_B \circ f = f$.
+  </div>
+  <div class="proof-box">
+    For every $a \in A$: $(f \circ \mathrm{id}_A)(a) = f(\mathrm{id}_A(a)) = f(a)$; $(\mathrm{id}_B \circ f)(a) = \mathrm{id}_B(f(a)) = f(a)$. Equal as functions. $\square$
+  </div>
+
+  <p class="ref-cite">Rosen 8e §2.3.</p>
+  <span class="slide-number">14 / 32</span>
+</section>
+
+<!-- ══ Slide 15 — Injection ══════════════════════════════════════════ -->
+<section class="slide" id="s15">
+  <h2 class="frame-title">6.1 Injection (one-to-one)</h2>
+
+  <div class="def-box">
+    $f: A \to B$ is <strong>injective</strong> (one-to-one) iff
+    $$\forall a, a' \in A,\;\; f(a) = f(a') \;\Rightarrow\; a = a'.$$
+    Equivalently (contrapositive): $a \neq a' \Rightarrow f(a) \neq f(a')$.
+  </div>
+
+  <div class="ex-box">
+    $f : \mathbb{R} \to \mathbb{R}$, $f(x) = 2x + 1$ is injective. <br>
+    <em>Proof.</em> Suppose $2x + 1 = 2y + 1$. Subtract $1$: $2x = 2y$. Divide by $2$: $x = y$. $\square$
+  </div>
+
+  <div class="ce-box">
+    $f : \mathbb{R} \to \mathbb{R}$, $f(x) = x^2$ is not injective: $f(-3) = f(3) = 9$ but $-3 \neq 3$.
+  </div>
+
+  <div class="thm-box">
+    If $f : A \to B$ is injective and $A$ is finite, then $|A| \leq |B|$.
+  </div>
+  <div class="proof-box">
+    The image $\mathrm{Im}(f) = \{f(a) : a \in A\}$ has size exactly $|A|$ (since distinct inputs give distinct outputs); but $\mathrm{Im}(f) \subseteq B$, so $|A| = |\mathrm{Im}(f)| \leq |B|$. $\square$
+  </div>
+  <p class="ref-cite">Rosen 8e §2.3, p. 146.</p>
+  <span class="slide-number">15 / 32</span>
+</section>
+
+<!-- ══ Slide 16 — Surjection ═════════════════════════════════════════ -->
+<section class="slide" id="s16">
+  <h2 class="frame-title">6.2 Surjection (onto)</h2>
+
+  <div class="def-box">
+    $f: A \to B$ is <strong>surjective</strong> (onto) iff
+    $$\forall b \in B,\;\; \exists a \in A,\;\; f(a) = b.$$
+    Equivalently: $\mathrm{Im}(f) = B$.
+  </div>
+
+  <div class="ex-box">
+    $f : \mathbb{Z} \to \mathbb{Z}$, $f(n) = n - 5$ is surjective. <br>
+    <em>Proof.</em> For any $b \in \mathbb{Z}$, pick $a := b + 5 \in \mathbb{Z}$. Then $f(a) = (b + 5) - 5 = b$. $\square$
+  </div>
+
+  <div class="ce-box">
+    $f : \mathbb{Z} \to \mathbb{Z}$, $f(n) = 2n$ is not surjective: no integer $n$ satisfies $2n = 1$.
+  </div>
+
+  <div class="thm-box">
+    If $f : A \to B$ is surjective and $B$ is finite, then $|A| \geq |B|$.
+  </div>
+  <div class="proof-box">
+    Surjectivity means $B = \mathrm{Im}(f)$. The map $a \mapsto f(a)$ sends $A$ onto $B$, so by a counting argument (or by partitioning $A$ into the preimages $f^{-1}(\{b\})$ for $b \in B$), $|A| = \sum_{b \in B} |f^{-1}(\{b\})| \geq \sum_{b \in B} 1 = |B|$. $\square$
+  </div>
+  <p class="ref-cite">Rosen 8e §2.3, p. 147.</p>
+  <span class="slide-number">16 / 32</span>
+</section>
+
+<!-- ══ Slide 17 — Bijection & pigeonhole ═════════════════════════════ -->
+<section class="slide" id="s17">
+  <h2 class="frame-title">6.3 Bijection — and a finite-case shortcut</h2>
+
+  <div class="def-box">
+    $f: A \to B$ is a <strong>bijection</strong> (one-to-one correspondence) iff $f$ is both injective and surjective.
+  </div>
+
+  <div class="thm-box">
+    <strong>Pigeonhole-type theorem.</strong> If $A$ and $B$ are finite with $|A| = |B|$, then for $f : A \to B$:
+    $$f \text{ injective} \;\Longleftrightarrow\; f \text{ surjective} \;\Longleftrightarrow\; f \text{ bijective}.$$
+  </div>
+
+  <div class="proof-box">
+    Set $n := |A| = |B|$.<br>
+    <em>Injective ⇒ surjective.</em> If $f$ is injective, $|\mathrm{Im}(f)| = n = |B|$. Since $\mathrm{Im}(f) \subseteq B$ and both have size $n$, $\mathrm{Im}(f) = B$.<br>
+    <em>Surjective ⇒ injective.</em> If $f$ is surjective, partition $A$ as $A = \bigsqcup_{b \in B} f^{-1}(\{b\})$; surjectivity makes each block non-empty. We have $n$ blocks summing to $n$, so each block has exactly one element — $f$ is injective.<br>
+    The equivalence with bijection is immediate from the definitions. $\square$
+  </div>
+
+  <div class="ce-box">
+    Both implications fail when the sets are infinite. Take $f : \mathbb{N} \to \mathbb{N}$, $f(n) = n+1$: injective but not surjective (no $n$ maps to $0$). And $g: \mathbb{N} \to \mathbb{N}$, $g(0) = 0$, $g(n) = n - 1$ for $n \geq 1$: surjective but not injective ($g(0) = g(1) = 0$).
+  </div>
+  <p class="ref-cite">Rosen 8e §2.3, p. 148; Halmos, §5.</p>
+  <span class="slide-number">17 / 32</span>
+</section>
+
+<!-- ══ Slide 18 — Composition of functions ═══════════════════════════ -->
+<section class="slide" id="s18">
+  <h2 class="frame-title">7.1 Composition of functions</h2>
+
+  <div class="def-box">
+    Given $f : A \to B$ and $g : B \to C$, the <strong>composition</strong> $g \circ f : A \to C$ is defined by $(g \circ f)(a) := g(f(a))$.
+  </div>
+
+  <p>This is the special case of relation composition (slide 6) applied to functions; the totality and single-valuedness of $f$ and $g$ together imply the same for $g \circ f$.</p>
+
+  <div class="thm-box">
+    <strong>Associativity.</strong> If $f : A \to B$, $g : B \to C$, $h : C \to D$, then $h \circ (g \circ f) = (h \circ g) \circ f$.
+  </div>
+  <div class="proof-box">
+    For every $a \in A$:
+    $$\bigl(h \circ (g \circ f)\bigr)(a) = h\bigl((g \circ f)(a)\bigr) = h\bigl(g(f(a))\bigr) = (h \circ g)(f(a)) = \bigl((h \circ g) \circ f\bigr)(a).$$
+    Equal at every point, hence equal as functions. $\square$
+  </div>
+
+  <div class="note-box">
+    Composition is <em>not</em> commutative in general: even when both $f \circ g$ and $g \circ f$ are defined (e.g. $A = B = C$), they need not be equal. Take $f(x) = x + 1$ and $g(x) = 2x$ on $\mathbb{R}$: $(f \circ g)(x) = 2x + 1$ vs $(g \circ f)(x) = 2x + 2$.
+  </div>
+  <p class="ref-cite">Rosen 8e §2.3, p. 154.</p>
+  <span class="slide-number">18 / 32</span>
+</section>
+
+<!-- ══ Slide 19 — Composition preserves inj/surj/bij ═════════════════ -->
+<section class="slide" id="s19">
+  <h2 class="frame-title">7.2 Composition preserves injection, surjection, bijection</h2>
+
+  <div class="thm-box">
+    Let $f : A \to B$ and $g : B \to C$.
+    <ol>
+      <li>If $f$ and $g$ are both injective, then $g \circ f$ is injective.</li>
+      <li>If $f$ and $g$ are both surjective, then $g \circ f$ is surjective.</li>
+      <li>If $f$ and $g$ are both bijective, then $g \circ f$ is bijective.</li>
+    </ol>
+  </div>
+
+  <div class="proof-box">
+    <strong>(1)</strong> Suppose $(g \circ f)(a) = (g \circ f)(a')$, i.e. $g(f(a)) = g(f(a'))$. Injectivity of $g$ gives $f(a) = f(a')$; injectivity of $f$ then gives $a = a'$.<br>
+    <strong>(2)</strong> Let $c \in C$. Surjectivity of $g$: there is $b \in B$ with $g(b) = c$. Surjectivity of $f$: there is $a \in A$ with $f(a) = b$. Then $(g \circ f)(a) = g(f(a)) = g(b) = c$.<br>
+    <strong>(3)</strong> Combine (1) and (2). $\square$
+  </div>
+
+  <div class="thm-box">
+    <strong>Partial converses.</strong> If $g \circ f$ is injective, then $f$ is injective. If $g \circ f$ is surjective, then $g$ is surjective.
+  </div>
+  <div class="proof-box">
+    If $f(a) = f(a')$, then $(g \circ f)(a) = g(f(a)) = g(f(a')) = (g \circ f)(a')$, so by injectivity of $g \circ f$, $a = a'$.<br>
+    If $c \in C$, by surjectivity of $g \circ f$ there is $a$ with $(g \circ f)(a) = c$; then $g(f(a)) = c$, so $f(a) \in B$ is a preimage of $c$ under $g$. $\square$
+  </div>
+  <p class="ref-cite">Rosen 8e §2.3 Ex. 32; Velleman 3e §5.2.</p>
+  <span class="slide-number">19 / 32</span>
+</section>
+
+<!-- ══ Slide 20 — Inverse function: existence theorem ════════════════ -->
+<section class="slide" id="s20">
+  <h2 class="frame-title">8.1 Inverse function — existence theorem</h2>
+
+  <div class="def-box">
+    $f : A \to B$ is <strong>invertible</strong> iff there exists $g : B \to A$ such that $g \circ f = \mathrm{id}_A$ and $f \circ g = \mathrm{id}_B$. Such $g$ is called <em>the</em> inverse of $f$, denoted $f^{-1}$.
+  </div>
+
+  <div class="thm-box">
+    $f : A \to B$ is invertible iff $f$ is bijective.
+  </div>
+
+  <div class="proof-box">
+    <strong>(⇐)</strong> Assume $f$ bijective. For each $b \in B$, surjectivity gives some $a \in A$ with $f(a) = b$; injectivity makes this $a$ unique. Define $g(b) := a$. Then $g : B \to A$ is well-defined. For all $a \in A$, $g(f(a)) = a$ by definition of $g$ at $b = f(a)$; for all $b \in B$, $f(g(b)) = f(a) = b$. So $g$ is an inverse.<br>
+    <strong>(⇒)</strong> Assume $g$ is an inverse. <em>Injectivity.</em> If $f(a) = f(a')$, apply $g$: $g(f(a)) = g(f(a'))$, i.e. $a = a'$. <em>Surjectivity.</em> For $b \in B$, set $a := g(b)$; then $f(a) = f(g(b)) = b$. $\square$
+  </div>
+
+  <div class="cor-box">
+    The inverse, when it exists, is unique. If $g_1$ and $g_2$ are both inverses, then $g_1 = g_1 \circ \mathrm{id}_B = g_1 \circ (f \circ g_2) = (g_1 \circ f) \circ g_2 = \mathrm{id}_A \circ g_2 = g_2$.
+  </div>
+  <p class="ref-cite">Rosen 8e §2.3, p. 149; Velleman 3e §5.3.</p>
+  <span class="slide-number">20 / 32</span>
+</section>
+
+<!-- ══ Slide 21 — Properties of the inverse ══════════════════════════ -->
+<section class="slide" id="s21">
+  <h2 class="frame-title">8.2 Properties of $f^{-1}$</h2>
+
+  <div class="thm-box">
+    Let $f: A \to B$ and $g: B \to C$ be bijections. Then:
+    <ol>
+      <li>$f^{-1}$ is a bijection, and $(f^{-1})^{-1} = f$.</li>
+      <li>$g \circ f$ is a bijection, and $(g \circ f)^{-1} = f^{-1} \circ g^{-1}$ (the order reverses).</li>
+    </ol>
+  </div>
+
+  <div class="proof-box">
+    <strong>(1)</strong> $f^{-1}$ has inverse $f$ (because $f \circ f^{-1} = \mathrm{id}_B$ and $f^{-1} \circ f = \mathrm{id}_A$ — same equations, $f$ playing the role of $g$). By the existence theorem (slide 20), $f^{-1}$ is bijective and $(f^{-1})^{-1} = f$.<br>
+    <strong>(2)</strong> By slide 19, $g \circ f$ is a bijection. To see the order reversal, compute
+    $$(g \circ f) \circ (f^{-1} \circ g^{-1}) = g \circ (f \circ f^{-1}) \circ g^{-1} = g \circ \mathrm{id}_B \circ g^{-1} = g \circ g^{-1} = \mathrm{id}_C,$$
+    and symmetrically $(f^{-1} \circ g^{-1}) \circ (g \circ f) = \mathrm{id}_A$. By uniqueness of the inverse, $(g \circ f)^{-1} = f^{-1} \circ g^{-1}$. $\square$
+  </div>
+
+  <div class="ex-box">
+    $f, g : \mathbb{R} \to \mathbb{R}$, $f(x) = x + 3$, $g(x) = 2x$. Then $f^{-1}(y) = y - 3$, $g^{-1}(y) = y/2$. <br>
+    $(g \circ f)(x) = 2(x+3) = 2x + 6$, so $(g \circ f)^{-1}(y) = (y - 6)/2$. <br>
+    Check: $(f^{-1} \circ g^{-1})(y) = f^{-1}(y/2) = y/2 - 3 = (y - 6)/2$. ✓
+  </div>
+  <p class="ref-cite">Rosen 8e §2.3 Ex. 35.</p>
+  <span class="slide-number">21 / 32</span>
+</section>
+
+<!-- ══ Slide 22 — Image of a set ═════════════════════════════════════ -->
+<section class="slide" id="s22">
+  <h2 class="frame-title">9.1 Image of a set $f(S)$</h2>
+
+  <div class="def-box">
+    For $f: A \to B$ and $S \subseteq A$, the <strong>image</strong> of $S$ is
+    $$f(S) \;:=\; \{\,f(a) \;:\; a \in S\,\} \;\subseteq\; B.$$
+  </div>
+
+  <div class="thm-box">
+    For all $S, T \subseteq A$:
+    <ol>
+      <li>$f(S \cup T) = f(S) \cup f(T)$.</li>
+      <li>$f(S \cap T) \subseteq f(S) \cap f(T)$. &nbsp; <em>Equality</em> holds iff $f$ is injective.</li>
+      <li>$f(S) \setminus f(T) \subseteq f(S \setminus T)$ &nbsp; (equality iff $f$ injective).</li>
+    </ol>
+  </div>
+
+  <div class="proof-box">
+    <strong>(1)</strong> $b \in f(S \cup T)$ iff $\exists a \in S \cup T,\; f(a) = b$ iff $\exists a \in S,\;f(a) = b$ or $\exists a \in T,\;f(a) = b$ iff $b \in f(S) \cup f(T)$.<br>
+    <strong>(2)</strong> If $b \in f(S \cap T)$, pick $a \in S \cap T$ with $f(a) = b$; this $a$ witnesses $b \in f(S)$ and $b \in f(T)$. <em>Strict-inclusion counter-example without injectivity</em>: $A = \{1,2\}$, $B = \{0\}$, $f(1) = f(2) = 0$, $S = \{1\}$, $T = \{2\}$. Then $f(S) \cap f(T) = \{0\}$ but $f(S \cap T) = f(\varnothing) = \varnothing$. <em>Equality under injectivity</em>: take $b \in f(S) \cap f(T)$, pick $a_1 \in S, a_2 \in T$ with $f(a_1) = f(a_2) = b$; by injectivity $a_1 = a_2 \in S \cap T$, so $b \in f(S \cap T)$. $\square$
+  </div>
+  <p class="ref-cite">Rosen 8e §2.3 Ex. 40; Halmos, §10.</p>
+  <span class="slide-number">22 / 32</span>
+</section>
+
+<!-- ══ Slide 23 — Preimage of a set ══════════════════════════════════ -->
+<section class="slide" id="s23">
+  <h2 class="frame-title">9.2 Preimage of a set $f^{-1}(T)$</h2>
+
+  <div class="def-box">
+    For $f: A \to B$ and $T \subseteq B$, the <strong>preimage</strong> (or <em>inverse image</em>) of $T$ is
+    $$f^{-1}(T) \;:=\; \{\,a \in A \;:\; f(a) \in T\,\} \;\subseteq\; A.$$
+    Note: $f^{-1}(T)$ is well-defined for <em>any</em> $f$, not just bijections — it is just a notation.
+  </div>
+
+  <div class="thm-box">
+    Preimage commutes with all Boolean operations: for $T_1, T_2 \subseteq B$,
+    $$f^{-1}(T_1 \cup T_2) = f^{-1}(T_1) \cup f^{-1}(T_2),$$
+    $$f^{-1}(T_1 \cap T_2) = f^{-1}(T_1) \cap f^{-1}(T_2),$$
+    $$f^{-1}(B \setminus T_1) = A \setminus f^{-1}(T_1).$$
+  </div>
+  <div class="proof-box">
+    Each follows by chasing membership. E.g., $a \in f^{-1}(T_1 \cap T_2)$ iff $f(a) \in T_1 \cap T_2$ iff $f(a) \in T_1 \wedge f(a) \in T_2$ iff $a \in f^{-1}(T_1) \cap f^{-1}(T_2)$. $\square$
+  </div>
+
+  <div class="note-box">
+    The contrast with images is striking: <em>preimages</em> are well-behaved (commute with $\cap$, complement, union), <em>images</em> only commute with $\cup$ in general. This is one reason topology, measure theory and analysis are formulated in terms of preimages: continuity is defined as "preimage of open is open", not "image of open is open".
+  </div>
+  <p class="ref-cite">Rosen 8e §2.3 Ex. 41; Halmos, §10.</p>
+  <span class="slide-number">23 / 32</span>
+</section>
+
+<!-- ══ Slide 24 — Cardinality via bijections ═════════════════════════ -->
+<section class="slide" id="s24">
+  <h2 class="frame-title">10.1 Cardinality via bijections</h2>
+
+  <div class="def-box">
+    Two sets $A$ and $B$ are <strong>equinumerous</strong>, written $|A| = |B|$, iff there exists a bijection $f : A \to B$. A set $A$ is <em>finite</em> with $n$ elements iff $|A| = |\{1, 2, \dots, n\}|$; otherwise <em>infinite</em>. $A$ is <em>countably infinite</em> (or <em>denumerable</em>) iff $|A| = |\mathbb{N}|$; <em>countable</em> iff finite or countably infinite; <em>uncountable</em> otherwise.
+  </div>
+
+  <div class="thm-box">
+    "Equinumerous" is an equivalence relation on sets: it is reflexive ($\mathrm{id}_A$), symmetric ($f^{-1}$), and transitive ($g \circ f$).
+  </div>
+  <div class="proof-box">
+    Reflexivity: $\mathrm{id}_A : A \to A$ is a bijection. Symmetry: $f$ bijective $\Rightarrow f^{-1}$ bijective (slide 21). Transitivity: $f, g$ bijective $\Rightarrow g \circ f$ bijective (slide 19). $\square$
+  </div>
+
+  <div class="ex-box">
+    $f : \mathbb{N} \to \mathbb{Z}$, $f(0) = 0$, $f(2k-1) = k$, $f(2k) = -k$ for $k \geq 1$, is a bijection. Hence $|\mathbb{N}| = |\mathbb{Z}|$ — there are "as many" integers as natural numbers, although $\mathbb{N} \subsetneq \mathbb{Z}$.
+  </div>
+  <p class="ref-cite">Rosen 8e §2.5; Halmos, §13.</p>
+  <span class="slide-number">24 / 32</span>
+</section>
+
+<!-- ══ Slide 25 — Cantor's theorem ═══════════════════════════════════ -->
+<section class="slide" id="s25">
+  <h2 class="frame-title">10.2 Cantor's theorem</h2>
+
+  <div class="thm-box">
+    <strong>Cantor (1891).</strong> For every set $A$, there is no surjection $f : A \to \mathcal{P}(A)$. In particular $|A| \neq |\mathcal{P}(A)|$ — the power set is strictly larger.
+  </div>
+
+  <div class="proof-box">
+    Suppose, for contradiction, that $f : A \to \mathcal{P}(A)$ is a surjection. Define the <em>diagonal set</em>
+    $$D \;:=\; \{\,a \in A \;:\; a \notin f(a)\,\} \;\in\; \mathcal{P}(A).$$
+    By surjectivity, $D = f(d)$ for some $d \in A$. Now ask whether $d \in D$:
+    $$d \in D \;\Longleftrightarrow\; d \notin f(d) \;\Longleftrightarrow\; d \notin D.$$
+    This is a contradiction. Hence no surjection exists. $\square$
+  </div>
+
+  <div class="cor-box">
+    $\mathcal{P}(\mathbb{N})$ is uncountable. Consequently $\mathbb{R}$ is uncountable (since $|\mathbb{R}| = |\mathcal{P}(\mathbb{N})| = 2^{\aleph_0}$ — a result we will revisit when studying sequences). Cantor's theorem is the springboard for the entire theory of <em>cardinal numbers</em>.
+  </div>
+  <p class="ref-cite">Halmos, §25; Rosen 8e §2.5.</p>
+  <span class="slide-number">25 / 32</span>
+</section>
+
+<!-- ══ Slide 26 — Worked example: equivalence relation ═══════════════ -->
+<section class="slide" id="s26">
+  <h2 class="frame-title">11.1 Worked example — congruence mod $3$</h2>
+
+  <p>On $\mathbb{Z}$ define $a \sim b \;\Leftrightarrow\; 3 \mid (a - b)$.</p>
+
+  <h3 class="sub-title">Verify the three axioms</h3>
+  <div class="proof-box">
+    <strong>Reflexivity.</strong> $a - a = 0$ and $3 \mid 0$. ✓<br>
+    <strong>Symmetry.</strong> If $3 \mid (a - b)$, write $a - b = 3k$. Then $b - a = -3k = 3(-k)$, so $3 \mid (b - a)$. ✓<br>
+    <strong>Transitivity.</strong> If $a - b = 3k$ and $b - c = 3\ell$, then $a - c = (a - b) + (b - c) = 3(k + \ell)$, so $3 \mid (a - c)$. ✓ $\square$
+  </div>
+
+  <h3 class="sub-title">Equivalence classes</h3>
+  <p>$[0] = \{\dots, -6, -3, 0, 3, 6, \dots\}$, $[1] = \{\dots, -5, -2, 1, 4, 7, \dots\}$, $[2] = \{\dots, -4, -1, 2, 5, 8, \dots\}$. The partition is $\mathbb{Z} = [0] \sqcup [1] \sqcup [2]$, and $\mathbb{Z}/\sim = \mathbb{Z}/3\mathbb{Z}$ has $3$ classes.</p>
+
+  <div class="sympy-block">
+    <span class="pane-label">Python — explore congruence mod $3$</span>
+    <span class="pane-code">def classes_mod(n, sample):
+    cls = {}
+    for x in sample:
+        cls.setdefault(x % n, []).append(x)
+    return cls
+
+print(classes_mod(3, range(-6, 10)))
+# {0: [-6,-3,0,3,6,9], 1: [-5,-2,1,4,7], 2: [-4,-1,2,5,8]}</span>
+  </div>
+  <p class="ref-cite">Velleman 3e §4.6; Rosen 8e §9.5.</p>
+  <span class="slide-number">26 / 32</span>
+</section>
+
+<!-- ══ Slide 27 — Worked example: bijection on intervals ═════════════ -->
+<section class="slide" id="s27">
+  <h2 class="frame-title">11.2 Worked example — bijection $(0,1) \to \mathbb{R}$</h2>
+
+  <p>Show that the open interval $(0, 1) \subseteq \mathbb{R}$ has the same cardinality as $\mathbb{R}$.</p>
+
+  <div class="thm-box">
+    The function $f : (0, 1) \to \mathbb{R}$ defined by $f(x) := \tan\!\bigl(\pi(x - \tfrac{1}{2})\bigr)$ is a bijection.
+  </div>
+
+  <div class="proof-box">
+    <strong>Injectivity.</strong> Suppose $f(x_1) = f(x_2)$, i.e. $\tan(\pi(x_1 - \tfrac12)) = \tan(\pi(x_2 - \tfrac12))$. On the open interval $(-\tfrac{\pi}{2}, \tfrac{\pi}{2})$ the tangent function is strictly increasing, hence injective. Since $x_i \in (0,1)$ we have $\pi(x_i - \tfrac12) \in (-\tfrac{\pi}{2}, \tfrac{\pi}{2})$, so $\pi(x_1 - \tfrac12) = \pi(x_2 - \tfrac12)$, hence $x_1 = x_2$. ✓<br>
+    <strong>Surjectivity.</strong> Let $y \in \mathbb{R}$. The tangent function $\tan : (-\tfrac{\pi}{2}, \tfrac{\pi}{2}) \to \mathbb{R}$ is surjective (its range is all of $\mathbb{R}$). Pick $\theta \in (-\tfrac{\pi}{2}, \tfrac{\pi}{2})$ with $\tan \theta = y$, and set $x := \tfrac{\theta}{\pi} + \tfrac{1}{2} \in (0, 1)$. Then $f(x) = \tan(\pi(x - \tfrac12)) = \tan \theta = y$. ✓<br>
+    Hence $f$ is a bijection, and $|(0,1)| = |\mathbb{R}|$. $\square$
+  </div>
+
+  <div class="note-box">
+    A finite-looking interval has the same cardinality as the whole real line — an infinite set can be equinumerous with a proper subset of itself. This is a signature property of infinite sets (Dedekind's definition: a set is infinite iff it is equinumerous with a proper subset).
+  </div>
+  <p class="ref-cite">Halmos, §13; Velleman 3e §7.4.</p>
+  <span class="slide-number">27 / 32</span>
+</section>
+
+<!-- ══ Slide 28 — Python: relations & functions ══════════════════════ -->
+<section class="slide" id="s28">
+  <h2 class="frame-title">12. Python toolbox — relations &amp; functions</h2>
+
+  <div class="setup-block">
+    <span class="pane-label">Python — imports (run once)</span>
+    <span class="pane-code">from itertools import product
+from sympy import FiniteSet, ProductSet, Lambda, symbols, solve</span>
+  </div>
+
+  <div class="python-block">
+    <span class="pane-label">Python — check properties of a relation</span>
+    <span class="pane-code">def is_reflexive(R, A):     return all((a, a) in R for a in A)
+def is_symmetric(R, A):     return all((b, a) in R for (a, b) in R)
+def is_antisymmetric(R, A): return all(a == b for (a, b) in R if (b, a) in R)
+def is_transitive(R, A):
+    return all((a, c) in R for (a, b) in R for (b2, c) in R if b == b2)
+
+A = {1, 2, 3, 4}
+divides = {(a, b) for a, b in product(A, A) if b % a == 0}
+print(is_reflexive(divides, A),     # True  — every a divides itself
+      is_antisymmetric(divides, A), # True
+      is_transitive(divides, A))    # True   →  partial order</span>
+  </div>
+
+  <div class="python-block">
+    <span class="pane-label">Python — composition and inverse of a function as a dict</span>
+    <span class="pane-code">def compose(g, f):   return {a: g[f[a]] for a in f}
+def is_bijection(f, codomain):
+    return set(f.values()) == set(codomain) and len(set(f.values())) == len(f)
+def invert(f):       return {b: a for a, b in f.items()}
+
+f = {1: 'a', 2: 'b', 3: 'c'}
+g = {'a': 10, 'b': 20, 'c': 30}
+print(compose(g, f))          # {1: 10, 2: 20, 3: 30}
+print(is_bijection(f, ['a','b','c']))  # True
+print(invert(f))              # {'a': 1, 'b': 2, 'c': 3}</span>
+  </div>
+  <span class="slide-number">28 / 32</span>
+</section>
+
+<!-- ══ Slide 29 — Python: SymPy support ══════════════════════════════ -->
+<section class="slide" id="s29">
+  <h2 class="frame-title">13. SymPy support for relations &amp; functions</h2>
+
+  <div class="sympy-block">
+    <span class="pane-label">SymPy — FiniteSet, ProductSet, Lambda</span>
+    <span class="pane-code">from sympy import FiniteSet, ProductSet, Lambda, symbols, S, Eq, solve
+
+# Cartesian product
+A = FiniteSet(1, 2, 3); B = FiniteSet('a', 'b')
+print(ProductSet(A, B))         # {1, 2, 3} x {a, b}
+
+# Function defined symbolically
+x = symbols('x')
+f = Lambda(x, 2*x + 1)
+print(f(3))                     # 7
+print(f(x).subs(x, 5))          # 11
+
+# Solve the surjectivity equation 2x + 1 = y for y in Z
+y = symbols('y')
+print(solve(Eq(f(x), y), x))    # [(y - 1)/2]  →  not always integer ⇒ not surjective on Z</span>
+  </div>
+
+  <div class="sympy-block">
+    <span class="pane-label">SymPy — partition from an equivalence relation</span>
+    <span class="pane-code">from sympy.combinatorics.partitions import Partition
+
+# Partition of {1,2,3,4,5,6} into residue classes mod 3
+p = Partition([1, 4], [2, 5], [3, 6])
+print(p)                  # {{1, 4}, {2, 5}, {3, 6}}
+print(p.partition)        # list of blocks</span>
+  </div>
+  <span class="slide-number">29 / 32</span>
+</section>
+
+<!-- ══ Slide 30 — Summary ════════════════════════════════════════════ -->
+<section class="slide" id="s30">
+  <h2 class="frame-title">14. Summary — what we proved</h2>
+
+  <h3 class="sub-title">Relations</h3>
+  <ul>
+    <li>$|A \times B| = |A| \cdot |B|$, and $2^{mn}$ relations between $A$ and $B$.</li>
+    <li>Composition of relations is associative; $(R^{-1})^{-1} = R$; $(T \circ R)^{-1} = R^{-1} \circ T^{-1}$.</li>
+    <li>Asymmetric $\Leftrightarrow$ irreflexive + antisymmetric.</li>
+    <li><strong>Partition theorem:</strong> equivalence relations on $A$ $\leftrightarrow$ partitions of $A$.</li>
+    <li>Reflexive / symmetric / transitive closures exist and are computable: $R \cup \Delta_A$, $R \cup R^{-1}$, $\bigcup_n R^n$.</li>
+  </ul>
+
+  <h3 class="sub-title">Functions</h3>
+  <ul>
+    <li>A function is a total, single-valued binary relation.</li>
+    <li>Composition is associative; injection / surjection / bijection are preserved under composition.</li>
+    <li><strong>Existence theorem for inverse:</strong> $f$ invertible $\Leftrightarrow$ $f$ bijective; the inverse is unique; $(g \circ f)^{-1} = f^{-1} \circ g^{-1}$.</li>
+    <li>Image commutes only with $\cup$; preimage commutes with $\cup$, $\cap$, complement.</li>
+    <li><strong>Cantor:</strong> no surjection $A \to \mathcal{P}(A)$ — strict hierarchy of infinities.</li>
+    <li>For finite equal-size sets: injective $\Leftrightarrow$ surjective $\Leftrightarrow$ bijective (the "pigeonhole" shortcut).</li>
+  </ul>
+  <span class="slide-number">30 / 32</span>
+</section>
+
+<!-- ══ Slide 31 — Wolfram → Python quick reference ═══════════════════ -->
+<section class="slide" id="s31">
+  <h2 class="frame-title">15. Wolfram → Python quick reference</h2>
+
+  <table class="ref-table">
+    <thead><tr><th>Operation</th><th>Wolfram</th><th>Python / SymPy</th></tr></thead>
+    <tbody>
+      <tr><td>Cartesian product</td><td><code>Tuples[{A, B}]</code></td><td><code>itertools.product(A, B)</code> · <code>ProductSet(A, B)</code></td></tr>
+      <tr><td>Finite set</td><td><code>{1, 2, 3}</code></td><td><code>set([1, 2, 3])</code> · <code>FiniteSet(1, 2, 3)</code></td></tr>
+      <tr><td>Power set</td><td><code>Subsets[A]</code></td><td><code>itertools.chain.from_iterable(combinations(A, k) for k in range(len(A)+1))</code></td></tr>
+      <tr><td>Function (symbolic)</td><td><code>f = Function[#1 + 1 &amp;]</code></td><td><code>Lambda(x, x + 1)</code></td></tr>
+      <tr><td>Function value</td><td><code>f[3]</code></td><td><code>f(3)</code></td></tr>
+      <tr><td>Composition</td><td><code>Composition[g, f][x]</code></td><td><code>g(f(x))</code></td></tr>
+      <tr><td>Inverse</td><td><code>InverseFunction[f][y]</code></td><td><code>solve(f(x) - y, x)</code></td></tr>
+      <tr><td>Image of a set</td><td><code>f /@ S</code></td><td><code>{f(a) for a in S}</code></td></tr>
+      <tr><td>Preimage of a set</td><td><code>Select[A, MemberQ[T, f[#]] &amp;]</code></td><td><code>{a for a in A if f(a) in T}</code></td></tr>
+      <tr><td>Partition (combinatorics)</td><td><code>SetPartitions[A]</code></td><td><code>sympy.combinatorics.partitions.Partition</code></td></tr>
+    </tbody>
+  </table>
+  <span class="slide-number">31 / 32</span>
+</section>
+
+<!-- ══ Slide 32 — Bibliography ═══════════════════════════════════════ -->
+<section class="slide" id="s32">
+  <h2 class="frame-title">Bibliography</h2>
+  <ul>
+    <li>K. H. Rosen. <em>Discrete Mathematics and Its Applications</em>, 8th ed., McGraw-Hill, 2019 — §2.1 (Cartesian product), §2.3 (functions), §2.5 (cardinality), §§9.1–9.6 (relations).</li>
+    <li>D. J. Velleman. <em>How To Prove It</em>, 3rd ed., Cambridge UP, 2019 — ch. 4 (relations), ch. 5 (functions), §7.4 (countability).</li>
+    <li>P. R. Halmos. <em>Naive Set Theory</em>, Springer-Verlag, 1974 — §§5–13 (ordered pairs, relations, functions, equivalence, cardinality).</li>
+    <li>R. Cori &amp; D. Lascar. <em>Mathematical Logic, vol. 1</em>, Oxford UP, 2000 — set-theoretic foundations.</li>
+    <li>G. Cantor (1891). <em>Über eine elementare Frage der Mannigfaltigkeitslehre</em> — original diagonal argument.</li>
+    <li>S. Warshall (1962). <em>A Theorem on Boolean Matrices</em> — algorithm for transitive closure.</li>
+  </ul>
+
+  <p style="margin-top:1rem;color:#e67e22;font-style:italic;font-weight:600;">Notes By Pr. El Hadiq Zouhair</p>
+  <span class="slide-number">32 / 32</span>
+</section>
+
+<!-- ── Navigation ─────────────────────────────────────────────────── -->
+<div id="nav">
+  <button id="btn-prev"   title="Previous">&#8592;</button>
+  <button id="btn-scroll" title="Toggle slideshow">Slideshow</button>
+  <button id="btn-next"   title="Next">&#8594;</button>
+</div>
+
+<script>
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  let current = 0, slideshowMode = false;
+
+  function enter(i) {
+    slides[current].classList.remove('active');
+    current = (i + slides.length) % slides.length;
+    slides[current].classList.add('active');
+    slides[current].scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  document.getElementById('btn-prev').addEventListener('click', () => {
+    if (slideshowMode) enter(current - 1);
+  });
+  document.getElementById('btn-next').addEventListener('click', () => {
+    if (slideshowMode) enter(current + 1);
+  });
+  document.getElementById('btn-scroll').addEventListener('click', () => {
+    slideshowMode = !slideshowMode;
+    document.body.classList.toggle('slideshow', slideshowMode);
+    document.getElementById('btn-scroll').textContent = slideshowMode ? 'Scroll' : 'Slideshow';
+    if (slideshowMode) slides[current].classList.add('active');
+    else slides.forEach(s => s.classList.remove('active'));
+  });
+
+  document.addEventListener('keydown', e => {
+    if (!slideshowMode) return;
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') enter(current + 1);
+    if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   enter(current - 1);
+  });
+</script>
+</body>
+</html>

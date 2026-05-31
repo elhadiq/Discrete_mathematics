@@ -1,0 +1,1028 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sequences and Series — Full Course v2 — Discrete Mathematics</title>
+<script>
+  MathJax = {
+    tex: { inlineMath: [['$','$']], displayMath: [['$$','$$']], processEscapes: true },
+    options: { skipHtmlTags: ['script','noscript','style','textarea'] }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --orange:    #e67e22;
+  --darkblue:  #2c3e50;
+  --lightbg:   #f4f9fc;
+  --rowred:    #ffe8e8;
+  --rowblue:   #e3eeff;
+  --border:    #dce3ea;
+  --py-fg:     #1f4e7a;
+  --py-bg:     #eaf3fb;
+  --py-border: #2a6fb3;
+  --py-head:   #2a6fb3;
+  --sp-fg:     #1e824c;
+  --sp-bg:     #e8f5ec;
+  --sp-border: #27ae60;
+  --sp-head:   #27ae60;
+  --su-fg:     #4a4aaa;
+  --su-bg:     #eeeeff;
+  --su-border: #6060cc;
+  --su-head:   #6060cc;
+  --out-fg:    #6e4b0a;
+  --out-bg:    #fff7e0;
+  --out-border:#e0b341;
+  --out-head:  #c89324;
+}
+
+body {
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  background: #e8edf2;
+  color: var(--darkblue);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem 1rem 5rem;
+  gap: 2rem;
+}
+
+.slide {
+  background: #fff;
+  width: 100%;
+  max-width: 940px;
+  border-radius: 10px;
+  box-shadow: 0 4px 18px rgba(0,0,0,.10);
+  padding: 2.2rem 2.8rem 1.8rem;
+  position: relative;
+}
+.slide-number {
+  position: absolute;
+  bottom: 0.7rem;
+  right: 1.2rem;
+  font-size: 0.72rem;
+  color: #aaa;
+}
+
+.slide.title-slide {
+  background: linear-gradient(145deg, #f4f9fc 60%, #e0eef7);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 240px;
+  text-align: center;
+  border-top: 6px solid var(--orange);
+}
+.slide.title-slide h1 { font-size: 1.9rem; color: var(--darkblue); margin-bottom: 0.4rem; }
+.slide.title-slide .subtitle { font-size: 1.15rem; color: #555; }
+.slide.title-slide .author   { font-size: 1rem; color: var(--orange); margin-top: 0.7rem; font-style: italic; }
+
+h2.frame-title {
+  font-size: 1.55rem;
+  color: var(--orange);
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  padding-bottom: 0.35rem;
+  border-bottom: 2px solid #f9e4cc;
+}
+h3.sub-title {
+  font-size: 1.05rem;
+  color: var(--orange);
+  font-weight: 600;
+  margin: 0.7rem 0 0.3rem;
+}
+
+p { line-height: 1.7; margin: 0.45rem 0; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.4rem; line-height: 1.8; }
+ul li::marker, ol li::marker { color: var(--orange); }
+code { background: #f0f3f7; color: #1f4e7a; padding: 0 .25em; border-radius: 3px; font-family: 'Consolas','Fira Code',monospace; }
+
+.note-box, .def-box, .thm-box, .proof-box, .ex-box, .ce-box, .cor-box {
+  border-radius: 6px;
+  padding: 0.7rem 1rem;
+  margin: 0.6rem 0;
+  line-height: 1.7;
+}
+.note-box  { background: #fff5e8; border-left: 4px solid var(--orange); font-style: italic; }
+.def-box   { background: #eaf3fb; border-left: 4px solid var(--py-border); }
+.def-box::before  { content: "Definition. "; font-weight: 700; color: var(--py-border); }
+.thm-box   { background: #fff7e0; border-left: 4px solid var(--out-border); }
+.thm-box::before  { content: "Theorem. "; font-weight: 700; color: var(--out-head); }
+.cor-box   { background: #fff7e0; border-left: 4px solid var(--out-border); }
+.cor-box::before  { content: "Corollary. "; font-weight: 700; color: var(--out-head); }
+.proof-box { background: #f4f9fc; border-left: 4px solid var(--darkblue); }
+.proof-box::before { content: "Proof. "; font-weight: 700; color: var(--darkblue); }
+.ex-box    { background: #e8f5ec; border-left: 4px solid var(--sp-border); }
+.ex-box::before    { content: "Example. "; font-weight: 700; color: var(--sp-border); }
+.ce-box    { background: #ffe8e8; border-left: 4px solid #c0395a; }
+.ce-box::before    { content: "Counter-example. "; font-weight: 700; color: #c0395a; }
+
+.python-block, .setup-block, .sympy-block, .output-block {
+  border-radius: 6px;
+  overflow: hidden;
+  margin: 0.6rem 0;
+  border: 1px solid;
+}
+.pane-label {
+  display: block;
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  color: #fff;
+}
+.pane-code {
+  font-family: 'Consolas','Fira Code',monospace;
+  font-size: 0.83rem;
+  line-height: 1.6;
+  padding: 0.5rem 0.75rem;
+  white-space: pre;
+  display: block;
+  overflow-x: auto;
+}
+.python-block { border-color: var(--py-border); }
+.python-block .pane-label { background: var(--py-head); }
+.python-block .pane-code  { background: var(--py-bg); color: var(--py-fg); }
+.sympy-block  { border-color: var(--sp-border); }
+.sympy-block  .pane-label { background: var(--sp-head); }
+.sympy-block  .pane-code  { background: var(--sp-bg); color: var(--sp-fg); }
+.setup-block  { border-color: var(--su-border); }
+.setup-block  .pane-label { background: var(--su-head); }
+.setup-block  .pane-code  { background: var(--su-bg); color: var(--su-fg); }
+.output-block { border-color: var(--out-border); }
+.output-block .pane-label { background: var(--out-head); }
+.output-block .pane-code  { background: var(--out-bg); color: var(--out-fg); }
+
+.truth-table, .ref-table {
+  border-collapse: collapse;
+  margin: 0.6rem auto;
+  font-size: 0.9rem;
+  width: 100%;
+}
+.truth-table th, .truth-table td,
+.ref-table th,  .ref-table td {
+  border: 1px solid var(--border);
+  padding: 0.4rem 0.75rem;
+  text-align: left;
+  vertical-align: top;
+}
+.truth-table th, .ref-table th { background: var(--lightbg); font-weight: 600; color: var(--darkblue); }
+.center td, .center th { text-align: center; }
+
+#nav { position: fixed; bottom: 1.5rem; right: 1.5rem; display: flex; gap: 0.4rem; z-index: 100; }
+#nav button {
+  background: var(--orange); color: #fff; border: none;
+  border-radius: 50%; width: 40px; height: 40px;
+  font-size: 1.1rem; cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,.25); transition: background .2s;
+}
+#nav button:hover { background: #cf6d17; }
+#nav #btn-scroll { border-radius: 20px; width: auto; padding: 0 12px; font-size: 0.8rem; }
+
+body.slideshow .slide        { display: none; }
+body.slideshow .slide.active { display: block; }
+
+.ref-cite { color: #777; font-size: 0.85rem; font-style: italic; }
+.chip {
+  display: inline-block;
+  background: #f9e4cc;
+  color: #8a4a0e;
+  padding: 0 .45em;
+  border-radius: 4px;
+  font-weight: 600;
+  font-size: .9em;
+}
+</style>
+</head>
+<body>
+
+<!-- ══ Slide 1 — Title ════════════════════════════════════════════════ -->
+<section class="slide title-slide" id="s1">
+  <h1>Sequences and Series</h1>
+  <p class="subtitle">Discrete Mathematics — Session 2 (Full Course v2)</p>
+  <p style="font-size:1rem;color:#e67e22;margin-top:0.8rem;font-style:italic;font-weight:600;letter-spacing:.02em;">Notes By Pr. El Hadiq Zouhair</p>
+  <span class="slide-number">1 / 32</span>
+</section>
+
+<!-- ══ Slide 2 — Outline ═════════════════════════════════════════════ -->
+<section class="slide" id="s2">
+  <h2 class="frame-title">Outline of the course</h2>
+  <ol>
+    <li><strong>Part I — Sequences.</strong> Formal definition, notations, finite vs infinite, subsequences, bounded and monotone sequences.</li>
+    <li>Limit of a sequence — $\varepsilon$-$N$ definition; uniqueness, algebra of limits, monotone convergence, squeeze theorem, Cauchy sequences, Bolzano–Weierstrass.</li>
+    <li><strong>Part II — Arithmetic and geometric progressions.</strong> Closed forms; Gauss's sum trick; geometric sum and convergence.</li>
+    <li><strong>Part III — Series.</strong> Definition as the sequence of partial sums; necessary condition $a_n \to 0$ (with the harmonic counter-example).</li>
+    <li>Telescoping series; geometric series convergence; $p$-series; comparison, ratio, root, alternating-series (Leibniz) tests — each with proof.</li>
+    <li>Absolute vs conditional convergence; Riemann rearrangement (statement).</li>
+    <li><strong>Part IV — Recurrence relations.</strong> Linear homogeneous; characteristic equation; Fibonacci's Binet formula (proved).</li>
+    <li><strong>Part V — Products</strong> $\prod$ notation, empty-product convention, factorials.</li>
+    <li>Famous sequences — primes, Catalan, Bell, harmonic numbers.</li>
+    <li>Python / SymPy toolbox (<code>Sum</code>, <code>Product</code>, <code>limit</code>, <code>rsolve</code>).</li>
+    <li>Summary, Wolfram → Python reference, bibliography.</li>
+  </ol>
+  <p class="ref-cite">References: Rosen 8e §2.4 (sequences &amp; summations), §8.1–8.2 (recurrences); Rudin, <em>Principles of Mathematical Analysis</em>, ch. 3; Spivak, <em>Calculus</em>, ch. 21–23.</p>
+  <span class="slide-number">2 / 32</span>
+</section>
+
+<!-- ══ Slide 3 — Sequence — formal definition ════════════════════════ -->
+<section class="slide" id="s3">
+  <h2 class="frame-title">1.1 Sequence — formal definition</h2>
+
+  <div class="def-box">
+    Let $X$ be a non-empty set. A <strong>sequence</strong> in $X$ is a function $a : \mathbb{N} \to X$ (or $a : \mathbb{N}^* \to X$ — both indexings are used). The value $a(n)$ is written $a_n$ and called the <em>$n$-th term</em>. We denote the whole sequence by $(a_n)_{n \in \mathbb{N}}$, $(a_n)_{n \geq 0}$, or simply $(a_n)$.
+  </div>
+
+  <p>A <strong>finite sequence</strong> of length $k$ is a function $\{0, 1, \dots, k-1\} \to X$ (or equivalently a $k$-tuple in $X^k$). An <strong>infinite sequence</strong> has domain $\mathbb{N}$.</p>
+
+  <div class="ex-box">
+    <ul>
+      <li>$a_n := n^2$ &nbsp;gives&nbsp; $0, 1, 4, 9, 16, 25, \dots$ — a sequence in $\mathbb{N}$.</li>
+      <li>$a_n := (-1)^n$ &nbsp;gives&nbsp; $1, -1, 1, -1, \dots$ — alternating sequence in $\mathbb{Z}$.</li>
+      <li>$a_n := \tfrac{1}{n+1}$ &nbsp;gives&nbsp; $1, \tfrac12, \tfrac13, \tfrac14, \dots$ — sequence in $\mathbb{Q}$.</li>
+    </ul>
+  </div>
+
+  <p class="ref-cite">Rosen 8e §2.4, p. 153; Rudin, §3.1.</p>
+  <span class="slide-number">3 / 32</span>
+</section>
+
+<!-- ══ Slide 4 — Subsequences ════════════════════════════════════════ -->
+<section class="slide" id="s4">
+  <h2 class="frame-title">1.2 Subsequences</h2>
+
+  <div class="def-box">
+    Let $(a_n)$ be a sequence in $X$ and $\varphi : \mathbb{N} \to \mathbb{N}$ a <em>strictly increasing</em> function. The composition $b_k := a_{\varphi(k)}$ defines a sequence $(b_k)$, called a <strong>subsequence</strong> of $(a_n)$. We often write $(a_{n_k})$ with $n_0 &lt; n_1 &lt; n_2 &lt; \cdots$
+  </div>
+
+  <div class="ex-box">
+    From $a_n = (-1)^n$ extract the even-indexed subsequence $a_{2k} = 1, 1, 1, \dots$ and the odd-indexed subsequence $a_{2k+1} = -1, -1, -1, \dots$ Both are constant.
+  </div>
+
+  <div class="thm-box">
+    Every subsequence of a convergent sequence converges to the same limit.
+  </div>
+  <div class="proof-box">
+    Suppose $a_n \to L$. Given $\varepsilon &gt; 0$, choose $N$ such that $|a_n - L| &lt; \varepsilon$ for all $n \geq N$. Since $\varphi$ is strictly increasing, $\varphi(k) \to \infty$, so there exists $K$ with $\varphi(k) \geq N$ for all $k \geq K$. Then $|a_{\varphi(k)} - L| &lt; \varepsilon$ for all $k \geq K$, i.e. $b_k \to L$. $\square$
+  </div>
+  <p class="ref-cite">Rudin, §3.6.</p>
+  <span class="slide-number">4 / 32</span>
+</section>
+
+<!-- ══ Slide 5 — Bounded sequences ═══════════════════════════════════ -->
+<section class="slide" id="s5">
+  <h2 class="frame-title">1.3 Bounded sequences</h2>
+
+  <div class="def-box">
+    A real sequence $(a_n)$ is
+    <ul>
+      <li><strong>bounded above</strong> iff $\exists M \in \mathbb{R},\;\forall n,\; a_n \leq M$;</li>
+      <li><strong>bounded below</strong> iff $\exists m \in \mathbb{R},\;\forall n,\; a_n \geq m$;</li>
+      <li><strong>bounded</strong> iff bounded both above and below, equivalently $\exists M \geq 0,\;\forall n,\; |a_n| \leq M$.</li>
+    </ul>
+  </div>
+
+  <div class="ex-box">
+    $(\sin n)$ is bounded by $1$. $(n)$ is bounded below by $0$ but not above. $((-1)^n n)$ is unbounded in both directions.
+  </div>
+
+  <div class="thm-box">
+    Every convergent real sequence is bounded.
+  </div>
+  <div class="proof-box">
+    Suppose $a_n \to L$. Take $\varepsilon = 1$: there is $N$ with $|a_n - L| &lt; 1$ for all $n \geq N$, hence $|a_n| \leq |L| + 1$ for $n \geq N$. The finitely many terms $a_0, \dots, a_{N-1}$ are also bounded by $\max(|a_0|, \dots, |a_{N-1}|)$. Hence
+    $$\forall n,\;\; |a_n| \leq \max\bigl(|L| + 1,\, |a_0|,\, \dots,\, |a_{N-1}|\bigr). \;\square$$
+  </div>
+  <p class="ref-cite">Rudin, §3.2.</p>
+  <span class="slide-number">5 / 32</span>
+</section>
+
+<!-- ══ Slide 6 — Monotone sequences ══════════════════════════════════ -->
+<section class="slide" id="s6">
+  <h2 class="frame-title">1.4 Monotone sequences</h2>
+
+  <div class="def-box">
+    A real sequence $(a_n)$ is
+    <ul>
+      <li><strong>increasing</strong> iff $a_n \leq a_{n+1}$ for all $n$; <em>strictly</em> increasing iff $a_n &lt; a_{n+1}$;</li>
+      <li><strong>decreasing</strong> iff $a_n \geq a_{n+1}$; <em>strictly</em> if $a_n &gt; a_{n+1}$;</li>
+      <li><strong>monotone</strong> iff increasing or decreasing.</li>
+    </ul>
+  </div>
+
+  <div class="ex-box">
+    $a_n = n^2$ is strictly increasing; $a_n = 1/(n+1)$ is strictly decreasing; $a_n = (-1)^n$ is not monotone.
+  </div>
+  <p class="ref-cite">Rudin, §3.13; Spivak, ch. 22.</p>
+  <span class="slide-number">6 / 32</span>
+</section>
+
+<!-- ══ Slide 7 — Limit — ε-N definition ══════════════════════════════ -->
+<section class="slide" id="s7">
+  <h2 class="frame-title">2.1 Limit of a sequence — $\varepsilon$-$N$ definition</h2>
+
+  <div class="def-box">
+    A real sequence $(a_n)$ <strong>converges</strong> to $L \in \mathbb{R}$, written $\lim_{n\to\infty} a_n = L$ or $a_n \to L$, iff
+    $$\forall \varepsilon &gt; 0,\;\;\exists N \in \mathbb{N},\;\;\forall n \geq N,\;\;|a_n - L| &lt; \varepsilon.$$
+    If no such $L$ exists, $(a_n)$ <strong>diverges</strong>. It diverges to $+\infty$ iff $\forall M,\;\exists N,\;\forall n \geq N,\; a_n &gt; M$.
+  </div>
+
+  <div class="ex-box">
+    Prove $\dfrac{1}{n+1} \to 0$.<br>
+    <em>Proof.</em> Let $\varepsilon &gt; 0$. Choose $N \geq \lceil 1/\varepsilon \rceil$. For all $n \geq N$, $\bigl|\tfrac{1}{n+1} - 0\bigr| = \tfrac{1}{n+1} \leq \tfrac{1}{N+1} &lt; \tfrac{1}{N} \leq \varepsilon$. $\square$
+  </div>
+
+  <div class="ce-box">
+    $a_n = (-1)^n$ diverges. If $a_n \to L$, take $\varepsilon = 1$: there is $N$ with $|(-1)^n - L| &lt; 1$ for all $n \geq N$. But $a_N$ and $a_{N+1}$ differ by $2$, so by triangle inequality $2 = |a_N - a_{N+1}| \leq |a_N - L| + |L - a_{N+1}| &lt; 2$ — contradiction.
+  </div>
+  <p class="ref-cite">Rudin, §3.1; Spivak, ch. 21.</p>
+  <span class="slide-number">7 / 32</span>
+</section>
+
+<!-- ══ Slide 8 — Uniqueness of the limit ═════════════════════════════ -->
+<section class="slide" id="s8">
+  <h2 class="frame-title">2.2 Uniqueness of the limit</h2>
+
+  <div class="thm-box">
+    If $(a_n)$ converges, its limit is unique.
+  </div>
+
+  <div class="proof-box">
+    Suppose $a_n \to L_1$ and $a_n \to L_2$ with $L_1 \neq L_2$. Let $\varepsilon := |L_1 - L_2|/2 &gt; 0$. There exist $N_1, N_2$ with $|a_n - L_1| &lt; \varepsilon$ for $n \geq N_1$ and $|a_n - L_2| &lt; \varepsilon$ for $n \geq N_2$. For $n \geq \max(N_1, N_2)$,
+    $$|L_1 - L_2| \leq |L_1 - a_n| + |a_n - L_2| &lt; \varepsilon + \varepsilon = |L_1 - L_2|,$$
+    a strict inequality $|L_1 - L_2| &lt; |L_1 - L_2|$ — contradiction. Hence $L_1 = L_2$. $\square$
+  </div>
+
+  <p class="ref-cite">Rudin, §3.2.</p>
+  <span class="slide-number">8 / 32</span>
+</section>
+
+<!-- ══ Slide 9 — Algebra of limits ═══════════════════════════════════ -->
+<section class="slide" id="s9">
+  <h2 class="frame-title">2.3 Algebra of limits</h2>
+
+  <div class="thm-box">
+    Let $a_n \to L$ and $b_n \to M$. Then
+    <ol>
+      <li>$a_n + b_n \to L + M$;</li>
+      <li>$\lambda \cdot a_n \to \lambda L$ for any $\lambda \in \mathbb{R}$;</li>
+      <li>$a_n \cdot b_n \to L \cdot M$;</li>
+      <li>if $M \neq 0$ and $b_n \neq 0$ for large $n$, then $a_n / b_n \to L / M$.</li>
+    </ol>
+  </div>
+
+  <div class="proof-box">
+    <strong>(1)</strong> Given $\varepsilon &gt; 0$, choose $N_1$ with $|a_n - L| &lt; \varepsilon/2$ and $N_2$ with $|b_n - M| &lt; \varepsilon/2$ for indices past $N_1, N_2$. For $n \geq \max(N_1, N_2)$,
+    $|(a_n + b_n) - (L + M)| \leq |a_n - L| + |b_n - M| &lt; \varepsilon.$<br>
+    <strong>(3)</strong> Convergent sequences are bounded (slide 5): say $|b_n| \leq B$. Then
+    $|a_n b_n - LM| \leq |a_n b_n - L b_n| + |L b_n - LM| = |b_n| |a_n - L| + |L| |b_n - M| \leq B|a_n - L| + |L||b_n - M|.$
+    Make each term less than $\varepsilon/2$ for $n$ large. Other parts are similar. $\square$
+  </div>
+  <p class="ref-cite">Rudin Theorem 3.3.</p>
+  <span class="slide-number">9 / 32</span>
+</section>
+
+<!-- ══ Slide 10 — Monotone convergence ═══════════════════════════════ -->
+<section class="slide" id="s10">
+  <h2 class="frame-title">2.4 Monotone convergence theorem</h2>
+
+  <div class="thm-box">
+    Every bounded monotone real sequence converges. Specifically: a bounded increasing sequence converges to its supremum; a bounded decreasing sequence converges to its infimum.
+  </div>
+
+  <div class="proof-box">
+    Let $(a_n)$ be increasing and bounded above; set $L := \sup\{a_n : n \in \mathbb{N}\}$, which exists by the least-upper-bound property of $\mathbb{R}$.<br>
+    Let $\varepsilon &gt; 0$. Since $L - \varepsilon &lt; L$, $L - \varepsilon$ is <em>not</em> an upper bound, so there exists $N$ with $a_N &gt; L - \varepsilon$. By monotonicity, $a_n \geq a_N$ for all $n \geq N$. Combined with $a_n \leq L$ (since $L$ is an upper bound), we get $L - \varepsilon &lt; a_n \leq L &lt; L + \varepsilon$, i.e. $|a_n - L| &lt; \varepsilon$. Hence $a_n \to L$.<br>
+    The decreasing case is symmetric (use infimum). $\square$
+  </div>
+
+  <div class="ex-box">
+    Define $a_n := \bigl(1 + \tfrac1n\bigr)^n$ on $n \geq 1$. One can show $(a_n)$ is increasing and bounded above by $3$, hence converges. The limit is the famous constant $e \approx 2.71828\ldots$
+  </div>
+  <p class="ref-cite">Rudin Theorem 3.14; Spivak, ch. 22.</p>
+  <span class="slide-number">10 / 32</span>
+</section>
+
+<!-- ══ Slide 11 — Squeeze theorem ════════════════════════════════════ -->
+<section class="slide" id="s11">
+  <h2 class="frame-title">2.5 Squeeze theorem</h2>
+
+  <div class="thm-box">
+    Let $(a_n), (b_n), (c_n)$ be real sequences with $a_n \leq b_n \leq c_n$ eventually (i.e. for all $n \geq N_0$). If $a_n \to L$ and $c_n \to L$, then $b_n \to L$.
+  </div>
+
+  <div class="proof-box">
+    Let $\varepsilon &gt; 0$. Pick $N_1$ with $|a_n - L| &lt; \varepsilon$ and $N_2$ with $|c_n - L| &lt; \varepsilon$ for indices past them. For $n \geq \max(N_0, N_1, N_2)$,
+    $$L - \varepsilon &lt; a_n \leq b_n \leq c_n &lt; L + \varepsilon,$$
+    so $|b_n - L| &lt; \varepsilon$. $\square$
+  </div>
+
+  <div class="ex-box">
+    Show $\dfrac{\sin n}{n} \to 0$. Since $-1 \leq \sin n \leq 1$, dividing by $n &gt; 0$ gives $-\tfrac{1}{n} \leq \tfrac{\sin n}{n} \leq \tfrac{1}{n}$. Both bounds tend to $0$, so by the squeeze theorem $\tfrac{\sin n}{n} \to 0$.
+  </div>
+  <p class="ref-cite">Rudin Theorem 3.19; Spivak, ch. 21.</p>
+  <span class="slide-number">11 / 32</span>
+</section>
+
+<!-- ══ Slide 12 — Cauchy & Bolzano-Weierstrass ═══════════════════════ -->
+<section class="slide" id="s12">
+  <h2 class="frame-title">2.6 Cauchy sequences &amp; Bolzano–Weierstrass</h2>
+
+  <div class="def-box">
+    A real sequence $(a_n)$ is a <strong>Cauchy sequence</strong> iff
+    $$\forall \varepsilon &gt; 0,\;\exists N,\;\forall m, n \geq N,\;|a_m - a_n| &lt; \varepsilon.$$
+    Informally: the terms get arbitrarily close to <em>each other</em>, without referring to a limit.
+  </div>
+
+  <div class="thm-box">
+    In $\mathbb{R}$, a sequence is convergent iff it is Cauchy. ($\mathbb{R}$ is <em>complete</em>.)
+  </div>
+
+  <div class="proof-box">
+    <strong>(Convergent ⇒ Cauchy.)</strong> If $a_n \to L$, given $\varepsilon &gt; 0$ pick $N$ with $|a_n - L| &lt; \varepsilon/2$ for $n \geq N$. Then for $m, n \geq N$, $|a_m - a_n| \leq |a_m - L| + |L - a_n| &lt; \varepsilon$.<br>
+    <strong>(Cauchy ⇒ Convergent in $\mathbb{R}$.)</strong> A Cauchy sequence is bounded (apply the definition with $\varepsilon = 1$). By Bolzano–Weierstrass it has a convergent subsequence $a_{n_k} \to L$. Using the Cauchy property, $a_n \to L$ as well. $\square$
+  </div>
+
+  <div class="thm-box">
+    <strong>Bolzano–Weierstrass.</strong> Every bounded real sequence has a convergent subsequence.
+  </div>
+
+  <p class="ref-cite">Rudin Theorems 3.6 (b), 3.11.</p>
+  <span class="slide-number">12 / 32</span>
+</section>
+
+<!-- ══ Slide 13 — Arithmetic progression ═════════════════════════════ -->
+<section class="slide" id="s13">
+  <h2 class="frame-title">3.1 Arithmetic progression (AP)</h2>
+
+  <div class="def-box">
+    A sequence $(a_n)_{n \geq 0}$ is an <strong>arithmetic progression</strong> with first term $a$ and common difference $d$ iff
+    $$a_n = a + n\,d \qquad\text{or equivalently}\qquad a_{n+1} - a_n = d \text{ for all } n.$$
+  </div>
+
+  <div class="thm-box">
+    The sum of the first $n$ terms ($n \geq 1$) of an AP is
+    $$S_n \;=\; \sum_{k=0}^{n-1} (a + kd) \;=\; \frac{n(2a + (n-1)d)}{2} \;=\; \frac{n(a_0 + a_{n-1})}{2}.$$
+  </div>
+
+  <div class="proof-box">
+    <strong>Gauss's pairing trick.</strong> Write $S$ forwards and backwards:
+    $$\begin{aligned} S &amp;= a + (a+d) + (a+2d) + \cdots + (a + (n-1)d), \\ S &amp;= (a + (n-1)d) + (a + (n-2)d) + \cdots + a. \end{aligned}$$
+    Adding column by column, each of the $n$ columns equals $2a + (n-1)d$ (a constant). Hence $2S = n \cdot (2a + (n-1)d)$, and $S = n(2a + (n-1)d)/2$. $\square$
+  </div>
+
+  <div class="cor-box">
+    $\displaystyle 1 + 2 + 3 + \cdots + n \;=\; \frac{n(n+1)}{2}$ &nbsp;(take $a = 1$, $d = 1$, sum from $a_0$ to $a_{n-1}$, with $n$ replaced by $n+1$ indices).
+  </div>
+  <p class="ref-cite">Rosen 8e §2.4 Table 2; Spivak, ch. 2 Prob. 1.</p>
+  <span class="slide-number">13 / 32</span>
+</section>
+
+<!-- ══ Slide 14 — Geometric progression ══════════════════════════════ -->
+<section class="slide" id="s14">
+  <h2 class="frame-title">3.2 Geometric progression (GP)</h2>
+
+  <div class="def-box">
+    A sequence $(a_n)_{n \geq 0}$ is a <strong>geometric progression</strong> with first term $a$ (assumed non-zero) and common ratio $r$ iff
+    $$a_n = a \cdot r^n \qquad\text{or equivalently}\qquad \frac{a_{n+1}}{a_n} = r \text{ for all } n.$$
+  </div>
+
+  <div class="thm-box">
+    The sum of the first $n$ terms ($n \geq 1$) of a GP is
+    $$S_n \;=\; \sum_{k=0}^{n-1} a r^k \;=\; \begin{cases} a \cdot \dfrac{1 - r^n}{1 - r} &amp; \text{if } r \neq 1, \\ n \cdot a &amp; \text{if } r = 1. \end{cases}$$
+  </div>
+
+  <div class="proof-box">
+    For $r = 1$ the sum is trivially $n \cdot a$. For $r \neq 1$, write
+    $$S_n = a + ar + ar^2 + \cdots + ar^{n-1},$$
+    $$r S_n = \phantom{a +\;} ar + ar^2 + \cdots + ar^{n-1} + ar^n.$$
+    Subtract: $S_n - r S_n = a - ar^n$, so $(1 - r) S_n = a(1 - r^n)$, giving $S_n = a(1 - r^n)/(1 - r)$. $\square$
+  </div>
+
+  <div class="thm-box">
+    The infinite geometric series $\sum_{k=0}^{\infty} a r^k$ converges iff $|r| &lt; 1$, in which case its sum is $\dfrac{a}{1 - r}$.
+  </div>
+  <div class="proof-box">
+    If $|r| &lt; 1$, $r^n \to 0$ (proved on slide 16), so $S_n \to a/(1-r)$. If $|r| \geq 1$ and $a \neq 0$, $|a r^n| \geq |a| \not\to 0$, so the necessary condition $a_n \to 0$ fails (slide 18) and the series diverges. $\square$
+  </div>
+  <p class="ref-cite">Rosen 8e §2.4; Rudin §3.26.</p>
+  <span class="slide-number">14 / 32</span>
+</section>
+
+<!-- ══ Slide 15 — Useful sums ════════════════════════════════════════ -->
+<section class="slide" id="s15">
+  <h2 class="frame-title">3.3 Standard closed-form sums</h2>
+
+  <table class="ref-table center">
+    <thead><tr><th>Sum</th><th>Closed form</th></tr></thead>
+    <tbody>
+      <tr><td>$\displaystyle \sum_{k=1}^{n} k$</td><td>$\dfrac{n(n+1)}{2}$</td></tr>
+      <tr><td>$\displaystyle \sum_{k=1}^{n} k^2$</td><td>$\dfrac{n(n+1)(2n+1)}{6}$</td></tr>
+      <tr><td>$\displaystyle \sum_{k=1}^{n} k^3$</td><td>$\left(\dfrac{n(n+1)}{2}\right)^{\!2}$</td></tr>
+      <tr><td>$\displaystyle \sum_{k=0}^{n-1} r^k$, $r \neq 1$</td><td>$\dfrac{1 - r^n}{1 - r}$</td></tr>
+      <tr><td>$\displaystyle \sum_{k=0}^{n} \binom{n}{k}$</td><td>$2^n$ &nbsp;(binomial theorem at $x = y = 1$)</td></tr>
+    </tbody>
+  </table>
+
+  <h3 class="sub-title">Proof of $\sum k^2 = n(n+1)(2n+1)/6$ by induction</h3>
+  <div class="proof-box">
+    <em>Base ($n = 1$).</em> LHS $= 1$, RHS $= 1 \cdot 2 \cdot 3 / 6 = 1$. ✓<br>
+    <em>Inductive step.</em> Assume true at $n$. Then $\sum_{k=1}^{n+1} k^2 = \tfrac{n(n+1)(2n+1)}{6} + (n+1)^2 = \tfrac{(n+1)\bigl[n(2n+1) + 6(n+1)\bigr]}{6} = \tfrac{(n+1)(2n^2 + 7n + 6)}{6} = \tfrac{(n+1)(n+2)(2n+3)}{6}$, which is the formula at $n+1$. $\square$
+  </div>
+  <p class="ref-cite">Rosen 8e §2.4 Table 2.</p>
+  <span class="slide-number">15 / 32</span>
+</section>
+
+<!-- ══ Slide 16 — Standard limits ════════════════════════════════════ -->
+<section class="slide" id="s16">
+  <h2 class="frame-title">3.4 Standard limits</h2>
+
+  <div class="thm-box">
+    <ol>
+      <li>If $|r| &lt; 1$, then $r^n \to 0$.</li>
+      <li>If $|r| &gt; 1$, then $|r^n| \to +\infty$.</li>
+      <li>$\dfrac{n^k}{r^n} \to 0$ for any fixed $k \geq 0$ and $|r| &gt; 1$ — exponentials beat polynomials.</li>
+      <li>$n^{1/n} \to 1$.</li>
+    </ol>
+  </div>
+
+  <div class="proof-box">
+    <strong>(1)</strong> Write $|r| = 1/(1 + h)$ with $h &gt; 0$. By Bernoulli's inequality, $(1 + h)^n \geq 1 + nh$, so $|r^n| = 1/(1+h)^n \leq 1/(1 + nh) \to 0$. Hence $r^n \to 0$ by the squeeze theorem.<br>
+    <strong>(2)</strong> Apply (1) to $1/r$.<br>
+    <strong>(3)</strong> Write $r = 1 + h$ with $h &gt; 0$. By the binomial theorem, for $n &gt; k$:
+    $r^n = (1+h)^n \geq \binom{n}{k+1} h^{k+1} \geq \frac{(n - k)^{k+1}}{(k+1)!} \, h^{k+1}.$
+    Hence $\dfrac{n^k}{r^n} \leq \dfrac{(k+1)! \cdot n^k}{(n-k)^{k+1} h^{k+1}} \to 0$ as $n \to \infty$. $\square$
+  </div>
+  <p class="ref-cite">Rudin §3.20.</p>
+  <span class="slide-number">16 / 32</span>
+</section>
+
+<!-- ══ Slide 17 — Series definition ══════════════════════════════════ -->
+<section class="slide" id="s17">
+  <h2 class="frame-title">4.1 Series — partial sums</h2>
+
+  <div class="def-box">
+    Given a real sequence $(a_n)_{n \geq 0}$, the <strong>series</strong> $\sum_{n=0}^{\infty} a_n$ is the formal object whose <em>$n$-th partial sum</em> is
+    $$S_n \;:=\; \sum_{k=0}^{n} a_k \;=\; a_0 + a_1 + \cdots + a_n.$$
+    The series <strong>converges</strong> iff the sequence $(S_n)$ converges; in that case its <strong>sum</strong> is $\sum_{n=0}^{\infty} a_n := \lim_{n \to \infty} S_n$. Otherwise the series <strong>diverges</strong>.
+  </div>
+
+  <p>Crucially, a series is just a special <em>sequence</em> — the sequence of its partial sums — so every result about sequence convergence applies.</p>
+
+  <div class="ex-box">
+    The geometric series $\sum_{n=0}^{\infty} r^n$ has partial sums $S_n = (1 - r^{n+1})/(1-r)$; converges to $1/(1-r)$ iff $|r| &lt; 1$ (slide 14).
+  </div>
+  <p class="ref-cite">Rudin §3.21; Spivak ch. 23.</p>
+  <span class="slide-number">17 / 32</span>
+</section>
+
+<!-- ══ Slide 18 — Necessary condition + harmonic series ══════════════ -->
+<section class="slide" id="s18">
+  <h2 class="frame-title">4.2 Necessary condition $a_n \to 0$ — and the harmonic series</h2>
+
+  <div class="thm-box">
+    If $\sum a_n$ converges, then $a_n \to 0$.
+  </div>
+  <div class="proof-box">
+    Let $S := \lim S_n$. Then $a_n = S_n - S_{n-1} \to S - S = 0$. $\square$
+  </div>
+
+  <div class="note-box">
+    The converse is <strong>false</strong>: $a_n \to 0$ does <em>not</em> imply $\sum a_n$ converges. The counter-example is the harmonic series.
+  </div>
+
+  <div class="thm-box">
+    <strong>Oresme (c. 1350).</strong> The harmonic series $\;\sum_{n=1}^{\infty} \dfrac{1}{n}\;$ diverges, even though $\tfrac{1}{n} \to 0$.
+  </div>
+  <div class="proof-box">
+    Group the terms in blocks of doubling length:
+    $$\underbrace{\tfrac{1}{1}}_{\geq \tfrac12} + \underbrace{\tfrac{1}{2}}_{\geq \tfrac12} + \underbrace{\tfrac{1}{3} + \tfrac{1}{4}}_{\geq \tfrac12} + \underbrace{\tfrac{1}{5} + \tfrac{1}{6} + \tfrac{1}{7} + \tfrac{1}{8}}_{\geq \tfrac12} + \cdots$$
+    The $k$-th block has $2^{k-1}$ terms, each at least $1/2^k$, summing to at least $1/2$. Hence $S_{2^n} \geq 1 + n/2 \to \infty$. So $(S_n)$ is unbounded and the series diverges. $\square$
+  </div>
+  <p class="ref-cite">Rudin §3.28; Spivak ch. 23.</p>
+  <span class="slide-number">18 / 32</span>
+</section>
+
+<!-- ══ Slide 19 — Telescoping ════════════════════════════════════════ -->
+<section class="slide" id="s19">
+  <h2 class="frame-title">4.3 Telescoping series</h2>
+
+  <div class="thm-box">
+    Let $(b_n)$ be a sequence with $b_n \to L$. Define $a_n := b_n - b_{n+1}$. Then $\sum_{n=0}^{\infty} a_n = b_0 - L$.
+  </div>
+
+  <div class="proof-box">
+    The $n$-th partial sum telescopes:
+    $$S_n = \sum_{k=0}^{n} (b_k - b_{k+1}) = b_0 - b_{n+1}.$$
+    As $n \to \infty$, $b_{n+1} \to L$, so $S_n \to b_0 - L$. $\square$
+  </div>
+
+  <div class="ex-box">
+    $\displaystyle \sum_{n=1}^{\infty} \frac{1}{n(n+1)}$. Write $\tfrac{1}{n(n+1)} = \tfrac{1}{n} - \tfrac{1}{n+1}$. With $b_n = 1/n$ (and $L = 0$), the sum telescopes to $b_1 - 0 = 1$.
+  </div>
+
+  <div class="sympy-block">
+    <span class="pane-label">SymPy</span>
+    <span class="pane-code">from sympy import Sum, oo, symbols, Rational
+n = symbols('n', positive=True, integer=True)
+print(Sum(1/(n*(n+1)), (n, 1, oo)).doit())   # 1</span>
+  </div>
+  <p class="ref-cite">Rudin §3.34 Ex.; Spivak ch. 23.</p>
+  <span class="slide-number">19 / 32</span>
+</section>
+
+<!-- ══ Slide 20 — p-series ═══════════════════════════════════════════ -->
+<section class="slide" id="s20">
+  <h2 class="frame-title">4.4 $p$-series</h2>
+
+  <div class="thm-box">
+    The series $\;\sum_{n=1}^{\infty} \dfrac{1}{n^p}\;$ converges iff $p &gt; 1$.
+  </div>
+
+  <div class="proof-box">
+    <em>If $p \leq 1$:</em> for $n \geq 1$, $1/n^p \geq 1/n$, so by comparison with the harmonic series (which diverges, slide 18), the series diverges.<br>
+    <em>If $p &gt; 1$:</em> the function $f(x) = 1/x^p$ is positive and decreasing for $x \geq 1$, so by the integral test (slide 22) the series converges iff $\int_1^{\infty} x^{-p}\,dx$ converges. Compute:
+    $$\int_1^{\infty} x^{-p}\,dx = \lim_{R\to\infty}\frac{R^{1-p} - 1}{1 - p} = \frac{1}{p - 1} &lt; \infty.$$
+    Hence the series converges. $\square$
+  </div>
+
+  <div class="ex-box">
+    $\sum 1/n^2$ converges (Euler: $= \pi^2/6$). $\sum 1/n^{1/2}$ diverges. $\sum 1/(n \ln n)$ diverges (a borderline case, treated by the integral test with $f(x) = 1/(x \ln x)$).
+  </div>
+  <p class="ref-cite">Rudin §3.28; Spivak ch. 23.</p>
+  <span class="slide-number">20 / 32</span>
+</section>
+
+<!-- ══ Slide 21 — Comparison and ratio tests ═════════════════════════ -->
+<section class="slide" id="s21">
+  <h2 class="frame-title">4.5 Comparison and ratio tests</h2>
+
+  <div class="thm-box">
+    <strong>Comparison test.</strong> Suppose $0 \leq a_n \leq b_n$ eventually.
+    <ul>
+      <li>If $\sum b_n$ converges, so does $\sum a_n$.</li>
+      <li>If $\sum a_n$ diverges, so does $\sum b_n$.</li>
+    </ul>
+  </div>
+  <div class="proof-box">
+    The partial sums of $\sum a_n$ are bounded above by those of $\sum b_n$. Since $(a_n)$ are non-negative, the partial sums of $\sum a_n$ are increasing; bounded + increasing ⇒ convergent (slide 10). The contrapositive gives the second statement. $\square$
+  </div>
+
+  <div class="thm-box">
+    <strong>Ratio test (d'Alembert).</strong> Let $a_n &gt; 0$ and suppose $L := \lim_{n\to\infty} a_{n+1}/a_n$ exists.
+    <ul>
+      <li>If $L &lt; 1$, $\sum a_n$ converges.</li>
+      <li>If $L &gt; 1$, $\sum a_n$ diverges.</li>
+      <li>If $L = 1$, the test is inconclusive.</li>
+    </ul>
+  </div>
+  <div class="proof-box">
+    Suppose $L &lt; 1$ and pick $r$ with $L &lt; r &lt; 1$. For $n \geq N$ large, $a_{n+1}/a_n &lt; r$, so $a_{N+k} &lt; a_N \cdot r^k$. Hence $\sum_{k \geq 0} a_{N+k} &lt; a_N \sum r^k &lt; \infty$ (geometric). By comparison, $\sum a_n$ converges. If $L &gt; 1$, the same argument shows $a_n$ grows exponentially, so $a_n \not\to 0$ and the series diverges. $\square$
+  </div>
+  <p class="ref-cite">Rudin §3.34, §3.41.</p>
+  <span class="slide-number">21 / 32</span>
+</section>
+
+<!-- ══ Slide 22 — Root and integral tests ════════════════════════════ -->
+<section class="slide" id="s22">
+  <h2 class="frame-title">4.6 Root and integral tests</h2>
+
+  <div class="thm-box">
+    <strong>Root test (Cauchy).</strong> Let $a_n \geq 0$ and $L := \limsup_{n \to \infty} \sqrt[n]{a_n}$.
+    <ul>
+      <li>If $L &lt; 1$, $\sum a_n$ converges.</li>
+      <li>If $L &gt; 1$, $\sum a_n$ diverges.</li>
+      <li>If $L = 1$, the test is inconclusive.</li>
+    </ul>
+  </div>
+  <div class="proof-box">
+    If $L &lt; 1$, pick $r$ with $L &lt; r &lt; 1$. For $n$ large, $\sqrt[n]{a_n} &lt; r$, so $a_n &lt; r^n$ and comparison with the geometric series gives convergence. If $L &gt; 1$, $a_n \geq 1$ for infinitely many $n$, so $a_n \not\to 0$. $\square$
+  </div>
+
+  <div class="thm-box">
+    <strong>Integral test.</strong> Let $f : [1, \infty) \to [0, \infty)$ be positive, decreasing and continuous. Then $\sum_{n=1}^{\infty} f(n)$ converges iff $\int_1^{\infty} f(x)\,dx$ converges. Moreover
+    $$\int_1^{N+1} f(x)\,dx \;\leq\; \sum_{n=1}^{N} f(n) \;\leq\; f(1) + \int_1^{N} f(x)\,dx.$$
+  </div>
+  <div class="proof-box">
+    Compare $f$ with the step function constant on $[n, n+1)$ equal to $f(n)$: since $f$ is decreasing, $f(n+1) \leq f(x) \leq f(n)$ on $[n, n+1]$, giving $f(n+1) \leq \int_n^{n+1} f \leq f(n)$. Sum from $n = 1$ to $N$. $\square$
+  </div>
+  <p class="ref-cite">Rudin §3.33; Spivak ch. 23.</p>
+  <span class="slide-number">22 / 32</span>
+</section>
+
+<!-- ══ Slide 23 — Alternating series (Leibniz) ═══════════════════════ -->
+<section class="slide" id="s23">
+  <h2 class="frame-title">4.7 Alternating series — Leibniz test</h2>
+
+  <div class="thm-box">
+    Let $(b_n)$ be a real sequence with $b_n \geq 0$, $(b_n)$ decreasing, and $b_n \to 0$. Then the alternating series $\sum_{n=0}^{\infty} (-1)^n b_n$ converges. Moreover, the truncation error is bounded: $\bigl|S - S_N\bigr| \leq b_{N+1}$.
+  </div>
+
+  <div class="proof-box">
+    Let $S_n = \sum_{k=0}^{n} (-1)^k b_k$. The even partial sums $(S_{2m})$ are decreasing:
+    $S_{2m+2} - S_{2m} = -b_{2m+1} + b_{2m+2} \leq 0$ (since $(b_n)$ is decreasing).<br>
+    The odd partial sums $(S_{2m+1})$ are increasing:
+    $S_{2m+3} - S_{2m+1} = b_{2m+2} - b_{2m+3} \geq 0$.<br>
+    Also $S_{2m+1} = S_{2m} - b_{2m+1} \leq S_{2m}$. So $(S_{2m})$ is decreasing and bounded below (by $S_1$), and $(S_{2m+1})$ is increasing and bounded above (by $S_0$); both converge by monotone convergence (slide 10). Their difference $S_{2m} - S_{2m+1} = b_{2m+1} \to 0$, so both limits coincide. Hence $S_n \to S$.<br>
+    The error bound follows because $S$ lies between consecutive partial sums. $\square$
+  </div>
+
+  <div class="ex-box">
+    $\displaystyle \sum_{n=1}^{\infty} \frac{(-1)^{n+1}}{n} = 1 - \tfrac12 + \tfrac13 - \tfrac14 + \cdots = \ln 2$. Converges by Leibniz; does <em>not</em> converge absolutely (the harmonic series diverges). This is a <em>conditionally</em> convergent series — see next slide.
+  </div>
+  <p class="ref-cite">Rudin §3.43; Spivak ch. 23.</p>
+  <span class="slide-number">23 / 32</span>
+</section>
+
+<!-- ══ Slide 24 — Absolute vs conditional convergence ════════════════ -->
+<section class="slide" id="s24">
+  <h2 class="frame-title">4.8 Absolute vs conditional convergence</h2>
+
+  <div class="def-box">
+    $\sum a_n$ converges <strong>absolutely</strong> iff $\sum |a_n|$ converges. It converges <strong>conditionally</strong> iff $\sum a_n$ converges but $\sum |a_n|$ diverges.
+  </div>
+
+  <div class="thm-box">
+    Absolute convergence implies convergence: if $\sum |a_n|$ converges, so does $\sum a_n$.
+  </div>
+  <div class="proof-box">
+    Write $a_n = a_n^+ - a_n^-$ where $a_n^+ := \max(a_n, 0)$, $a_n^- := \max(-a_n, 0)$. Both are non-negative and bounded by $|a_n|$, so by comparison both $\sum a_n^+$ and $\sum a_n^-$ converge, hence so does their difference $\sum a_n$. $\square$
+  </div>
+
+  <div class="thm-box">
+    <strong>Riemann's rearrangement theorem.</strong> A <em>conditionally</em> convergent real series can be rearranged so as to converge to any prescribed real number — or to diverge.
+  </div>
+
+  <p>This shocking result shows that for conditional series the value of the sum depends on the order of summation; only absolutely convergent series behave "like finite sums" under rearrangement (Dirichlet's theorem).</p>
+  <p class="ref-cite">Rudin §3.45–3.55.</p>
+  <span class="slide-number">24 / 32</span>
+</section>
+
+<!-- ══ Slide 25 — Recurrence relations ═══════════════════════════════ -->
+<section class="slide" id="s25">
+  <h2 class="frame-title">5.1 Recurrence relations</h2>
+
+  <div class="def-box">
+    A <strong>recurrence relation</strong> for a sequence $(a_n)$ is an equation expressing $a_n$ in terms of finitely many previous terms $a_{n-1}, a_{n-2}, \dots, a_{n-k}$, together with $k$ <em>initial values</em> $a_0, \dots, a_{k-1}$. The integer $k$ is the <strong>order</strong> of the recurrence.
+  </div>
+
+  <div class="ex-box">
+    Fibonacci: $F_0 = 0$, $F_1 = 1$, and $F_n = F_{n-1} + F_{n-2}$ for $n \geq 2$. First terms: $0, 1, 1, 2, 3, 5, 8, 13, 21, 34, \dots$<br>
+    Factorial: $0! = 1$ and $n! = n \cdot (n-1)!$ for $n \geq 1$ — first-order, non-linear.
+  </div>
+
+  <div class="def-box">
+    A recurrence is <strong>linear homogeneous with constant coefficients of order $k$</strong> iff it has the form
+    $$a_n = c_1 a_{n-1} + c_2 a_{n-2} + \cdots + c_k a_{n-k} \qquad (c_k \neq 0, \; c_i \in \mathbb{R}).$$
+  </div>
+
+  <p class="ref-cite">Rosen 8e §8.2.</p>
+  <span class="slide-number">25 / 32</span>
+</section>
+
+<!-- ══ Slide 26 — Characteristic equation ════════════════════════════ -->
+<section class="slide" id="s26">
+  <h2 class="frame-title">5.2 Solving linear homogeneous recurrences</h2>
+
+  <div class="thm-box">
+    Consider the order-$k$ linear homogeneous recurrence $a_n = c_1 a_{n-1} + \cdots + c_k a_{n-k}$. Its <strong>characteristic equation</strong> is
+    $$x^k = c_1 x^{k-1} + c_2 x^{k-2} + \cdots + c_k.$$
+    If the equation has $k$ <em>distinct</em> real roots $r_1, \dots, r_k$, then every solution of the recurrence is of the form
+    $$a_n = \alpha_1 r_1^n + \alpha_2 r_2^n + \cdots + \alpha_k r_k^n,$$
+    where the constants $\alpha_i$ are determined by the $k$ initial values.
+  </div>
+
+  <div class="proof-box">
+    First, each $a_n = r^n$ with $r$ a root of the characteristic equation satisfies the recurrence: substituting gives $r^n = c_1 r^{n-1} + \cdots + c_k r^{n-k}$, dividing by $r^{n-k}$ recovers the characteristic equation.<br>
+    Linearity of the recurrence means any linear combination of solutions is again a solution. The Vandermonde matrix on the first $k$ values is invertible (since the $r_i$ are distinct), so the $k$ initial values determine the $k$ coefficients $\alpha_i$ uniquely. By induction the whole sequence is then determined, matching the linear combination. $\square$
+  </div>
+  <p class="ref-cite">Rosen 8e §8.2 Theorem 1.</p>
+  <span class="slide-number">26 / 32</span>
+</section>
+
+<!-- ══ Slide 27 — Binet's formula ════════════════════════════════════ -->
+<section class="slide" id="s27">
+  <h2 class="frame-title">5.3 Binet's formula for Fibonacci — proved</h2>
+
+  <div class="thm-box">
+    Let $\varphi = \dfrac{1 + \sqrt 5}{2}$ (golden ratio) and $\psi = \dfrac{1 - \sqrt 5}{2}$. Then for every $n \geq 0$:
+    $$F_n \;=\; \frac{\varphi^n - \psi^n}{\sqrt 5}.$$
+  </div>
+
+  <div class="proof-box">
+    The recurrence $F_n = F_{n-1} + F_{n-2}$ has characteristic equation $x^2 = x + 1$, i.e. $x^2 - x - 1 = 0$, with roots
+    $$r_{1,2} = \frac{1 \pm \sqrt 5}{2} \;=\; \varphi,\;\psi.$$
+    By the theorem of slide 26, $F_n = \alpha \varphi^n + \beta \psi^n$ for some constants $\alpha, \beta$. Use the initial conditions:
+    $$F_0 = 0 \;\Rightarrow\; \alpha + \beta = 0, \qquad F_1 = 1 \;\Rightarrow\; \alpha \varphi + \beta \psi = 1.$$
+    From the first, $\beta = -\alpha$. Substituting: $\alpha(\varphi - \psi) = 1$, i.e. $\alpha \sqrt 5 = 1$, hence $\alpha = 1/\sqrt 5$, $\beta = -1/\sqrt 5$. Therefore
+    $$F_n = \frac{\varphi^n - \psi^n}{\sqrt 5}. \;\square$$
+  </div>
+
+  <div class="note-box">
+    Since $|\psi| &lt; 1$, $\psi^n \to 0$, so $F_n \sim \varphi^n / \sqrt 5$ — Fibonacci grows like a geometric progression with ratio $\varphi \approx 1.618$. Concretely, $F_n$ is the nearest integer to $\varphi^n / \sqrt 5$ for every $n \geq 0$.
+  </div>
+  <p class="ref-cite">Rosen 8e §8.2 Example 6.</p>
+  <span class="slide-number">27 / 32</span>
+</section>
+
+<!-- ══ Slide 28 — Products ═══════════════════════════════════════════ -->
+<section class="slide" id="s28">
+  <h2 class="frame-title">6. Products $\prod$</h2>
+
+  <div class="def-box">
+    For a sequence $(a_n)$ and integers $m \leq n$:
+    $$\prod_{k=m}^{n} a_k \;:=\; a_m \cdot a_{m+1} \cdots a_n.$$
+    <strong>Empty-product convention.</strong> If $m &gt; n$, the product is defined to be $1$ (the multiplicative identity). Similarly, the empty sum is $0$.
+  </div>
+
+  <div class="thm-box">
+    The <strong>factorial</strong> is $n! = \prod_{k=1}^{n} k$. With the empty-product convention, $0! = 1$.
+  </div>
+
+  <p>Standard identities:</p>
+  $$\prod_{k=m}^{n} (a_k b_k) = \prod_{k=m}^{n} a_k \,\cdot\, \prod_{k=m}^{n} b_k, \qquad \prod_{k=m}^{n} a_k^{\lambda} = \Bigl(\prod_{k=m}^{n} a_k\Bigr)^{\!\lambda}.$$
+
+  <p>Conversion between sums and products via $\log$:</p>
+  $$\log \prod_{k=m}^{n} a_k = \sum_{k=m}^{n} \log a_k \qquad (a_k &gt; 0).$$
+
+  <div class="sympy-block">
+    <span class="pane-label">SymPy</span>
+    <span class="pane-code">from sympy import Product, factorial, symbols, oo, Rational
+n = symbols('n', positive=True, integer=True)
+print(Product(1 + Rational(1,1)/n**2, (n, 1, 5)).doit())  # partial product
+print(factorial(10))                                       # 3628800</span>
+  </div>
+  <p class="ref-cite">Rosen 8e §2.4; Spivak ch. 2.</p>
+  <span class="slide-number">28 / 32</span>
+</section>
+
+<!-- ══ Slide 29 — Famous sequences ═══════════════════════════════════ -->
+<section class="slide" id="s29">
+  <h2 class="frame-title">7. Famous sequences</h2>
+
+  <table class="ref-table">
+    <thead><tr><th>Name</th><th>Definition</th><th>First terms</th></tr></thead>
+    <tbody>
+      <tr><td>Natural numbers</td><td>$a_n = n$</td><td>$0, 1, 2, 3, 4, 5, \dots$</td></tr>
+      <tr><td>Triangular</td><td>$T_n = n(n+1)/2$</td><td>$0, 1, 3, 6, 10, 15, \dots$</td></tr>
+      <tr><td>Square</td><td>$S_n = n^2$</td><td>$0, 1, 4, 9, 16, 25, \dots$</td></tr>
+      <tr><td>Primes</td><td>2, 3, 5, 7, 11, ... — by definition</td><td>$2, 3, 5, 7, 11, 13, \dots$</td></tr>
+      <tr><td>Fibonacci</td><td>$F_0=0,\,F_1=1,\,F_n = F_{n-1} + F_{n-2}$</td><td>$0, 1, 1, 2, 3, 5, 8, 13, \dots$</td></tr>
+      <tr><td>Lucas</td><td>$L_0=2,\,L_1=1,\,L_n = L_{n-1} + L_{n-2}$</td><td>$2, 1, 3, 4, 7, 11, 18, \dots$</td></tr>
+      <tr><td>Catalan</td><td>$C_n = \dfrac{1}{n+1}\dbinom{2n}{n}$</td><td>$1, 1, 2, 5, 14, 42, 132, \dots$</td></tr>
+      <tr><td>Harmonic numbers</td><td>$H_n = \sum_{k=1}^n 1/k$</td><td>$1, \tfrac32, \tfrac{11}{6}, \tfrac{25}{12}, \dots$</td></tr>
+      <tr><td>Bell numbers</td><td>$B_n$ = number of partitions of $\{1,\dots,n\}$</td><td>$1, 1, 2, 5, 15, 52, 203, \dots$</td></tr>
+    </tbody>
+  </table>
+
+  <p>Many of these are catalogued in the <em>On-Line Encyclopedia of Integer Sequences</em> (OEIS). Catalan numbers count an astonishing number of combinatorial objects — triangulations of polygons, well-balanced parentheses, lattice paths, binary trees, etc.</p>
+  <p class="ref-cite">OEIS, oeis.org; Rosen 8e §2.4.</p>
+  <span class="slide-number">29 / 32</span>
+</section>
+
+<!-- ══ Slide 30 — Python toolbox ═════════════════════════════════════ -->
+<section class="slide" id="s30">
+  <h2 class="frame-title">8. Python / SymPy toolbox</h2>
+
+  <div class="setup-block">
+    <span class="pane-label">Python — imports (run once)</span>
+    <span class="pane-code">from sympy import (symbols, Sum, Product, oo, Rational, sqrt,
+                   factorial, catalan, prime, fibonacci, rsolve,
+                   limit, simplify, Function)
+n, k = symbols('n k', integer=True, positive=True)</span>
+  </div>
+
+  <div class="sympy-block">
+    <span class="pane-label">SymPy — symbolic sums &amp; products</span>
+    <span class="pane-code">print(Sum(k, (k, 1, n)).doit())              # n*(n+1)/2
+print(Sum(k**2, (k, 1, n)).doit())           # n*(n+1)*(2*n+1)/6
+print(Sum(1/k**2, (k, 1, oo)).doit())        # pi**2/6   (Euler)
+print(Sum(1/k, (k, 1, oo)).doit())           # zoo (diverges)
+print(Sum(Rational(1,2)**k, (k, 0, oo)).doit())  # 2  (geometric, r = 1/2)
+print(Product(k, (k, 1, 6)).doit())          # 720 = 6!</span>
+  </div>
+
+  <div class="sympy-block">
+    <span class="pane-label">SymPy — limits and recurrences</span>
+    <span class="pane-code">print(limit((1 + 1/n)**n, n, oo))            # E   (Euler's constant)
+print(limit(n**(Rational(1,1)/n), n, oo))    # 1
+print(limit(2**n / factorial(n), n, oo))     # 0
+
+# Solve Fibonacci recurrence
+a = Function('a')
+print(rsolve(a(n+2) - a(n+1) - a(n), a(n), {a(0): 0, a(1): 1}))
+# (sqrt(5)/5)*((1/2 + sqrt(5)/2)**n - (1/2 - sqrt(5)/2)**n)  — Binet's formula!</span>
+  </div>
+  <span class="slide-number">30 / 32</span>
+</section>
+
+<!-- ══ Slide 31 — Summary ════════════════════════════════════════════ -->
+<section class="slide" id="s31">
+  <h2 class="frame-title">9. Summary — what we proved</h2>
+
+  <h3 class="sub-title">Sequences</h3>
+  <ul>
+    <li>Every convergent sequence is bounded (slide 5); every subsequence converges to the same limit (slide 4).</li>
+    <li>Limits are unique; the algebra of limits (sum, product, quotient) holds (slides 8–9).</li>
+    <li><strong>Monotone convergence:</strong> bounded + monotone ⇒ convergent.</li>
+    <li><strong>Squeeze theorem.</strong></li>
+    <li>$\mathbb{R}$ is complete: Cauchy ⇔ convergent; Bolzano–Weierstrass.</li>
+    <li>Standard limits: $r^n \to 0$ for $|r| &lt; 1$; exponentials beat polynomials; $n^{1/n} \to 1$.</li>
+  </ul>
+
+  <h3 class="sub-title">Progressions &amp; series</h3>
+  <ul>
+    <li>AP sum $= n(a_0 + a_{n-1})/2$ — Gauss's trick.</li>
+    <li>GP sum $= a(1 - r^n)/(1 - r)$; infinite GP converges iff $|r| &lt; 1$ to $a/(1-r)$.</li>
+    <li>Closed-form sums: $\sum k$, $\sum k^2$, $\sum k^3$ — proved by induction.</li>
+    <li>Necessary condition: $\sum a_n$ converges ⇒ $a_n \to 0$. <strong>Converse false</strong> — Oresme's proof that the harmonic series diverges.</li>
+    <li>Telescoping series; $p$-series converges iff $p &gt; 1$.</li>
+    <li>Convergence tests: comparison, ratio, root, integral, Leibniz — all proved.</li>
+    <li>Absolute convergence ⇒ convergence; Riemann rearrangement for conditional series.</li>
+  </ul>
+
+  <h3 class="sub-title">Recurrences</h3>
+  <ul>
+    <li>Characteristic-equation method for linear homogeneous recurrences with distinct roots.</li>
+    <li><strong>Binet's formula</strong> for Fibonacci — derived in full.</li>
+  </ul>
+  <span class="slide-number">31 / 32</span>
+</section>
+
+<!-- ══ Slide 32 — Wolfram → Python &amp; Bibliography ═══════════════ -->
+<section class="slide" id="s32">
+  <h2 class="frame-title">10. Wolfram → Python reference &amp; bibliography</h2>
+
+  <table class="ref-table">
+    <thead><tr><th>Operation</th><th>Wolfram</th><th>Python / SymPy</th></tr></thead>
+    <tbody>
+      <tr><td>Symbolic sum</td><td><code>Sum[a[k], {k, m, n}]</code></td><td><code>Sum(a(k), (k, m, n)).doit()</code></td></tr>
+      <tr><td>Symbolic product</td><td><code>Product[a[k], {k, m, n}]</code></td><td><code>Product(a(k), (k, m, n)).doit()</code></td></tr>
+      <tr><td>Limit</td><td><code>Limit[a[n], n -&gt; Infinity]</code></td><td><code>limit(a(n), n, oo)</code></td></tr>
+      <tr><td>Convergence test</td><td><code>SumConvergence[a[k], k]</code></td><td>—  (analyse manually with <code>limit</code>)</td></tr>
+      <tr><td>Solve recurrence</td><td><code>RSolve[…, a[n], n]</code></td><td><code>rsolve(eqn, a(n), {a(0):…})</code></td></tr>
+      <tr><td>Fibonacci</td><td><code>Fibonacci[n]</code></td><td><code>fibonacci(n)</code></td></tr>
+      <tr><td>$n$-th prime</td><td><code>Prime[n]</code></td><td><code>prime(n)</code></td></tr>
+      <tr><td>Catalan</td><td><code>CatalanNumber[n]</code></td><td><code>catalan(n)</code></td></tr>
+      <tr><td>Factorial</td><td><code>Factorial[n]</code></td><td><code>factorial(n)</code></td></tr>
+    </tbody>
+  </table>
+
+  <h3 class="sub-title">Bibliography</h3>
+  <ul>
+    <li>K. H. Rosen. <em>Discrete Mathematics and Its Applications</em>, 8th ed., McGraw-Hill, 2019 — §2.4 (sequences &amp; summations), §8.1–8.2 (recurrence relations).</li>
+    <li>W. Rudin. <em>Principles of Mathematical Analysis</em>, 3rd ed., McGraw-Hill, 1976 — ch. 3 (sequences and series of numbers).</li>
+    <li>M. Spivak. <em>Calculus</em>, 4th ed., Publish or Perish, 2008 — ch. 21–23 (limits of sequences, infinite series).</li>
+    <li>R. L. Graham, D. E. Knuth, O. Patashnik. <em>Concrete Mathematics</em>, 2nd ed., Addison-Wesley, 1994 — sums, recurrences, generating functions.</li>
+    <li>N. J. A. Sloane. <em>On-Line Encyclopedia of Integer Sequences</em> — oeis.org.</li>
+    <li>N. Oresme (c. 1350). <em>Quaestiones super geometriam Euclidis</em> — first proof of harmonic divergence.</li>
+  </ul>
+
+  <p style="margin-top:1rem;color:#e67e22;font-style:italic;font-weight:600;">Notes By Pr. El Hadiq Zouhair</p>
+  <span class="slide-number">32 / 32</span>
+</section>
+
+<!-- ── Navigation ─────────────────────────────────────────────────── -->
+<div id="nav">
+  <button id="btn-prev"   title="Previous">&#8592;</button>
+  <button id="btn-scroll" title="Toggle slideshow">Slideshow</button>
+  <button id="btn-next"   title="Next">&#8594;</button>
+</div>
+
+<script>
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  let current = 0, slideshowMode = false;
+
+  function enter(i) {
+    slides[current].classList.remove('active');
+    current = (i + slides.length) % slides.length;
+    slides[current].classList.add('active');
+    slides[current].scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  document.getElementById('btn-prev').addEventListener('click', () => {
+    if (slideshowMode) enter(current - 1);
+  });
+  document.getElementById('btn-next').addEventListener('click', () => {
+    if (slideshowMode) enter(current + 1);
+  });
+  document.getElementById('btn-scroll').addEventListener('click', () => {
+    slideshowMode = !slideshowMode;
+    document.body.classList.toggle('slideshow', slideshowMode);
+    document.getElementById('btn-scroll').textContent = slideshowMode ? 'Scroll' : 'Slideshow';
+    if (slideshowMode) slides[current].classList.add('active');
+    else slides.forEach(s => s.classList.remove('active'));
+  });
+
+  document.addEventListener('keydown', e => {
+    if (!slideshowMode) return;
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') enter(current + 1);
+    if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   enter(current - 1);
+  });
+</script>
+</body>
+</html>

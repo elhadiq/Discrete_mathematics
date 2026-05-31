@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Recursive Definitions — Exercises (énoncés)</title>
+<script>
+  MathJax = {
+    tex: { inlineMath: [['$','$']], displayMath: [['$$','$$']] },
+    options: { skipHtmlTags: ['script','noscript','style','textarea'] }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --orange:    #e67e22;
+  --darkblue:  #2c3e50;
+  --lightbg:   #f4f9fc;
+  --border:    #dce3ea;
+}
+
+body {
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  background: #e8edf2;
+  color: var(--darkblue);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem 1rem 5rem;
+  gap: 1.5rem;
+}
+
+.slide {
+  background: #fff;
+  width: 100%;
+  max-width: 940px;
+  border-radius: 10px;
+  box-shadow: 0 4px 18px rgba(0,0,0,.10);
+  padding: 2rem 2.4rem 1.6rem;
+  position: relative;
+}
+.slide.title-slide {
+  background: linear-gradient(145deg, #f4f9fc 60%, #e0eef7);
+  text-align: center;
+  border-top: 6px solid var(--orange);
+  padding: 2.5rem 2rem;
+}
+.slide.title-slide h1 { font-size: 1.9rem; color: var(--darkblue); margin-bottom: 0.4rem; }
+.slide.title-slide .subtitle { font-size: 1.15rem; color: #555; }
+
+h2.frame-title {
+  font-size: 1.45rem;
+  color: var(--orange);
+  font-weight: 700;
+  margin-bottom: 0.4rem;
+  padding-bottom: 0.3rem;
+  border-bottom: 2px solid #f9e4cc;
+}
+.ex-number {
+  display: inline-block;
+  background: var(--orange);
+  color: #fff;
+  font-weight: 700;
+  padding: 0.15em 0.6em;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  margin-right: 0.5rem;
+}
+.difficulty {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  padding: 0.1em 0.5em;
+  border-radius: 3px;
+  margin-left: 0.4rem;
+  vertical-align: middle;
+  text-transform: uppercase;
+}
+.easy   { background: #d4f4dd; color: #1e7a3b; }
+.medium { background: #fce4b6; color: #8a5400; }
+.hard   { background: #f8c8c8; color: #952020; }
+
+p { line-height: 1.7; margin: 0.4rem 0; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.4rem; line-height: 1.85; }
+ul li::marker, ol li::marker { color: var(--orange); }
+.statement { margin: 0.3rem 0 0.6rem; }
+
+.toc {
+  background: var(--lightbg);
+  border-left: 4px solid var(--orange);
+  padding: 0.8rem 1rem;
+  border-radius: 4px;
+}
+.toc a { color: var(--darkblue); text-decoration: none; }
+.toc a:hover { color: var(--orange); }
+
+.answer-space {
+  border: 1.5px dashed #c9d4dd;
+  border-radius: 6px;
+  min-height: 80px;
+  margin: 0.6rem 0;
+  background: #fafcfe;
+  padding: 0.6rem 0.8rem;
+  color: #aab;
+  font-style: italic;
+  font-size: 0.85rem;
+}
+
+code {
+  background: #f4f7fb;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 1px 5px;
+  font-family: 'Consolas', 'Fira Code', monospace;
+  font-size: 0.85em;
+}
+</style>
+</head>
+<body>
+
+<section class="slide title-slide">
+  <h1>Recursive Definitions — Exercises</h1>
+  <p class="subtitle">énoncés</p>
+  <p style="font-size:1rem;color:#e67e22;margin-top:0.8rem;font-style:italic;font-weight:600;letter-spacing:.02em;">By Pr. El Hadiq Zouhair</p>
+</section>
+
+<section class="slide">
+  <h2 class="frame-title">Contents</h2>
+  <div class="toc">
+    <ol>
+      <li><a href="#ex1">Vocabulary check</a> <span class="difficulty easy">easy</span></li>
+      <li><a href="#ex2">Powers of 2</a> <span class="difficulty easy">easy</span></li>
+      <li><a href="#ex3">Factorial</a> <span class="difficulty easy">easy</span></li>
+      <li><a href="#ex4">Memoized Fibonacci</a> <span class="difficulty medium">medium</span></li>
+      <li><a href="#ex5">Tower of Hanoi</a> <span class="difficulty medium">medium</span></li>
+      <li><a href="#ex6">Closed form with rsolve</a> <span class="difficulty medium">medium</span></li>
+      <li><a href="#ex7">Telescoping sequence $1/[n(n+1)]$</a> <span class="difficulty medium">medium</span></li>
+      <li><a href="#ex8">Recursive set — even integers</a> <span class="difficulty easy">easy</span></li>
+      <li><a href="#ex9">Recursive set — balanced parentheses</a> <span class="difficulty hard">hard</span></li>
+      <li><a href="#ex10">Full binary tree counts (structural induction)</a> <span class="difficulty medium">medium</span></li>
+      <li><a href="#ex11">Tree height</a> <span class="difficulty medium">medium</span></li>
+      <li><a href="#ex12">Tail-recursive factorial</a> <span class="difficulty medium">medium</span></li>
+      <li><a href="#ex13">Mutual recursion — even / odd</a> <span class="difficulty medium">medium</span></li>
+      <li><a href="#ex14">Fixed point of $g(n) = 1 + \lfloor (n - 1)/2 \rfloor$</a> <span class="difficulty hard">hard</span></li>
+      <li><a href="#ex15">Mandelbrot escape time</a> <span class="difficulty hard">hard</span></li>
+      <li><a href="#ex16">Cellular automaton rule 30</a> <span class="difficulty hard">hard</span></li>
+    </ol>
+  </div>
+</section>
+
+<!-- ══ Ex 1 ═════════════════════════════════════════════════════════ -->
+<section class="slide" id="ex1">
+  <h2 class="frame-title"><span class="ex-number">1</span>Vocabulary check <span class="difficulty easy">easy</span></h2>
+  <p class="statement">Match each term with the correct definition:
+  <em>recursion, recurrence relation, base case, recursive case, well-founded recursion, closed form,
+  structural induction, memoization, tail call, fixed point, fractal, cellular automaton</em>.</p>
+  <div class="answer-space">Your answer…</div>
+</section>
+
+<!-- ══ Ex 2 ═════════════════════════════════════════════════════════ -->
+<section class="slide" id="ex2">
+  <h2 class="frame-title"><span class="ex-number">2</span>Powers of 2 <span class="difficulty easy">easy</span></h2>
+  <p class="statement">Define the function $p(n) = 2^n$ <em>recursively</em>:</p>
+  <ol>
+    <li>Give the base case and the recursive case mathematically.</li>
+    <li>Write a Python function <code>p(n)</code> that implements this directly with recursion.</li>
+    <li>Print $[p(0), p(1), \dots, p(8)]$ and check it equals <code>[1, 2, 4, 8, 16, 32, 64, 128, 256]</code>.</li>
+  </ol>
+  <div class="answer-space">Your answer…</div>
+</section>
+
+<!-- ══ Ex 3 ═════════════════════════════════════════════════════════ -->
+<section class="slide" id="ex3">
+  <h2 class="frame-title"><span class="ex-number">3</span>Factorial <span class="difficulty easy">easy</span></h2>
+  <p class="statement">Write a recursive definition for $n! = 1 \cdot 2 \cdots n$:</p>
+  <ol>
+    <li>What is the base case? What is the recursive case?</li>
+    <li>Implement it in Python.</li>
+    <li>Compare your result on $0, 1, 5, 10$ against <code>math.factorial</code>.</li>
+  </ol>
+  <div class="answer-space">Your answer…</div>
+</section>
+
+<!-- ══ Ex 4 ═════════════════════════════════════════════════════════ -->
+<section class="slide" id="ex4">
+  <h2 class="frame-title"><span class="ex-number">4</span>Memoized Fibonacci <span class="difficulty medium">medium</span></h2>
+  <p class="statement">The Fibonacci recurrence is $F_0 = 0$, $F_1 = 1$, $F_n = F_{n-1} + F_{n-2}$.</p>
+  <ol>
+    <li>Implement a naïve recursive <code>fib(n)</code> in Python.</li>
+    <li>Time how long <code>fib(30)</code> takes with and <em>without</em> <code>@functools.lru_cache</code>.</li>
+    <li>Explain qualitatively why memoization reduces the complexity from exponential to linear.</li>
+  </ol>
+  <div class="answer-space">Your answer…</div>
+</section>
+
+<!-- ══ Ex 5 ═════════════════════════════════════════════════════════ -->
+<section class="slide" id="ex5">
+  <h2 class="frame-title"><span class="ex-number">5</span>Tower of Hanoi <span class="difficulty medium">medium</span></h2>
+  <p class="statement">Let $T(n)$ be the minimum number of moves needed to transfer $n$ disks from one peg to another.</p>
+  <ol>
+    <li>Argue informally that $T(n) = 2\,T(n-1) + 1$ with $T(0) = 0$.</li>
+    <li>Write a Python function <code>hanoi_moves(n)</code> that returns $T(n)$ recursively.</li>
+    <li>Print $T(0), T(1), \dots, T(8)$ and recognise the closed form.</li>
+  </ol>
+  <div class="answer-space">Your answer…</div>
+</section>
+
+<!-- ══ Ex 6 ═════════════════════════════════════════════════════════ -->
+<section class="slide" id="ex6">
+  <h2 class="frame-title"><span class="ex-number">6</span>Closed form with <code>rsolve</code> <span class="difficulty medium">medium</span></h2>
+  <p class="statement">Use <code>sympy.rsolve</code> to obtain a closed-form expression for each recurrence:</p>
+  <ol>
+    <li>$a_n = 3 a_{n-1},\;a_0 = 2$.</li>
+    <li>$a_n = a_{n-1} + 5,\;a_0 = 1$.</li>
+    <li>$a_n = 2 a_{n-1} + 1,\;a_0 = 0$.</li>
+    <li>$a_n = a_{n-1} + a_{n-2},\;a_0 = 0,\;a_1 = 1$ (Fibonacci — recognise Binet's formula).</li>
+  </ol>
+  <div class="answer-space">Your answer…</div>
+</section>
+
+<!-- ══ Ex 7 ═════════════════════════════════════════════════════════ -->
+<section class="slide" id="ex7">
+  <h2 class="frame-title"><span class="ex-number">7</span>Telescoping sequence — $s(n) = \dfrac{1}{n(n+1)}$ <span class="difficulty medium">medium</span></h2>
+  <p class="statement">Show that
+  $s(n) = \dfrac{n-1}{n+1}\, s(n-1)$ with $s(1) = \tfrac{1}{2}$.</p>
+  <ol>
+    <li>Verify the recurrence by direct algebra.</li>
+    <li>Implement <code>s(n)</code> recursively in Python using <code>fractions.Fraction</code>.</li>
+    <li>Compute $[s(1), s(2), \dots, s(10)]$ and compare against the direct formula $1/(n(n+1))$.</li>
+  </ol>
+  <div class="answer-space">Your answer…</div>
+</section>
+
+<!-- ══ Ex 8 ═════════════════════════════════════════════════════════ -->
+<section class="slide" id="ex8">
+  <h2 class="frame-title"><span class="ex-number">8</span>Recursive set — even integers <span class="difficulty easy">easy</span></h2>
+  <p class="statement">Define the set $E$ of even integers <strong>recursively</strong>:</p>
+  <ul>
+    <li>Base: …</li>
+    <li>Recursive rules: …</li>
+  </ul>
+  <p>Then write a Python generator that yields elements of $E$ in the order
+  $0, 2, -2, 4, -4, 6, -6, \dots$ — that order corresponds exactly to the
+  application order of your recursive rules.</p>
+  <div class="answer-space">Your answer…</div>
+</section>
+
+<!-- ══ Ex 9 ═════════════════════════════════════════════════════════ -->
+<section class="slide" id="ex9">
+  <h2 class="frame-title"><span class="ex-number">9</span>Recursive set — balanced parentheses <span class="difficulty hard">hard</span></h2>
+  <p class="statement">Define the set $B$ of strings of balanced parentheses recursively:</p>
+  <ul>
+    <li>Base: the empty string $\varepsilon \in B$.</li>
+    <li>Recursive rule(s): if $u, v \in B$, then …</li>
+  </ul>
+  <ol>
+    <li>Complete the recursive rule(s).</li>
+    <li>Write a Python function <code>is_balanced(s)</code> using either recursion or a stack.</li>
+    <li>How many balanced strings of length $2n$ are there? &nbsp;Look up the connection to the Catalan numbers.</li>
+  </ol>
+  <div class="answer-space">Your answer…</div>
+</section>
+
+<!-- ══ Ex 10 ════════════════════════════════════════════════════════ -->
+<section class="slide" id="ex10">
+  <h2 class="frame-title"><span class="ex-number">10</span>Full binary tree counts (structural induction) <span class="difficulty medium">medium</span></h2>
+  <p class="statement">Define a full binary tree of level $n$ recursively (level 1 = a single leaf; level $n+1$ replaces every leaf by an internal node with two new leaves).</p>
+  <ol>
+    <li>Conjecture the number of total nodes and of leaves at level $n$.</li>
+    <li>Prove by <strong>structural induction</strong> that level-$n$ has $2^n - 1$ nodes and $2^{n-1}$ leaves.</li>
+    <li>In Python, build the tree as a nested tuple and verify your counts for $n = 2, 3, 4, 5$.</li>
+  </ol>
+  <div class="answer-space">Your answer…</div>
+</section>
+
+<!-- ══ Ex 11 ════════════════════════════════════════════════════════ -->
+<section class="slide" id="ex11">
+  <h2 class="frame-title"><span class="ex-number">11</span>Tree height <span class="difficulty medium">medium</span></h2>
+  <p class="statement">Given a tree represented as a nested tuple (a leaf is the empty tuple <code>()</code>), define <code>height(t)</code> <strong>recursively</strong>:</p>
+  <ul>
+    <li>Base: <code>height(()) = 0</code>.</li>
+    <li>Recursive: <code>height(t) = 1 + max(height(c) for c in t)</code>.</li>
+  </ul>
+  <ol>
+    <li>Implement <code>height</code> in Python.</li>
+    <li>Test it on the full binary trees of level 2, 3, 4 from exercise 10 and check it returns $n - 1$.</li>
+  </ol>
+  <div class="answer-space">Your answer…</div>
+</section>
+
+<!-- ══ Ex 12 ════════════════════════════════════════════════════════ -->
+<section class="slide" id="ex12">
+  <h2 class="frame-title"><span class="ex-number">12</span>Tail-recursive factorial <span class="difficulty medium">medium</span></h2>
+  <p class="statement">Rewrite <code>fact(n)</code> in tail-recursive form using an accumulator parameter.</p>
+  <ol>
+    <li>Give the tail-recursive Python implementation <code>fact_tail(n, acc=1)</code>.</li>
+    <li>Translate the tail-recursive version into a <em>plain while-loop</em> with no recursion.</li>
+    <li>Why does CPython benefit far less from tail recursion than Scheme or OCaml?</li>
+  </ol>
+  <div class="answer-space">Your answer…</div>
+</section>
+
+<!-- ══ Ex 13 ════════════════════════════════════════════════════════ -->
+<section class="slide" id="ex13">
+  <h2 class="frame-title"><span class="ex-number">13</span>Mutual recursion — <code>is_even</code> / <code>is_odd</code> <span class="difficulty medium">medium</span></h2>
+  <p class="statement">Define two mutually recursive Python functions <code>is_even(n)</code> and <code>is_odd(n)</code> for $n \geq 0$ <strong>without</strong> using <code>%</code> or any arithmetic except <code>n - 1</code>.</p>
+  <ol>
+    <li>Give the recursive definitions.</li>
+    <li>Verify that <code>is_even(20)</code> is True and <code>is_odd(21)</code> is True.</li>
+    <li>Why does this approach become impractical for very large $n$ in Python?</li>
+  </ol>
+  <div class="answer-space">Your answer…</div>
+</section>
+
+<!-- ══ Ex 14 ════════════════════════════════════════════════════════ -->
+<section class="slide" id="ex14">
+  <h2 class="frame-title"><span class="ex-number">14</span>Fixed point of $g(n) = 1 + \lfloor(n-1)/2\rfloor$ <span class="difficulty hard">hard</span></h2>
+  <p class="statement">Start with $x_0 = 1000$ and iterate $x_{k+1} = g(x_k)$ until it stops changing.</p>
+  <ol>
+    <li>Write a Python <code>fixed_point(f, x0)</code> function that returns the fixed point and the trajectory.</li>
+    <li>Apply it to $g$ above and to $h(x) = (x + 100/x)/2$ starting at $x_0 = 50$. What does the second one approach?</li>
+    <li>Does $f(x) = x + 1$ have a fixed point on $\mathbb{R}$? Justify in one sentence.</li>
+  </ol>
+  <div class="answer-space">Your answer…</div>
+</section>
+
+<!-- ══ Ex 15 ════════════════════════════════════════════════════════ -->
+<section class="slide" id="ex15">
+  <h2 class="frame-title"><span class="ex-number">15</span>Mandelbrot escape time <span class="difficulty hard">hard</span></h2>
+  <p class="statement">The recursion is $z_{n+1} = z_n^2 + c$, $z_0 = 0$. The point $c \in \mathbb{C}$ is in the Mandelbrot set iff this sequence remains bounded (in fact iff $|z_n| \leq 2$ forever).</p>
+  <ol>
+    <li>Implement <code>mandelbrot(c, max_iter=80)</code> that returns the first $n$ for which $|z_n| > 2$, or <code>max_iter</code> if no escape.</li>
+    <li>Decide if $c = 0$, $c = -1$, $c = 1$, $c = 0.25 + 0.5 j$ are in the Mandelbrot set.</li>
+    <li>(Optional) Render a small ASCII or matplotlib picture over $[-2, 1] \times [-1.2, 1.2]$.</li>
+  </ol>
+  <div class="answer-space">Your answer…</div>
+</section>
+
+<!-- ══ Ex 16 ════════════════════════════════════════════════════════ -->
+<section class="slide" id="ex16">
+  <h2 class="frame-title"><span class="ex-number">16</span>Cellular automaton — Wolfram rule 30 <span class="difficulty hard">hard</span></h2>
+  <p class="statement">Implement the 1-D elementary cellular automaton with rule 30. Start from a single seed cell in the middle of a 81-cell row.</p>
+  <ol>
+    <li>Write a function <code>ca_step(state, rule)</code> producing the next generation.</li>
+    <li>Print the first 40 generations on screen, using <code>'█'</code> for 1 and <code>' '</code> for 0.</li>
+    <li>Replace rule 30 by rule 90. What pattern do you obtain? (You should recognise Pascal's triangle modulo 2 — the Sierpinski triangle.)</li>
+  </ol>
+  <div class="answer-space">Your answer…</div>
+</section>
+
+<section class="slide">
+  <h2 class="frame-title">Going further</h2>
+  <ul>
+    <li>Implement merge sort and prove its correctness by structural induction on the input list.</li>
+    <li>Use SymPy to find the closed form of $a_n = 2 a_{n-1} - a_{n-2}$, $a_0 = 1$, $a_1 = 2$.</li>
+    <li>Draw the Sierpinski triangle by iteratively applying three affine contractions to a starting triangle (an L-system / IFS approach).</li>
+    <li>Look up the Ackermann function — a famous total recursive function that is not primitive recursive.</li>
+  </ul>
+  <p style="margin-top:0.8rem;font-style:italic;color:#666;">Open the <a href="recursive_definitions.html" style="color:var(--orange);font-weight:600;text-decoration:none;">main lesson</a> for the matching theory.</p>
+</section>
+
+</body>
+</html>

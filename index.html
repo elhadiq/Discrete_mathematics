@@ -234,6 +234,16 @@ body {
   color: #fff;
   border-style: solid;
 }
+.lesson-card .l-links a.full {
+  background: #e8f5ec;
+  border: 1px solid #27ae60;
+  color: #1e824c;
+}
+.lesson-card .l-links a.full:hover {
+  background: #27ae60;
+  color: #fff;
+  border-color: #27ae60;
+}
 
 /* ── Footer ───────────────────────────────────────────────────────── */
 .footer {
@@ -303,7 +313,7 @@ body {
         <div class="seq-weeks">Sets · Operations · Relations &amp; Functions · Sequences &amp; Series</div>
       </div>
       <div class="seq-footer">
-        <span class="count">2 lessons</span>
+        <span class="count">4 lessons</span>
         <span class="chevron">▸</span>
       </div>
     </div>
@@ -380,6 +390,7 @@ body {
         <div class="l-links">
           <a class="lecture" href="Content/logic/Lesson2/proposition_logic.html">📖 Lecture</a>
           <a href="Content/logic/Lesson2/exercises_lesson2.html">✏️ Exercises</a>
+          <a class="full" href="Content/logic/Lesson2/propositional_v2.html" title="Full v2 course — every notion defined, every theorem proved">📚 Full Course</a>
         </div>
       </div>
 
@@ -398,6 +409,7 @@ body {
         <div class="l-links">
           <a class="lecture" href="Content/logic/Lesson4/lesson4_predicates.html">📖 Lecture</a>
           <a href="Content/logic/Lesson4/exercises_lesson4.html">✏️ Exercises</a>
+          <a class="full" href="Content/logic/Lesson4/predicates.html" title="Full course — every notion defined, every theorem proved">📚 Full Course</a>
         </div>
       </div>
 
@@ -408,6 +420,7 @@ body {
           <a class="lecture" href="Content/logic/Lesson5/lesson5_inference.html">📖 Lecture</a>
           <a href="Content/logic/Lesson5/exercises_lesson5.html">✏️ Exercises</a>
           <a class="optional" href="Content/logic/Lesson5/exercises_lesson5_simulation.html" title="Optional — implement each inference rule as a Python function">🧪 Simulation (optional)</a>
+          <a class="full" href="Content/logic/Lesson5/InferencesRules.html" title="Full course — every notion defined, every rule proved (soundness + completeness)">📚 Full Course</a>
         </div>
       </div>
 
@@ -416,7 +429,7 @@ body {
 
   <!-- Panel: Discrete Structures -->
   <div class="course-panel" id="panel-discrete">
-    <div class="panel-title">🔢 Session 2 · Discrete Structures — 2 lessons</div>
+    <div class="panel-title">🔢 Session 2 · Discrete Structures — 4 lessons</div>
     <div class="lesson-grid">
 
       <div class="lesson-card">
@@ -437,6 +450,26 @@ body {
         </div>
       </div>
 
+      <div class="lesson-card">
+        <div class="l-num">Lesson 3</div>
+        <div class="l-name">Relations &amp; Functions</div>
+        <div class="l-links">
+          <a class="lecture" href="Content/2%20Discrete%20Structures/Relations%20and%20Functions/Lesson/relations_and_functions.html">📖 Lecture</a>
+          <a href="Content/2%20Discrete%20Structures/Relations%20and%20Functions/Lesson/exercises_relations_and_functions_enonces.html">✏️ Exercises</a>
+          <a class="full" href="Content/2%20Discrete%20Structures/Relations%20and%20Functions/Lesson/relations_and_functions_v2.html" title="Full course — every notion defined, every theorem proved">📚 Full Course</a>
+        </div>
+      </div>
+
+      <div class="lesson-card">
+        <div class="l-num">Lesson 4</div>
+        <div class="l-name">Sequences &amp; Series</div>
+        <div class="l-links">
+          <a class="lecture" href="Content/2%20Discrete%20Structures/Sequences%20and%20Series/Lesson/sequences_and_series.html">📖 Lecture</a>
+          <a href="Content/2%20Discrete%20Structures/Sequences%20and%20Series/Lesson/exercises_sequences_and_series_enonces.html">✏️ Exercises</a>
+          <a class="full" href="Content/2%20Discrete%20Structures/Sequences%20and%20Series/Lesson/sequences_and_series_v2.html" title="Full course — every notion defined, every theorem proved">📚 Full Course</a>
+        </div>
+      </div>
+
     </div>
   </div>
 
@@ -450,6 +483,7 @@ body {
 <script>
   // Click a session header → toggle its course panel (only one open at a time)
   document.querySelectorAll('.session[data-target]').forEach(card => {
+    card.addEventListener('click', () => {
     card.addEventListener('click', () => {
       const id    = card.dataset.target;
       const panel = document.getElementById(id);

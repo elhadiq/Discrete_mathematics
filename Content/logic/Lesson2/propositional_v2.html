@@ -1,0 +1,1191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Propositional Logic — Full Lesson v2 — Discrete Mathematics</title>
+<script>
+  MathJax = {
+    tex: { inlineMath: [['$','$']], displayMath: [['$$','$$']] },
+    options: { skipHtmlTags: ['script','noscript','style','textarea'] }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+<style>
+/* ── Reset & base ──────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --orange:    #e67e22;
+  --darkblue:  #2c3e50;
+  --lightbg:   #f4f9fc;
+  --rowred:    #ffe8e8;
+  --rowblue:   #e3eeff;
+  --border:    #dce3ea;
+  --py-fg:     #1f4e7a;
+  --py-bg:     #eaf3fb;
+  --py-border: #2a6fb3;
+  --py-head:   #2a6fb3;
+  --sp-fg:     #1e824c;
+  --sp-bg:     #e8f5ec;
+  --sp-border: #27ae60;
+  --sp-head:   #27ae60;
+  --su-fg:     #4a4aaa;
+  --su-bg:     #eeeeff;
+  --su-border: #6060cc;
+  --su-head:   #6060cc;
+  --out-fg:    #6e4b0a;
+  --out-bg:    #fff7e0;
+  --out-border:#e0b341;
+  --out-head:  #c89324;
+}
+
+body {
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  background: #e8edf2;
+  color: var(--darkblue);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem 1rem 5rem;
+  gap: 2rem;
+}
+
+/* ── Slide card ───────────────────────────────────────────────────── */
+.slide {
+  background: #fff;
+  width: 100%;
+  max-width: 940px;
+  border-radius: 10px;
+  box-shadow: 0 4px 18px rgba(0,0,0,.10);
+  padding: 2.2rem 2.8rem 1.8rem;
+  position: relative;
+}
+.slide-number {
+  position: absolute;
+  bottom: 0.7rem;
+  right: 1.2rem;
+  font-size: 0.72rem;
+  color: #aaa;
+}
+
+/* ── Title slide ──────────────────────────────────────────────────── */
+.slide.title-slide {
+  background: linear-gradient(145deg, #f4f9fc 60%, #e0eef7);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 240px;
+  text-align: center;
+  border-top: 6px solid var(--orange);
+}
+.slide.title-slide h1 { font-size: 1.9rem; color: var(--darkblue); margin-bottom: 0.4rem; }
+.slide.title-slide .subtitle { font-size: 1.15rem; color: #555; }
+.slide.title-slide .author   { font-size: 1rem; color: var(--orange); margin-top: 0.7rem; font-style: italic; }
+
+/* ── Frame titles ─────────────────────────────────────────────────── */
+h2.frame-title {
+  font-size: 1.6rem;
+  color: var(--orange);
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  padding-bottom: 0.35rem;
+  border-bottom: 2px solid #f9e4cc;
+}
+h3.sub-title {
+  font-size: 1.1rem;
+  color: var(--orange);
+  font-weight: 600;
+  margin: 0.8rem 0 0.3rem;
+}
+
+/* ── Body ─────────────────────────────────────────────────────────── */
+p { line-height: 1.7; margin: 0.45rem 0; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.4rem; line-height: 1.8; }
+ul li::marker, ol li::marker { color: var(--orange); }
+code { background: #f0f3f7; color: #1f4e7a; padding: 0 .25em; border-radius: 3px; font-family: 'Consolas', 'Fira Code', monospace; }
+
+/* ── Coloured callout boxes ───────────────────────────────────────── */
+.note-box, .def-box, .thm-box, .proof-box, .ex-box, .ce-box, .fallacy-box {
+  border-radius: 6px;
+  padding: 0.8rem 1rem;
+  margin: 0.7rem 0;
+  line-height: 1.7;
+}
+.note-box     { background: #fff5e8; border-left: 4px solid var(--orange); font-style: italic; }
+.def-box      { background: #eaf3fb; border-left: 4px solid var(--py-border); }
+.def-box::before     { content: "Definition. "; font-weight: 700; color: var(--py-border); }
+.thm-box      { background: #fff7e0; border-left: 4px solid var(--out-border); }
+.thm-box::before     { content: "Theorem. "; font-weight: 700; color: var(--out-head); }
+.proof-box    { background: #f4f9fc; border-left: 4px solid var(--darkblue); }
+.proof-box::before   { content: "Proof. "; font-weight: 700; color: var(--darkblue); }
+.ex-box       { background: #e8f5ec; border-left: 4px solid var(--sp-border); }
+.ex-box::before      { content: "Example. "; font-weight: 700; color: var(--sp-border); }
+.ce-box       { background: #ffe8e8; border-left: 4px solid #c0395a; }
+.ce-box::before      { content: "Counter-example. "; font-weight: 700; color: #c0395a; }
+.fallacy-box  { background: #ffe8e8; border-left: 4px solid #c0395a; }
+.fallacy-box::before { content: "Fallacy. "; font-weight: 700; color: #c0395a; }
+
+/* ── Code blocks ──────────────────────────────────────────────────── */
+.python-block, .setup-block, .sympy-block, .output-block {
+  border-radius: 6px;
+  overflow: hidden;
+  margin: 0.7rem 0;
+  border: 1px solid;
+}
+.pane-label {
+  display: block;
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  color: #fff;
+}
+.pane-code {
+  font-family: 'Consolas', 'Fira Code', monospace;
+  font-size: 0.83rem;
+  line-height: 1.6;
+  padding: 0.5rem 0.75rem;
+  white-space: pre;
+  display: block;
+}
+.python-block { border-color: var(--py-border); }
+.python-block .pane-label { background: var(--py-head); }
+.python-block .pane-code  { background: var(--py-bg); color: var(--py-fg); }
+.sympy-block  { border-color: var(--sp-border); }
+.sympy-block  .pane-label { background: var(--sp-head); }
+.sympy-block  .pane-code  { background: var(--sp-bg); color: var(--sp-fg); }
+.setup-block  { border-color: var(--su-border); }
+.setup-block  .pane-label { background: var(--su-head); }
+.setup-block  .pane-code  { background: var(--su-bg); color: var(--su-fg); }
+.output-block { border-color: var(--out-border); }
+.output-block .pane-label { background: var(--out-head); }
+.output-block .pane-code  { background: var(--out-bg); color: var(--out-fg); }
+
+/* ── Tables ───────────────────────────────────────────────────────── */
+.truth-table, .ref-table {
+  border-collapse: collapse;
+  margin: 0.75rem auto;
+  font-size: 0.92rem;
+  width: 100%;
+}
+.truth-table th, .truth-table td,
+.ref-table th,  .ref-table td {
+  border: 1px solid var(--border);
+  padding: 0.45rem 0.8rem;
+  text-align: left;
+  vertical-align: top;
+}
+.truth-table th, .ref-table th { background: var(--lightbg); font-weight: 600; color: var(--darkblue); }
+.truth-table tr.row-t { background: var(--rowred); }
+.truth-table tr.row-f { background: var(--rowblue); }
+.center td, .center th { text-align: center; }
+
+/* ── Inference rule schemas ───────────────────────────────────────── */
+.rule {
+  display: inline-block;
+  text-align: center;
+  font-family: 'Cambria Math', 'Latin Modern Math', serif;
+  margin: 0.3rem 0;
+}
+.rule .premises { display: block; padding: 0 0.6rem; }
+.rule .bar      { display: block; border-top: 1px solid var(--darkblue); margin: 0.15rem 0; }
+.rule .conclusion { display: block; padding: 0 0.6rem; }
+
+/* ── Slideshow nav ────────────────────────────────────────────────── */
+#nav { position: fixed; bottom: 1.5rem; right: 1.5rem; display: flex; gap: 0.4rem; z-index: 100; }
+#nav button {
+  background: var(--orange); color: #fff; border: none;
+  border-radius: 50%; width: 40px; height: 40px;
+  font-size: 1.1rem; cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,.25); transition: background .2s;
+}
+#nav button:hover { background: #cf6d17; }
+#nav #btn-scroll { border-radius: 20px; width: auto; padding: 0 12px; font-size: 0.8rem; }
+
+body.slideshow .slide         { display: none; }
+body.slideshow .slide.active  { display: block; }
+
+.ref-cite { color: #777; font-size: 0.85rem; font-style: italic; }
+.chip {
+  display: inline-block;
+  background: #f9e4cc;
+  color: #8a4a0e;
+  padding: 0 .45em;
+  border-radius: 4px;
+  font-weight: 600;
+  font-size: .9em;
+}
+</style>
+</head>
+<body>
+
+<!-- ══ Slide 1 — Title ════════════════════════════════════════════════ -->
+<section class="slide title-slide" id="s1">
+  <h1>Propositional Logic</h1>
+  <p class="subtitle">Discrete Mathematics — Lesson 2 (Full Course v2)</p>
+  <p style="font-size:1rem;color:#e67e22;margin-top:0.8rem;font-style:italic;font-weight:600;letter-spacing:.02em;">Notes By Pr. El Hadiq Zouhair</p>
+  <span class="slide-number">1 / 35</span>
+</section>
+
+<!-- ══ Slide 2 — Outline ═════════════════════════════════════════════ -->
+<section class="slide" id="s2">
+  <h2 class="frame-title">Outline of the lesson</h2>
+  <ol>
+    <li>Foundations — proposition, atomic vs compound, the propositional language, BNF grammar of wffs, truth assignments.</li>
+    <li>Logical connectives — $\neg$, $\wedge$, $\vee$, $\oplus$ (XOR), $\to$, $\leftrightarrow$, NAND ($\uparrow$), NOR ($\downarrow$).</li>
+    <li>Truth tables — systematic construction; tautology, contradiction, contingency.</li>
+    <li>Satisfiability and the SAT problem.</li>
+    <li>Precedence, associativity, parenthesization.</li>
+    <li>Implication: converse, inverse, contrapositive; classical fallacies.</li>
+    <li>Logical equivalence — major laws (identity, domination, idempotence, double negation, commutativity, associativity, distributivity, De Morgan, absorption, implication identities).</li>
+    <li>Logical consequence (entailment) $\Gamma \models \varphi$.</li>
+    <li>Rules of inference — MP, MT, hypothetical &amp; disjunctive syllogism, addition, simplification, conjunction, resolution.</li>
+    <li>Proof methods — direct, contrapositive, contradiction, cases, truth-table.</li>
+    <li>Normal forms — NNF, CNF, DNF.</li>
+    <li>Functional completeness — minimal connective sets, $\uparrow$ and $\downarrow$.</li>
+    <li>Logic gates and digital circuits.</li>
+    <li>Translation patterns and worked examples.</li>
+    <li>Summary, Wolfram → Python reference, bibliography.</li>
+  </ol>
+  <p class="ref-cite">References: Rosen 8e §1.1–1.3, 1.6; Velleman 3e ch. 1; Mendelson 6e ch. 1; Cori &amp; Lascar vol. 1 ch. 1–2; Lalement <em>Logique, réduction, résolution</em>.</p>
+  <span class="slide-number">2 / 35</span>
+</section>
+
+<!-- ══ Slide 3 — Proposition (formal) ════════════════════════════════ -->
+<section class="slide" id="s3">
+  <h2 class="frame-title">1.1 Proposition — formal definition</h2>
+
+  <div class="def-box">
+    A <strong>proposition</strong> is a declarative sentence that is either <em>true</em> ($\mathtt T$) or <em>false</em> ($\mathtt F$), but never both and never neither. We denote propositions by lowercase letters $p, q, r, \ldots$ and use the set $\mathbb{B} = \{\mathtt T, \mathtt F\}$ of <em>truth values</em>.
+  </div>
+
+  <p>Examples (and non-examples):</p>
+  <table class="ref-table">
+    <thead><tr><th>Sentence</th><th>Proposition?</th><th>Why</th></tr></thead>
+    <tbody>
+      <tr><td>"$2 + 2 = 4$"</td><td>Yes (True)</td><td>Declarative, definite truth value.</td></tr>
+      <tr><td>"It will rain tomorrow."</td><td>Yes</td><td>Declarative; truth value is fixed by the future fact.</td></tr>
+      <tr><td>"Close the door."</td><td>No</td><td>Imperative — no truth value.</td></tr>
+      <tr><td>"What time is it?"</td><td>No</td><td>Interrogative.</td></tr>
+      <tr><td>"$x + 1 = 0$"</td><td>No (yet)</td><td>Contains a free variable — it is a <em>predicate</em>.</td></tr>
+      <tr><td>"This sentence is false."</td><td>No</td><td>Paradoxical — violates the bivalence principle.</td></tr>
+    </tbody>
+  </table>
+
+  <p class="ref-cite">Rosen 8e, §1.1, p. 4; Mendelson 6e, §1.1.</p>
+  <span class="slide-number">3 / 35</span>
+</section>
+
+<!-- ══ Slide 4 — Atomic vs compound ══════════════════════════════════ -->
+<section class="slide" id="s4">
+  <h2 class="frame-title">1.2 Atomic vs compound propositions</h2>
+
+  <div class="def-box">
+    An <strong>atomic proposition</strong> is one that cannot be further decomposed using logical connectives — symbolised by a single letter $p, q, \dots$.<br>
+    A <strong>compound proposition</strong> is built from atomic propositions and connectives ($\neg, \wedge, \vee, \to, \leftrightarrow, \dots$).
+  </div>
+
+  <div class="ex-box">
+    Let $p$ = "It is raining" and $q$ = "I take an umbrella".
+    <ul>
+      <li>$p$ — atomic.</li>
+      <li>$\neg p$, $p \wedge q$, $p \to q$ — compound.</li>
+      <li>$\bigl(p \to q\bigr) \wedge \bigl(\neg p \to \neg q\bigr)$ — compound (built from two implications).</li>
+    </ul>
+  </div>
+
+  <div class="note-box">
+    Propositional logic studies only the <em>structure</em> of compound propositions in terms of their atoms; it does <em>not</em> look inside an atomic letter $p$. Looking inside is the job of <em>predicate</em> logic (Lesson 4).
+  </div>
+  <p class="ref-cite">Rosen 8e, §1.1; Cori &amp; Lascar vol. 1, §1.1.</p>
+  <span class="slide-number">4 / 35</span>
+</section>
+
+<!-- ══ Slide 5 — Formal grammar (BNF) ════════════════════════════════ -->
+<section class="slide" id="s5">
+  <h2 class="frame-title">1.3 Formal grammar of well-formed formulas</h2>
+
+  <p>Fix a countable set $\mathcal{P} = \{p_1, p_2, \dots\}$ of <em>propositional variables</em> and the two constants $\top$ (top, always true) and $\bot$ (bottom, always false). The set of <strong>well-formed formulas</strong> ($\mathrm{wff}$) is defined inductively by the Backus–Naur form:</p>
+
+  <div class="setup-block">
+    <span class="pane-label">BNF grammar</span>
+    <span class="pane-code">&lt;wff&gt; ::= &lt;atom&gt;
+        | ( ¬ &lt;wff&gt; )
+        | ( &lt;wff&gt; ∧ &lt;wff&gt; )
+        | ( &lt;wff&gt; ∨ &lt;wff&gt; )
+        | ( &lt;wff&gt; → &lt;wff&gt; )
+        | ( &lt;wff&gt; ↔ &lt;wff&gt; )
+
+&lt;atom&gt; ::= p₁ | p₂ | p₃ | … | ⊤ | ⊥</span>
+  </div>
+
+  <p>Equivalently, every wff is one of: a propositional variable, a constant, a negation, or a binary connective applied to two wffs. Parentheses are eliminated in practice via operator precedence (§5).</p>
+
+  <p class="ref-cite">Mendelson 6e, §1.2; Lalement, ch. 1.</p>
+  <span class="slide-number">5 / 35</span>
+</section>
+
+<!-- ══ Slide 6 — Truth assignment / valuation ════════════════════════ -->
+<section class="slide" id="s6">
+  <h2 class="frame-title">1.4 Truth assignment (valuation)</h2>
+
+  <div class="def-box">
+    A <strong>truth assignment</strong> (or <em>valuation</em>) is a function $v : \mathcal{P} \to \mathbb{B}$ mapping each propositional variable to a truth value. Each valuation extends uniquely to a function $\widehat{v}$ on all wffs by the recursive rules:
+    $$\widehat{v}(\top) = \mathtt T,\;\; \widehat{v}(\bot) = \mathtt F,\;\; \widehat{v}(\neg \varphi) = \neg \widehat{v}(\varphi),$$
+    $$\widehat{v}(\varphi \wedge \psi) = \widehat{v}(\varphi) \wedge \widehat{v}(\psi),\;\; \text{etc.}$$
+  </div>
+
+  <p>Two valuations that agree on the propositional variables appearing in a formula $\varphi$ produce the same truth value for $\varphi$ — only the relevant variables matter.</p>
+
+  <div class="note-box">
+    A formula with $n$ distinct propositional variables admits exactly $2^n$ distinct relevant valuations — this is exactly the number of rows in its truth table.
+  </div>
+  <p class="ref-cite">Mendelson 6e, §1.2; Cori &amp; Lascar vol. 1, §2.1.</p>
+  <span class="slide-number">6 / 35</span>
+</section>
+
+<!-- ══ Slide 7 — Negation ════════════════════════════════════════════ -->
+<section class="slide" id="s7">
+  <h2 class="frame-title">2.1 Negation $\neg$</h2>
+
+  <div class="def-box">
+    $\neg p$ — "not $p$" — is the unique unary connective that flips the truth value of $p$.
+  </div>
+
+  <table class="truth-table center">
+    <thead><tr><th>$p$</th><th>$\neg p$</th></tr></thead>
+    <tbody>
+      <tr class="row-t"><td>$\mathtt T$</td><td>$\mathtt F$</td></tr>
+      <tr class="row-f"><td>$\mathtt F$</td><td>$\mathtt T$</td></tr>
+    </tbody>
+  </table>
+
+  <div class="setup-block">
+    <span class="pane-label">Python — SymPy imports (run once)</span>
+    <span class="pane-code">from sympy import symbols, Not, And, Or, Implies, Equivalent, Xor, simplify
+from sympy.logic.boolalg import truth_table, to_cnf, to_dnf
+from sympy.logic.inference import satisfiable
+p, q, r = symbols('p q r')</span>
+  </div>
+
+  <div class="sympy-block">
+    <span class="pane-label">Python — SymPy</span>
+    <span class="pane-code">Not(p)         # symbolic ¬p
+~p             # operator form
+Not(p).subs(p, True)   # False</span>
+  </div>
+  <p class="ref-cite">Rosen 8e, §1.1, p. 5.</p>
+  <span class="slide-number">7 / 35</span>
+</section>
+
+<!-- ══ Slide 8 — Conjunction & Disjunction ═══════════════════════════ -->
+<section class="slide" id="s8">
+  <h2 class="frame-title">2.2 Conjunction $\wedge$ and disjunction $\vee$</h2>
+
+  <div class="def-box">
+    $p \wedge q$ — "$p$ <em>and</em> $q$" — is true iff both $p$ and $q$ are true.<br>
+    $p \vee q$ — "$p$ <em>or</em> $q$" (<em>inclusive</em> or) — is true iff at least one of $p$, $q$ is true.
+  </div>
+
+  <table class="truth-table center" style="max-width:540px;">
+    <thead><tr><th>$p$</th><th>$q$</th><th>$p \wedge q$</th><th>$p \vee q$</th></tr></thead>
+    <tbody>
+      <tr class="row-t"><td>T</td><td>T</td><td>T</td><td>T</td></tr>
+      <tr class="row-f"><td>T</td><td>F</td><td>F</td><td>T</td></tr>
+      <tr class="row-f"><td>F</td><td>T</td><td>F</td><td>T</td></tr>
+      <tr class="row-f"><td>F</td><td>F</td><td>F</td><td>F</td></tr>
+    </tbody>
+  </table>
+
+  <div class="sympy-block">
+    <span class="pane-label">Python — SymPy</span>
+    <span class="pane-code">And(p, q)        # p ∧ q   — also written p &amp; q
+Or(p, q)         # p ∨ q   — also written p | q
+for row in truth_table(And(p, q), [p, q]):
+    print(row)   # ([0,0],False), ([0,1],False), ([1,0],False), ([1,1],True)</span>
+  </div>
+  <p class="ref-cite">Rosen 8e, §1.1, pp. 6–7.</p>
+  <span class="slide-number">8 / 35</span>
+</section>
+
+<!-- ══ Slide 9 — XOR ═════════════════════════════════════════════════ -->
+<section class="slide" id="s9">
+  <h2 class="frame-title">2.3 Exclusive or $\oplus$ (XOR)</h2>
+
+  <div class="def-box">
+    $p \oplus q$ — "$p$ exclusive-or $q$" — is true iff exactly one of $p$, $q$ is true (but not both).
+  </div>
+
+  <table class="truth-table center" style="max-width:480px;">
+    <thead><tr><th>$p$</th><th>$q$</th><th>$p \oplus q$</th></tr></thead>
+    <tbody>
+      <tr class="row-f"><td>T</td><td>T</td><td>F</td></tr>
+      <tr class="row-t"><td>T</td><td>F</td><td>T</td></tr>
+      <tr class="row-t"><td>F</td><td>T</td><td>T</td></tr>
+      <tr class="row-f"><td>F</td><td>F</td><td>F</td></tr>
+    </tbody>
+  </table>
+
+  <p>XOR is expressible from $\neg, \wedge, \vee$:</p>
+  $$p \oplus q \;\equiv\; (p \vee q) \wedge \neg(p \wedge q) \;\equiv\; (p \wedge \neg q) \vee (\neg p \wedge q) \;\equiv\; \neg(p \leftrightarrow q).$$
+
+  <div class="ex-box">
+    English "or" is ambiguous: "You may have coffee or tea" is usually <em>exclusive</em>; "Students taking French <em>or</em> Italian" is <em>inclusive</em>. Logic fixes $\vee$ as inclusive; XOR is reserved for exclusive intent.
+  </div>
+  <p class="ref-cite">Rosen 8e, §1.1, p. 7; Velleman 3e, §1.1.</p>
+  <span class="slide-number">9 / 35</span>
+</section>
+
+<!-- ══ Slide 10 — Conditional & English forms ════════════════════════ -->
+<section class="slide" id="s10">
+  <h2 class="frame-title">2.4 Conditional $\to$ — material implication</h2>
+
+  <div class="def-box">
+    $p \to q$ — "if $p$ then $q$" — is false in exactly one case: $p$ true and $q$ false. In all other cases it is true.
+  </div>
+
+  <table class="truth-table center" style="max-width:480px;">
+    <thead><tr><th>$p$</th><th>$q$</th><th>$p \to q$</th></tr></thead>
+    <tbody>
+      <tr class="row-t"><td>T</td><td>T</td><td>T</td></tr>
+      <tr class="row-f"><td>T</td><td>F</td><td>F</td></tr>
+      <tr class="row-t"><td>F</td><td>T</td><td>T</td></tr>
+      <tr class="row-t"><td>F</td><td>F</td><td>T</td></tr>
+    </tbody>
+  </table>
+
+  <p>All of the following English phrases mean $p \to q$:</p>
+  <ul>
+    <li>"If $p$, then $q$" &nbsp;·&nbsp; "$p$ implies $q$" &nbsp;·&nbsp; "$q$ if $p$".</li>
+    <li>"$p$ only if $q$" &nbsp;·&nbsp; "$p$ is sufficient for $q$".</li>
+    <li>"$q$ is necessary for $p$" &nbsp;·&nbsp; "$q$ whenever $p$".</li>
+    <li>"$q$ unless $\neg p$".</li>
+  </ul>
+
+  <div class="note-box">
+    <strong>Vacuous truth.</strong> When $p$ is false, $p \to q$ is true regardless of $q$. This is the same vacuous-truth phenomenon as $\forall x \in \varnothing\,P(x)$ in predicate logic.
+  </div>
+  <p class="ref-cite">Rosen 8e, §1.1, pp. 8–11.</p>
+  <span class="slide-number">10 / 35</span>
+</section>
+
+<!-- ══ Slide 11 — Biconditional ══════════════════════════════════════ -->
+<section class="slide" id="s11">
+  <h2 class="frame-title">2.5 Biconditional $\leftrightarrow$ (iff)</h2>
+
+  <div class="def-box">
+    $p \leftrightarrow q$ — "$p$ if and only if $q$" — is true iff $p$ and $q$ have the same truth value.
+  </div>
+
+  <table class="truth-table center" style="max-width:480px;">
+    <thead><tr><th>$p$</th><th>$q$</th><th>$p \leftrightarrow q$</th></tr></thead>
+    <tbody>
+      <tr class="row-t"><td>T</td><td>T</td><td>T</td></tr>
+      <tr class="row-f"><td>T</td><td>F</td><td>F</td></tr>
+      <tr class="row-f"><td>F</td><td>T</td><td>F</td></tr>
+      <tr class="row-t"><td>F</td><td>F</td><td>T</td></tr>
+    </tbody>
+  </table>
+
+  <p>$p \leftrightarrow q$ is the conjunction of the two implications:</p>
+  $$p \leftrightarrow q \;\equiv\; (p \to q) \wedge (q \to p).$$
+
+  <div class="sympy-block">
+    <span class="pane-label">Python — SymPy</span>
+    <span class="pane-code">Equivalent(p, q)                            # p ↔ q
+simplify(Equivalent(p, q) ^ Xor(p, q))      # True — they are complementary</span>
+  </div>
+  <p class="ref-cite">Rosen 8e, §1.1, p. 11.</p>
+  <span class="slide-number">11 / 35</span>
+</section>
+
+<!-- ══ Slide 12 — NAND, NOR ══════════════════════════════════════════ -->
+<section class="slide" id="s12">
+  <h2 class="frame-title">2.6 NAND $\uparrow$ and NOR $\downarrow$</h2>
+
+  <div class="def-box">
+    $p \uparrow q := \neg(p \wedge q)$ — the <strong>Sheffer stroke</strong> (NAND).<br>
+    $p \downarrow q := \neg(p \vee q)$ — the <strong>Peirce arrow</strong> (NOR).
+  </div>
+
+  <table class="truth-table center" style="max-width:540px;">
+    <thead><tr><th>$p$</th><th>$q$</th><th>$p \uparrow q$</th><th>$p \downarrow q$</th></tr></thead>
+    <tbody>
+      <tr class="row-f"><td>T</td><td>T</td><td>F</td><td>F</td></tr>
+      <tr class="row-t"><td>T</td><td>F</td><td>T</td><td>F</td></tr>
+      <tr class="row-t"><td>F</td><td>T</td><td>T</td><td>F</td></tr>
+      <tr class="row-t"><td>F</td><td>F</td><td>T</td><td>T</td></tr>
+    </tbody>
+  </table>
+
+  <p>Each of $\{\uparrow\}$ and $\{\downarrow\}$ alone is <strong>functionally complete</strong> (§12) — every truth function can be expressed using just NAND, or just NOR. Hence the popularity of NAND/NOR in hardware: a chip can be built using a single gate type.</p>
+
+  <p class="ref-cite">Mendelson 6e, §1.4; Rosen 8e, §1.3 Ex. 41.</p>
+  <span class="slide-number">12 / 35</span>
+</section>
+
+<!-- ══ Slide 13 — Truth tables — general method ══════════════════════ -->
+<section class="slide" id="s13">
+  <h2 class="frame-title">3. Building truth tables systematically</h2>
+
+  <p>For a formula $\varphi$ with $n$ distinct propositional variables, list all $2^n$ valuations as rows. Standard convention: variables in alphabetical order, value $\mathtt T$ before $\mathtt F$ in each column (or in binary-counting order — pick one and stay consistent). Then fill in one column per sub-formula bottom-up.</p>
+
+  <div class="ex-box">
+    Truth table of $\varphi := (p \to q) \wedge (\neg p \vee r)$ — three variables, $2^3 = 8$ rows.
+  </div>
+
+  <table class="truth-table center" style="font-size:0.85rem;">
+    <thead><tr><th>$p$</th><th>$q$</th><th>$r$</th><th>$\neg p$</th><th>$p \to q$</th><th>$\neg p \vee r$</th><th>$\varphi$</th></tr></thead>
+    <tbody>
+      <tr class="row-t"><td>T</td><td>T</td><td>T</td><td>F</td><td>T</td><td>T</td><td>T</td></tr>
+      <tr class="row-f"><td>T</td><td>T</td><td>F</td><td>F</td><td>T</td><td>F</td><td>F</td></tr>
+      <tr class="row-f"><td>T</td><td>F</td><td>T</td><td>F</td><td>F</td><td>T</td><td>F</td></tr>
+      <tr class="row-f"><td>T</td><td>F</td><td>F</td><td>F</td><td>F</td><td>F</td><td>F</td></tr>
+      <tr class="row-t"><td>F</td><td>T</td><td>T</td><td>T</td><td>T</td><td>T</td><td>T</td></tr>
+      <tr class="row-t"><td>F</td><td>T</td><td>F</td><td>T</td><td>T</td><td>T</td><td>T</td></tr>
+      <tr class="row-t"><td>F</td><td>F</td><td>T</td><td>T</td><td>T</td><td>T</td><td>T</td></tr>
+      <tr class="row-t"><td>F</td><td>F</td><td>F</td><td>T</td><td>T</td><td>T</td><td>T</td></tr>
+    </tbody>
+  </table>
+
+  <div class="sympy-block">
+    <span class="pane-label">Python — automate it</span>
+    <span class="pane-code">expr = And(Implies(p, q), Or(Not(p), r))
+for vals, val in truth_table(expr, [p, q, r]):
+    print(vals, '→', val)</span>
+  </div>
+  <p class="ref-cite">Rosen 8e, §1.1, p. 12.</p>
+  <span class="slide-number">13 / 35</span>
+</section>
+
+<!-- ══ Slide 14 — Precedence ═════════════════════════════════════════ -->
+<section class="slide" id="s14">
+  <h2 class="frame-title">4. Precedence and parenthesization</h2>
+
+  <div class="def-box">
+    Standard precedence (highest first): $\;( \cdot ) \;>\; \neg \;>\; \wedge \;>\; \vee \;>\; \to \;>\; \leftrightarrow$.<br>
+    Binary connectives <em>associate to the right</em> by default: $p \to q \to r$ means $p \to (q \to r)$.
+  </div>
+
+  <p><span class="chip">Mnemonic — P N A O I B</span> &nbsp;<em>Parentheses · Not · And · Or · Implies · Biconditional.</em></p>
+
+  <table class="ref-table">
+    <thead><tr><th>Written</th><th>Means</th></tr></thead>
+    <tbody>
+      <tr><td>$\neg p \wedge q$</td><td>$(\neg p) \wedge q$ — not $\neg(p \wedge q)$.</td></tr>
+      <tr><td>$p \vee q \wedge r$</td><td>$p \vee (q \wedge r)$.</td></tr>
+      <tr><td>$p \to q \vee r$</td><td>$p \to (q \vee r)$.</td></tr>
+      <tr><td>$p \to q \to r$</td><td>$p \to (q \to r)$ (right-associative).</td></tr>
+      <tr><td>$\neg p \to q \leftrightarrow r$</td><td>$((\neg p) \to q) \leftrightarrow r$.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="note-box">
+    When in doubt, parenthesise. Code uses operator precedence too — but Python's bitwise <code>~</code>, <code>&amp;</code>, <code>|</code> bind <em>differently</em> from $\neg, \wedge, \vee$. Always wrap SymPy expressions with parentheses.
+  </div>
+  <p class="ref-cite">Rosen 8e, §1.1, p. 14.</p>
+  <span class="slide-number">14 / 35</span>
+</section>
+
+<!-- ══ Slide 15 — Converse, inverse, contrapositive ══════════════════ -->
+<section class="slide" id="s15">
+  <h2 class="frame-title">5.1 Converse, inverse, contrapositive</h2>
+
+  <p>Starting from the conditional $p \to q$:</p>
+  <table class="ref-table">
+    <thead><tr><th>Name</th><th>Formula</th><th>Equivalent to $p\to q$?</th></tr></thead>
+    <tbody>
+      <tr><td>Converse</td><td>$q \to p$</td><td>No</td></tr>
+      <tr><td>Inverse</td><td>$\neg p \to \neg q$</td><td>No</td></tr>
+      <tr><td><strong>Contrapositive</strong></td><td>$\neg q \to \neg p$</td><td><strong>Yes</strong></td></tr>
+      <tr><td>Opposite (negation)</td><td>$\neg(p \to q) \equiv p \wedge \neg q$</td><td>No (it is the negation)</td></tr>
+    </tbody>
+  </table>
+
+  <div class="thm-box">
+    $p \to q \;\equiv\; \neg q \to \neg p$ (contrapositive equivalence).
+  </div>
+  <div class="proof-box">
+    Verify by truth table — the four rows of $p \to q$ and $\neg q \to \neg p$ agree column-wise. Equivalently, $p \to q \equiv \neg p \vee q \equiv q \vee \neg p \equiv \neg(\neg q) \vee \neg p \equiv \neg q \to \neg p$. $\square$
+  </div>
+
+  <p>Converse and inverse are equivalent to <em>each other</em>: $q \to p \equiv \neg p \to \neg q$ (each is the contrapositive of the other).</p>
+  <p class="ref-cite">Rosen 8e, §1.1, p. 9; Velleman 3e, §1.2.</p>
+  <span class="slide-number">15 / 35</span>
+</section>
+
+<!-- ══ Slide 16 — Implication fallacies ══════════════════════════════ -->
+<section class="slide" id="s16">
+  <h2 class="frame-title">5.2 Two classical fallacies</h2>
+
+  <div class="fallacy-box">
+    <strong>Affirming the consequent.</strong> From $p \to q$ and $q$ one cannot conclude $p$.<br>
+    Example: "If it rains, the ground is wet. The ground is wet. Therefore it rained." False — a sprinkler could have made the ground wet.
+  </div>
+
+  <div class="fallacy-box">
+    <strong>Denying the antecedent.</strong> From $p \to q$ and $\neg p$ one cannot conclude $\neg q$.<br>
+    Example: "If you study, you pass. You did not study. Therefore you do not pass." False — you might pass anyway.
+  </div>
+
+  <p>The two <em>valid</em> patterns are the converse of these:</p>
+  <ul>
+    <li><strong>Modus ponens</strong>: from $p \to q$ and $p$, conclude $q$. (See §9.1)</li>
+    <li><strong>Modus tollens</strong>: from $p \to q$ and $\neg q$, conclude $\neg p$. (See §9.1)</li>
+  </ul>
+  <p class="ref-cite">Rosen 8e, §1.6; Velleman 3e, §1.2.</p>
+  <span class="slide-number">16 / 35</span>
+</section>
+
+<!-- ══ Slide 17 — Tautology, contradiction, contingency ══════════════ -->
+<section class="slide" id="s17">
+  <h2 class="frame-title">6. Tautology, contradiction, contingency</h2>
+
+  <div class="def-box">
+    A formula $\varphi$ is a <strong>tautology</strong> if it is true under every valuation. Notation $\models \varphi$.<br>
+    A formula is a <strong>contradiction</strong> (or <em>unsatisfiable</em>) if it is false under every valuation.<br>
+    A formula is <strong>contingent</strong> if it is true in some valuation and false in another.
+  </div>
+
+  <table class="ref-table">
+    <thead><tr><th>Formula</th><th>Classification</th></tr></thead>
+    <tbody>
+      <tr><td>$p \vee \neg p$</td><td>Tautology (law of excluded middle).</td></tr>
+      <tr><td>$p \wedge \neg p$</td><td>Contradiction (law of non-contradiction, negated).</td></tr>
+      <tr><td>$(p \to q) \leftrightarrow (\neg q \to \neg p)$</td><td>Tautology.</td></tr>
+      <tr><td>$p \to (p \wedge q)$</td><td>Contingent (true when $q$ true, false when $p$ true and $q$ false).</td></tr>
+    </tbody>
+  </table>
+
+  <div class="sympy-block">
+    <span class="pane-label">Python — test by SAT</span>
+    <span class="pane-code">satisfiable(p | ~p)         # always satisfiable, hence not a contradiction
+satisfiable(~(p | ~p))      # False — its negation is unsat, so original is a tautology
+satisfiable(p & ~p)         # False — contradiction</span>
+  </div>
+  <p class="ref-cite">Rosen 8e, §1.3, p. 28; Mendelson 6e, §1.3.</p>
+  <span class="slide-number">17 / 35</span>
+</section>
+
+<!-- ══ Slide 18 — SAT problem ════════════════════════════════════════ -->
+<section class="slide" id="s18">
+  <h2 class="frame-title">7. Satisfiability and the SAT problem</h2>
+
+  <div class="def-box">
+    A formula $\varphi$ is <strong>satisfiable</strong> if at least one valuation makes it true. Otherwise it is <em>unsatisfiable</em>. The decision problem "<em>is this Boolean formula satisfiable?</em>" is called <strong>SAT</strong>.
+  </div>
+
+  <ul>
+    <li>Naïve algorithm: enumerate $2^n$ valuations — exponential in $n$.</li>
+    <li><strong>2-SAT</strong> (each clause has at most 2 literals) is in $\mathcal{P}$.</li>
+    <li><strong>3-SAT</strong> is <strong>NP-complete</strong> (Cook–Levin, 1971) — the canonical NP-complete problem.</li>
+    <li>Modern SAT-solvers (e.g. Z3, MiniSAT) handle formulas with millions of variables via DPLL/CDCL heuristics — they are the backbone of modern verification, planning and combinatorial search.</li>
+  </ul>
+
+  <div class="sympy-block">
+    <span class="pane-label">Python — find a satisfying valuation</span>
+    <span class="pane-code">satisfiable((p | q) & (~p | r) & (~q | ~r))
+# {p: True, q: True, r: True}  → one satisfying assignment</span>
+  </div>
+  <p class="ref-cite">Rosen 8e, §1.3, p. 29; Mendelson 6e, §1.5.</p>
+  <span class="slide-number">18 / 35</span>
+</section>
+
+<!-- ══ Slide 19 — Logical equivalence ════════════════════════════════ -->
+<section class="slide" id="s19">
+  <h2 class="frame-title">8.1 Logical equivalence $\equiv$</h2>
+
+  <div class="def-box">
+    Two formulas $\varphi$ and $\psi$ are <strong>logically equivalent</strong>, written $\varphi \equiv \psi$, iff they take the same truth value under every valuation. Equivalently: $\models \varphi \leftrightarrow \psi$.
+  </div>
+
+  <p>Compare the two symbols:</p>
+  <table class="ref-table">
+    <thead><tr><th>Symbol</th><th>Type</th><th>Status</th></tr></thead>
+    <tbody>
+      <tr><td>$\leftrightarrow$</td><td>Connective (a <em>formula</em>)</td><td>$\varphi \leftrightarrow \psi$ is itself a formula with its own truth value in each valuation.</td></tr>
+      <tr><td>$\equiv$</td><td>Meta-symbol (an <em>assertion</em>)</td><td>$\varphi \equiv \psi$ asserts the formula $\varphi \leftrightarrow \psi$ is a tautology.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="thm-box">
+    <strong>Substitution theorem.</strong> If $\varphi \equiv \psi$, then for any formula $\chi$ obtained by replacing some occurrence of $\varphi$ by $\psi$: $\chi[\varphi] \equiv \chi[\psi]$.
+  </div>
+  <p class="ref-cite">Rosen 8e, §1.3, p. 27; Mendelson 6e, §1.3.</p>
+  <span class="slide-number">19 / 35</span>
+</section>
+
+<!-- ══ Slide 20 — Major equivalence laws ═════════════════════════════ -->
+<section class="slide" id="s20">
+  <h2 class="frame-title">8.2 Major equivalence laws</h2>
+
+  <table class="ref-table">
+    <thead><tr><th>Name</th><th>Law</th></tr></thead>
+    <tbody>
+      <tr><td>Identity</td><td>$p \wedge \top \equiv p,\quad p \vee \bot \equiv p$</td></tr>
+      <tr><td>Domination</td><td>$p \vee \top \equiv \top,\quad p \wedge \bot \equiv \bot$</td></tr>
+      <tr><td>Idempotent</td><td>$p \wedge p \equiv p,\quad p \vee p \equiv p$</td></tr>
+      <tr><td>Double negation</td><td>$\neg \neg p \equiv p$</td></tr>
+      <tr><td>Commutative</td><td>$p \wedge q \equiv q \wedge p,\quad p \vee q \equiv q \vee p$</td></tr>
+      <tr><td>Associative</td><td>$(p \wedge q) \wedge r \equiv p \wedge (q \wedge r)$ &nbsp; (idem for $\vee$)</td></tr>
+      <tr><td>Distributive</td><td>$p \wedge (q \vee r) \equiv (p \wedge q) \vee (p \wedge r)$ &nbsp; (and dually)</td></tr>
+      <tr><td>Excluded middle</td><td>$p \vee \neg p \equiv \top$</td></tr>
+      <tr><td>Non-contradiction</td><td>$p \wedge \neg p \equiv \bot$</td></tr>
+      <tr><td>Absorption</td><td>$p \vee (p \wedge q) \equiv p,\quad p \wedge (p \vee q) \equiv p$</td></tr>
+    </tbody>
+  </table>
+
+  <div class="note-box">
+    These laws make $(\mathbb{B}, \wedge, \vee, \neg, \bot, \top)$ a <strong>Boolean algebra</strong>. Every identity above can be checked by an 2- or 4-row truth table.
+  </div>
+  <p class="ref-cite">Rosen 8e, §1.3, Table 6, p. 27.</p>
+  <span class="slide-number">20 / 35</span>
+</section>
+
+<!-- ══ Slide 21 — De Morgan ══════════════════════════════════════════ -->
+<section class="slide" id="s21">
+  <h2 class="frame-title">8.3 De Morgan's laws</h2>
+
+  <div class="thm-box">
+    $\neg(p \wedge q) \;\equiv\; \neg p \vee \neg q, \qquad \neg(p \vee q) \;\equiv\; \neg p \wedge \neg q.$
+  </div>
+
+  <div class="proof-box">
+    Verify by truth table.
+    <table class="truth-table center" style="font-size:0.85rem;">
+      <thead><tr><th>$p$</th><th>$q$</th><th>$p\wedge q$</th><th>$\neg(p\wedge q)$</th><th>$\neg p \vee \neg q$</th></tr></thead>
+      <tbody>
+        <tr class="row-f"><td>T</td><td>T</td><td>T</td><td>F</td><td>F</td></tr>
+        <tr class="row-t"><td>T</td><td>F</td><td>F</td><td>T</td><td>T</td></tr>
+        <tr class="row-t"><td>F</td><td>T</td><td>F</td><td>T</td><td>T</td></tr>
+        <tr class="row-t"><td>F</td><td>F</td><td>F</td><td>T</td><td>T</td></tr>
+      </tbody>
+    </table>
+    Columns 4 and 5 agree row-by-row, so the formulas are equivalent. The dual is proved the same way. $\square$
+  </div>
+
+  <div class="ex-box">
+    "It is <em>not</em> the case that I will both pass the exam and skip class" $\;\equiv\;$ "Either I will not pass the exam, or I will not skip class".
+  </div>
+  <p class="ref-cite">Rosen 8e, §1.3, p. 26.</p>
+  <span class="slide-number">21 / 35</span>
+</section>
+
+<!-- ══ Slide 22 — Implication identities ═════════════════════════════ -->
+<section class="slide" id="s22">
+  <h2 class="frame-title">8.4 Implication and biconditional identities</h2>
+
+  <table class="ref-table">
+    <thead><tr><th>Identity</th></tr></thead>
+    <tbody>
+      <tr><td>$p \to q \;\equiv\; \neg p \vee q$</td></tr>
+      <tr><td>$p \to q \;\equiv\; \neg q \to \neg p$ &nbsp; (contrapositive)</td></tr>
+      <tr><td>$p \vee q \;\equiv\; \neg p \to q$</td></tr>
+      <tr><td>$p \wedge q \;\equiv\; \neg(p \to \neg q)$</td></tr>
+      <tr><td>$\neg(p \to q) \;\equiv\; p \wedge \neg q$</td></tr>
+      <tr><td>$(p \to q) \wedge (p \to r) \;\equiv\; p \to (q \wedge r)$</td></tr>
+      <tr><td>$(p \to r) \wedge (q \to r) \;\equiv\; (p \vee q) \to r$</td></tr>
+      <tr><td>$(p \to q) \vee (p \to r) \;\equiv\; p \to (q \vee r)$</td></tr>
+      <tr><td>$p \leftrightarrow q \;\equiv\; (p \to q) \wedge (q \to p)$</td></tr>
+      <tr><td>$p \leftrightarrow q \;\equiv\; (p \wedge q) \vee (\neg p \wedge \neg q)$</td></tr>
+      <tr><td>$\neg(p \leftrightarrow q) \;\equiv\; p \oplus q$</td></tr>
+    </tbody>
+  </table>
+
+  <div class="sympy-block">
+    <span class="pane-label">Python — verify any identity</span>
+    <span class="pane-code">simplify(Equivalent(Implies(p, q), Or(Not(p), q)))   # True</span>
+  </div>
+  <p class="ref-cite">Rosen 8e, §1.3, Tables 7–8.</p>
+  <span class="slide-number">22 / 35</span>
+</section>
+
+<!-- ══ Slide 23 — Logical consequence ════════════════════════════════ -->
+<section class="slide" id="s23">
+  <h2 class="frame-title">9. Logical consequence (entailment)</h2>
+
+  <div class="def-box">
+    Let $\Gamma$ be a set of formulas and $\varphi$ a formula. We say $\varphi$ is a <strong>logical consequence</strong> (or that $\Gamma$ <em>entails</em> $\varphi$), written $\;\Gamma \models \varphi\;$, iff every valuation that makes <em>all</em> formulas in $\Gamma$ true also makes $\varphi$ true.
+  </div>
+
+  <div class="thm-box">
+    <strong>Deduction theorem (semantic).</strong> $\Gamma \cup \{\varphi\} \models \psi$ iff $\Gamma \models \varphi \to \psi$.
+  </div>
+
+  <div class="ex-box">
+    Take $\Gamma = \{\,p \to q,\; p\,\}$ and $\varphi = q$. Every valuation satisfying both $p \to q$ and $p$ must have $p = \mathtt T$ and (since $p \to q$ holds) $q = \mathtt T$. Hence $\Gamma \models q$ — this is the soundness of modus ponens (next slide).
+  </div>
+
+  <div class="note-box">
+    Distinguish: $\Gamma \models \varphi$ is a <em>semantic</em> claim (about valuations); the analogous syntactic claim $\Gamma \vdash \varphi$ is "$\varphi$ can be <em>derived</em> from $\Gamma$ by inference rules". Soundness and completeness of propositional logic ensure $\models$ and $\vdash$ coincide.
+  </div>
+  <p class="ref-cite">Mendelson 6e, §1.5; Cori &amp; Lascar vol. 1, ch. 2.</p>
+  <span class="slide-number">23 / 35</span>
+</section>
+
+<!-- ══ Slide 24 — MP and MT ══════════════════════════════════════════ -->
+<section class="slide" id="s24">
+  <h2 class="frame-title">10.1 Modus ponens and modus tollens</h2>
+
+  <div class="thm-box">
+    <strong>Modus Ponens (MP).</strong> $\;\{\,p,\; p \to q\,\} \models q.$
+  </div>
+  <p style="text-align:center;">
+    <span class="rule">
+      <span class="premises">$p \to q,\;\; p$</span>
+      <span class="bar"></span>
+      <span class="conclusion">$\therefore\; q$</span>
+    </span>
+  </p>
+  <div class="proof-box">
+    A valuation in which $p$ and $p \to q$ are both true cannot make $q$ false — that would make $p \to q$ false. So every model of the premises is a model of $q$. $\square$
+  </div>
+
+  <div class="thm-box">
+    <strong>Modus Tollens (MT).</strong> $\;\{\,p \to q,\; \neg q\,\} \models \neg p.$
+  </div>
+  <p style="text-align:center;">
+    <span class="rule">
+      <span class="premises">$p \to q,\;\; \neg q$</span>
+      <span class="bar"></span>
+      <span class="conclusion">$\therefore\; \neg p$</span>
+    </span>
+  </p>
+  <div class="proof-box">
+    MT is MP applied to the contrapositive $\neg q \to \neg p$, which is logically equivalent to $p \to q$. $\square$
+  </div>
+  <p class="ref-cite">Rosen 8e, §1.6, Table 1; Velleman 3e, §3.1.</p>
+  <span class="slide-number">24 / 35</span>
+</section>
+
+<!-- ══ Slide 25 — Syllogisms ═════════════════════════════════════════ -->
+<section class="slide" id="s25">
+  <h2 class="frame-title">10.2 Hypothetical &amp; disjunctive syllogism</h2>
+
+  <div class="thm-box">
+    <strong>Hypothetical syllogism (HS).</strong> $\;\{\,p \to q,\; q \to r\,\} \models p \to r.$
+  </div>
+  <p style="text-align:center;">
+    <span class="rule">
+      <span class="premises">$p \to q,\;\; q \to r$</span>
+      <span class="bar"></span>
+      <span class="conclusion">$\therefore\; p \to r$</span>
+    </span>
+  </p>
+  <p>This is the formal version of transitivity of implication.</p>
+
+  <div class="thm-box">
+    <strong>Disjunctive syllogism (DS).</strong> $\;\{\,p \vee q,\; \neg p\,\} \models q.$
+  </div>
+  <p style="text-align:center;">
+    <span class="rule">
+      <span class="premises">$p \vee q,\;\; \neg p$</span>
+      <span class="bar"></span>
+      <span class="conclusion">$\therefore\; q$</span>
+    </span>
+  </p>
+
+  <div class="ex-box">
+    "Either I left my keys in the car or in the office. They are not in the car. Therefore they are in the office."
+  </div>
+  <p class="ref-cite">Rosen 8e, §1.6, Table 1, p. 75.</p>
+  <span class="slide-number">25 / 35</span>
+</section>
+
+<!-- ══ Slide 26 — Addition, simplification, conjunction, resolution ══ -->
+<section class="slide" id="s26">
+  <h2 class="frame-title">10.3 More inference rules</h2>
+
+  <table class="ref-table center">
+    <thead><tr><th>Name</th><th>Rule</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Addition</strong></td><td>$p \;\therefore\; p \vee q$</td></tr>
+      <tr><td><strong>Simplification</strong></td><td>$p \wedge q \;\therefore\; p$</td></tr>
+      <tr><td><strong>Conjunction</strong></td><td>$p,\; q \;\therefore\; p \wedge q$</td></tr>
+      <tr><td><strong>Resolution</strong></td><td>$p \vee q,\; \neg p \vee r \;\therefore\; q \vee r$</td></tr>
+    </tbody>
+  </table>
+
+  <div class="thm-box">
+    <strong>Resolution.</strong> If two clauses $C_1 = p \vee q$ and $C_2 = \neg p \vee r$ are both true, then $q \vee r$ must be true.
+  </div>
+  <div class="proof-box">
+    Consider any valuation satisfying $C_1$ and $C_2$. If $p$ is true, $C_2$ forces $r$ to be true, hence $q \vee r$. If $p$ is false, $C_1$ forces $q$ to be true, hence $q \vee r$. Either way, $q \vee r$ holds. $\square$
+  </div>
+
+  <p>Resolution is the single inference rule used by <em>resolution refutation</em>, the algorithmic core of most SAT-solvers and automated theorem provers.</p>
+  <p class="ref-cite">Rosen 8e, §1.6, Table 1; Lalement, ch. 3.</p>
+  <span class="slide-number">26 / 35</span>
+</section>
+
+<!-- ══ Slide 27 — Proof methods ══════════════════════════════════════ -->
+<section class="slide" id="s27">
+  <h2 class="frame-title">11. Proof methods in propositional reasoning</h2>
+
+  <ol>
+    <li><strong>Direct proof of $p \to q$.</strong> Assume $p$, derive $q$ via known inference rules.</li>
+    <li><strong>Proof by contrapositive.</strong> To prove $p \to q$, equivalently prove $\neg q \to \neg p$.</li>
+    <li><strong>Proof by contradiction (reductio).</strong> To prove $\varphi$, assume $\neg \varphi$ and derive $\bot$. Justification: $\neg \varphi \to \bot \;\equiv\; \varphi$.</li>
+    <li><strong>Proof by cases.</strong> To prove $(p_1 \vee p_2 \vee \dots \vee p_k) \to q$, prove each $p_i \to q$ separately.</li>
+    <li><strong>Truth-table proof.</strong> For a propositional tautology, exhibit every row of the truth table.</li>
+  </ol>
+
+  <div class="ex-box">
+    <strong>(Contrapositive.)</strong> Prove: <em>if $n^2$ is odd, then $n$ is odd</em>. Contrapositive: <em>if $n$ is even, then $n^2$ is even</em>. Assume $n = 2k$. Then $n^2 = 4k^2 = 2(2k^2)$ is even. $\square$
+  </div>
+
+  <div class="ex-box">
+    <strong>(Cases.)</strong> Prove $\forall n \in \mathbb{Z},\; n^2 \geq n$ for $n \neq 0$. Case $n \geq 1$: multiply $n \geq 1$ by $n \geq 0$ to get $n^2 \geq n$. Case $n \leq -1$: $n^2 \geq 1 \geq 0 \geq n$. $\square$
+  </div>
+  <p class="ref-cite">Velleman 3e, ch. 3; Rosen 8e, §1.7.</p>
+  <span class="slide-number">27 / 35</span>
+</section>
+
+<!-- ══ Slide 28 — NNF, CNF, DNF ══════════════════════════════════════ -->
+<section class="slide" id="s28">
+  <h2 class="frame-title">12.1 Normal forms — NNF, CNF, DNF</h2>
+
+  <div class="def-box">
+    A <strong>literal</strong> is a propositional variable $p$ or its negation $\neg p$.<br>
+    A <strong>clause</strong> is a disjunction of literals; a <strong>cube</strong> is a conjunction of literals.<br>
+    <strong>Negation Normal Form (NNF):</strong> negations apply only to atoms; the formula uses only $\neg, \wedge, \vee$.<br>
+    <strong>Conjunctive Normal Form (CNF):</strong> a conjunction of clauses — $\bigwedge_i \bigvee_j \ell_{ij}$.<br>
+    <strong>Disjunctive Normal Form (DNF):</strong> a disjunction of cubes — $\bigvee_i \bigwedge_j \ell_{ij}$.
+  </div>
+
+  <div class="thm-box">
+    Every propositional formula is equivalent to one in NNF, one in CNF, and one in DNF.
+  </div>
+
+  <div class="ex-box">
+    $\;p \leftrightarrow q\;$ in DNF: $\;(p \wedge q) \vee (\neg p \wedge \neg q)$.<br>
+    $\;p \leftrightarrow q\;$ in CNF: $\;(\neg p \vee q) \wedge (p \vee \neg q)$.
+  </div>
+  <p class="ref-cite">Rosen 8e, §1.3, p. 31; Mendelson 6e, §1.4.</p>
+  <span class="slide-number">28 / 35</span>
+</section>
+
+<!-- ══ Slide 29 — CNF conversion algorithm ═══════════════════════════ -->
+<section class="slide" id="s29">
+  <h2 class="frame-title">12.2 CNF conversion — algorithm &amp; worked example</h2>
+
+  <ol>
+    <li><strong>Eliminate</strong> $\leftrightarrow$ and $\to$ in favour of $\neg, \wedge, \vee$:
+      $$\alpha \leftrightarrow \beta \;\rightsquigarrow\; (\neg\alpha \vee \beta) \wedge (\alpha \vee \neg\beta), \qquad \alpha \to \beta \;\rightsquigarrow\; \neg\alpha \vee \beta.$$</li>
+    <li><strong>Push $\neg$ inward</strong> by De Morgan until it appears only on atoms (formula now in NNF).</li>
+    <li><strong>Distribute $\vee$ over $\wedge$</strong>: $\;\alpha \vee (\beta \wedge \gamma) \rightsquigarrow (\alpha \vee \beta) \wedge (\alpha \vee \gamma)$.</li>
+  </ol>
+
+  <div class="ex-box">
+    Convert $\;\neg\bigl((p \to q) \wedge (q \to r)\bigr)\;$ to CNF.
+    <ol>
+      <li>Eliminate $\to$: $\;\neg\bigl((\neg p \vee q) \wedge (\neg q \vee r)\bigr)$.</li>
+      <li>Push $\neg$ in (De Morgan twice): $\;(p \wedge \neg q) \vee (q \wedge \neg r)$. This is already DNF.</li>
+      <li>Distribute $\vee$ over $\wedge$ to reach CNF:<br>
+        $\;(p \vee q) \wedge (p \vee \neg r) \wedge (\neg q \vee q) \wedge (\neg q \vee \neg r)$<br>
+        $\;\equiv (p \vee q) \wedge (p \vee \neg r) \wedge (\neg q \vee \neg r)$ &nbsp;(drop the tautology clause $\neg q \vee q$).
+      </li>
+    </ol>
+  </div>
+
+  <div class="sympy-block">
+    <span class="pane-label">Python — automate it</span>
+    <span class="pane-code">expr = Not(And(Implies(p, q), Implies(q, r)))
+print(to_cnf(expr, simplify=True))      # CNF form
+print(to_dnf(expr, simplify=True))      # DNF form</span>
+  </div>
+  <p class="ref-cite">Lalement, ch. 2; Rosen 8e, §1.3 Ex. 49.</p>
+  <span class="slide-number">29 / 35</span>
+</section>
+
+<!-- ══ Slide 30 — Functional completeness ════════════════════════════ -->
+<section class="slide" id="s30">
+  <h2 class="frame-title">13. Functional completeness</h2>
+
+  <div class="def-box">
+    A set $S$ of connectives is <strong>functionally complete</strong> if every Boolean function $f : \mathbb{B}^n \to \mathbb{B}$ can be expressed using only connectives from $S$.
+  </div>
+
+  <div class="thm-box">
+    Each of the following sets is functionally complete:
+    $\;\{\neg, \wedge, \vee\},\;\{\neg, \wedge\},\;\{\neg, \vee\},\;\{\neg, \to\},\;\{\uparrow\},\;\{\downarrow\}.$
+  </div>
+
+  <p>Sketch: any Boolean function can be read off its truth table as a DNF over $\{\neg, \wedge, \vee\}$. From there, De Morgan eliminates $\vee$ (giving $\{\neg, \wedge\}$) or $\wedge$ (giving $\{\neg, \vee\}$). Finally,</p>
+  $$\neg p \equiv p \uparrow p, \qquad p \wedge q \equiv (p \uparrow q) \uparrow (p \uparrow q),$$
+  $$\neg p \equiv p \downarrow p, \qquad p \vee q \equiv (p \downarrow q) \downarrow (p \downarrow q),$$
+  <p>which gives $\{\uparrow\}$ and $\{\downarrow\}$ completeness.</p>
+
+  <div class="ce-box">
+    $\{\wedge, \vee\}$ alone is <strong>not</strong> complete — both connectives are <em>monotone</em>: any formula built from them returns true at the all-true valuation, so $\neg p$ is not expressible.
+  </div>
+  <p class="ref-cite">Mendelson 6e, §1.4; Rosen 8e, §1.3 Ex. 41.</p>
+  <span class="slide-number">30 / 35</span>
+</section>
+
+<!-- ══ Slide 31 — Logic gates and circuits ═══════════════════════════ -->
+<section class="slide" id="s31">
+  <h2 class="frame-title">14. Logic gates and digital circuits</h2>
+
+  <p>A <strong>logic gate</strong> is a physical realisation of a Boolean function on electrical signals (high voltage = $\mathtt T$, low = $\mathtt F$). The basic gates correspond directly to connectives:</p>
+
+  <table class="ref-table center">
+    <thead><tr><th>Gate</th><th>Symbol</th><th>Connective</th></tr></thead>
+    <tbody>
+      <tr><td>NOT (inverter)</td><td>$\neg$</td><td>$\neg p$</td></tr>
+      <tr><td>AND</td><td>$\wedge$</td><td>$p \wedge q$</td></tr>
+      <tr><td>OR</td><td>$\vee$</td><td>$p \vee q$</td></tr>
+      <tr><td>NAND</td><td>$\uparrow$</td><td>$\neg(p \wedge q)$</td></tr>
+      <tr><td>NOR</td><td>$\downarrow$</td><td>$\neg(p \vee q)$</td></tr>
+      <tr><td>XOR</td><td>$\oplus$</td><td>$(p \vee q) \wedge \neg(p \wedge q)$</td></tr>
+    </tbody>
+  </table>
+
+  <h3 class="sub-title">Half-adder circuit</h3>
+  <p>Given two bits $a, b$, the <em>sum</em> $s = a \oplus b$ and the <em>carry</em> $c = a \wedge b$ together compute the binary sum $a + b \in \{00, 01, 10\}$.</p>
+
+  <table class="truth-table center" style="max-width:540px;">
+    <thead><tr><th>$a$</th><th>$b$</th><th>sum $s = a \oplus b$</th><th>carry $c = a \wedge b$</th></tr></thead>
+    <tbody>
+      <tr class="row-f"><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+      <tr class="row-t"><td>0</td><td>1</td><td>1</td><td>0</td></tr>
+      <tr class="row-t"><td>1</td><td>0</td><td>1</td><td>0</td></tr>
+      <tr class="row-t"><td>1</td><td>1</td><td>0</td><td>1</td></tr>
+    </tbody>
+  </table>
+
+  <p>Chaining $n$ <em>full-adders</em> (which also accept a carry-in) gives the ripple-carry adder, the heart of every CPU's arithmetic unit.</p>
+  <p class="ref-cite">Rosen 8e, §12.3; Mendelson 6e, §1.4.</p>
+  <span class="slide-number">31 / 35</span>
+</section>
+
+<!-- ══ Slide 32 — Translation examples ═══════════════════════════════ -->
+<section class="slide" id="s32">
+  <h2 class="frame-title">15. Translation examples — English to logic</h2>
+
+  <p>Let $p$ = "you study", $q$ = "you do exercises", $r$ = "you pass the course".</p>
+  <table class="ref-table">
+    <thead><tr><th>#</th><th>English</th><th>Formal</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>You pass the course only if you study.</td><td>$r \to p$</td></tr>
+      <tr><td>2</td><td>Studying and doing exercises is sufficient to pass.</td><td>$(p \wedge q) \to r$</td></tr>
+      <tr><td>3</td><td>You will not pass unless you study or do exercises.</td><td>$\neg(p \vee q) \to \neg r,\;\equiv\; r \to (p \vee q)$</td></tr>
+      <tr><td>4</td><td>You pass if and only if you study and do exercises.</td><td>$r \leftrightarrow (p \wedge q)$</td></tr>
+      <tr><td>5</td><td>Either you study and pass, or you do not study and fail.</td><td>$(p \wedge r) \vee (\neg p \wedge \neg r)\;\equiv\; p \leftrightarrow r$</td></tr>
+    </tbody>
+  </table>
+
+  <p>Let $a$ = "the alarm rings", $b$ = "the door is open", $c$ = "the cat escapes".</p>
+  <table class="ref-table">
+    <thead><tr><th>#</th><th>English</th><th>Formal</th></tr></thead>
+    <tbody>
+      <tr><td>6</td><td>If the alarm rings and the door is open, the cat escapes.</td><td>$(a \wedge b) \to c$</td></tr>
+      <tr><td>7</td><td>The cat escapes only when the door is open.</td><td>$c \to b$</td></tr>
+      <tr><td>8</td><td>The cat does not escape and the alarm does not ring.</td><td>$\neg c \wedge \neg a$</td></tr>
+      <tr><td>9</td><td>It is not the case that the alarm rings without the door being open.</td><td>$\neg(a \wedge \neg b)\;\equiv\; a \to b$</td></tr>
+    </tbody>
+  </table>
+  <p class="ref-cite">Rosen 8e, §1.1, pp. 8–10.</p>
+  <span class="slide-number">32 / 35</span>
+</section>
+
+<!-- ══ Slide 33 — Summary ════════════════════════════════════════════ -->
+<section class="slide" id="s33">
+  <h2 class="frame-title">16. Summary</h2>
+  <ul>
+    <li>A <strong>proposition</strong> is a truth-bearer; propositional logic studies how compound propositions are built from atoms via the connectives $\neg, \wedge, \vee, \to, \leftrightarrow$ (and derived ones $\oplus, \uparrow, \downarrow$).</li>
+    <li>A valuation $v : \mathcal{P} \to \mathbb{B}$ extends uniquely to a truth value for every wff; for $n$ atoms there are $2^n$ valuations — the rows of a truth table.</li>
+    <li>The classes are: <em>tautology</em> (true everywhere), <em>contradiction</em> (false everywhere), <em>contingent</em> (sometimes true, sometimes false), <em>satisfiable</em> (true somewhere).</li>
+    <li>$\equiv$ is logical equivalence (a tautological $\leftrightarrow$); the Substitution Theorem allows replacement of equivalent sub-formulas.</li>
+    <li>$\Gamma \models \varphi$ is semantic entailment; the four most-used inference rules are <strong>MP</strong>, <strong>MT</strong>, <strong>HS</strong>, <strong>DS</strong>; <strong>resolution</strong> powers automated theorem proving.</li>
+    <li>Every formula has a CNF and a DNF; $\{\uparrow\}$ and $\{\downarrow\}$ are functionally complete.</li>
+    <li>Logic gates physically realise these connectives — propositional logic is the language of digital computing.</li>
+  </ul>
+  <span class="slide-number">33 / 35</span>
+</section>
+
+<!-- ══ Slide 34 — Wolfram → Python quick reference ═══════════════════ -->
+<section class="slide" id="s34">
+  <h2 class="frame-title">17. Wolfram → Python quick reference</h2>
+
+  <table class="ref-table">
+    <thead><tr><th>Wolfram</th><th>SymPy</th><th>Python operator</th></tr></thead>
+    <tbody>
+      <tr><td><code>Not[p]</code></td><td><code>Not(p)</code></td><td><code>~p</code></td></tr>
+      <tr><td><code>And[p,q]</code></td><td><code>And(p, q)</code></td><td><code>p &amp; q</code></td></tr>
+      <tr><td><code>Or[p,q]</code></td><td><code>Or(p, q)</code></td><td><code>p | q</code></td></tr>
+      <tr><td><code>Xor[p,q]</code></td><td><code>Xor(p, q)</code></td><td><code>p ^ q</code></td></tr>
+      <tr><td><code>Implies[p,q]</code></td><td><code>Implies(p, q)</code></td><td>—</td></tr>
+      <tr><td><code>Equivalent[p,q]</code></td><td><code>Equivalent(p, q)</code></td><td>—</td></tr>
+      <tr><td><code>Nand[p,q]</code></td><td><code>Nand(p, q)</code></td><td>—</td></tr>
+      <tr><td><code>Nor[p,q]</code></td><td><code>Nor(p, q)</code></td><td>—</td></tr>
+      <tr><td><code>TautologyQ[expr]</code></td><td><code>not satisfiable(Not(expr))</code></td><td>—</td></tr>
+      <tr><td><code>SatisfiableQ[expr]</code></td><td><code>satisfiable(expr)</code></td><td>—</td></tr>
+      <tr><td><code>BooleanConvert[e,"CNF"]</code></td><td><code>to_cnf(e, simplify=True)</code></td><td>—</td></tr>
+      <tr><td><code>BooleanConvert[e,"DNF"]</code></td><td><code>to_dnf(e, simplify=True)</code></td><td>—</td></tr>
+      <tr><td><code>FullSimplify[e]</code></td><td><code>simplify(e)</code></td><td>—</td></tr>
+      <tr><td><code>BooleanTable[e,{p,q}]</code></td><td><code>truth_table(e, [p, q])</code></td><td>—</td></tr>
+    </tbody>
+  </table>
+  <span class="slide-number">34 / 35</span>
+</section>
+
+<!-- ══ Slide 35 — Bibliography ═══════════════════════════════════════ -->
+<section class="slide" id="s35">
+  <h2 class="frame-title">Bibliography</h2>
+  <ul>
+    <li>K. H. Rosen. <em>Discrete Mathematics and Its Applications</em>, 8th ed., McGraw-Hill, 2019 — §§1.1–1.3 (connectives, equivalences, normal forms), §1.6 (inference rules), §1.7 (proof methods), §12.3 (logic gates).</li>
+    <li>D. J. Velleman. <em>How To Prove It: A Structured Approach</em>, 3rd ed., Cambridge University Press, 2019 — ch. 1 (logical operators), §3.1 (proof strategies).</li>
+    <li>E. Mendelson. <em>Introduction to Mathematical Logic</em>, 6th ed., CRC Press, 2015 — ch. 1 (propositional logic, NNF, completeness).</li>
+    <li>R. Cori &amp; D. Lascar. <em>Mathematical Logic, vol. 1: Propositional Calculus, Boolean Algebras, Predicate Calculus</em>, Oxford University Press, 2000 — ch. 1–2.</li>
+    <li>R. Lalement. <em>Logique, réduction, résolution</em>, Masson, 1990 — ch. 1–3 (CNF, resolution).</li>
+    <li>S. A. Cook. <em>The Complexity of Theorem-Proving Procedures</em>, STOC 1971 — original NP-completeness of SAT.</li>
+  </ul>
+
+  <p style="margin-top:1rem;color:#e67e22;font-style:italic;font-weight:600;">Notes By Pr. El Hadiq Zouhair</p>
+  <span class="slide-number">35 / 35</span>
+</section>
+
+<!-- ── Navigation ─────────────────────────────────────────────────── -->
+<div id="nav">
+  <button id="btn-prev"   title="Previous">&#8592;</button>
+  <button id="btn-scroll" title="Toggle slideshow">Slideshow</button>
+  <button id="btn-next"   title="Next">&#8594;</button>
+</div>
+
+<script>
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  let current = 0, slideshowMode = false;
+
+  function enter(i) {
+    slides[current].classList.remove('active');
+    current = (i + slides.length) % slides.length;
+    slides[current].classList.add('active');
+    slides[current].scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  document.getElementById('btn-prev').addEventListener('click', () => {
+    if (slideshowMode) enter(current - 1);
+  });
+  document.getElementById('btn-next').addEventListener('click', () => {
+    if (slideshowMode) enter(current + 1);
+  });
+  document.getElementById('btn-scroll').addEventListener('click', () => {
+    slideshowMode = !slideshowMode;
+    document.body.classList.toggle('slideshow', slideshowMode);
+    document.getElementById('btn-scroll').textContent = slideshowMode ? 'Scroll' : 'Slideshow';
+    if (slideshowMode) slides[current].classList.add('active');
+    else slides.forEach(s => s.classList.remove('active'));
+  });
+
+  document.addEventListener('keydown', e => {
+    if (!slideshowMode) return;
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') enter(current + 1);
+    if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   enter(current - 1);
+  });
+</script>
+</body>
+</html>

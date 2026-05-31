@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Predicates &amp; Quantifiers — Full Lesson — Discrete Mathematics</title>
+<script>
+  MathJax = {
+    tex: { inlineMath: [['$','$']], displayMath: [['$$','$$']] },
+    options: { skipHtmlTags: ['script','noscript','style','textarea'] }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+<style>
+/* ── Reset & base ──────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --orange:    #e67e22;
+  --darkblue:  #2c3e50;
+  --lightbg:   #f4f9fc;
+  --rowred:    #ffe8e8;
+  --rowblue:   #e3eeff;
+  --border:    #dce3ea;
+  /* Python blue */
+  --py-fg:     #1f4e7a;
+  --py-bg:     #eaf3fb;
+  --py-border: #2a6fb3;
+  --py-head:   #2a6fb3;
+  /* SymPy green */
+  --sp-fg:     #1e824c;
+  --sp-bg:     #e8f5ec;
+  --sp-border: #27ae60;
+  --sp-head:   #27ae60;
+  /* Setup indigo */
+  --su-fg:     #4a4aaa;
+  --su-bg:     #eeeeff;
+  --su-border: #6060cc;
+  --su-head:   #6060cc;
+  /* Output amber */
+  --out-fg:    #6e4b0a;
+  --out-bg:    #fff7e0;
+  --out-border:#e0b341;
+  --out-head:  #c89324;
+}
+
+body {
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  background: #e8edf2;
+  color: var(--darkblue);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem 1rem 5rem;
+  gap: 2rem;
+}
+
+/* ── Slide card ───────────────────────────────────────────────────── */
+.slide {
+  background: #fff;
+  width: 100%;
+  max-width: 940px;
+  border-radius: 10px;
+  box-shadow: 0 4px 18px rgba(0,0,0,.10);
+  padding: 2.2rem 2.8rem 1.8rem;
+  position: relative;
+}
+.slide-number {
+  position: absolute;
+  bottom: 0.7rem;
+  right: 1.2rem;
+  font-size: 0.72rem;
+  color: #aaa;
+}
+
+/* ── Title slide ──────────────────────────────────────────────────── */
+.slide.title-slide {
+  background: linear-gradient(145deg, #f4f9fc 60%, #e0eef7);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 240px;
+  text-align: center;
+  border-top: 6px solid var(--orange);
+}
+.slide.title-slide h1 { font-size: 1.9rem; color: var(--darkblue); margin-bottom: 0.4rem; }
+.slide.title-slide .subtitle { font-size: 1.15rem; color: #555; }
+.slide.title-slide .author   { font-size: 1rem; color: var(--orange); margin-top: 0.7rem; font-style: italic; }
+
+/* ── Frame title ──────────────────────────────────────────────────── */
+h2.frame-title {
+  font-size: 1.6rem;
+  color: var(--orange);
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  padding-bottom: 0.35rem;
+  border-bottom: 2px solid #f9e4cc;
+}
+h3.sub-title {
+  font-size: 1.1rem;
+  color: var(--orange);
+  font-weight: 600;
+  margin: 0.8rem 0 0.3rem;
+}
+
+/* ── Body ─────────────────────────────────────────────────────────── */
+p { line-height: 1.7; margin: 0.45rem 0; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.4rem; line-height: 1.8; }
+ul li::marker, ol li::marker { color: var(--orange); }
+code { background: #f0f3f7; color: #1f4e7a; padding: 0 .25em; border-radius: 3px; font-family: 'Consolas', 'Fira Code', monospace; }
+
+/* ── Note / definition / theorem boxes ────────────────────────────── */
+.note-box, .def-box, .thm-box, .proof-box, .ex-box, .ce-box {
+  border-radius: 6px;
+  padding: 0.8rem 1rem;
+  margin: 0.7rem 0;
+  line-height: 1.7;
+}
+.note-box  { background: #fff5e8; border-left: 4px solid var(--orange); font-style: italic; }
+.def-box   { background: #eaf3fb; border-left: 4px solid var(--py-border); }
+.def-box::before  { content: "Definition. "; font-weight: 700; color: var(--py-border); }
+.thm-box   { background: #fff7e0; border-left: 4px solid var(--out-border); }
+.thm-box::before  { content: "Theorem. "; font-weight: 700; color: var(--out-head); }
+.proof-box { background: #f4f9fc; border-left: 4px solid var(--darkblue); }
+.proof-box::before { content: "Proof. "; font-weight: 700; color: var(--darkblue); }
+.ex-box    { background: #e8f5ec; border-left: 4px solid var(--sp-border); }
+.ex-box::before    { content: "Example. "; font-weight: 700; color: var(--sp-border); }
+.ce-box    { background: #ffe8e8; border-left: 4px solid #c0395a; }
+.ce-box::before    { content: "Counter-example. "; font-weight: 700; color: #c0395a; }
+
+/* ── Python code blocks ───────────────────────────────────────────── */
+.python-block, .setup-block, .sympy-block, .output-block {
+  border-radius: 6px;
+  overflow: hidden;
+  margin: 0.7rem 0;
+  border: 1px solid;
+}
+.pane-label {
+  display: block;
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  color: #fff;
+}
+.pane-code {
+  font-family: 'Consolas', 'Fira Code', monospace;
+  font-size: 0.83rem;
+  line-height: 1.6;
+  padding: 0.5rem 0.75rem;
+  white-space: pre;
+  display: block;
+}
+.python-block { border-color: var(--py-border); }
+.python-block .pane-label { background: var(--py-head); }
+.python-block .pane-code  { background: var(--py-bg); color: var(--py-fg); }
+.sympy-block  { border-color: var(--sp-border); }
+.sympy-block  .pane-label { background: var(--sp-head); }
+.sympy-block  .pane-code  { background: var(--sp-bg); color: var(--sp-fg); }
+.setup-block  { border-color: var(--su-border); }
+.setup-block  .pane-label { background: var(--su-head); }
+.setup-block  .pane-code  { background: var(--su-bg); color: var(--su-fg); }
+.output-block { border-color: var(--out-border); }
+.output-block .pane-label { background: var(--out-head); }
+.output-block .pane-code  { background: var(--out-bg); color: var(--out-fg); }
+
+/* ── Tables ───────────────────────────────────────────────────────── */
+.truth-table, .ref-table {
+  border-collapse: collapse;
+  margin: 0.75rem auto;
+  font-size: 0.92rem;
+  width: 100%;
+}
+.truth-table th, .truth-table td,
+.ref-table th,  .ref-table td {
+  border: 1px solid var(--border);
+  padding: 0.45rem 0.8rem;
+  text-align: left;
+  vertical-align: top;
+}
+.truth-table th, .ref-table th { background: var(--lightbg); font-weight: 600; color: var(--darkblue); }
+.truth-table tr.row-t { background: var(--rowred); }
+.truth-table tr.row-f { background: var(--rowblue); }
+.center td, .center th { text-align: center; }
+
+/* ── Slideshow nav ────────────────────────────────────────────────── */
+#nav { position: fixed; bottom: 1.5rem; right: 1.5rem; display: flex; gap: 0.4rem; z-index: 100; }
+#nav button {
+  background: var(--orange); color: #fff; border: none;
+  border-radius: 50%; width: 40px; height: 40px;
+  font-size: 1.1rem; cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,.25); transition: background .2s;
+}
+#nav button:hover { background: #cf6d17; }
+#nav #btn-scroll { border-radius: 20px; width: auto; padding: 0 12px; font-size: 0.8rem; }
+
+body.slideshow .slide         { display: none; }
+body.slideshow .slide.active  { display: block; }
+
+/* ── Inline highlight chips ───────────────────────────────────────── */
+.chip {
+  display: inline-block;
+  background: #f9e4cc;
+  color: #8a4a0e;
+  padding: 0 .45em;
+  border-radius: 4px;
+  font-weight: 600;
+  font-size: .9em;
+}
+.ref-cite { color: #777; font-size: 0.85rem; font-style: italic; }
+</style>
+</head>
+<body>
+
+<!-- ══ Slide 1 — Title ════════════════════════════════════════════════ -->
+<section class="slide title-slide" id="s1">
+  <h1>Predicates and Quantifiers</h1>
+  <p class="subtitle">Discrete Mathematics — Lesson 4 (Full Course)</p>
+  <p style="font-size:1rem;color:#e67e22;margin-top:0.8rem;font-style:italic;font-weight:600;letter-spacing:.02em;">Notes By Pr. El Hadiq Zouhair</p>
+  <span class="slide-number">1 / 32</span>
+</section>
+
+<!-- ══ Slide 2 — Outline ═════════════════════════════════════════════ -->
+<section class="slide" id="s2">
+  <h2 class="frame-title">Outline of the lesson</h2>
+  <ol>
+    <li>Foundational definitions: predicates, arity, domain, terms, formulas, free/bound variables, substitution, interpretations.</li>
+    <li>Quantifiers in depth: $\forall$, $\exists$, $\exists!$, bounded quantifiers, vacuous truth, nested quantifiers, quantifier order.</li>
+    <li>Validity, satisfiability, contingency, logical equivalence.</li>
+    <li>Equality as a logical primitive — axioms and Leibniz's rule.</li>
+    <li>Normal forms — Prenex (PNF), Skolem, CNF / DNF.</li>
+    <li>Quantifier rules of inference (UI, UG, EI, EG).</li>
+    <li>Standard theorems with full proofs.</li>
+    <li>Translation patterns and counter-examples.</li>
+    <li>Bibliography.</li>
+  </ol>
+  <p class="ref-cite">References: Rosen, <em>Discrete Mathematics and Its Applications</em>, 8e, §1.4–1.5; Velleman, <em>How To Prove It</em>, 3e, ch. 2; Mendelson, <em>Introduction to Mathematical Logic</em>, 6e, ch. 2; Cori &amp; Lascar, <em>Mathematical Logic</em>, vol. 1; Lalement, <em>Logique, réduction, résolution</em>.</p>
+  <span class="slide-number">2 / 32</span>
+</section>
+
+<!-- ══ Slide 3 — Predicates / propositional functions ════════════════ -->
+<section class="slide" id="s3">
+  <h2 class="frame-title">1.1 Predicates — formal definition</h2>
+
+  <div class="def-box">
+    Let $D$ be a non-empty set. A <strong>predicate</strong> (or <em>propositional function</em>) of arity $n \in \mathbb{N}$ on $D$ is a map
+    $$P : D^n \;\longrightarrow\; \{\,\mathtt{T},\,\mathtt{F}\,\}.$$
+    For each tuple $(a_1,\dots,a_n)\in D^n$, the value $P(a_1,\dots,a_n)$ is a proposition (a truth value).
+  </div>
+
+  <p>Notation we will use throughout: $P(x)$, $Q(x,y)$, $R(x_1,\dots,x_n)$. The variables $x,y,x_i$ are <em>placeholders</em>, replaced by elements of $D$ to obtain a proposition.</p>
+
+  <div class="ex-box">
+    On $D = \mathbb{Z}$, let $P(x) := (x > 0)$. Then $P(3)=\mathtt T$, $P(-1)=\mathtt F$, while the formula $P(x)$ alone has no truth value — it is a function, not a proposition.
+  </div>
+
+  <p class="ref-cite">Rosen 8e, §1.4, p. 39; Mendelson 6e, §2.1.</p>
+  <span class="slide-number">3 / 32</span>
+</section>
+
+<!-- ══ Slide 4 — Arity ═══════════════════════════════════════════════ -->
+<section class="slide" id="s4">
+  <h2 class="frame-title">1.2 Arity of a predicate</h2>
+
+  <div class="def-box">
+    The <strong>arity</strong> of a predicate $P$ is the number $n$ of arguments it takes. We speak of $0$-ary, unary ($n=1$), binary ($n=2$), ternary ($n=3$), and in general $n$-ary predicates.
+  </div>
+
+  <table class="ref-table">
+    <thead><tr><th>Arity</th><th>Form</th><th>Example on $\mathbb{Z}$</th></tr></thead>
+    <tbody>
+      <tr><td>$0$-ary</td><td>$P$</td><td>$P := (1+1=2)$ — a plain proposition.</td></tr>
+      <tr><td>Unary</td><td>$P(x)$</td><td>$\mathrm{Even}(x) := (\exists k\;x=2k)$.</td></tr>
+      <tr><td>Binary</td><td>$R(x,y)$</td><td>$x \mid y$ — "$x$ divides $y$".</td></tr>
+      <tr><td>Ternary</td><td>$T(x,y,z)$</td><td>$x + y = z$.</td></tr>
+      <tr><td>$n$-ary</td><td>$P(x_1,\dots,x_n)$</td><td>$x_1 + x_2 + \dots + x_n = 0$.</td></tr>
+    </tbody>
+  </table>
+
+  <p class="ref-cite">Cori &amp; Lascar, vol. 1, §3.1; Rosen 8e, p. 40.</p>
+  <span class="slide-number">4 / 32</span>
+</section>
+
+<!-- ══ Slide 5 — Domain of discourse ═════════════════════════════════ -->
+<section class="slide" id="s5">
+  <h2 class="frame-title">1.3 Domain of discourse (universe $U$)</h2>
+
+  <div class="def-box">
+    The <strong>domain of discourse</strong> (or <em>universe</em>) of a quantified statement is the set $U$ over which the bound variables range. The truth value of $\forall x\,P(x)$ and $\exists x\,P(x)$ is computed only against this $U$.
+  </div>
+
+  <p>The same predicate can become true or false depending on $U$:</p>
+  <table class="truth-table center">
+    <thead><tr><th>Formula</th><th>$U=\mathbb{N}$</th><th>$U=\mathbb{Z}$</th></tr></thead>
+    <tbody>
+      <tr><td>$\forall x\,(x \geq 0)$</td><td>True</td><td>False</td></tr>
+      <tr><td>$\exists x\,(x + 1 = 0)$</td><td>False</td><td>True</td></tr>
+      <tr><td>$\forall x\,\exists y\,(y < x)$</td><td>False ($x=0$)</td><td>True</td></tr>
+    </tbody>
+  </table>
+
+  <div class="note-box">
+    A quantified statement is incomplete without its universe. Always declare $U$ explicitly — e.g. <em>"for all $x \in \mathbb{R}$"</em>.
+  </div>
+  <p class="ref-cite">Rosen 8e, §1.4, p. 41; Velleman 3e, §2.2.</p>
+  <span class="slide-number">5 / 32</span>
+</section>
+
+<!-- ══ Slide 6 — Terms vs atomic formulas vs wff ═════════════════════ -->
+<section class="slide" id="s6">
+  <h2 class="frame-title">1.4 Terms, atomic formulas, well-formed formulas</h2>
+
+  <p>A first-order language $\mathcal{L}$ consists of: variables $x,y,z,\dots$, constants $c,d,\dots$, function symbols $f,g,\dots$ (each of fixed arity), and predicate symbols $P,Q,R,\dots$ (each of fixed arity). The grammar is inductive.</p>
+
+  <h3 class="sub-title">Terms</h3>
+  <ol>
+    <li>Every variable is a term.</li>
+    <li>Every constant is a term.</li>
+    <li>If $f$ is an $n$-ary function symbol and $t_1,\dots,t_n$ are terms, then $f(t_1,\dots,t_n)$ is a term.</li>
+  </ol>
+
+  <h3 class="sub-title">Atomic formulas</h3>
+  <p>If $P$ is an $n$-ary predicate symbol and $t_1,\dots,t_n$ are terms, then $P(t_1,\dots,t_n)$ is an <em>atomic formula</em>. Equality $t_1 = t_2$ is also atomic.</p>
+
+  <h3 class="sub-title">Well-formed formulas (wff)</h3>
+  <ol>
+    <li>Every atomic formula is a wff.</li>
+    <li>If $\varphi,\psi$ are wff, so are $\neg\varphi$, $(\varphi \wedge \psi)$, $(\varphi \vee \psi)$, $(\varphi \to \psi)$, $(\varphi \leftrightarrow \psi)$.</li>
+    <li>If $\varphi$ is a wff and $x$ a variable, then $\forall x\,\varphi$ and $\exists x\,\varphi$ are wff.</li>
+  </ol>
+
+  <p class="ref-cite">Mendelson 6e, §2.1; Cori &amp; Lascar, vol. 1, §3.2.</p>
+  <span class="slide-number">6 / 32</span>
+</section>
+
+<!-- ══ Slide 7 — Free vs bound variables ═════════════════════════════ -->
+<section class="slide" id="s7">
+  <h2 class="frame-title">1.5 Free variables, bound variables, scope</h2>
+
+  <div class="def-box">
+    In a formula $Q x\,\varphi$ (where $Q \in \{\forall, \exists\}$), the variable $x$ is <strong>bound</strong> by the quantifier $Q$ and the <strong>scope</strong> of that quantifier is the subformula $\varphi$. Every occurrence of $x$ inside $\varphi$ that is not rebound by an inner quantifier is bound by this outer $Q$. An occurrence of a variable that is not in the scope of any quantifier binding it is <strong>free</strong>.
+  </div>
+
+  <div class="ex-box">
+    Consider $\varphi := \exists x\,\bigl(P(x) \wedge Q(x,y)\bigr)$.
+    <ul>
+      <li>Scope of $\exists x$ : the subformula $P(x) \wedge Q(x,y)$.</li>
+      <li>Both occurrences of $x$ are <strong>bound</strong>.</li>
+      <li>The single occurrence of $y$ is <strong>free</strong> — its value comes from the context.</li>
+    </ul>
+  </div>
+
+  <div class="ex-box">
+    In $\forall x\,P(x) \wedge Q(x)$, by precedence the scope of $\forall x$ is just $P(x)$; the $x$ in $Q(x)$ is <strong>free</strong>. Writing $\forall x\,\bigl(P(x) \wedge Q(x)\bigr)$ binds both.
+  </div>
+
+  <p class="ref-cite">Mendelson 6e, §2.1, p. 51; Lalement, ch. 4.</p>
+  <span class="slide-number">7 / 32</span>
+</section>
+
+<!-- ══ Slide 8 — Closed vs open formulas ═════════════════════════════ -->
+<section class="slide" id="s8">
+  <h2 class="frame-title">1.6 Closed vs open formulas</h2>
+
+  <div class="def-box">
+    A formula with <strong>no</strong> free variables is called <strong>closed</strong>, or a <em>sentence</em>. A formula with at least one free variable is <strong>open</strong>.
+  </div>
+
+  <p>A <em>sentence</em> has a truth value in every interpretation; an <em>open formula</em> has a truth value only once its free variables are assigned values.</p>
+
+  <table class="ref-table center">
+    <thead><tr><th>Formula</th><th>Free variables</th><th>Type</th></tr></thead>
+    <tbody>
+      <tr><td>$\forall x\,(x^2 \geq 0)$</td><td>—</td><td>sentence (closed)</td></tr>
+      <tr><td>$x^2 \geq 0$</td><td>$x$</td><td>open</td></tr>
+      <tr><td>$\exists x\,(x &lt; y)$</td><td>$y$</td><td>open</td></tr>
+      <tr><td>$\forall x\,\exists y\,(x &lt; y)$</td><td>—</td><td>sentence</td></tr>
+    </tbody>
+  </table>
+  <p class="ref-cite">Cori &amp; Lascar, vol. 1, §3.2.</p>
+  <span class="slide-number">8 / 32</span>
+</section>
+
+<!-- ══ Slide 9 — Substitution & α-renaming ═══════════════════════════ -->
+<section class="slide" id="s9">
+  <h2 class="frame-title">1.7 Substitution and capture-avoidance</h2>
+
+  <div class="def-box">
+    Let $\varphi$ be a formula, $x$ a variable and $t$ a term. The <strong>substitution</strong> $\varphi[t/x]$ replaces every <em>free</em> occurrence of $x$ in $\varphi$ by $t$. The substitution is said to be <strong>capture-avoiding</strong> when no variable of $t$ becomes bound by a quantifier of $\varphi$ after replacement.
+  </div>
+
+  <div class="ex-box">
+    Take $\varphi := \exists y\,(x &lt; y)$ on $\mathbb{Z}$. <br>
+    Naïve substitution of $t = y+1$ for $x$ gives $\exists y\,(y+1 &lt; y)$ — <strong>false</strong>, because the new $y$ in $t$ has been <em>captured</em> by the existing $\exists y$.<br>
+    The intended meaning ("for $x = y+1$ there is something larger") is recovered by first <strong>α-renaming</strong> the bound variable: $\varphi \equiv \exists z\,(x &lt; z)$, then $\varphi[(y+1)/x] = \exists z\,(y+1 &lt; z)$, which is true.
+  </div>
+
+  <div class="def-box" style="background:#fff5e8;border-left-color:var(--orange);">
+    <strong>α-renaming.</strong> A bound variable may be replaced everywhere in its scope by a fresh variable without changing the meaning of the formula:
+    $$Q x\,\varphi(x) \;\equiv\; Q z\,\varphi(z) \qquad (z \text{ not occurring in } \varphi).$$
+  </div>
+
+  <p class="ref-cite">Lalement, ch. 4; Mendelson 6e, §2.4.</p>
+  <span class="slide-number">9 / 32</span>
+</section>
+
+<!-- ══ Slide 10 — Interpretation / structure / model ═════════════════ -->
+<section class="slide" id="s10">
+  <h2 class="frame-title">1.8 Interpretation, structure, model</h2>
+
+  <div class="def-box">
+    An <strong>interpretation</strong> (or <em>structure</em>) of a first-order language $\mathcal{L}$ is a pair $\mathcal{M} = (U,\,\cdot^{\mathcal{M}})$ where
+    <ul>
+      <li>$U$ is a non-empty set — the <em>universe</em> of $\mathcal{M}$,</li>
+      <li>$\cdot^{\mathcal{M}}$ assigns to every constant $c$ an element $c^{\mathcal{M}} \in U$, to every $n$-ary function symbol $f$ a map $f^{\mathcal{M}} : U^n \to U$, and to every $n$-ary predicate symbol $P$ a relation $P^{\mathcal{M}} \subseteq U^n$.</li>
+    </ul>
+    For a sentence $\varphi$, we write $\mathcal{M} \models \varphi$ ("$\mathcal{M}$ <em>is a model of</em> $\varphi$") to mean $\varphi$ is true under this interpretation.
+  </div>
+
+  <div class="ex-box">
+    Language with one binary symbol $&lt;$. Two interpretations:
+    <ul>
+      <li>$\mathcal{M}_1 = (\mathbb{Q}, &lt;)$ : $\mathcal{M}_1 \models \forall x\,\forall y\,(x &lt; y \to \exists z\,(x &lt; z \wedge z &lt; y))$ — density of $\mathbb{Q}$.</li>
+      <li>$\mathcal{M}_2 = (\mathbb{Z}, &lt;)$ : $\mathcal{M}_2 \not\models$ the same sentence (no integer strictly between $0$ and $1$).</li>
+    </ul>
+  </div>
+
+  <p class="ref-cite">Mendelson 6e, §2.2; Cori &amp; Lascar, vol. 1, ch. 3.</p>
+  <span class="slide-number">10 / 32</span>
+</section>
+
+<!-- ══ Slide 11 — Universal & Existential quantifiers (recap) ════════ -->
+<section class="slide" id="s11">
+  <h2 class="frame-title">2.1–2.2 Universal &amp; existential quantifiers (recap)</h2>
+
+  <div class="def-box">
+    <strong>Universal:</strong> $\forall x\,P(x)$ is true in $\mathcal{M}$ iff $P(a)$ is true for every $a \in U$.<br>
+    <strong>Existential:</strong> $\exists x\,P(x)$ is true in $\mathcal{M}$ iff $P(a)$ is true for at least one $a \in U$.
+  </div>
+
+  <p>On a finite universe $U = \{a_1,\dots,a_n\}$ the quantifiers reduce to long conjunctions and disjunctions:</p>
+  $$\forall x\,P(x) \;\equiv\; P(a_1)\wedge\dots\wedge P(a_n),\qquad \exists x\,P(x) \;\equiv\; P(a_1)\vee\dots\vee P(a_n).$$
+
+  <div class="setup-block">
+    <span class="pane-label">Python — imports (run once)</span>
+    <span class="pane-code">from z3 import Real, Reals, Int, Ints, ForAll, Exists
+from z3 import And, Or, Not, Implies, Solver, prove, sat, unsat</span>
+  </div>
+
+  <div class="python-block">
+    <span class="pane-label">Python</span>
+    <span class="pane-code">x = Real('x')
+prove(ForAll([x], x*x &gt;= 0))                 # ∀x ∈ ℝ, x² ≥ 0  → proved
+
+s = Solver()
+s.add(Exists([x], x + 1 == 0))                # ∃x, x+1 = 0
+print(s.check())                              # sat</span>
+  </div>
+  <p class="ref-cite">Rosen 8e, §1.4, pp. 41–43.</p>
+  <span class="slide-number">11 / 32</span>
+</section>
+
+<!-- ══ Slide 12 — Uniqueness quantifier & expansion ══════════════════ -->
+<section class="slide" id="s12">
+  <h2 class="frame-title">2.3 / 2.7 Uniqueness quantifier $\exists!$</h2>
+
+  <div class="def-box">
+    $\exists!\,x\,P(x)$ — "there exists a <em>unique</em> $x$ such that $P(x)$" — is a derived notion:
+    $$\exists!\,x\,P(x) \;\;\Longleftrightarrow\;\; \exists x\,\Bigl(P(x) \;\wedge\; \forall y\,\bigl(P(y) \to y = x\bigr)\Bigr).$$
+  </div>
+
+  <div class="thm-box">
+    $\exists!\,x\,P(x)$ is equivalent to: <em>some $x$ satisfies $P$, and any $y$ satisfying $P$ equals that $x$</em>.
+  </div>
+
+  <div class="proof-box">
+    <strong>(⇒)</strong> Assume $\exists!\,x\,P(x)$. By the informal meaning, fix the unique witness $a$. Then $P(a)$ holds. If $P(b)$ also held with $b \neq a$, there would be two distinct witnesses, contradicting uniqueness. Hence $\forall y(P(y)\to y=a)$. Therefore $\exists x\bigl(P(x) \wedge \forall y(P(y)\to y=x)\bigr)$.<br>
+    <strong>(⇐)</strong> Suppose $\exists x\bigl(P(x) \wedge \forall y(P(y)\to y=x)\bigr)$; let $a$ be such an $x$. Then $P(a)$ holds, so $\exists x\,P(x)$. If $P(b)$ and $P(c)$ both hold, then $b = a$ and $c = a$, so $b = c$ — only one element satisfies $P$. Hence $\exists!\,x\,P(x)$. $\square$
+  </div>
+
+  <p class="ref-cite">Velleman 3e, §2.4; Rosen 8e, p. 45.</p>
+  <span class="slide-number">12 / 32</span>
+</section>
+
+<!-- ══ Slide 13 — De Morgan for quantifiers ══════════════════════════ -->
+<section class="slide" id="s13">
+  <h2 class="frame-title">2.4 De Morgan's laws for quantifiers</h2>
+
+  <div class="thm-box">
+    For every formula $P(x)$:
+    $$\neg\,\forall x\,P(x) \;\equiv\; \exists x\,\neg P(x), \qquad \neg\,\exists x\,P(x) \;\equiv\; \forall x\,\neg P(x).$$
+  </div>
+
+  <div class="proof-box">
+    "$\neg\forall x\,P(x)$" means: <em>not every $x$ satisfies $P$</em>, i.e. at least one $x$ does not, i.e. $\exists x\,\neg P(x)$. The second equivalence is its dual (replace $P$ by $\neg P$ and take negations). $\square$
+  </div>
+
+  <p>Negations can be pushed through any string of quantifiers, alternating $\forall \leftrightarrow \exists$:</p>
+  $$\begin{aligned}
+    &amp;\neg\,\forall v\,\exists w\,\forall x\,\exists y\;P(v,w,x,y) \\
+    \equiv\;&amp; \exists v\,\forall w\,\exists x\,\forall y\;\neg P(v,w,x,y).
+  \end{aligned}$$
+
+  <p class="ref-cite">Rosen 8e, §1.4, p. 53.</p>
+  <span class="slide-number">13 / 32</span>
+</section>
+
+<!-- ══ Slide 14 — Distribution over ∧ / ∨ ════════════════════════════ -->
+<section class="slide" id="s14">
+  <h2 class="frame-title">2.5 Distribution of $\forall, \exists$ over $\wedge, \vee$</h2>
+
+  <table class="ref-table">
+    <thead><tr><th>Law</th><th>Holds?</th></tr></thead>
+    <tbody>
+      <tr><td>$\forall x(P(x)\wedge Q(x)) \equiv \forall x\,P(x) \wedge \forall x\,Q(x)$</td><td>Yes</td></tr>
+      <tr><td>$\exists x(P(x)\vee Q(x)) \equiv \exists x\,P(x) \vee \exists x\,Q(x)$</td><td>Yes</td></tr>
+      <tr><td>$\forall x(P(x)\vee Q(x)) \;\overset{?}{\equiv}\; \forall x\,P(x) \vee \forall x\,Q(x)$</td><td><strong>No</strong> — see §8.1</td></tr>
+      <tr><td>$\exists x(P(x)\wedge Q(x)) \;\overset{?}{\equiv}\; \exists x\,P(x) \wedge \exists x\,Q(x)$</td><td><strong>No</strong> — see §8.2</td></tr>
+    </tbody>
+  </table>
+
+  <p>In one direction only:</p>
+  $$\forall x\,P(x) \vee \forall x\,Q(x) \;\Rightarrow\; \forall x\,(P(x) \vee Q(x)),\qquad \exists x\,(P(x) \wedge Q(x)) \;\Rightarrow\; \exists x\,P(x) \wedge \exists x\,Q(x).$$
+
+  <p class="ref-cite">Rosen 8e, §1.5; Velleman 3e, §2.3.</p>
+  <span class="slide-number">14 / 32</span>
+</section>
+
+<!-- ══ Slide 15 — Bounded quantifiers ════════════════════════════════ -->
+<section class="slide" id="s15">
+  <h2 class="frame-title">2.8 Bounded quantifiers</h2>
+
+  <div class="def-box">
+    When we want to restrict quantification to a subset $A \subseteq U$, we write:
+    $$\forall x \in A\;P(x) \;:=\; \forall x\,\bigl(x \in A \to P(x)\bigr),$$
+    $$\exists x \in A\;P(x) \;:=\; \exists x\,\bigl(x \in A \wedge P(x)\bigr).$$
+  </div>
+
+  <div class="note-box">
+    Why <em>different</em> connectives?<br>
+    For $\forall$, the bound $x \in A$ acts as a <em>hypothesis</em>: we ask "for every $x$, <em>if</em> $x \in A$ then $P(x)$". An implication is true whenever the hypothesis is false, so elements outside $A$ are correctly ignored.<br>
+    For $\exists$, we want a witness <em>inside</em> $A$ <strong>and</strong> satisfying $P$. A conjunction is the right connective: an element outside $A$ would never satisfy "$x \in A$".
+  </div>
+
+  <div class="ex-box">
+    "Every prime $&gt;2$ is odd" : $\;\forall p \in \mathbb{P}\,(p &gt; 2 \to \mathrm{Odd}(p))$.<br>
+    "Some integer in $[10,20]$ is prime" : $\;\exists n \in \mathbb{Z}\,(10 \leq n \leq 20 \wedge \mathrm{Prime}(n))$ — witness $n = 11$.
+  </div>
+  <p class="ref-cite">Rosen 8e, §1.4, pp. 43–44.</p>
+  <span class="slide-number">15 / 32</span>
+</section>
+
+<!-- ══ Slide 16 — Vacuous truth ══════════════════════════════════════ -->
+<section class="slide" id="s16">
+  <h2 class="frame-title">2.9 Vacuous truth</h2>
+
+  <div class="thm-box">
+    If the universe is empty, $U = \varnothing$, then for every predicate $P$:
+    $$\forall x\,P(x) \;\text{ is True},\qquad \exists x\,P(x) \;\text{ is False}.$$
+  </div>
+
+  <div class="proof-box">
+    $\forall x\,P(x)$ asserts $P(a)$ for every $a \in U$. The statement "for every $a$ in an empty set, $\ldots$" has no possible counter-example, so it holds vacuously. Dually, $\exists x\,P(x)$ requires a witness $a \in U$; with $U = \varnothing$ none exists, so it is false. $\square$
+  </div>
+
+  <p>The same effect appears with bounded quantifiers when the bound set is empty:</p>
+  <div class="ex-box">
+    "All unicorns can fly." Formally $\forall x \in \mathrm{Unicorns}\;\mathrm{Flies}(x) \equiv \forall x(x \in \mathrm{Unicorns} \to \mathrm{Flies}(x))$. If $\mathrm{Unicorns} = \varnothing$, the implication is vacuously true for every $x$. Mathematicians use this regularly: "every element of $\varnothing$ has property $P$" is true.
+  </div>
+
+  <p class="ref-cite">Velleman 3e, §2.3; Rosen 8e, p. 41.</p>
+  <span class="slide-number">16 / 32</span>
+</section>
+
+<!-- ══ Slide 17 — Nested quantifiers & order ═════════════════════════ -->
+<section class="slide" id="s17">
+  <h2 class="frame-title">2.6 / 2.10 Nested quantifiers and quantifier order</h2>
+
+  <p>Quantifiers of the <strong>same kind</strong> commute:</p>
+  $$\forall x\,\forall y\,P(x,y) \equiv \forall y\,\forall x\,P(x,y), \qquad \exists x\,\exists y\,P(x,y) \equiv \exists y\,\exists x\,P(x,y).$$
+
+  <p>Quantifiers of <strong>different kinds</strong> do <em>not</em> commute. We only have one direction:</p>
+  <div class="thm-box">
+    $\exists y\,\forall x\,P(x,y) \;\Longrightarrow\; \forall x\,\exists y\,P(x,y).$
+  </div>
+  <div class="proof-box">
+    Suppose $\exists y\,\forall x\,P(x,y)$; pick a witness $b$ with $\forall x\,P(x,b)$. For an arbitrary $a$ we have $P(a,b)$, so $\exists y\,P(a,y)$, namely $y = b$. Hence $\forall x\,\exists y\,P(x,y)$. $\square$
+  </div>
+
+  <div class="ce-box">
+    The converse is <strong>false</strong>. On $U = \mathbb{Z}$ let $P(x,y) := (y = x+1)$.<br>
+    $\forall x\,\exists y\,P(x,y)$ is true: for each $x$, choose $y = x+1$.<br>
+    $\exists y\,\forall x\,P(x,y)$ is false: no single $y$ equals $x+1$ for <em>every</em> integer $x$.
+  </div>
+
+  <table class="ref-table center">
+    <thead><tr><th>Pattern</th><th>Meaning</th></tr></thead>
+    <tbody>
+      <tr><td>$\forall x\,\forall y\,P(x,y)$</td><td>$P$ holds on the whole grid.</td></tr>
+      <tr><td>$\exists x\,\exists y\,P(x,y)$</td><td>At least one pair satisfies $P$.</td></tr>
+      <tr><td>$\forall x\,\exists y\,P(x,y)$</td><td>Each $x$ has its <em>own</em> $y$ (the choice of $y$ depends on $x$).</td></tr>
+      <tr><td>$\exists y\,\forall x\,P(x,y)$</td><td>One $y$ works for <em>all</em> $x$ (a uniform witness).</td></tr>
+    </tbody>
+  </table>
+  <p class="ref-cite">Rosen 8e, §1.5, pp. 60–65.</p>
+  <span class="slide-number">17 / 32</span>
+</section>
+
+<!-- ══ Slide 18 — Validity / satisfiability / contingency ════════════ -->
+<section class="slide" id="s18">
+  <h2 class="frame-title">2.11 Validity, satisfiability, contingency</h2>
+
+  <div class="def-box">
+    Let $\varphi$ be a sentence.<br>
+    <strong>Valid</strong>: $\varphi$ is true in <em>every</em> interpretation. Notation: $\models \varphi$.<br>
+    <strong>Satisfiable</strong>: there exists at least one interpretation in which $\varphi$ is true.<br>
+    <strong>Contingent</strong>: $\varphi$ is true in some interpretations and false in others (i.e. satisfiable and not valid).<br>
+    <strong>Unsatisfiable</strong> (contradictory): $\varphi$ is true in <em>no</em> interpretation.
+  </div>
+
+  <table class="ref-table">
+    <thead><tr><th>Sentence</th><th>Classification</th></tr></thead>
+    <tbody>
+      <tr><td>$\forall x\,(x = x)$</td><td>Valid</td></tr>
+      <tr><td>$\exists x\,P(x)$</td><td>Contingent (depends on $\mathcal{M}$)</td></tr>
+      <tr><td>$\forall x\,P(x) \wedge \exists x\,\neg P(x)$</td><td>Unsatisfiable</td></tr>
+      <tr><td>$\forall x\,P(x) \to \exists x\,P(x)$ (with $U \neq \varnothing$)</td><td>Valid</td></tr>
+    </tbody>
+  </table>
+  <p class="ref-cite">Mendelson 6e, §2.2, p. 60; Cori &amp; Lascar, vol. 1, §3.5.</p>
+  <span class="slide-number">18 / 32</span>
+</section>
+
+<!-- ══ Slide 19 — Logical equivalence ════════════════════════════════ -->
+<section class="slide" id="s19">
+  <h2 class="frame-title">2.12 Logical equivalence $\varphi \equiv \psi$</h2>
+
+  <div class="def-box">
+    Two formulas $\varphi$ and $\psi$ (with the same free variables) are <strong>logically equivalent</strong>, written $\varphi \equiv \psi$, if for every interpretation $\mathcal{M}$ and every assignment of free variables, $\varphi$ and $\psi$ receive the same truth value. Equivalently: $\models \varphi \leftrightarrow \psi$.
+  </div>
+
+  <div class="note-box">
+    "True in <em>some</em> interpretation" is satisfiability — a much weaker notion. "True in <em>every</em> interpretation, equivalent to $\psi$" is logical equivalence. <br>
+    Example: $\forall x\,P(x) \leftrightarrow P(c)$ is satisfiable (pick a model where $c$ is the only element), but <em>not</em> a logical equivalence — pick a two-element model where $P$ holds only at $c$.
+  </div>
+
+  <p>Equivalence is preserved by substitution and by replacement of subformulas: if $\varphi \equiv \psi$, then $\chi[\varphi] \equiv \chi[\psi]$.</p>
+  <p class="ref-cite">Mendelson 6e, §2.2; Velleman 3e, §2.3.</p>
+  <span class="slide-number">19 / 32</span>
+</section>
+
+<!-- ══ Slide 20 — Equality and its axioms ════════════════════════════ -->
+<section class="slide" id="s20">
+  <h2 class="frame-title">3.1–3.2 Equality $=$ as a logical primitive</h2>
+
+  <p>Equality $=$ is treated in first-order logic as a <em>built-in</em> binary predicate symbol. Its meaning in every interpretation $\mathcal{M}$ is fixed: $a =^{\mathcal{M}} b$ iff $a$ and $b$ are <em>the same element of $U$</em>.</p>
+
+  <div class="thm-box">
+    <strong>Axioms of equality.</strong> For all $x, y, z$:
+    <ol>
+      <li><em>Reflexivity</em>: $\;x = x$.</li>
+      <li><em>Symmetry</em>: $\;x = y \to y = x$.</li>
+      <li><em>Transitivity</em>: $\;(x = y \wedge y = z) \to x = z$.</li>
+    </ol>
+  </div>
+
+  <p>These three axioms make $=$ an equivalence relation; together with Leibniz's rule (next slide) they characterise equality up to logical equivalence.</p>
+  <p class="ref-cite">Mendelson 6e, §2.5; Cori &amp; Lascar, vol. 1, §3.4.</p>
+  <span class="slide-number">20 / 32</span>
+</section>
+
+<!-- ══ Slide 21 — Leibniz's substitutability rule ════════════════════ -->
+<section class="slide" id="s21">
+  <h2 class="frame-title">3.3 Leibniz's rule — substitutability</h2>
+
+  <div class="thm-box">
+    <strong>Leibniz / Indiscernibility of identicals.</strong> For every predicate $P$:
+    $$(x = y) \;\to\; \bigl(P(x) \leftrightarrow P(y)\bigr).$$
+  </div>
+
+  <p>Read: equal objects satisfy exactly the same predicates. This is what justifies "replacing equals by equals" in proofs.</p>
+
+  <div class="ex-box">
+    Let $P(x) := (x^2 = 9)$ on $\mathbb{Z}$. Suppose $a = -3$. By Leibniz, $P(a) \leftrightarrow P(-3)$, that is $a^2 = 9 \leftrightarrow (-3)^2 = 9$, which is True $\leftrightarrow$ True. So once we know $a = -3$, we may freely substitute $a$ for $-3$ in any computation.
+  </div>
+
+  <p class="ref-cite">Mendelson 6e, §2.5; Cori &amp; Lascar, vol. 1, §3.4.</p>
+  <span class="slide-number">21 / 32</span>
+</section>
+
+<!-- ══ Slide 22 — Prenex normal form ═════════════════════════════════ -->
+<section class="slide" id="s22">
+  <h2 class="frame-title">4.1 Prenex normal form (PNF)</h2>
+
+  <div class="def-box">
+    A formula is in <strong>Prenex Normal Form</strong> if it has the shape
+    $$Q_1 x_1\,Q_2 x_2\,\dots\,Q_n x_n\;M(x_1,\dots,x_n),$$
+    where each $Q_i \in \{\forall, \exists\}$ and $M$ is a <em>quantifier-free</em> formula (the <em>matrix</em>).
+  </div>
+
+  <div class="thm-box">
+    Every first-order formula is logically equivalent to a formula in PNF.
+  </div>
+
+  <p>The standard algorithm:</p>
+  <ol>
+    <li><strong>Rename</strong> bound variables so that all are distinct from each other and from any free variable (α-renaming).</li>
+    <li><strong>Eliminate</strong> $\to$ and $\leftrightarrow$ in favour of $\neg, \wedge, \vee$.</li>
+    <li><strong>Push $\neg$</strong> inward using De Morgan (for connectives <em>and</em> for quantifiers).</li>
+    <li><strong>Pull quantifiers out</strong> using the equivalences:
+      $$Q x\,\varphi(x) \;\bullet\; \psi \;\equiv\; Q x\,(\varphi(x) \bullet \psi) \qquad (x \text{ not free in } \psi),$$
+      for $\bullet \in \{\wedge,\vee\}$.</li>
+  </ol>
+  <p class="ref-cite">Mendelson 6e, §2.6; Lalement, ch. 5.</p>
+  <span class="slide-number">22 / 32</span>
+</section>
+
+<!-- ══ Slide 23 — PNF worked example ═════════════════════════════════ -->
+<section class="slide" id="s23">
+  <h2 class="frame-title">4.2 PNF — worked example</h2>
+
+  <p>Convert $\;\bigl(\forall x\,P(x)\bigr) \;\to\; \bigl(\exists y\,Q(y)\bigr)\;$ to PNF.</p>
+
+  <ol>
+    <li>Bound variables $x,y$ are already distinct. ✓</li>
+    <li>Eliminate $\to$: $\;\neg\bigl(\forall x\,P(x)\bigr) \;\vee\; \bigl(\exists y\,Q(y)\bigr)$.</li>
+    <li>Push $\neg$ in: $\;\bigl(\exists x\,\neg P(x)\bigr) \;\vee\; \bigl(\exists y\,Q(y)\bigr)$.</li>
+    <li>Pull quantifiers out (each variable is free in only one side):
+      $$\exists x\,\Bigl(\,\neg P(x) \;\vee\; \exists y\,Q(y)\,\Bigr) \;\equiv\; \exists x\,\exists y\,\bigl(\neg P(x) \vee Q(y)\bigr).$$
+    </li>
+  </ol>
+
+  <p>Result in PNF: $\;\exists x\,\exists y\,\bigl(\neg P(x) \vee Q(y)\bigr)$.</p>
+
+  <div class="note-box">
+    Note how "$\forall x\,P(x) \to \cdots$" became "$\exists x\,\neg P(x) \vee \cdots$" — the quantifier <em>flips</em> when it crosses an implication's antecedent. This is a common source of mistakes.
+  </div>
+  <p class="ref-cite">Lalement, ch. 5; Mendelson 6e, §2.6, p. 91.</p>
+  <span class="slide-number">23 / 32</span>
+</section>
+
+<!-- ══ Slide 24 — Skolemization ══════════════════════════════════════ -->
+<section class="slide" id="s24">
+  <h2 class="frame-title">4.3 Skolemization</h2>
+
+  <div class="def-box">
+    Let $\varphi$ be in PNF: $\;Q_1 x_1\dots Q_n x_n\,M$. To <strong>Skolemize</strong> $\varphi$ we replace each existential quantifier by a fresh function (or constant) symbol depending on the universally quantified variables that precede it. For instance:
+    $$\forall x_1\,\forall x_2\,\exists y\;P(x_1,x_2,y) \;\rightsquigarrow\; \forall x_1\,\forall x_2\;P\bigl(x_1,x_2,\,f(x_1,x_2)\bigr).$$
+    When no $\forall$ precedes the $\exists$, the existential is replaced by a fresh Skolem <em>constant</em>: $\exists y\,P(y) \rightsquigarrow P(c)$.
+  </div>
+
+  <div class="thm-box">
+    Skolemization preserves <strong>satisfiability</strong> (not, in general, logical equivalence): $\varphi$ is satisfiable iff its Skolem form is satisfiable.
+  </div>
+
+  <div class="ex-box">
+    $\forall x\,\exists y\,P(x,y) \;\rightsquigarrow\; \forall x\,P(x,f(x))$. Reading: instead of saying "for every $x$ there exists some $y$", we name the choice function $f$ that picks the witness for each $x$.
+  </div>
+  <p class="ref-cite">Mendelson 6e, §2.7; Lalement, ch. 6.</p>
+  <span class="slide-number">24 / 32</span>
+</section>
+
+<!-- ══ Slide 25 — CNF / DNF ══════════════════════════════════════════ -->
+<section class="slide" id="s25">
+  <h2 class="frame-title">4.4 CNF / DNF in first-order logic</h2>
+
+  <div class="def-box">
+    After putting a formula in PNF, the matrix $M$ is propositional in the atomic formulas. Distributing $\wedge,\vee$ gives:
+    <ul>
+      <li><strong>Conjunctive Normal Form (CNF)</strong>: $M$ is a conjunction of disjunctions of literals (atom or its negation).</li>
+      <li><strong>Disjunctive Normal Form (DNF)</strong>: $M$ is a disjunction of conjunctions of literals.</li>
+    </ul>
+    A first-order formula is in <em>prenex CNF</em> (resp. <em>prenex DNF</em>) when it is in PNF and its matrix is in CNF (resp. DNF).
+  </div>
+
+  <div class="ex-box">
+    $\forall x\,\bigl(P(x) \to Q(x)\bigr) \;\equiv\; \forall x\,\bigl(\neg P(x) \vee Q(x)\bigr)$ — already in prenex CNF (one clause).
+  </div>
+  <p class="ref-cite">Lalement, ch. 5; Cori &amp; Lascar, vol. 1, §3.7.</p>
+  <span class="slide-number">25 / 32</span>
+</section>
+
+<!-- ══ Slide 26 — Quantifier rules of inference ══════════════════════ -->
+<section class="slide" id="s26">
+  <h2 class="frame-title">5. Quantifier rules of inference (preview of Lesson 5)</h2>
+
+  <h3 class="sub-title">5.1 Universal Instantiation (UI)</h3>
+  <p>$\dfrac{\forall x\,P(x)}{P(c)}\;$ for any element $c$ of the universe.</p>
+  <div class="ex-box">From $\forall x \in \mathbb{R}\,(x^2 \geq 0)$ we infer $(-7)^2 \geq 0$.</div>
+
+  <h3 class="sub-title">5.2 Universal Generalization (UG)</h3>
+  <p>$\dfrac{P(c)}{\forall x\,P(x)}\;$ provided $c$ is <em>arbitrary</em>: it must not appear in any hypothesis nor be a name fixed elsewhere in the proof. This is the rule behind every proof that begins "<em>Let $c$ be an arbitrary element of $U$…</em>".</p>
+
+  <h3 class="sub-title">5.3 Existential Instantiation (EI)</h3>
+  <p>$\dfrac{\exists x\,P(x)}{P(c)}\;$ where $c$ is a <strong>fresh</strong> constant — one not occurring anywhere else in the proof so far. The named $c$ is a chosen witness; we are not allowed to assume anything else about it.</p>
+
+  <h3 class="sub-title">5.4 Existential Generalization (EG)</h3>
+  <p>$\dfrac{P(c)}{\exists x\,P(x)}\;$ for any constant $c$ — once we have an example, existence follows. Example: from $7^2 + 24^2 = 25^2$ we conclude $\exists x\,\exists y\,\exists z\,(x^2 + y^2 = z^2)$.</p>
+
+  <p class="ref-cite">Rosen 8e, §1.6; Velleman 3e, §3.3.</p>
+  <span class="slide-number">26 / 32</span>
+</section>
+
+<!-- ══ Slide 27 — Theorems 6.1 & 6.2 ═════════════════════════════════ -->
+<section class="slide" id="s27">
+  <h2 class="frame-title">6.1 / 6.2 Two basic theorems with proofs</h2>
+
+  <div class="thm-box">
+    <strong>6.1.</strong> $\forall x \in \mathbb{R}\;(x^2 \geq 0)$.
+  </div>
+  <div class="proof-box">
+    Let $x \in \mathbb{R}$ be arbitrary. By the trichotomy of $\mathbb{R}$, either $x \geq 0$ or $x &lt; 0$.<br>
+    Case 1 ($x \geq 0$): $x \cdot x \geq 0 \cdot x = 0$ by the order axiom (product of non-negatives).<br>
+    Case 2 ($x &lt; 0$): then $-x &gt; 0$, so $(-x)(-x) \geq 0$ by case 1; but $(-x)(-x) = x^2$. Hence $x^2 \geq 0$.<br>
+    By UG, $\forall x \in \mathbb{R}\,(x^2 \geq 0)$. $\square$
+  </div>
+
+  <div class="thm-box">
+    <strong>6.2.</strong> $\forall n \in \mathbb{Z}\;\bigl(n \text{ even} \;\Leftrightarrow\; n^2 \text{ even}\bigr)$.
+  </div>
+  <div class="proof-box">
+    <strong>(⇒) Direct.</strong> Suppose $n = 2k$ for some $k \in \mathbb{Z}$. Then $n^2 = 4k^2 = 2(2k^2)$, which is even.<br>
+    <strong>(⇐) Contrapositive.</strong> Suppose $n$ is <em>odd</em>: $n = 2k+1$. Then $n^2 = 4k^2 + 4k + 1 = 2(2k^2 + 2k) + 1$, which is odd. So $n^2$ even implies $n$ even. $\square$
+  </div>
+
+  <p class="ref-cite">Rosen 8e, §1.7; Velleman 3e, §3.4.</p>
+  <span class="slide-number">27 / 32</span>
+</section>
+
+<!-- ══ Slide 28 — Theorems 6.3 & 6.4 ═════════════════════════════════ -->
+<section class="slide" id="s28">
+  <h2 class="frame-title">6.3 / 6.4 Existence of $\sqrt{2}$ — and no negative square in $\mathbb{Z}$</h2>
+
+  <div class="thm-box">
+    <strong>6.3.</strong> $\exists x \in \mathbb{R}\;(x^2 = 2)$.
+  </div>
+  <div class="proof-box">
+    Take $x = \sqrt{2}$. The set $\{r \in \mathbb{Q} : r &gt; 0,\; r^2 &lt; 2\}$ is non-empty (contains $1$) and bounded above (by $2$). By the least-upper-bound property of $\mathbb{R}$, its supremum $s$ exists and $s \in \mathbb{R}$. A standard $\varepsilon$-argument (or Dedekind cut) shows that $s^2 = 2$. Setting $x := s$ gives a witness in $\mathbb{R}$ with $x^2 = 2$. By EG, $\exists x \in \mathbb{R}\,(x^2 = 2)$. $\square$
+  </div>
+
+  <div class="thm-box">
+    <strong>6.4.</strong> $\neg\,\exists x \in \mathbb{Z}\;(x^2 &lt; 0)$.
+  </div>
+  <div class="proof-box">
+    Equivalent (De Morgan) to $\forall x \in \mathbb{Z}\,(x^2 \geq 0)$, which is Theorem 6.1 restricted to $\mathbb{Z} \subseteq \mathbb{R}$. $\square$
+  </div>
+
+  <p class="ref-cite">Velleman 3e, §3.5; Rosen 8e, §1.7.</p>
+  <span class="slide-number">28 / 32</span>
+</section>
+
+<!-- ══ Slide 29 — ε–δ continuity ═════════════════════════════════════ -->
+<section class="slide" id="s29">
+  <h2 class="frame-title">6.5 $\varepsilon$–$\delta$ continuity as a quantifier sentence</h2>
+
+  <div class="def-box">
+    A function $f : \mathbb{R} \to \mathbb{R}$ is <strong>continuous at $a \in \mathbb{R}$</strong> iff
+    $$\forall \varepsilon &gt; 0\;\,\exists \delta &gt; 0\;\,\forall x \in \mathbb{R}\;\,\bigl(|x - a| &lt; \delta \;\to\; |f(x) - f(a)| &lt; \varepsilon\bigr).$$
+  </div>
+
+  <p>Notice the alternation $\forall \exists \forall$ — the choice of $\delta$ may depend on $\varepsilon$ (and on $a$), but must work for <em>all</em> $x$.</p>
+
+  <div class="ex-box">
+    <strong>$f(x) = 2x$ is continuous at $a = 1$.</strong><br>
+    Let $\varepsilon &gt; 0$. Choose $\delta := \varepsilon / 2$. If $|x - 1| &lt; \delta$, then
+    $|f(x) - f(1)| = |2x - 2| = 2|x - 1| &lt; 2\delta = \varepsilon.$ $\square$
+  </div>
+
+  <div class="note-box">
+    Negating continuity at $a$ (push $\neg$ through): <br>
+    $\exists \varepsilon &gt; 0\,\forall \delta &gt; 0\,\exists x\,\bigl(|x-a| &lt; \delta \wedge |f(x)-f(a)| \geq \varepsilon\bigr).$
+  </div>
+  <p class="ref-cite">Rosen 8e, §1.5; Velleman 3e, §3.6.</p>
+  <span class="slide-number">29 / 32</span>
+</section>
+
+<!-- ══ Slide 30 — Cantor & Russell ═══════════════════════════════════ -->
+<section class="slide" id="s30">
+  <h2 class="frame-title">6.6 / 6.7 Cantor's theorem &amp; Russell's paradox</h2>
+
+  <div class="thm-box">
+    <strong>6.6 (Cantor).</strong> There is no surjection $f : \mathbb{N} \to \mathcal{P}(\mathbb{N})$.
+  </div>
+  <div class="proof-box">
+    Suppose, for contradiction, that $f$ is surjective. Define the <em>diagonal set</em>
+    $$D \;:=\; \{\,n \in \mathbb{N} \,:\, n \notin f(n)\,\} \;\subseteq\; \mathbb{N}.$$
+    By surjectivity there exists $m \in \mathbb{N}$ with $f(m) = D$. Now ask whether $m \in D$:
+    $$m \in D \;\Longleftrightarrow\; m \notin f(m) \;\Longleftrightarrow\; m \notin D.$$
+    This is a contradiction. Hence no such surjection exists. $\square$
+  </div>
+
+  <div class="thm-box">
+    <strong>6.7 (Russell).</strong> The "collection" $R = \{\,x \mid x \notin x\,\}$ cannot be a set.
+  </div>
+  <div class="proof-box">
+    Asking $R \in R$: by definition of $R$, $R \in R \Leftrightarrow R \notin R$ — a contradiction. So unrestricted comprehension (allowing $\{x \mid \varphi(x)\}$ for arbitrary $\varphi$) is inconsistent. Modern set theory uses <em>restricted</em> comprehension: $\{x \in A \mid \varphi(x)\}$ for a previously given set $A$. $\square$
+  </div>
+  <p class="ref-cite">Mendelson 6e, ch. 4; Rosen 8e, §2.3.</p>
+  <span class="slide-number">30 / 32</span>
+</section>
+
+<!-- ══ Slide 31 — Translations & counter-examples ════════════════════ -->
+<section class="slide" id="s31">
+  <h2 class="frame-title">7 / 8. Translation patterns &amp; counter-examples</h2>
+
+  <p>Domain $S = \mathrm{students}$, $L = \mathrm{lectures}$; $A(s,\ell) := $ "$s$ attended lecture $\ell$".</p>
+
+  <table class="ref-table">
+    <thead><tr><th>#</th><th>English</th><th>Formal</th></tr></thead>
+    <tbody>
+      <tr><td>7.1</td><td>Every student attended every lecture.</td><td>$\forall s \in S\,\forall \ell \in L\;A(s,\ell)$</td></tr>
+      <tr><td>7.2</td><td>Some student attended every lecture.</td><td>$\exists s \in S\,\forall \ell \in L\;A(s,\ell)$</td></tr>
+      <tr><td>7.3</td><td>Every student attended some lecture.</td><td>$\forall s \in S\,\exists \ell \in L\;A(s,\ell)$</td></tr>
+      <tr><td>7.4</td><td>There is a lecture that every student attended.</td><td>$\exists \ell \in L\,\forall s \in S\;A(s,\ell)$</td></tr>
+      <tr><td>7.5</td><td>No student missed every lecture.</td><td>$\neg\,\exists s \in S\,\forall \ell \in L\,\neg A(s,\ell)\;\equiv\;\forall s\,\exists \ell\,A(s,\ell)$</td></tr>
+      <tr><td>7.6</td><td>Between any two distinct rationals there is a rational. <span class="chip">density of $\mathbb{Q}$</span></td><td>$\forall x \in \mathbb{Q}\,\forall y \in \mathbb{Q}\,(x &lt; y \to \exists z \in \mathbb{Q}\,(x &lt; z \wedge z &lt; y))$</td></tr>
+      <tr><td>7.7</td><td>$\mathbb{Z}$ has no upper bound.</td><td>$\neg\,\exists M \in \mathbb{Z}\,\forall n \in \mathbb{Z}\,(n \leq M)\;\equiv\;\forall M\,\exists n\,(n &gt; M)$</td></tr>
+      <tr><td>7.8</td><td>Every prime greater than 2 is odd.</td><td>$\forall p \in \mathbb{P}\,(p &gt; 2 \to \mathrm{Odd}(p))$</td></tr>
+    </tbody>
+  </table>
+
+  <h3 class="sub-title">Counter-examples (§8)</h3>
+  <div class="ce-box">
+    <strong>8.1</strong> $\forall x(P(x)\vee Q(x)) \not\equiv \forall x\,P(x) \vee \forall x\,Q(x)$.<br>
+    On $\mathbb{Z}$, $P(x) := (x \geq 0)$, $Q(x) := (x \leq 0)$. The left side is true (every integer is $\geq 0$ or $\leq 0$); the right side is false (neither $\forall x\,P(x)$ nor $\forall x\,Q(x)$ holds).
+  </div>
+  <div class="ce-box">
+    <strong>8.2</strong> $\exists x(P(x)\wedge Q(x)) \not\equiv \exists x\,P(x) \wedge \exists x\,Q(x)$.<br>
+    On $\mathbb{Z}$, $P(x) := (x &gt; 0)$, $Q(x) := (x &lt; 0)$. Right side is true (witnesses $1$ and $-1$); left side is false (no integer is both).
+  </div>
+  <div class="ce-box">
+    <strong>8.3</strong> $\forall x\,\exists y\,P(x,y) \not\equiv \exists y\,\forall x\,P(x,y)$.<br>
+    On $\mathbb{Z}$ take $P(x,y) := (y = x+1)$. Left is true; right is false (no $y$ equals $x+1$ for every $x$).
+  </div>
+  <p class="ref-cite">Rosen 8e, §1.5, pp. 60–65; Velleman 3e, §2.3.</p>
+  <span class="slide-number">31 / 32</span>
+</section>
+
+<!-- ══ Slide 32 — Summary, bibliography & Wolfram → Python ═══════════ -->
+<section class="slide" id="s32">
+  <h2 class="frame-title">Summary, bibliography &amp; Wolfram → Python quick reference</h2>
+
+  <h3 class="sub-title">Summary</h3>
+  <ul>
+    <li>A predicate of arity $n$ is a map $D^n \to \{\mathtt T, \mathtt F\}$; a wff is built from atomic formulas by $\neg, \wedge, \vee, \to, \leftrightarrow, \forall, \exists$.</li>
+    <li>Free vs bound variables, scope and capture-avoiding substitution determine the meaning of a formula.</li>
+    <li>Truth is defined relative to an interpretation $\mathcal{M} = (U, \cdot^{\mathcal{M}})$.</li>
+    <li>$\exists!$ is the unique-existence quantifier; bounded quantifiers desugar to $\to$ for $\forall$ and $\wedge$ for $\exists$.</li>
+    <li>Equality is a primitive binary predicate with axioms of reflexivity, symmetry, transitivity and Leibniz's substitutability.</li>
+    <li>Every formula has a PNF; PNF + matrix-CNF / DNF + Skolemization power automatic reasoning.</li>
+    <li>UI, UG, EI, EG are the four quantifier inference rules used in proofs (more in Lesson 5).</li>
+  </ul>
+
+  <h3 class="sub-title">Wolfram → Python quick reference</h3>
+  <table class="ref-table">
+    <thead><tr><th>Wolfram Language</th><th>Python equivalent</th></tr></thead>
+    <tbody>
+      <tr><td><code>ForAll[x, P[x]]</code></td><td><code>z3.ForAll([x], P(x))</code></td></tr>
+      <tr><td><code>Exists[x, P[x]]</code></td><td><code>z3.Exists([x], P(x))</code></td></tr>
+      <tr><td><code>Resolve[Exists[x, x^2 == 2], Reals]</code></td><td><code>Solver(); s.add(x*x == 2); s.check()</code></td></tr>
+      <tr><td><code>FullSimplify[expr]</code></td><td><code>sympy.simplify(expr)</code></td></tr>
+      <tr><td><code>Element[x, Integers]</code></td><td><code>x = z3.Int('x')</code></td></tr>
+      <tr><td><code>Implies[p, q]</code></td><td><code>sympy.Implies(p, q)</code> / <code>z3.Implies(p, q)</code></td></tr>
+    </tbody>
+  </table>
+
+  <h3 class="sub-title">Bibliography</h3>
+  <ul>
+    <li>K. H. Rosen. <em>Discrete Mathematics and Its Applications</em>, 8th ed., McGraw-Hill, 2019 — §§1.4–1.7.</li>
+    <li>D. J. Velleman. <em>How To Prove It: A Structured Approach</em>, 3rd ed., Cambridge UP, 2019 — ch. 2 &amp; 3.</li>
+    <li>E. Mendelson. <em>Introduction to Mathematical Logic</em>, 6th ed., CRC Press, 2015 — ch. 2.</li>
+    <li>R. Cori &amp; D. Lascar. <em>Mathematical Logic, vol. 1</em>, Oxford UP, 2000 — ch. 3.</li>
+    <li>R. Lalement. <em>Logique, réduction, résolution</em>, Masson, 1990 — ch. 4–6.</li>
+  </ul>
+
+  <p style="margin-top:0.8rem;color:#e67e22;font-style:italic;font-weight:600;">Notes By Pr. El Hadiq Zouhair</p>
+  <span class="slide-number">32 / 32</span>
+</section>
+
+<!-- ── Navigation ─────────────────────────────────────────────────── -->
+<div id="nav">
+  <button id="btn-prev"   title="Previous">&#8592;</button>
+  <button id="btn-scroll" title="Toggle slideshow">Slideshow</button>
+  <button id="btn-next"   title="Next">&#8594;</button>
+</div>
+
+<script>
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  let current = 0, slideshowMode = false;
+
+  function enter(i) {
+    slides[current].classList.remove('active');
+    current = (i + slides.length) % slides.length;
+    slides[current].classList.add('active');
+    slides[current].scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  document.getElementById('btn-prev').addEventListener('click', () => {
+    if (slideshowMode) enter(current - 1);
+  });
+  document.getElementById('btn-next').addEventListener('click', () => {
+    if (slideshowMode) enter(current + 1);
+  });
+  document.getElementById('btn-scroll').addEventListener('click', () => {
+    slideshowMode = !slideshowMode;
+    document.body.classList.toggle('slideshow', slideshowMode);
+    document.getElementById('btn-scroll').textContent = slideshowMode ? 'Scroll' : 'Slideshow';
+    if (slideshowMode) slides[current].classList.add('active');
+    else slides.forEach(s => s.classList.remove('active'));
+  });
+
+  document.addEventListener('keydown', e => {
+    if (!slideshowMode) return;
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') enter(current + 1);
+    if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   enter(current - 1);
+  });
+</script>
+</body>
+</html>
