@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Permutations &amp; Combinations — Énoncés</title>
+<script>
+  MathJax = {
+    tex: { inlineMath: [['$','$']], displayMath: [['$$','$$']] },
+    options: { skipHtmlTags: ['script','noscript','style','textarea'] }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --orange:    #e67e22;
+  --darkblue:  #2c3e50;
+  --lightbg:   #f4f9fc;
+  --border:    #dce3ea;
+  --py-fg:     #1f4e7a;
+  --py-bg:     #eaf3fb;
+  --py-border: #2a6fb3;
+  --py-head:   #2a6fb3;
+  --sp-fg:     #1e824c;
+  --sp-bg:     #e8f5ec;
+  --sp-border: #27ae60;
+  --sp-head:   #27ae60;
+  --su-fg:     #4a4aaa;
+  --su-bg:     #eeeeff;
+  --su-border: #6060cc;
+  --su-head:   #6060cc;
+  --out-fg:    #6e4b0a;
+  --out-bg:    #fff7e0;
+  --out-border:#e0b341;
+  --out-head:  #c89324;
+  --sol-bg:    #fdf6ee;
+  --sol-border:#e67e22;
+}
+
+body {
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  background: #e8edf2;
+  color: var(--darkblue);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem 1rem 5rem;
+  gap: 1.5rem;
+}
+
+.slide {
+  background: #fff;
+  width: 100%;
+  max-width: 940px;
+  border-radius: 10px;
+  box-shadow: 0 4px 18px rgba(0,0,0,.10);
+  padding: 2rem 2.4rem 1.6rem;
+  position: relative;
+}
+
+.slide.title-slide {
+  background: linear-gradient(145deg, #f4f9fc 60%, #e0eef7);
+  text-align: center;
+  border-top: 6px solid var(--orange);
+  padding: 2.5rem 2rem;
+}
+.slide.title-slide h1 { font-size: 1.9rem; color: var(--darkblue); margin-bottom: 0.4rem; }
+.slide.title-slide .subtitle { font-size: 1.15rem; color: #555; }
+
+h2.frame-title {
+  font-size: 1.4rem;
+  color: var(--orange);
+  font-weight: 700;
+  margin-bottom: 0.4rem;
+  padding-bottom: 0.3rem;
+  border-bottom: 2px solid #f9e4cc;
+}
+.ex-number {
+  display: inline-block;
+  background: var(--orange);
+  color: #fff;
+  font-weight: 700;
+  padding: 0.15em 0.6em;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  margin-right: 0.5rem;
+}
+.difficulty {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  padding: 0.1em 0.5em;
+  border-radius: 3px;
+  margin-left: 0.4rem;
+  vertical-align: middle;
+  text-transform: uppercase;
+}
+.easy   { background: #d4f4dd; color: #1e7a3b; }
+.medium { background: #fce4b6; color: #8a5400; }
+.hard   { background: #f8c8c8; color: #952020; }
+.kind {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  padding: 0.1em 0.55em;
+  border-radius: 3px;
+  margin-left: 0.4rem;
+  vertical-align: middle;
+  text-transform: uppercase;
+}
+.kind.lab  { background: #eaf3fb; color: #1f4e7a; }
+.kind.math { background: #f8e9ff; color: #5b1e7a; }
+
+p { line-height: 1.7; margin: 0.4rem 0; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.4rem; line-height: 1.85; }
+ul li::marker, ol li::marker { color: var(--orange); }
+
+.statement { margin: 0.3rem 0 0.6rem; }
+
+.python-block, .output-block {
+  border-radius: 6px;
+  overflow: hidden;
+  margin: 0.6rem 0;
+  border: 1px solid;
+}
+.python-block { border-color: var(--py-border); }
+.output-block { border-color: var(--out-border); margin: 0.4rem 0 0.6rem; }
+.python-label, .output-label {
+  display: block;
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  color: #fff;
+}
+.python-label { background: var(--py-head); }
+.output-label { background: var(--out-head); }
+.pane-code {
+  font-family: 'Consolas', 'Fira Code', monospace;
+  font-size: 0.83rem;
+  line-height: 1.6;
+  padding: 0.5rem 0.75rem;
+  white-space: pre;
+  display: block;
+  overflow-x: auto;
+}
+.python-block .pane-code { background: var(--py-bg); color: var(--py-fg); }
+.output-block .pane-code { background: var(--out-bg); color: var(--out-fg); }
+
+details.solution {
+  margin: 0.4rem 0 0.6rem;
+  background: var(--sol-bg);
+  border-left: 4px solid var(--sol-border);
+  border-radius: 4px;
+  padding: 0.5rem 0.8rem;
+}
+details.solution summary {
+  cursor: pointer;
+  font-weight: 700;
+  color: var(--orange);
+  list-style: none;
+  font-size: 0.9rem;
+  letter-spacing: 0.04em;
+}
+details.solution summary::before { content: "▸ "; }
+details.solution[open] summary::before { content: "▾ "; }
+details.solution > *:not(summary) { margin-top: 0.5rem; }
+
+.toc {
+  background: var(--lightbg);
+  border-left: 4px solid var(--orange);
+  padding: 0.8rem 1rem;
+  border-radius: 4px;
+}
+.toc a { color: var(--darkblue); text-decoration: none; }
+.toc a:hover { color: var(--orange); }
+.answer-space {
+  margin: 0.6rem 0;
+  padding: 1.2rem 1rem;
+  border: 2px dashed var(--orange);
+  border-radius: 6px;
+  background: #fffaf3;
+  color: #b56500;
+  font-style: italic;
+  font-size: 0.92rem;
+  min-height: 80px;
+}
+code { background: #f0f3f7; color: #1f4e7a; padding: 0 .25em; border-radius: 3px; font-family: 'Consolas','Fira Code',monospace; }
+</style>
+</head>
+<body>
+
+<!-- ══ Title ════════════════════════════════════════════════════════ -->
+<section class="slide title-slide">
+  <h1>Discrete Mathematics — Permutations &amp; Combinations</h1>
+  <p class="subtitle">Énoncés — 4 Python labs + 4 math problems (no solutions)</p>
+  <p style="font-size:1rem;color:#e67e22;margin-top:0.8rem;font-style:italic;font-weight:600;letter-spacing:.02em;">By Pr. El Hadiq Zouhair</p>
+</section>
+
+<!-- ══ TOC ══════════════════════════════════════════════════════════ -->
+<section class="slide">
+  <h2 class="frame-title">Contents</h2>
+  <div class="toc">
+    <p style="font-weight:700;color:var(--orange);margin-bottom:0.3rem;">Part A — Python labs</p>
+    <ol>
+      <li><a href="#ex1">Factorielle sans <code>math.factorial</code></a> <span class="difficulty easy">easy</span> <span class="kind lab">lab</span></li>
+      <li><a href="#ex2">Arrangements $P(n, k)$ par produit itératif</a> <span class="difficulty easy">easy</span> <span class="kind lab">lab</span></li>
+      <li><a href="#ex3">Coefficient binomial via le triangle de Pascal</a> <span class="difficulty medium">medium</span> <span class="kind lab">lab</span></li>
+      <li><a href="#ex4">Principe des tiroirs &amp; détecteur de collision</a> <span class="difficulty medium">medium</span> <span class="kind lab">lab</span></li>
+    </ol>
+    <p style="font-weight:700;color:var(--orange);margin:0.8rem 0 0.3rem;">Part B — Mathematical problems</p>
+    <ol start="5">
+      <li><a href="#ex5">Choix d'une équipe — binomial</a> <span class="difficulty easy">easy</span> <span class="kind math">math</span></li>
+      <li><a href="#ex6">Anagrammes de MISSISSIPPI — multinomial</a> <span class="difficulty medium">medium</span> <span class="kind math">math</span></li>
+      <li><a href="#ex7">Principe des tiroirs — mois de naissance</a> <span class="difficulty medium">medium</span> <span class="kind math">math</span></li>
+      <li><a href="#ex8">Étoiles et barres — distribution de bonbons</a> <span class="difficulty hard">hard</span> <span class="kind math">math</span></li>
+    </ol>
+  </div>
+</section>
+
+<!-- ══ Exercise 1 — LAB ═════════════════════════════════════════════ -->
+<section class="slide" id="ex1">
+  <h2 class="frame-title"><span class="ex-number">1</span>Factorielle <span class="difficulty easy">easy</span> <span class="kind lab">lab</span></h2>
+  <p class="statement">La factorielle compte le nombre de permutations d'un ensemble à $n$ éléments. Écrire une fonction <code>factorielle(n)</code> qui renvoie $n!$ pour tout entier $n \geq 0$, <strong>sans utiliser <code>math.factorial</code></strong>. On rappelle que $0! = 1$.</p>
+  <ul>
+    <li>Vérifier sur $n = 0, 1, 5, 9, 12$.</li>
+  </ul>
+
+  <div class="answer-space">Your answer…</div>
+</section>
+
+<!-- ══ Exercise 2 — LAB ═════════════════════════════════════════════ -->
+<section class="slide" id="ex2">
+  <h2 class="frame-title"><span class="ex-number">2</span>Arrangements $P(n, k)$ <span class="difficulty easy">easy</span> <span class="kind lab">lab</span></h2>
+  <p class="statement">$P(n, k)$ compte le nombre d'arrangements ordonnés sans répétition de $k$ éléments choisis dans un ensemble à $n$ éléments. Écrire <code>arrangements(n, k)</code> qui renvoie $n(n-1)(n-2)\cdots(n-k+1)$ par produit itératif, <strong>sans utiliser <code>math.perm</code> ni <code>math.factorial</code></strong>.</p>
+  <ul>
+    <li>Conventions : <code>arrangements(n, 0) == 1</code>, <code>arrangements(n, k) == 0</code> si $k &gt; n$.</li>
+    <li>Vérifier : $P(9, 3) = 504$, $P(12, 5) = 95\,040$.</li>
+  </ul>
+
+  <div class="answer-space">Your answer…</div>
+</section>
+
+<!-- ══ Exercise 3 — LAB ═════════════════════════════════════════════ -->
+<section class="slide" id="ex3">
+  <h2 class="frame-title"><span class="ex-number">3</span>Coefficient binomial via Pascal <span class="difficulty medium">medium</span> <span class="kind lab">lab</span></h2>
+  <p class="statement">L'identité de Pascal donne $\binom{n}{k} = \binom{n-1}{k-1} + \binom{n-1}{k}$, avec $\binom{n}{0} = \binom{n}{n} = 1$. Écrire <code>binomial(n, k)</code> qui calcule $\binom{n}{k}$ en construisant ligne par ligne le triangle de Pascal, <strong>sans utiliser <code>math.comb</code></strong>. Renvoyer $0$ si $k &lt; 0$ ou $k &gt; n$.</p>
+  <ul>
+    <li>Vérifier : $\binom{12}{5} = 792$, $\binom{20}{10} = 184\,756$.</li>
+    <li>Vérifier la symétrie $\binom{n}{k} = \binom{n}{n-k}$ pour $n = 20$, $k = 7$.</li>
+  </ul>
+
+  <div class="answer-space">Your answer…</div>
+</section>
+
+<!-- ══ Exercise 4 — LAB ═════════════════════════════════════════════ -->
+<section class="slide" id="ex4">
+  <h2 class="frame-title"><span class="ex-number">4</span>Principe des tiroirs &amp; détection de collision <span class="difficulty medium">medium</span> <span class="kind lab">lab</span></h2>
+  <p class="statement">Si $N$ pigeons sont répartis dans $k$ tiroirs, au moins un tiroir contient au moins $\lceil N/k \rceil$ pigeons.</p>
+  <ol>
+    <li>Écrire <code>tiroir_min(N, k)</code> qui renvoie le nombre minimum d'objets dans le tiroir le plus rempli, garanti par le principe des tiroirs généralisé (pour $N = 0$, $k \geq 1$, renvoyer $0$).</li>
+    <li>Écrire <code>a_collision(liste)</code> qui renvoie <code>True</code> si la liste contient au moins un doublon, <code>False</code> sinon.</li>
+    <li>Application : un mot de passe est tiré aléatoirement parmi $26^4 = 456\,976$ possibilités. Combien de personnes faut-il pour qu'au moins deux partagent leur mot de passe (par tiroirs) avec $1\,000\,000$ d'utilisateurs ?</li>
+  </ol>
+
+  <div class="answer-space">Your answer…</div>
+</section>
+
+<!-- ══ Exercise 5 — MATH ════════════════════════════════════════════ -->
+<section class="slide" id="ex5">
+  <h2 class="frame-title"><span class="ex-number">5</span>Choix d'une équipe — binomial <span class="difficulty easy">easy</span> <span class="kind math">math</span></h2>
+  <p class="statement">On choisit une équipe de $k = 5$ joueurs parmi un effectif de $n = 12$ personnes.</p>
+  <ol>
+    <li>Combien d'équipes différentes peut-on former ?</li>
+    <li>L'effectif contient $4$ Suisses, $5$ Éthiopiens et $3$ Brésiliens. Combien d'équipes de $5$ contiennent exactement $2$ Suisses, $2$ Éthiopiens et $1$ Brésilien ?</li>
+    <li>Si l'ordre comptait (top-$5$ classement), combien d'arrangements ?</li>
+  </ol>
+
+  <div class="answer-space">Your answer…</div>
+</section>
+
+<!-- ══ Exercise 6 — MATH ════════════════════════════════════════════ -->
+<section class="slide" id="ex6">
+  <h2 class="frame-title"><span class="ex-number">6</span>Anagrammes de MISSISSIPPI <span class="difficulty medium">medium</span> <span class="kind math">math</span></h2>
+  <p class="statement">Le mot <strong>MISSISSIPPI</strong> contient 11 lettres : 1 M, 4 I, 4 S et 2 P.</p>
+  <ol>
+    <li>Combien d'anagrammes distinctes peut-on former avec ces 11 lettres ?</li>
+    <li>Combien d'anagrammes commencent par <strong>M</strong> ?</li>
+    <li>Combien d'anagrammes ne contiennent <em>aucun</em> $\mathrm{SS}$ consécutif ? (Question ouverte, indication ci-dessous.)</li>
+  </ol>
+
+  <div class="answer-space">Your answer…</div>
+</section>
+
+<!-- ══ Exercise 7 — MATH ════════════════════════════════════════════ -->
+<section class="slide" id="ex7">
+  <h2 class="frame-title"><span class="ex-number">7</span>Principe des tiroirs — mois de naissance <span class="difficulty medium">medium</span> <span class="kind math">math</span></h2>
+  <p class="statement">Un groupe contient $N$ personnes. On range chaque personne dans le tiroir correspondant à son mois de naissance ($k = 12$ tiroirs).</p>
+  <ol>
+    <li>D'après le principe des tiroirs généralisé, quel est le nombre minimum garanti de personnes nées le même mois pour $N = 50$ ? pour $N = 100$ ? pour $N = 200$ ?</li>
+    <li>Quel est le plus petit $N$ tel qu'au moins $5$ personnes naissent forcément le même mois ?</li>
+    <li>Démontrer rigoureusement la borne $\lceil N/k \rceil$ (par contradiction).</li>
+  </ol>
+
+  <div class="answer-space">Your answer…</div>
+</section>
+
+<!-- ══ Exercise 8 — MATH ════════════════════════════════════════════ -->
+<section class="slide" id="ex8">
+  <h2 class="frame-title"><span class="ex-number">8</span>Étoiles et barres — distribution de bonbons <span class="difficulty hard">hard</span> <span class="kind math">math</span></h2>
+  <p class="statement">On distribue $k = 10$ bonbons <em>identiques</em> entre $n = 4$ enfants (un enfant peut recevoir 0, 1 ou plusieurs bonbons).</p>
+  <ol>
+    <li>Combien de distributions possibles ?</li>
+    <li>Combien de distributions si <strong>chaque</strong> enfant doit recevoir <strong>au moins $1$</strong> bonbon ?</li>
+    <li>Combien de distributions si le premier enfant doit recevoir au moins $2$ et le second au moins $3$ ?</li>
+    <li>Combien de solutions de $x_1 + x_2 + x_3 + x_4 = 10$ en entiers $0 \leq x_i \leq 5$ ?</li>
+  </ol>
+
+  <div class="answer-space">Your answer…</div>
+</section>
+
+</body>
+</html>

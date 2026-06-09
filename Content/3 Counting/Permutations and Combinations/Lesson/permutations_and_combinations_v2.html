@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Permutations &amp; Combinations — Full Course v2 — Discrete Mathematics</title>
+<script>
+  MathJax = {
+    tex: { inlineMath: [['$','$']], displayMath: [['$$','$$']], processEscapes: true },
+    options: { skipHtmlTags: ['script','noscript','style','textarea'] }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --orange:    #e67e22;
+  --darkblue:  #2c3e50;
+  --lightbg:   #f4f9fc;
+  --rowred:    #ffe8e8;
+  --rowblue:   #e3eeff;
+  --border:    #dce3ea;
+  --py-fg:     #1f4e7a;
+  --py-bg:     #eaf3fb;
+  --py-border: #2a6fb3;
+  --py-head:   #2a6fb3;
+  --sp-fg:     #1e824c;
+  --sp-bg:     #e8f5ec;
+  --sp-border: #27ae60;
+  --sp-head:   #27ae60;
+  --su-fg:     #4a4aaa;
+  --su-bg:     #eeeeff;
+  --su-border: #6060cc;
+  --su-head:   #6060cc;
+  --out-fg:    #6e4b0a;
+  --out-bg:    #fff7e0;
+  --out-border:#e0b341;
+  --out-head:  #c89324;
+}
+
+body {
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  background: #e8edf2;
+  color: var(--darkblue);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem 1rem 5rem;
+  gap: 2rem;
+}
+
+.slide {
+  background: #fff;
+  width: 100%;
+  max-width: 940px;
+  border-radius: 10px;
+  box-shadow: 0 4px 18px rgba(0,0,0,.10);
+  padding: 2.2rem 2.8rem 1.8rem;
+  position: relative;
+}
+.slide-number {
+  position: absolute;
+  bottom: 0.7rem;
+  right: 1.2rem;
+  font-size: 0.72rem;
+  color: #aaa;
+}
+
+.slide.title-slide {
+  background: linear-gradient(145deg, #f4f9fc 60%, #e0eef7);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 240px;
+  text-align: center;
+  border-top: 6px solid var(--orange);
+}
+.slide.title-slide h1 { font-size: 1.9rem; color: var(--darkblue); margin-bottom: 0.4rem; }
+.slide.title-slide .subtitle { font-size: 1.15rem; color: #555; }
+
+h2.frame-title {
+  font-size: 1.55rem;
+  color: var(--orange);
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  padding-bottom: 0.35rem;
+  border-bottom: 2px solid #f9e4cc;
+}
+h3.sub-title {
+  font-size: 1.05rem;
+  color: var(--orange);
+  font-weight: 600;
+  margin: 0.7rem 0 0.3rem;
+}
+
+p { line-height: 1.7; margin: 0.45rem 0; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.4rem; line-height: 1.8; }
+ul li::marker, ol li::marker { color: var(--orange); }
+code { background: #f0f3f7; color: #1f4e7a; padding: 0 .25em; border-radius: 3px; font-family: 'Consolas','Fira Code',monospace; }
+
+.note-box, .def-box, .thm-box, .proof-box, .ex-box, .ce-box, .cor-box {
+  border-radius: 6px;
+  padding: 0.7rem 1rem;
+  margin: 0.6rem 0;
+  line-height: 1.7;
+}
+.note-box  { background: #fff5e8; border-left: 4px solid var(--orange); font-style: italic; }
+.def-box   { background: #eaf3fb; border-left: 4px solid var(--py-border); }
+.def-box::before  { content: "Definition. "; font-weight: 700; color: var(--py-border); }
+.thm-box   { background: #fff7e0; border-left: 4px solid var(--out-border); }
+.thm-box::before  { content: "Theorem. "; font-weight: 700; color: var(--out-head); }
+.cor-box   { background: #fff7e0; border-left: 4px solid var(--out-border); }
+.cor-box::before  { content: "Corollary. "; font-weight: 700; color: var(--out-head); }
+.proof-box { background: #f4f9fc; border-left: 4px solid var(--darkblue); }
+.proof-box::before { content: "Proof. "; font-weight: 700; color: var(--darkblue); }
+.ex-box    { background: #e8f5ec; border-left: 4px solid var(--sp-border); }
+.ex-box::before    { content: "Example. "; font-weight: 700; color: var(--sp-border); }
+.ce-box    { background: #ffe8e8; border-left: 4px solid #c0395a; }
+.ce-box::before    { content: "Counter-example. "; font-weight: 700; color: #c0395a; }
+
+.python-block, .setup-block, .sympy-block, .output-block {
+  border-radius: 6px;
+  overflow: hidden;
+  margin: 0.6rem 0;
+  border: 1px solid;
+}
+.pane-label {
+  display: block;
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  color: #fff;
+}
+.pane-code {
+  font-family: 'Consolas','Fira Code',monospace;
+  font-size: 0.83rem;
+  line-height: 1.6;
+  padding: 0.5rem 0.75rem;
+  white-space: pre;
+  display: block;
+  overflow-x: auto;
+}
+.python-block { border-color: var(--py-border); }
+.python-block .pane-label { background: var(--py-head); }
+.python-block .pane-code  { background: var(--py-bg); color: var(--py-fg); }
+.sympy-block  { border-color: var(--sp-border); }
+.sympy-block  .pane-label { background: var(--sp-head); }
+.sympy-block  .pane-code  { background: var(--sp-bg); color: var(--sp-fg); }
+.setup-block  { border-color: var(--su-border); }
+.setup-block  .pane-label { background: var(--su-head); }
+.setup-block  .pane-code  { background: var(--su-bg); color: var(--su-fg); }
+
+.ref-table {
+  border-collapse: collapse;
+  margin: 0.6rem auto;
+  font-size: 0.9rem;
+  width: 100%;
+}
+.ref-table th, .ref-table td {
+  border: 1px solid var(--border);
+  padding: 0.4rem 0.75rem;
+  text-align: left;
+  vertical-align: top;
+}
+.ref-table th { background: var(--lightbg); font-weight: 600; color: var(--darkblue); }
+.center td, .center th { text-align: center; }
+
+#nav { position: fixed; bottom: 1.5rem; right: 1.5rem; display: flex; gap: 0.4rem; z-index: 100; }
+#nav button {
+  background: var(--orange); color: #fff; border: none;
+  border-radius: 50%; width: 40px; height: 40px;
+  font-size: 1.1rem; cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,.25); transition: background .2s;
+}
+#nav button:hover { background: #cf6d17; }
+#nav #btn-scroll { border-radius: 20px; width: auto; padding: 0 12px; font-size: 0.8rem; }
+
+body.slideshow .slide        { display: none; }
+body.slideshow .slide.active { display: block; }
+
+.ref-cite { color: #777; font-size: 0.85rem; font-style: italic; }
+</style>
+</head>
+<body>
+
+<!-- ══ Slide 1 — Title ════════════════════════════════════════════════ -->
+<section class="slide title-slide" id="s1">
+  <h1>Permutations &amp; Combinations</h1>
+  <p class="subtitle">Discrete Mathematics — Session 4 (Full Course v2)</p>
+  <p style="font-size:1rem;color:#e67e22;margin-top:0.8rem;font-style:italic;font-weight:600;letter-spacing:.02em;">Notes By Pr. El Hadiq Zouhair</p>
+  <span class="slide-number">1 / 30</span>
+</section>
+
+<!-- ══ Slide 2 — Outline ═════════════════════════════════════════════ -->
+<section class="slide" id="s2">
+  <h2 class="frame-title">Outline of the course</h2>
+  <ol>
+    <li>Two basic counting rules — sum and product — with proofs.</li>
+    <li>Tree diagrams and counting by cases.</li>
+    <li>Permutations of $n$ objects; factorials; $k$-permutations $P(n, k)$.</li>
+    <li>Permutations with repetition and circular permutations.</li>
+    <li>Combinations $C(n, k) = \binom{n}{k}$ — counting unordered selections.</li>
+    <li>Pascal's identity, Pascal's triangle, hockey-stick identity (all proved).</li>
+    <li>The binomial theorem (proved by induction and by counting).</li>
+    <li>Combinations with repetition (stars and bars) — formula and proof.</li>
+    <li>Multinomial coefficients and the multinomial theorem.</li>
+    <li>Pigeonhole principle — basic and generalised, with proofs.</li>
+    <li>Inclusion–exclusion principle.</li>
+    <li>Python / SymPy toolbox; Wolfram → Python reference; bibliography.</li>
+  </ol>
+  <p class="ref-cite">References: Rosen 8e §§6.1–6.5; Tucker, <em>Applied Combinatorics</em>, 6e ch. 5; Graham–Knuth–Patashnik, <em>Concrete Mathematics</em> ch. 5.</p>
+  <span class="slide-number">2 / 30</span>
+</section>
+
+<!-- ══ Slide 3 — Sum rule ════════════════════════════════════════════ -->
+<section class="slide" id="s3">
+  <h2 class="frame-title">1.1 Sum rule (rule of disjoint cases)</h2>
+
+  <div class="thm-box">
+    Let $A$ and $B$ be <em>disjoint</em> finite sets. Then $|A \cup B| = |A| + |B|$. More generally, for pairwise disjoint $A_1, \dots, A_k$: $|A_1 \cup \dots \cup A_k| = |A_1| + \dots + |A_k|$.
+  </div>
+
+  <div class="proof-box">
+    Listing the elements of $A$ first, then those of $B$, gives a list of length $|A| + |B|$ with no repetitions (by disjointness). Hence $|A \cup B| = |A| + |B|$. The $k$-fold version follows by induction on $k$. $\square$
+  </div>
+
+  <div class="ex-box">
+    A student must choose either a math course (12 options) or a physics course (9 options); the lists are disjoint. Total choices: $12 + 9 = 21$.
+  </div>
+
+  <div class="note-box">
+    Disjointness is essential. If $A$ and $B$ overlap, double counting occurs and one must use inclusion–exclusion (slide 27).
+  </div>
+  <p class="ref-cite">Rosen 8e §6.1; Tucker §5.1.</p>
+  <span class="slide-number">3 / 30</span>
+</section>
+
+<!-- ══ Slide 4 — Product rule ════════════════════════════════════════ -->
+<section class="slide" id="s4">
+  <h2 class="frame-title">1.2 Product rule</h2>
+
+  <div class="thm-box">
+    If a task consists of two sub-tasks $T_1$ and $T_2$, where $T_1$ can be done in $m$ ways and, <em>for each</em> choice of $T_1$, $T_2$ can be done in $n$ ways, then the whole task can be done in $m \cdot n$ ways. By induction on the number of sub-tasks, the count for $k$ independent sub-tasks of sizes $n_1, n_2, \dots, n_k$ is $n_1 n_2 \cdots n_k$.
+  </div>
+
+  <div class="proof-box">
+    The set of joint outcomes is in bijection with the Cartesian product $S_1 \times S_2$, where $S_i$ is the set of choices for $T_i$. By the size of a Cartesian product (Relations &amp; Functions §1.1), $|S_1 \times S_2| = |S_1| \cdot |S_2| = m n$. The general $k$-fold case follows by induction. $\square$
+  </div>
+
+  <div class="ex-box">
+    A lion hunts by chasing, trapping, or sneaking ($3$ ways) an antelope, a buffalo, or a giraffe ($3$ choices). By the product rule there are $3 \times 3 = 9$ possible hunting actions.
+  </div>
+
+  <div class="ex-box">
+    Number of $4$-letter lowercase passwords: $26 \times 26 \times 26 \times 26 = 26^4 = 456{,}976$.
+  </div>
+  <p class="ref-cite">Rosen 8e §6.1; Tucker §5.1.</p>
+  <span class="slide-number">4 / 30</span>
+</section>
+
+<!-- ══ Slide 5 — Tree diagrams ═══════════════════════════════════════ -->
+<section class="slide" id="s5">
+  <h2 class="frame-title">1.3 Tree diagrams and combined rules</h2>
+
+  <p>A <strong>tree diagram</strong> visualises a sequence of choices. Each internal node represents a decision point; its children are the available options. The number of leaves equals the number of distinct outcomes.</p>
+
+  <div class="ex-box">
+    How many $3$-bit strings have no two consecutive $0$s?<br>
+    At each position the choice depends on the previous bit. Drawing the tree gives leaves: $\{010, 011, 101, 110, 111\}$ plus the string $\{010\}$ and $\{010, 011, 100, 101, 110, 111\}$ — careful enumeration gives $5$ valid strings of length $3$. By the Zeckendorf-style recurrence $a_n = a_{n-1} + a_{n-2}$ with $a_1 = 2$, $a_2 = 3$: $a_3 = 5$.
+  </div>
+
+  <div class="ex-box">
+    A menu offers $3$ starters, $5$ mains, $2$ desserts. If a customer must choose either a starter+main, or a main+dessert (but not both pairs), the count is $(3 \cdot 5) + (5 \cdot 2) = 15 + 10 = 25$ — product rule inside each case, sum rule across the disjoint cases.
+  </div>
+
+  <p class="ref-cite">Rosen 8e §6.1.</p>
+  <span class="slide-number">5 / 30</span>
+</section>
+
+<!-- ══ Slide 6 — Factorials ══════════════════════════════════════════ -->
+<section class="slide" id="s6">
+  <h2 class="frame-title">2.1 Permutations of $n$ objects — factorials</h2>
+
+  <div class="def-box">
+    A <strong>permutation</strong> of a finite set $S$ is an ordered arrangement of all its elements — equivalently, a bijection $S \to S$.
+  </div>
+
+  <div class="thm-box">
+    The number of permutations of $n$ distinct objects is $n! := n \cdot (n-1) \cdot (n-2) \cdots 2 \cdot 1$, with the convention $0! = 1$.
+  </div>
+
+  <div class="proof-box">
+    Build the permutation position by position. There are $n$ choices for the first position; $n - 1$ for the second (any object except the first); $n - 2$ for the third; …; $1$ for the last. By the product rule the total is $n \cdot (n-1) \cdots 1 = n!$. $\square$
+  </div>
+
+  <div class="ex-box">
+    Number of ways $9$ athletes can finish a race: $9! = 362{,}880$.
+  </div>
+
+  <div class="cor-box">
+    Convention $0! = 1$ matches the empty-product convention and makes the formula $P(n, k) = n! / (n - k)!$ (next slide) hold at $k = n$.
+  </div>
+  <p class="ref-cite">Rosen 8e §6.3 Theorem 1.</p>
+  <span class="slide-number">6 / 30</span>
+</section>
+
+<!-- ══ Slide 7 — k-permutations ══════════════════════════════════════ -->
+<section class="slide" id="s7">
+  <h2 class="frame-title">2.2 $k$-permutations $P(n, k)$</h2>
+
+  <div class="def-box">
+    A <strong>$k$-permutation</strong> of an $n$-element set $S$ is an ordered selection of $k$ <em>distinct</em> elements of $S$, where $0 \leq k \leq n$. The number of such arrangements is denoted $P(n, k)$ or $A_n^k$ (the French "arrangements") or $n^{\underline{k}}$ (the falling factorial).
+  </div>
+
+  <div class="thm-box">
+    $\displaystyle P(n, k) \;=\; n (n-1)(n-2) \cdots (n - k + 1) \;=\; \frac{n!}{(n - k)!}.$
+  </div>
+
+  <div class="proof-box">
+    Fill the $k$ positions one at a time, repetitions forbidden: $n$ choices for position $1$, $n - 1$ for position $2$, …, $n - k + 1$ for position $k$. By the product rule, the count is the product $n(n-1)\cdots(n-k+1)$. Multiplying numerator and denominator by $(n - k)!$ gives $n!/(n-k)!$. $\square$
+  </div>
+
+  <div class="ex-box">
+    Number of possible top-three rankings among $9$ athletes: $P(9, 3) = 9 \cdot 8 \cdot 7 = 504$.
+  </div>
+  <p class="ref-cite">Rosen 8e §6.3 Theorem 2.</p>
+  <span class="slide-number">7 / 30</span>
+</section>
+
+<!-- ══ Slide 8 — Permutations with repetition ════════════════════════ -->
+<section class="slide" id="s8">
+  <h2 class="frame-title">2.3 Permutations with repeated objects</h2>
+
+  <div class="thm-box">
+    Let $n$ objects be partitioned into $k$ classes of indistinguishable items of sizes $n_1, n_2, \dots, n_k$ with $n_1 + n_2 + \cdots + n_k = n$. The number of distinguishable orderings of these $n$ items is
+    $$\frac{n!}{n_1! \, n_2! \cdots n_k!}.$$
+  </div>
+
+  <div class="proof-box">
+    First treat all $n$ objects as distinct — $n!$ arrangements. Inside class $i$, the $n_i!$ orderings of identical objects look the same to us; dividing by $n_i!$ removes this overcounting. By repeating the argument for each class, we divide by $\prod_i n_i!$. $\square$
+  </div>
+
+  <div class="ex-box">
+    Number of distinct anagrams of "MISSISSIPPI" (letters: $1$ M, $4$ I, $4$ S, $2$ P):
+    $$\frac{11!}{1!\,4!\,4!\,2!} = \frac{39{,}916{,}800}{1 \cdot 24 \cdot 24 \cdot 2} = 34{,}650.$$
+  </div>
+
+  <h3 class="sub-title">Circular permutations</h3>
+  <p>The number of arrangements of $n$ distinct objects around a <em>circle</em> (rotation considered the same) is $(n - 1)!$. Reflections also considered equal: $(n-1)!/2$ for $n \geq 3$.</p>
+  <p class="ref-cite">Rosen 8e §6.5 Theorem 3; Tucker §5.4.</p>
+  <span class="slide-number">8 / 30</span>
+</section>
+
+<!-- ══ Slide 9 — Combinations ════════════════════════════════════════ -->
+<section class="slide" id="s9">
+  <h2 class="frame-title">3.1 Combinations $C(n, k) = \binom{n}{k}$</h2>
+
+  <div class="def-box">
+    A <strong>$k$-combination</strong> of an $n$-element set is an <em>unordered</em> selection of $k$ elements — equivalently, a $k$-subset. Their count is the <strong>binomial coefficient</strong>:
+    $$C(n, k) \;=\; \binom{n}{k} \;=\; \frac{n!}{k!\,(n-k)!}, \quad 0 \leq k \leq n.$$
+  </div>
+
+  <div class="proof-box">
+    Every $k$-permutation is obtained from a $k$-combination by ordering its $k$ elements; each combination yields exactly $k!$ permutations. Hence
+    $P(n, k) = k! \cdot C(n, k)$, giving $C(n, k) = P(n, k) / k! = n! / \bigl(k! (n - k)!\bigr)$. $\square$
+  </div>
+
+  <div class="ex-box">
+    Number of teams of $5$ from a roster of $12$ players: $\binom{12}{5} = 792$.<br>
+    Number of $4$-friend graduation parties chosen from $10$ friends: $\binom{10}{4} = 210$.
+  </div>
+
+  <div class="cor-box">
+    <strong>Symmetry.</strong> $\binom{n}{k} = \binom{n}{n-k}$ — choosing $k$ to keep is the same as choosing $n - k$ to discard.
+  </div>
+  <p class="ref-cite">Rosen 8e §6.3 Theorem 3.</p>
+  <span class="slide-number">9 / 30</span>
+</section>
+
+<!-- ══ Slide 10 — Pascal's identity ══════════════════════════════════ -->
+<section class="slide" id="s10">
+  <h2 class="frame-title">3.2 Pascal's identity</h2>
+
+  <div class="thm-box">
+    For all integers $n \geq 1$ and $1 \leq k \leq n$:
+    $$\binom{n}{k} \;=\; \binom{n-1}{k-1} \;+\; \binom{n-1}{k}.$$
+  </div>
+
+  <div class="proof-box">
+    <strong>Combinatorial proof.</strong> Fix any element $a$ of an $n$-set $S$. Partition the $k$-subsets of $S$ into two classes:
+    <ul>
+      <li>Those <em>containing</em> $a$: choose the remaining $k - 1$ elements from $S \setminus \{a\}$ — $\binom{n-1}{k-1}$ subsets.</li>
+      <li>Those <em>not containing</em> $a$: choose all $k$ elements from $S \setminus \{a\}$ — $\binom{n-1}{k}$ subsets.</li>
+    </ul>
+    The two classes are disjoint and exhaust the $k$-subsets, so by the sum rule, $\binom{n}{k} = \binom{n-1}{k-1} + \binom{n-1}{k}$. $\square$
+  </div>
+
+  <div class="proof-box">
+    <strong>Algebraic check.</strong> $\frac{(n-1)!}{(k-1)!(n-k)!} + \frac{(n-1)!}{k!(n-k-1)!} = \frac{(n-1)!\bigl[k + (n - k)\bigr]}{k!(n-k)!} = \frac{n!}{k!(n-k)!}$. ✓
+  </div>
+
+  <p>Pascal's identity is the recurrence that builds Pascal's triangle: each entry is the sum of the two entries above.</p>
+  <p class="ref-cite">Rosen 8e §6.4 Theorem 2; Tucker §5.5.</p>
+  <span class="slide-number">10 / 30</span>
+</section>
+
+<!-- ══ Slide 11 — Pascal's triangle ══════════════════════════════════ -->
+<section class="slide" id="s11">
+  <h2 class="frame-title">3.3 Pascal's triangle</h2>
+
+  <p>Row $n$ lists $\binom{n}{0}, \binom{n}{1}, \dots, \binom{n}{n}$.</p>
+
+  <table class="ref-table center" style="max-width:520px;">
+    <thead><tr><th>Row</th><th colspan="11">Entries</th></tr></thead>
+    <tbody>
+      <tr><td>$n=0$</td><td></td><td></td><td></td><td></td><td></td><td>1</td><td></td><td></td><td></td><td></td><td></td></tr>
+      <tr><td>$n=1$</td><td></td><td></td><td></td><td></td><td>1</td><td></td><td>1</td><td></td><td></td><td></td><td></td></tr>
+      <tr><td>$n=2$</td><td></td><td></td><td></td><td>1</td><td></td><td>2</td><td></td><td>1</td><td></td><td></td><td></td></tr>
+      <tr><td>$n=3$</td><td></td><td></td><td>1</td><td></td><td>3</td><td></td><td>3</td><td></td><td>1</td><td></td><td></td></tr>
+      <tr><td>$n=4$</td><td></td><td>1</td><td></td><td>4</td><td></td><td>6</td><td></td><td>4</td><td></td><td>1</td><td></td></tr>
+      <tr><td>$n=5$</td><td>1</td><td></td><td>5</td><td></td><td>10</td><td></td><td>10</td><td></td><td>5</td><td></td><td>1</td></tr>
+    </tbody>
+  </table>
+
+  <h3 class="sub-title">Row sums and other identities</h3>
+  <ul>
+    <li>$\displaystyle \sum_{k=0}^{n} \binom{n}{k} = 2^n$ — the number of subsets of an $n$-set (proved by counting subsets two ways, or by setting $x = y = 1$ in the binomial theorem).</li>
+    <li>$\displaystyle \sum_{k=0}^{n} (-1)^k \binom{n}{k} = 0$ for $n \geq 1$ — set $x = -1, y = 1$.</li>
+    <li><strong>Hockey-stick identity:</strong> $\displaystyle \sum_{i=r}^{n} \binom{i}{r} = \binom{n+1}{r+1}$ — easy induction on $n$ using Pascal.</li>
+  </ul>
+  <p class="ref-cite">Rosen 8e §6.4.</p>
+  <span class="slide-number">11 / 30</span>
+</section>
+
+<!-- ══ Slide 12 — Binomial theorem ═══════════════════════════════════ -->
+<section class="slide" id="s12">
+  <h2 class="frame-title">4. Binomial theorem</h2>
+
+  <div class="thm-box">
+    For all $x, y$ and every integer $n \geq 0$:
+    $$(x + y)^n \;=\; \sum_{k=0}^{n} \binom{n}{k}\, x^{n-k}\, y^{k}.$$
+  </div>
+
+  <div class="proof-box">
+    <strong>Combinatorial proof.</strong> Expand $(x + y)^n = (x + y)(x + y) \cdots (x + y)$, $n$ factors. Distributing yields $2^n$ monomials of the form $z_1 z_2 \cdots z_n$, each $z_i \in \{x, y\}$. The monomial $x^{n-k} y^k$ corresponds to choosing $k$ factors that contribute $y$ — there are $\binom{n}{k}$ such choices. Collecting like terms gives the formula. $\square$
+  </div>
+
+  <div class="proof-box">
+    <strong>Inductive proof.</strong> Base $n = 0$: $(x+y)^0 = 1 = \binom{0}{0} x^0 y^0$. Step: assume the formula at $n$. Then
+    $(x+y)^{n+1} = (x+y)(x+y)^n = (x+y) \sum_k \binom{n}{k} x^{n-k}y^k = \sum_k \binom{n}{k}\bigl(x^{n-k+1} y^k + x^{n-k} y^{k+1}\bigr).$
+    Re-indexing the second sum and applying Pascal's identity (slide 10) gives $\sum_k \binom{n+1}{k} x^{n+1-k} y^k$. $\square$
+  </div>
+
+  <div class="ex-box">
+    Coefficient of $x^3 y^4$ in $(x + y)^7$ is $\binom{7}{4} = 35$. Coefficient of $x^5$ in $(2 + x)^9$ is $\binom{9}{5} \cdot 2^{4} = 126 \cdot 16 = 2016$.
+  </div>
+  <p class="ref-cite">Rosen 8e §6.4 Theorem 1.</p>
+  <span class="slide-number">12 / 30</span>
+</section>
+
+<!-- ══ Slide 13 — Stars and bars ═════════════════════════════════════ -->
+<section class="slide" id="s13">
+  <h2 class="frame-title">5. Combinations with repetition (stars and bars)</h2>
+
+  <div class="thm-box">
+    The number of multisets of size $k$ drawn from an $n$-element alphabet — equivalently the number of solutions of $x_1 + x_2 + \cdots + x_n = k$ in non-negative integers — is
+    $$\binom{n + k - 1}{k} \;=\; \binom{n + k - 1}{n - 1}.$$
+  </div>
+
+  <div class="proof-box">
+    <strong>Bijection — stars and bars.</strong> Encode a non-negative integer solution by a string of $k$ stars and $n - 1$ bars: $x_i$ stars in segment $i$, separated by bars. Example with $n=3, k=4$: $(2,0,2) \mapsto \star\star\,|\,|\,\star\star$. Each such string has length $n + k - 1$; the count is the number of ways to choose the $k$ star positions (or the $n - 1$ bar positions) among $n + k - 1$ slots, giving $\binom{n+k-1}{k}$. $\square$
+  </div>
+
+  <div class="ex-box">
+    Number of ways to distribute $10$ identical candies among $4$ children: $\binom{4 + 10 - 1}{10} = \binom{13}{10} = 286$.<br>
+    Number of ways to pick a dozen donuts from $5$ flavours: $\binom{5 + 12 - 1}{12} = \binom{16}{12} = 1820$.
+  </div>
+  <p class="ref-cite">Rosen 8e §6.5 Theorem 2; Tucker §5.6.</p>
+  <span class="slide-number">13 / 30</span>
+</section>
+
+<!-- ══ Slide 14 — Summary table of the four counting problems ════════ -->
+<section class="slide" id="s14">
+  <h2 class="frame-title">6. The four counting problems — summary</h2>
+
+  <table class="ref-table center">
+    <thead><tr><th>Order matters?</th><th>Repetition allowed?</th><th>Formula</th><th>Name</th></tr></thead>
+    <tbody>
+      <tr><td>Yes</td><td>Yes</td><td>$n^k$</td><td>Strings (Cartesian product)</td></tr>
+      <tr><td>Yes</td><td>No</td><td>$P(n, k) = n!/(n-k)!$</td><td>$k$-permutation (arrangement)</td></tr>
+      <tr><td>No</td><td>No</td><td>$\binom{n}{k} = n!/(k!(n-k)!)$</td><td>$k$-combination</td></tr>
+      <tr><td>No</td><td>Yes</td><td>$\binom{n+k-1}{k}$</td><td>Multiset / stars-and-bars</td></tr>
+    </tbody>
+  </table>
+
+  <div class="note-box">
+    <strong>Workflow.</strong> When facing a counting problem, ask two questions:
+    <ol>
+      <li>Does the order of the chosen items matter?</li>
+      <li>Can the same item be selected more than once?</li>
+    </ol>
+    Answering both immediately points to one of the four boxes above.
+  </div>
+
+  <p class="ref-cite">Rosen 8e §6.5 Table 1.</p>
+  <span class="slide-number">14 / 30</span>
+</section>
+
+<!-- ══ Slide 15 — Worked athletics example ═══════════════════════════ -->
+<section class="slide" id="s15">
+  <h2 class="frame-title">7.1 Worked example — sprint with 9 athletes</h2>
+
+  <p>Consider $4$ Swiss, $5$ Ethiopian athletes ($9$ total) competing for the $200$ m sprint.</p>
+
+  <ul>
+    <li><strong>How many different rankings of all athletes?</strong> Permutation of $9$ distinct people: $9! = 362{,}880$.</li>
+    <li><strong>How many different rankings if we only distinguish nationality (orderings <em>within</em> each country count separately)?</strong> Order Swiss among themselves and Ethiopians among themselves: $4! \cdot 5! = 24 \cdot 120 = 2{,}880$.</li>
+    <li><strong>How many top-three winner rankings?</strong> $P(9, 3) = 9 \cdot 8 \cdot 7 = 504$.</li>
+    <li><strong>How many teams of $5$ athletes (unordered)?</strong> $\binom{9}{5} = 126$.</li>
+  </ul>
+
+  <p>Now add $3$ Brazilian athletes ($12$ total).</p>
+  <ul>
+    <li><strong>How many teams of $5$?</strong> $\binom{12}{5} = 792$.</li>
+    <li><strong>How many rankings by national flag only (multiset permutation)?</strong> $\binom{12}{4, 5, 3} = \frac{12!}{4! \cdot 5! \cdot 3!} = 27{,}720$ (multinomial — see next slide).</li>
+    <li><strong>How many teams of $5$ with exactly $2$ Swiss, $2$ Ethiopians, $1$ Brazilian?</strong> Independent choices: $\binom{4}{2} \binom{5}{2} \binom{3}{1} = 6 \cdot 10 \cdot 3 = 180$.</li>
+  </ul>
+  <p class="ref-cite">Adapted from Rosen 8e §6.3 Examples.</p>
+  <span class="slide-number">15 / 30</span>
+</section>
+
+<!-- ══ Slide 16 — Multinomial coefficients ═══════════════════════════ -->
+<section class="slide" id="s16">
+  <h2 class="frame-title">8.1 Multinomial coefficients</h2>
+
+  <div class="def-box">
+    For non-negative integers $n_1, n_2, \dots, n_k$ with $n_1 + n_2 + \cdots + n_k = n$, the <strong>multinomial coefficient</strong> is
+    $$\binom{n}{n_1, n_2, \dots, n_k} \;:=\; \frac{n!}{n_1!\,n_2! \cdots n_k!}.$$
+    It counts the number of ways to split $n$ distinct objects into $k$ ordered groups of sizes $n_1, n_2, \dots, n_k$.
+  </div>
+
+  <div class="proof-box">
+    Pick the first group in $\binom{n}{n_1}$ ways. From the remaining $n - n_1$, pick the second group in $\binom{n - n_1}{n_2}$ ways. Continue. Multiplying with the product rule and simplifying:
+    $\binom{n}{n_1}\binom{n - n_1}{n_2} \cdots \binom{n - n_1 - \cdots - n_{k-1}}{n_k} = \frac{n!}{n_1!(n - n_1)!} \cdot \frac{(n - n_1)!}{n_2!(n - n_1 - n_2)!} \cdots = \frac{n!}{n_1!\,n_2! \cdots n_k!}.$ $\square$
+  </div>
+
+  <div class="cor-box">
+    For $k = 2$, $\binom{n}{n_1, n_2} = \binom{n}{n_1}$ — the multinomial reduces to the binomial.
+  </div>
+
+  <div class="ex-box">
+    Distinct anagrams of "MISSISSIPPI" $= \binom{11}{1, 4, 4, 2} = 34{,}650$ (matches slide 8).
+  </div>
+  <p class="ref-cite">Rosen 8e §6.4 Theorem 3.</p>
+  <span class="slide-number">16 / 30</span>
+</section>
+
+<!-- ══ Slide 17 — Multinomial theorem ════════════════════════════════ -->
+<section class="slide" id="s17">
+  <h2 class="frame-title">8.2 Multinomial theorem</h2>
+
+  <div class="thm-box">
+    For any $x_1, x_2, \dots, x_k$ and integer $n \geq 0$:
+    $$(x_1 + x_2 + \cdots + x_k)^n \;=\; \sum_{\substack{n_1 + n_2 + \cdots + n_k = n \\ n_i \geq 0}} \binom{n}{n_1, n_2, \dots, n_k}\, x_1^{n_1} x_2^{n_2} \cdots x_k^{n_k}.$$
+  </div>
+
+  <div class="proof-box">
+    Expand the product of $n$ factors $(x_1 + x_2 + \cdots + x_k)$. Each term comes from picking one $x_{i_j}$ from each factor. The product $x_1^{n_1} \cdots x_k^{n_k}$ arises whenever the multiset of choices contains $n_1$ copies of $x_1$, etc. The number of orderings producing this multiset of choices is the multinomial coefficient (slide 16). $\square$
+  </div>
+
+  <div class="ex-box">
+    Coefficient of $x^2 y^3 z$ in $(x + y + z)^6$:
+    $\binom{6}{2, 3, 1} = \frac{6!}{2!\,3!\,1!} = \frac{720}{2 \cdot 6 \cdot 1} = 60$.
+  </div>
+  <p class="ref-cite">Rosen 8e §6.4 Theorem 3.</p>
+  <span class="slide-number">17 / 30</span>
+</section>
+
+<!-- ══ Slide 18 — Pigeonhole principle ═══════════════════════════════ -->
+<section class="slide" id="s18">
+  <h2 class="frame-title">9.1 Pigeonhole principle (basic form)</h2>
+
+  <div class="thm-box">
+    If $n$ pigeons are placed into $k$ pigeonholes and $n &gt; k$, then at least one hole contains at least $2$ pigeons.
+  </div>
+
+  <div class="proof-box">
+    <em>By contradiction.</em> Suppose every hole has at most $1$ pigeon. Summing over the $k$ holes, the total number of pigeons is at most $k$. But we placed $n &gt; k$ pigeons, contradiction. $\square$
+  </div>
+
+  <div class="ex-box">
+    Among any $13$ dogs, at least two were born in the same month (only $12$ months).<br>
+    In a group of $367$ people, at least two share a birthday (only $366$ possible birthdays counting Feb 29).
+  </div>
+  <p class="ref-cite">Rosen 8e §6.2 Theorem 1.</p>
+  <span class="slide-number">18 / 30</span>
+</section>
+
+<!-- ══ Slide 19 — Generalised pigeonhole ═════════════════════════════ -->
+<section class="slide" id="s19">
+  <h2 class="frame-title">9.2 Generalised pigeonhole principle</h2>
+
+  <div class="thm-box">
+    If $N$ pigeons are placed into $k$ holes, then at least one hole contains at least $\lceil N / k \rceil$ pigeons.
+  </div>
+
+  <div class="proof-box">
+    <em>By contradiction.</em> Suppose every hole has at most $\lceil N/k \rceil - 1$ pigeons. Then the total number of pigeons is at most $k \cdot (\lceil N/k \rceil - 1) &lt; k \cdot (N/k) = N$. (Using $\lceil x \rceil - 1 &lt; x$.) Contradiction. $\square$
+  </div>
+
+  <div class="ex-box">
+    A bank has $1{,}000{,}000$ clients, each with a $4$-letter lowercase password. There are $26^4 = 456{,}976$ possible passwords. By generalised pigeonhole,
+    $\lceil 1{,}000{,}000 / 456{,}976 \rceil = \lceil 2.188\dots \rceil = 3$,
+    so at least one password is shared by at least $3$ clients.
+  </div>
+
+  <div class="ex-box">
+    In any group of $100$ people, at least $\lceil 100/12 \rceil = 9$ share a birth month.
+  </div>
+  <p class="ref-cite">Rosen 8e §6.2 Theorem 2.</p>
+  <span class="slide-number">19 / 30</span>
+</section>
+
+<!-- ══ Slide 20 — Pigeonhole applications ════════════════════════════ -->
+<section class="slide" id="s20">
+  <h2 class="frame-title">9.3 Pigeonhole — selected applications</h2>
+
+  <div class="thm-box">
+    Among any $11$ integers, some two have the same last digit.
+  </div>
+  <div class="proof-box">
+    There are only $10$ possible last digits ($0$ through $9$). By pigeonhole on $11$ pigeons / $10$ holes, two integers share a last digit. $\square$
+  </div>
+
+  <div class="thm-box">
+    In any sequence of $n^2 + 1$ distinct real numbers, there is a monotone (increasing or decreasing) subsequence of length $n + 1$. (Erdős–Szekeres, 1935.)
+  </div>
+  <div class="proof-box">
+    <em>Sketch.</em> Label each term with the pair $(i_k, d_k)$ where $i_k$ (resp. $d_k$) is the length of the longest increasing (resp. decreasing) subsequence ending at position $k$. If no subsequence of length $n+1$ exists, both coordinates lie in $\{1, \dots, n\}$, giving at most $n^2$ distinct labels — but we have $n^2 + 1$ terms, contradicting the fact that distinct positions force distinct labels (because distinct values either grow or shrink the relevant subsequence). $\square$
+  </div>
+  <p class="ref-cite">Rosen 8e §6.2 Examples; Erdős &amp; Szekeres 1935.</p>
+  <span class="slide-number">20 / 30</span>
+</section>
+
+<!-- ══ Slide 21 — Inclusion-exclusion ════════════════════════════════ -->
+<section class="slide" id="s21">
+  <h2 class="frame-title">10.1 Inclusion–exclusion principle</h2>
+
+  <div class="thm-box">
+    For finite sets $A_1, A_2, \dots, A_n$:
+    $$\Bigl| \bigcup_{i=1}^{n} A_i \Bigr| \;=\; \sum_{i} |A_i| \;-\; \sum_{i &lt; j} |A_i \cap A_j| \;+\; \sum_{i &lt; j &lt; k} |A_i \cap A_j \cap A_k| \;-\; \cdots \;+\; (-1)^{n-1} \Bigl| \bigcap_{i=1}^{n} A_i \Bigr|.$$
+  </div>
+
+  <div class="proof-box">
+    Each element $x$ of $\bigcup A_i$ belongs to a non-empty index set $I_x \subseteq \{1, \dots, n\}$. Its contribution to the right side is $\sum_{\varnothing \neq T \subseteq I_x} (-1)^{|T|+1}$. By the binomial identity $\sum_{k=0}^{m}(-1)^k \binom{m}{k} = 0$ for $m \geq 1$, this sum equals $1$. So each element is counted exactly once on the right, matching $|\bigcup A_i|$. $\square$
+  </div>
+
+  <div class="ex-box">
+    Two-set case: $|A \cup B| = |A| + |B| - |A \cap B|$. <br>
+    Three-set case: $|A \cup B \cup C| = |A| + |B| + |C| - |A \cap B| - |A \cap C| - |B \cap C| + |A \cap B \cap C|$.
+  </div>
+
+  <div class="ex-box">
+    How many positive integers $\leq 100$ are divisible by $2$, $3$ or $5$? Let $A_p$ = divisible by $p$. Then $|A_p| = \lfloor 100/p \rfloor$:
+    $|A_2 \cup A_3 \cup A_5| = 50 + 33 + 20 - 16 - 10 - 6 + 3 = 74$.
+  </div>
+  <p class="ref-cite">Rosen 8e §8.5; Tucker §8.1.</p>
+  <span class="slide-number">21 / 30</span>
+</section>
+
+<!-- ══ Slide 22 — Vandermonde, hockey-stick ══════════════════════════ -->
+<section class="slide" id="s22">
+  <h2 class="frame-title">11. Vandermonde &amp; hockey-stick identities</h2>
+
+  <div class="thm-box">
+    <strong>Vandermonde's identity.</strong> $\displaystyle \binom{m + n}{r} \;=\; \sum_{k=0}^{r} \binom{m}{k} \binom{n}{r - k}.$
+  </div>
+  <div class="proof-box">
+    <strong>Combinatorial.</strong> The LHS counts $r$-subsets of $\{1, \dots, m + n\}$. Split this set into the first $m$ and last $n$ elements: any $r$-subset contains $k$ elements from the first part and $r - k$ from the second, for some $0 \leq k \leq r$. The number of such subsets is $\binom{m}{k} \binom{n}{r-k}$; summing over $k$ gives the RHS. $\square$
+  </div>
+
+  <div class="thm-box">
+    <strong>Hockey-stick identity.</strong> For $n \geq r \geq 0$:
+    $\displaystyle \sum_{i=r}^{n} \binom{i}{r} \;=\; \binom{n+1}{r+1}.$
+  </div>
+  <div class="proof-box">
+    <em>Induction on $n$.</em> Base $n = r$: $\binom{r}{r} = 1 = \binom{r+1}{r+1}$. Step: assume the identity at $n$. Then
+    $\sum_{i=r}^{n+1} \binom{i}{r} = \binom{n+1}{r+1} + \binom{n+1}{r} = \binom{n+2}{r+1}$ (Pascal's identity, slide 10). $\square$
+  </div>
+  <p class="ref-cite">Rosen 8e §6.4 Theorems 4 &amp; 5.</p>
+  <span class="slide-number">22 / 30</span>
+</section>
+
+<!-- ══ Slide 23 — Worked example: poker hands ════════════════════════ -->
+<section class="slide" id="s23">
+  <h2 class="frame-title">12.1 Worked example — poker hands</h2>
+
+  <p>A standard $52$-card deck has $4$ suits and $13$ ranks. A poker hand is $5$ cards from the deck.</p>
+
+  <ul>
+    <li><strong>Total hands:</strong> $\binom{52}{5} = 2{,}598{,}960$.</li>
+    <li><strong>Royal flush</strong> (10–J–Q–K–A of one suit): $4$ hands.</li>
+    <li><strong>Four of a kind</strong>: choose the rank ($13$), the four suits (only $1$ way: all of them), then the fifth card (any of the remaining $48$). Total: $13 \cdot 48 = 624$.</li>
+    <li><strong>Full house</strong> (three of a rank + pair of another): $13 \cdot \binom{4}{3} \cdot 12 \cdot \binom{4}{2} = 13 \cdot 4 \cdot 12 \cdot 6 = 3{,}744$.</li>
+    <li><strong>Flush</strong> (5 cards of one suit, not in sequence): $4 \cdot \binom{13}{5} - $ (straight flushes) $= 4 \cdot 1287 - 40 = 5{,}108$.</li>
+    <li><strong>Two pairs</strong>: $\binom{13}{2} \cdot \binom{4}{2}^2 \cdot 11 \cdot 4 = 78 \cdot 36 \cdot 44 = 123{,}552$.</li>
+  </ul>
+
+  <p>The remaining hand probabilities follow the same recipe — choose ranks, then suits, then any remaining "kicker" cards, using product and sum rules.</p>
+  <p class="ref-cite">Tucker §5.3; Concrete Mathematics §5.</p>
+  <span class="slide-number">23 / 30</span>
+</section>
+
+<!-- ══ Slide 24 — Worked example: derangements ═══════════════════════ -->
+<section class="slide" id="s24">
+  <h2 class="frame-title">12.2 Worked example — derangements via inclusion–exclusion</h2>
+
+  <div class="def-box">
+    A <strong>derangement</strong> of $\{1, \dots, n\}$ is a permutation $\sigma$ with $\sigma(i) \neq i$ for every $i$ — no fixed points. Their count is denoted $D_n$ (or $!n$, "subfactorial").
+  </div>
+
+  <div class="thm-box">
+    $\displaystyle D_n \;=\; n!\,\sum_{k=0}^{n}\frac{(-1)^k}{k!}.$ Equivalently, $D_n$ is the nearest integer to $n!/e$.
+  </div>
+
+  <div class="proof-box">
+    Let $A_i$ = "permutations fixing $i$". Then permutations with at least one fixed point form $\bigcup A_i$, and derangements are the complement. For $|T| = k$, $|A_{i_1} \cap \cdots \cap A_{i_k}| = (n - k)!$ (the other $n - k$ positions are free). By inclusion–exclusion,
+    $|A_1 \cup \cdots \cup A_n| = \sum_{k=1}^{n} (-1)^{k+1} \binom{n}{k}(n-k)!$.
+    Hence $D_n = n! - \sum_{k=1}^{n}(-1)^{k+1}\binom{n}{k}(n-k)! = n!\sum_{k=0}^{n}(-1)^k/k!$. $\square$
+  </div>
+
+  <div class="ex-box">
+    $D_1 = 0$, $D_2 = 1$, $D_3 = 2$, $D_4 = 9$, $D_5 = 44$, $D_6 = 265$, $D_7 = 1854$, $D_{10} = 1{,}334{,}961$. As $n \to \infty$, $D_n / n! \to 1/e \approx 0.3679$ — about $37\%$ of all permutations are derangements.
+  </div>
+  <p class="ref-cite">Rosen 8e §8.6; Tucker §8.2.</p>
+  <span class="slide-number">24 / 30</span>
+</section>
+
+<!-- ══ Slide 25 — Python toolbox ═════════════════════════════════════ -->
+<section class="slide" id="s25">
+  <h2 class="frame-title">13. Python toolbox</h2>
+
+  <div class="setup-block">
+    <span class="pane-label">Python — imports (run once)</span>
+    <span class="pane-code">from math import factorial, comb, perm
+from itertools import permutations, combinations, product
+from itertools import combinations_with_replacement
+from sympy import binomial, multinomial_coefficients, Sum, symbols, oo, Rational</span>
+  </div>
+
+  <div class="python-block">
+    <span class="pane-label">Python — basic counts</span>
+    <span class="pane-code">print(factorial(9))              # 362880    — 9!
+print(perm(9, 3))                # 504       — P(9, 3)
+print(comb(12, 5))               # 792       — C(12, 5)
+print(comb(13, 10))              # 286       — stars and bars (4 children, 10 candies)</span>
+  </div>
+
+  <div class="python-block">
+    <span class="pane-label">Python — enumerate arrangements</span>
+    <span class="pane-code">A = ['a', 'b', 'c', 'd']
+
+# All 4-permutations (24 of them)
+list(permutations(A, 4))
+
+# All 3-permutations (= P(4,3) = 24)
+list(permutations(A, 3))
+
+# All 2-combinations (= C(4,2) = 6)
+list(combinations(A, 2))
+
+# All 2-combinations with repetition (= 10)
+list(combinations_with_replacement(A, 2))</span>
+  </div>
+
+  <div class="sympy-block">
+    <span class="pane-label">SymPy — symbolic identities</span>
+    <span class="pane-code">n, k = symbols('n k', integer=True, nonnegative=True)
+print(Sum(binomial(n, k), (k, 0, n)).doit())     # 2**n
+print(binomial(11, 4) - binomial(10, 3) - binomial(10, 4))  # 0  (Pascal's identity)</span>
+  </div>
+  <span class="slide-number">25 / 30</span>
+</section>
+
+<!-- ══ Slide 26 — Lab: simulating pigeonhole ═════════════════════════ -->
+<section class="slide" id="s26">
+  <h2 class="frame-title">14. Lab — simulating the birthday paradox</h2>
+
+  <p>How many people must be in a room before the probability of two sharing a birthday exceeds $1/2$? Counting the complement:</p>
+  $$P(\text{all distinct}) \;=\; \frac{365 \cdot 364 \cdots (365 - n + 1)}{365^n} \;=\; \frac{P(365, n)}{365^n}.$$
+  <p>The probability of at least one collision is $1 - P(\text{all distinct})$. Numerical answer: at $n = 23$ the probability already exceeds $0.5$.</p>
+
+  <div class="python-block">
+    <span class="pane-label">Python — analytic birthday probability</span>
+    <span class="pane-code">from math import perm
+def birthday(n, d=365):
+    return 1 - perm(d, n) / d**n
+
+for n in (10, 20, 23, 30, 50):
+    print(f"n={n:3d}  P(collision) = {birthday(n):.4f}")
+# n= 10  P(collision) = 0.1169
+# n= 20  P(collision) = 0.4114
+# n= 23  P(collision) = 0.5073
+# n= 30  P(collision) = 0.7063
+# n= 50  P(collision) = 0.9704</span>
+  </div>
+
+  <div class="python-block">
+    <span class="pane-label">Python — Monte-Carlo confirmation</span>
+    <span class="pane-code">import random
+def trial(n, d=365):
+    bdays = [random.randint(1, d) for _ in range(n)]
+    return len(set(bdays)) &lt; n        # True iff there is a collision
+
+def estimate(n, trials=100_000):
+    hits = sum(trial(n) for _ in range(trials))
+    return hits / trials
+
+print(estimate(23))  # ≈ 0.507</span>
+  </div>
+  <p class="ref-cite">Tucker §5.7; Concrete Mathematics §5.</p>
+  <span class="slide-number">26 / 30</span>
+</section>
+
+<!-- ══ Slide 27 — Strategy guide ═════════════════════════════════════ -->
+<section class="slide" id="s27">
+  <h2 class="frame-title">15. Strategy — picking the right counting formula</h2>
+
+  <table class="ref-table">
+    <thead><tr><th>You see…</th><th>Reach for…</th></tr></thead>
+    <tbody>
+      <tr><td>"or" between disjoint cases</td><td>Sum rule (slide 3)</td></tr>
+      <tr><td>"then" / "and" / sequential choices</td><td>Product rule (slide 4)</td></tr>
+      <tr><td>Arrangements of all $n$ items</td><td>$n!$ (slide 6)</td></tr>
+      <tr><td>$k$ items chosen, order matters, no repetition</td><td>$P(n, k)$ (slide 7)</td></tr>
+      <tr><td>$k$ items chosen, order ignored, no repetition</td><td>$\binom{n}{k}$ (slide 9)</td></tr>
+      <tr><td>$k$ items chosen, order ignored, repetition allowed</td><td>$\binom{n+k-1}{k}$ (slide 13)</td></tr>
+      <tr><td>Split $n$ distinct items into ordered groups</td><td>Multinomial $\binom{n}{n_1,\dots,n_k}$ (slide 16)</td></tr>
+      <tr><td>Arrangements with repeated identical items</td><td>$n!/(n_1! \cdots n_k!)$ (slide 8)</td></tr>
+      <tr><td>"Must contain at least two of …"</td><td>Pigeonhole (slide 18) or generalised (slide 19)</td></tr>
+      <tr><td>"At least one of $A$, $B$, $C$"</td><td>Inclusion–exclusion (slide 21)</td></tr>
+      <tr><td>Coefficient of a monomial in $(x_1 + \dots + x_k)^n$</td><td>Multinomial theorem (slide 17)</td></tr>
+    </tbody>
+  </table>
+  <p class="ref-cite">Rosen 8e §6.5; Tucker chapter strategy.</p>
+  <span class="slide-number">27 / 30</span>
+</section>
+
+<!-- ══ Slide 28 — Summary ════════════════════════════════════════════ -->
+<section class="slide" id="s28">
+  <h2 class="frame-title">16. Summary — what we proved</h2>
+
+  <ul>
+    <li><strong>Sum and product rules</strong> — combinatorial counterparts of $|A \cup B| = |A| + |B|$ (disjoint) and $|A \times B| = |A|\,|B|$.</li>
+    <li><strong>Permutations:</strong> $n!$ arrangements of $n$ distinct objects; $P(n, k) = n!/(n-k)!$ $k$-permutations; with repetition the multinomial division formula.</li>
+    <li><strong>Combinations:</strong> $\binom{n}{k} = n!/(k!(n-k)!)$ derived from $P(n,k) = k! \binom{n}{k}$.</li>
+    <li><strong>Pascal's identity</strong> $\binom{n}{k} = \binom{n-1}{k-1} + \binom{n-1}{k}$ — proved combinatorially and algebraically.</li>
+    <li><strong>Binomial theorem</strong> — proved by counting and by induction; Vandermonde and hockey-stick as consequences.</li>
+    <li><strong>Stars and bars:</strong> $\binom{n + k - 1}{k}$ for multisets / non-negative integer solutions of $x_1 + \cdots + x_n = k$.</li>
+    <li><strong>Multinomial theorem</strong> generalises the binomial theorem to $k$ variables.</li>
+    <li><strong>Pigeonhole principle</strong> — basic and generalised — proved by contradiction; Erdős–Szekeres as a consequence.</li>
+    <li><strong>Inclusion–exclusion</strong> proved; derangement count $D_n \to n!/e$ as a consequence.</li>
+  </ul>
+  <span class="slide-number">28 / 30</span>
+</section>
+
+<!-- ══ Slide 29 — Wolfram → Python reference ═════════════════════════ -->
+<section class="slide" id="s29">
+  <h2 class="frame-title">17. Wolfram → Python quick reference</h2>
+
+  <table class="ref-table">
+    <thead><tr><th>Operation</th><th>Wolfram</th><th>Python / SymPy</th></tr></thead>
+    <tbody>
+      <tr><td>Factorial</td><td><code>n!</code></td><td><code>math.factorial(n)</code></td></tr>
+      <tr><td>Falling factorial / $P(n,k)$</td><td><code>FactorialPower[n, k]</code></td><td><code>math.perm(n, k)</code></td></tr>
+      <tr><td>Binomial $\binom{n}{k}$</td><td><code>Binomial[n, k]</code></td><td><code>math.comb(n, k)</code> · <code>sympy.binomial(n, k)</code></td></tr>
+      <tr><td>Multinomial $\binom{n}{n_1,\dots,n_k}$</td><td><code>Multinomial[n1, …, nk]</code></td><td><code>factorial(n)//prod(factorial(ni) for ni in v)</code></td></tr>
+      <tr><td>All permutations of a list</td><td><code>Permutations[L]</code></td><td><code>itertools.permutations(L)</code></td></tr>
+      <tr><td>All combinations of size $k$</td><td><code>Subsets[L, {k}]</code></td><td><code>itertools.combinations(L, k)</code></td></tr>
+      <tr><td>Combinations with repetition</td><td><code>Tuples[L, k]</code> (with sort)</td><td><code>itertools.combinations_with_replacement(L, k)</code></td></tr>
+      <tr><td>Catalan number</td><td><code>CatalanNumber[n]</code></td><td><code>sympy.catalan(n)</code></td></tr>
+      <tr><td>Stirling subset $S(n,k)$</td><td><code>StirlingS2[n, k]</code></td><td><code>sympy.functions.combinatorial.numbers.stirling(n, k)</code></td></tr>
+    </tbody>
+  </table>
+  <span class="slide-number">29 / 30</span>
+</section>
+
+<!-- ══ Slide 30 — Bibliography ═══════════════════════════════════════ -->
+<section class="slide" id="s30">
+  <h2 class="frame-title">Bibliography</h2>
+  <ul>
+    <li>K. H. Rosen. <em>Discrete Mathematics and Its Applications</em>, 8th ed., McGraw-Hill, 2019 — §6.1 (basics of counting), §6.2 (pigeonhole), §6.3 (permutations and combinations), §6.4 (binomial coefficients), §6.5 (combinations with repetition), §8.5–8.6 (inclusion–exclusion, derangements).</li>
+    <li>A. Tucker. <em>Applied Combinatorics</em>, 6th ed., Wiley, 2012 — ch. 5–6.</li>
+    <li>R. L. Graham, D. E. Knuth, O. Patashnik. <em>Concrete Mathematics</em>, 2nd ed., Addison-Wesley, 1994 — ch. 5 (binomial coefficients).</li>
+    <li>R. P. Stanley. <em>Enumerative Combinatorics, vol. 1</em>, 2nd ed., Cambridge UP, 2011 — ch. 1.</li>
+    <li>P. Erdős &amp; G. Szekeres (1935). <em>A combinatorial problem in geometry</em>, Compositio Math. 2.</li>
+    <li>OEIS — On-Line Encyclopedia of Integer Sequences. oeis.org (factorials A000142, binomials A007318, derangements A000166, Catalan A000108).</li>
+  </ul>
+
+  <p style="margin-top:1rem;color:#e67e22;font-style:italic;font-weight:600;">Notes By Pr. El Hadiq Zouhair</p>
+  <span class="slide-number">30 / 30</span>
+</section>
+
+<!-- ── Navigation ─────────────────────────────────────────────────── -->
+<div id="nav">
+  <button id="btn-prev"   title="Previous">&#8592;</button>
+  <button id="btn-scroll" title="Toggle slideshow">Slideshow</button>
+  <button id="btn-next"   title="Next">&#8594;</button>
+</div>
+
+<script>
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  let current = 0, slideshowMode = false;
+
+  function enter(i) {
+    slides[current].classList.remove('active');
+    current = (i + slides.length) % slides.length;
+    slides[current].classList.add('active');
+    slides[current].scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  document.getElementById('btn-prev').addEventListener('click', () => {
+    if (slideshowMode) enter(current - 1);
+  });
+  document.getElementById('btn-next').addEventListener('click', () => {
+    if (slideshowMode) enter(current + 1);
+  });
+  document.getElementById('btn-scroll').addEventListener('click', () => {
+    slideshowMode = !slideshowMode;
+    document.body.classList.toggle('slideshow', slideshowMode);
+    document.getElementById('btn-scroll').textContent = slideshowMode ? 'Scroll' : 'Slideshow';
+    if (slideshowMode) slides[current].classList.add('active');
+    else slides.forEach(s => s.classList.remove('active'));
+  });
+
+  document.addEventListener('keydown', e => {
+    if (!slideshowMode) return;
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') enter(current + 1);
+    if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   enter(current - 1);
+  });
+</script>
+</body>
+</html>

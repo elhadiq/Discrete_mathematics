@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Discrete Mathematics — </title>
+<title>Discrete Mathematics — Pr. El Hadiq Zouhair &amp; Pr. Ismail Bouishak</title>
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -62,6 +62,24 @@ body {
   font-size: .88rem; color: var(--orange2); font-weight: 600;
 }
 .hero .prof span { color: rgba(255,255,255,.6); font-weight: 400; }
+.hero .v2-banner {
+  display: inline-block;
+  margin: 6px auto 16px;
+  padding: 6px 16px;
+  background: rgba(39,174,96,.18);
+  border: 1px solid rgba(39,174,96,.5);
+  border-radius: 20px;
+  color: #d4f4dd; font-size: .82rem;
+}
+.hero .v2-banner strong { color: #fff; }
+.v2-tag {
+  display: inline-block;
+  background: #e8f5ec;
+  color: #1e824c;
+  font-size: .65rem; font-weight: 800; letter-spacing: .08em;
+  padding: 2px 7px; border-radius: 10px;
+  margin-left: 6px; vertical-align: middle;
+}
 
 /* ── CTA button ───────────────────────────────────────────────────── */
 .btn {
@@ -244,6 +262,16 @@ body {
   color: #fff;
   border-color: #27ae60;
 }
+.lesson-card .l-links a.xml {
+  background: #fff7e0;
+  border: 1px solid #c89324;
+  color: #6e4b0a;
+}
+.lesson-card .l-links a.xml:hover {
+  background: #c89324;
+  color: #fff;
+  border-color: #c89324;
+}
 
 /* ── Footer ───────────────────────────────────────────────────────── */
 .footer {
@@ -262,6 +290,7 @@ body {
   <div class="label">DMath</div>
   <h1>Discrete Mathematics</h1>
   <p class="sub">Logic · Sets · Proofs · Counting · Graphs</p>
+  <p class="v2-banner">📚 8 <strong>Full Courses (v2)</strong> available — every notion defined, every theorem proved</p>
   <div class="team">
     <div class="prof">Pr. Zouhair El Hadiq <span>· Co-instructor</span></div>
     <div class="prof">Pr. Ismail Bouishak <span>· Co-instructor</span></div>
@@ -286,6 +315,11 @@ body {
       <div class="qc-label">Assignment 1</div>
       <div class="qc-sub">Logic &amp; Equivalences</div>
     </a>
+    <a class="quick-card" href="Content/logic/Lesson2/propositional_v2.html">
+      <span class="qc-icon">📚</span>
+      <div class="qc-label">Latest Full Course</div>
+      <div class="qc-sub">Start with Propositional v2</div>
+    </a>
   </div>
 
   <!-- 📚 Sessions (only headers visible) -->
@@ -300,7 +334,7 @@ body {
         <div class="seq-weeks">Propositions · Equivalences · Quantifiers · Inference</div>
       </div>
       <div class="seq-footer">
-        <span class="count">5 lessons</span>
+        <span class="count">5 lessons</span><span class="v2-tag">3 v2</span>
         <span class="chevron">▸</span>
       </div>
     </div>
@@ -313,32 +347,34 @@ body {
         <div class="seq-weeks">Sets · Operations · Relations &amp; Functions · Sequences &amp; Series</div>
       </div>
       <div class="seq-footer">
-        <span class="count">4 lessons</span>
+        <span class="count">4 lessons</span><span class="v2-tag">2 v2</span>
         <span class="chevron">▸</span>
       </div>
     </div>
 
-    <!-- Session 3 · Coming soon -->
-    <div class="session coming">
+    <!-- Session 3 · Proofs and Recursions -->
+    <div class="session" data-target="panel-proofs">
       <div class="seq-head">
         <div class="seq-num">Session 3 · Weeks 8–10</div>
         <div class="seq-name">Proofs and Recursions</div>
         <div class="seq-weeks">Proof Techniques · Induction · Recursion</div>
       </div>
       <div class="seq-footer">
-        <span class="coming-tag">Coming soon</span>
+        <span class="count">1 combined lesson</span><span class="v2-tag">v2</span>
+        <span class="chevron">▸</span>
       </div>
     </div>
 
-    <!-- Session 4 · Coming soon -->
-    <div class="session coming">
+    <!-- Session 4 · Counting -->
+    <div class="session" data-target="panel-counting">
       <div class="seq-head">
         <div class="seq-num">Session 4 · Weeks 11–12</div>
         <div class="seq-name">Counting</div>
-        <div class="seq-weeks">Permutations · Combinations · Binomial</div>
+        <div class="seq-weeks">Permutations · Combinations · Binomial Identities</div>
       </div>
       <div class="seq-footer">
-        <span class="coming-tag">Coming soon</span>
+        <span class="count">2 lessons</span><span class="v2-tag">2 v2</span>
+        <span class="chevron">▸</span>
       </div>
     </div>
 
@@ -473,6 +509,70 @@ body {
     </div>
   </div>
 
+  <!-- Panel: Proofs and Recursions -->
+  <div class="course-panel" id="panel-proofs">
+    <div class="panel-title">📐 Session 3 · Proofs and Recursions — combined full course</div>
+    <div class="lesson-grid">
+
+      <div class="lesson-card">
+        <div class="l-num">Lesson 1</div>
+        <div class="l-name">Proof Techniques</div>
+        <div class="l-links">
+          <a class="lecture" href="Content/5%20Proofs%20and%20Recursions/1%20Proofs/Lesson/proofs.html">📖 Lecture</a>
+          <a href="Content/5%20Proofs%20and%20Recursions/1%20Proofs/Lesson/exercises_proofs_enonces.html">✏️ Exercises</a>
+        </div>
+      </div>
+
+      <div class="lesson-card">
+        <div class="l-num">Lesson 2</div>
+        <div class="l-name">Mathematical Induction</div>
+        <div class="l-links">
+          <a class="lecture" href="Content/5%20Proofs%20and%20Recursions/2%20Mathematical%20Induction/Lesson/induction.html">📖 Lecture</a>
+          <a href="Content/5%20Proofs%20and%20Recursions/2%20Mathematical%20Induction/Lesson/exercises_induction_enonces.html">✏️ Exercises</a>
+        </div>
+      </div>
+
+      <div class="lesson-card">
+        <div class="l-num">Lessons 1 + 2</div>
+        <div class="l-name">Proofs &amp; Induction — Combined</div>
+        <div class="l-links">
+          <a class="full" href="Content/5%20Proofs%20and%20Recursions/1%20Proofs/Lesson/proofs_and_induction_v2.html" title="Combined full course — every notion defined, every theorem proved, well-ordering ≡ weak ≡ strong induction">📚 Full Course (combined)</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Panel: Counting -->
+  <div class="course-panel" id="panel-counting">
+    <div class="panel-title">🔢 Session 4 · Counting — 2 lessons</div>
+    <div class="lesson-grid">
+
+      <div class="lesson-card">
+        <div class="l-num">Lesson 1</div>
+        <div class="l-name">Permutations &amp; Combinations</div>
+        <div class="l-links">
+          <a class="full" href="Content/3%20Counting/Permutations%20and%20Combinations/Lesson/permutations_and_combinations_v2.html" title="Full course — every notion defined, every theorem proved">📚 Full Course</a>
+          <a href="Content/3%20Counting/Permutations%20and%20Combinations/Lesson/exercises_permutations_combinations_enonces.html" title="8 exercises — 4 Python labs + 4 math problems (no solutions)">✏️ Exercises</a>
+          <a class="lecture" href="Content/3%20Counting/Permutations%20and%20Combinations/Lesson/exercises_permutations_combinations.html" title="Same 8 exercises with detailed solutions">✅ Solutions</a>
+          <a class="xml" href="Content/3%20Counting/Permutations%20and%20Combinations/Lesson/exercises_permutations_combinations.xml" title="Moodle quiz XML — 4 CodeRunner Python labs + 4 STACK math exercises">📦 Moodle XML (8)</a>
+        </div>
+      </div>
+
+      <div class="lesson-card">
+        <div class="l-num">Lesson 2</div>
+        <div class="l-name">Binomial Identities</div>
+        <div class="l-links">
+          <a class="full" href="Content/3%20Counting/Binomial%20Identities/Lesson/binomial_identities_v2.html" title="Full course — Pascal, binomial theorem, Vandermonde, hockey-stick, sum of squares, Catalan, all proved">📚 Full Course</a>
+          <a href="Content/3%20Counting/Binomial%20Identities/Lesson/exercises_binomial_identities_enonces.html" title="8 exercises — 4 Python labs + 4 math problems (no solutions)">✏️ Exercises</a>
+          <a class="lecture" href="Content/3%20Counting/Binomial%20Identities/Lesson/exercises_binomial_identities.html" title="Same 8 exercises with detailed solutions">✅ Solutions</a>
+          <a class="xml" href="Content/3%20Counting/Binomial%20Identities/Lesson/exercises_binomial_identities.xml" title="Moodle quiz XML — 4 CodeRunner Python labs + 4 STACK math exercises">📦 Moodle XML (8)</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
   <div class="footer">
     Discrete Mathematics · DMath<br/>
     Pr. Zouhair El Hadiq  &amp;  Pr. Ismail Bouishak
@@ -483,7 +583,6 @@ body {
 <script>
   // Click a session header → toggle its course panel (only one open at a time)
   document.querySelectorAll('.session[data-target]').forEach(card => {
-    card.addEventListener('click', () => {
     card.addEventListener('click', () => {
       const id    = card.dataset.target;
       const panel = document.getElementById(id);

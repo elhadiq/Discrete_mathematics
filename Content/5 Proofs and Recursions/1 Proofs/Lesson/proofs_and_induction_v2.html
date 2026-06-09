@@ -1,0 +1,1112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Proofs &amp; Mathematical Induction — Full Course v2 — Discrete Mathematics</title>
+<script>
+  MathJax = {
+    tex: { inlineMath: [['$','$']], displayMath: [['$$','$$']], processEscapes: true },
+    options: { skipHtmlTags: ['script','noscript','style','textarea'] }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --orange:    #e67e22;
+  --darkblue:  #2c3e50;
+  --lightbg:   #f4f9fc;
+  --rowred:    #ffe8e8;
+  --rowblue:   #e3eeff;
+  --border:    #dce3ea;
+  --py-fg:     #1f4e7a;
+  --py-bg:     #eaf3fb;
+  --py-border: #2a6fb3;
+  --py-head:   #2a6fb3;
+  --sp-fg:     #1e824c;
+  --sp-bg:     #e8f5ec;
+  --sp-border: #27ae60;
+  --sp-head:   #27ae60;
+  --su-fg:     #4a4aaa;
+  --su-bg:     #eeeeff;
+  --su-border: #6060cc;
+  --su-head:   #6060cc;
+  --out-fg:    #6e4b0a;
+  --out-bg:    #fff7e0;
+  --out-border:#e0b341;
+  --out-head:  #c89324;
+}
+
+body {
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  background: #e8edf2;
+  color: var(--darkblue);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem 1rem 5rem;
+  gap: 2rem;
+}
+
+.slide {
+  background: #fff;
+  width: 100%;
+  max-width: 940px;
+  border-radius: 10px;
+  box-shadow: 0 4px 18px rgba(0,0,0,.10);
+  padding: 2.2rem 2.8rem 1.8rem;
+  position: relative;
+}
+.slide-number {
+  position: absolute;
+  bottom: 0.7rem;
+  right: 1.2rem;
+  font-size: 0.72rem;
+  color: #aaa;
+}
+
+.slide.title-slide {
+  background: linear-gradient(145deg, #f4f9fc 60%, #e0eef7);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 240px;
+  text-align: center;
+  border-top: 6px solid var(--orange);
+}
+.slide.title-slide h1 { font-size: 1.85rem; color: var(--darkblue); margin-bottom: 0.4rem; }
+.slide.title-slide .subtitle { font-size: 1.1rem; color: #555; }
+.slide.title-slide .author   { font-size: 1rem; color: var(--orange); margin-top: 0.7rem; font-style: italic; }
+
+.part-slide {
+  background: linear-gradient(145deg, #fdf3e7 60%, #f9e4cc);
+  text-align: center;
+  border-left: 6px solid var(--orange);
+}
+.part-slide .part-label {
+  font-size: .85rem; letter-spacing: .2em; text-transform: uppercase;
+  color: var(--orange); font-weight: 700;
+}
+.part-slide h2 { color: var(--darkblue); font-size: 1.7rem; margin: 0.5rem 0; }
+.part-slide p  { color: #666; }
+
+h2.frame-title {
+  font-size: 1.55rem;
+  color: var(--orange);
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  padding-bottom: 0.35rem;
+  border-bottom: 2px solid #f9e4cc;
+}
+h3.sub-title {
+  font-size: 1.05rem;
+  color: var(--orange);
+  font-weight: 600;
+  margin: 0.7rem 0 0.3rem;
+}
+
+p { line-height: 1.7; margin: 0.45rem 0; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.4rem; line-height: 1.8; }
+ul li::marker, ol li::marker { color: var(--orange); }
+code { background: #f0f3f7; color: #1f4e7a; padding: 0 .25em; border-radius: 3px; font-family: 'Consolas','Fira Code',monospace; }
+
+.note-box, .def-box, .thm-box, .proof-box, .ex-box, .ce-box, .cor-box, .pitfall-box {
+  border-radius: 6px;
+  padding: 0.7rem 1rem;
+  margin: 0.6rem 0;
+  line-height: 1.7;
+}
+.note-box  { background: #fff5e8; border-left: 4px solid var(--orange); font-style: italic; }
+.def-box   { background: #eaf3fb; border-left: 4px solid var(--py-border); }
+.def-box::before  { content: "Definition. "; font-weight: 700; color: var(--py-border); }
+.thm-box   { background: #fff7e0; border-left: 4px solid var(--out-border); }
+.thm-box::before  { content: "Theorem. "; font-weight: 700; color: var(--out-head); }
+.cor-box   { background: #fff7e0; border-left: 4px solid var(--out-border); }
+.cor-box::before  { content: "Corollary. "; font-weight: 700; color: var(--out-head); }
+.proof-box { background: #f4f9fc; border-left: 4px solid var(--darkblue); }
+.proof-box::before { content: "Proof. "; font-weight: 700; color: var(--darkblue); }
+.ex-box    { background: #e8f5ec; border-left: 4px solid var(--sp-border); }
+.ex-box::before    { content: "Example. "; font-weight: 700; color: var(--sp-border); }
+.ce-box    { background: #ffe8e8; border-left: 4px solid #c0395a; }
+.ce-box::before    { content: "Counter-example. "; font-weight: 700; color: #c0395a; }
+.pitfall-box { background: #ffe8e8; border-left: 4px solid #c0395a; }
+.pitfall-box::before { content: "Pitfall. "; font-weight: 700; color: #c0395a; }
+
+.python-block, .setup-block, .sympy-block, .output-block {
+  border-radius: 6px;
+  overflow: hidden;
+  margin: 0.6rem 0;
+  border: 1px solid;
+}
+.pane-label {
+  display: block;
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  color: #fff;
+}
+.pane-code {
+  font-family: 'Consolas','Fira Code',monospace;
+  font-size: 0.83rem;
+  line-height: 1.6;
+  padding: 0.5rem 0.75rem;
+  white-space: pre;
+  display: block;
+  overflow-x: auto;
+}
+.python-block { border-color: var(--py-border); }
+.python-block .pane-label { background: var(--py-head); }
+.python-block .pane-code  { background: var(--py-bg); color: var(--py-fg); }
+.sympy-block  { border-color: var(--sp-border); }
+.sympy-block  .pane-label { background: var(--sp-head); }
+.sympy-block  .pane-code  { background: var(--sp-bg); color: var(--sp-fg); }
+.setup-block  { border-color: var(--su-border); }
+.setup-block  .pane-label { background: var(--su-head); }
+.setup-block  .pane-code  { background: var(--su-bg); color: var(--su-fg); }
+
+.ref-table {
+  border-collapse: collapse;
+  margin: 0.6rem auto;
+  font-size: 0.9rem;
+  width: 100%;
+}
+.ref-table th, .ref-table td {
+  border: 1px solid var(--border);
+  padding: 0.4rem 0.75rem;
+  text-align: left;
+  vertical-align: top;
+}
+.ref-table th { background: var(--lightbg); font-weight: 600; color: var(--darkblue); }
+
+.proof-list { list-style: none; padding-left: 0; margin: 0.5rem 0; }
+.proof-list li {
+  display: grid;
+  grid-template-columns: 1.8rem 1fr auto;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.22rem 0.4rem;
+  border-bottom: 1px dashed var(--border);
+}
+.proof-list li:last-child { border-bottom: none; }
+.proof-list .lbl  { font-weight: 700; color: var(--orange); text-align: right; }
+.proof-list .just { font-size: 0.82rem; color: #555; text-align: right; }
+.proof-list li.qed { background: #fdf3e7; border-radius: 6px; border-bottom: none; }
+.concl { color: var(--orange); font-weight: 700; }
+
+#nav { position: fixed; bottom: 1.5rem; right: 1.5rem; display: flex; gap: 0.4rem; z-index: 100; }
+#nav button {
+  background: var(--orange); color: #fff; border: none;
+  border-radius: 50%; width: 40px; height: 40px;
+  font-size: 1.1rem; cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,.25); transition: background .2s;
+}
+#nav button:hover { background: #cf6d17; }
+#nav #btn-scroll { border-radius: 20px; width: auto; padding: 0 12px; font-size: 0.8rem; }
+
+body.slideshow .slide        { display: none; }
+body.slideshow .slide.active { display: block; }
+
+.ref-cite { color: #777; font-size: 0.85rem; font-style: italic; }
+</style>
+</head>
+<body>
+
+<!-- ══ Slide 1 — Title ════════════════════════════════════════════════ -->
+<section class="slide title-slide" id="s1">
+  <h1>Proofs &amp; Mathematical Induction</h1>
+  <p class="subtitle">Discrete Mathematics — Session 3 (Full Course v2 · combined)</p>
+  <p style="font-size:1rem;color:#e67e22;margin-top:0.8rem;font-style:italic;font-weight:600;letter-spacing:.02em;">Notes By Pr. El Hadiq Zouhair</p>
+  <span class="slide-number">1 / 38</span>
+</section>
+
+<!-- ══ Slide 2 — Outline ═════════════════════════════════════════════ -->
+<section class="slide" id="s2">
+  <h2 class="frame-title">Outline of the combined course</h2>
+
+  <h3 class="sub-title">Part I — Proof techniques</h3>
+  <ol>
+    <li>Mathematical statements: axiom, definition, theorem, lemma, corollary, proof.</li>
+    <li>Direct proof — with two worked examples.</li>
+    <li>Proof by contraposition — equivalence proved, classical example.</li>
+    <li>Proof by contradiction (reductio) — the irrationality of $\sqrt 2$, Euclid's infinitely-many-primes.</li>
+    <li>Proof by cases (exhaustion) — with the $|xy|=|x||y|$ example.</li>
+    <li>Existence proofs — constructive vs non-constructive (and a famous example).</li>
+    <li>Uniqueness proofs — pattern + worked example.</li>
+    <li>Disproof by counter-example.</li>
+    <li>Common errors and pitfalls.</li>
+  </ol>
+
+  <h3 class="sub-title">Part II — Mathematical induction</h3>
+  <ol start="10">
+    <li>Well-ordering principle, weak induction, strong induction — all <em>proved equivalent</em>.</li>
+    <li>Induction template; six fully worked examples (sums, inequalities, divisibility, sets).</li>
+    <li>Strong induction with the fundamental theorem on prime factorization.</li>
+    <li>Structural induction (intro).</li>
+    <li>Classical induction pitfalls (all horses, missing base case).</li>
+    <li>Programming connection — recursion ↔ induction.</li>
+    <li>Summary, Wolfram → Python reference, bibliography.</li>
+  </ol>
+  <p class="ref-cite">References: Rosen 8e §§1.7–1.8, §5.1–5.3; Velleman 3e ch. 3, ch. 6; Spivak ch. 2; Halmos, <em>Naive Set Theory</em>; Hardy &amp; Wright, <em>An Introduction to the Theory of Numbers</em>.</p>
+  <span class="slide-number">2 / 38</span>
+</section>
+
+<!-- ══ Slide 3 — Part I divider ══════════════════════════════════════ -->
+<section class="slide part-slide" id="s3">
+  <div class="part-label">Part I</div>
+  <h2>Proof techniques</h2>
+  <p>Direct, contraposition, contradiction, cases, existence, uniqueness, counter-example.</p>
+  <span class="slide-number">3 / 38</span>
+</section>
+
+<!-- ══ Slide 4 — Statements ══════════════════════════════════════════ -->
+<section class="slide" id="s4">
+  <h2 class="frame-title">1.1 Mathematical statements — the vocabulary</h2>
+
+  <div class="def-box">
+    A <strong>mathematical statement</strong> is either a <em>proposition</em> (a truth-bearer, true or false) or a <em>predicate</em> (a function of free variables that becomes a proposition once they are instantiated). A <strong>proof</strong> of a statement $\varphi$ is a finite chain of valid inferences, starting from accepted facts, that establishes $\varphi$.
+  </div>
+
+  <div class="def-box">
+    <ul>
+      <li><strong>Axiom</strong> — a statement accepted without proof, taken as a starting point of a theory.</li>
+      <li><strong>Definition</strong> — an agreement to use a name for an object characterised by a precise condition.</li>
+      <li><strong>Theorem</strong> — a statement that has been proved from axioms, definitions and previously established theorems.</li>
+      <li><strong>Lemma</strong> — an auxiliary theorem proved en route to a bigger result.</li>
+      <li><strong>Corollary</strong> — an easy consequence of an already-proved theorem.</li>
+      <li><strong>Conjecture</strong> — a statement believed to be true but not yet proved.</li>
+    </ul>
+  </div>
+
+  <p>Most theorems have the form $\forall x\,(\,P(x) \to Q(x)\,)$ — a universally quantified implication. The proof technique chosen typically depends on the shape of $P$ and $Q$.</p>
+  <p class="ref-cite">Rosen 8e §1.7, p. 81; Velleman 3e §1.5.</p>
+  <span class="slide-number">4 / 38</span>
+</section>
+
+<!-- ══ Slide 5 — Direct proof ════════════════════════════════════════ -->
+<section class="slide" id="s5">
+  <h2 class="frame-title">2.1 Direct proof</h2>
+
+  <div class="def-box">
+    A <strong>direct proof</strong> of $\;p \to q\;$ proceeds as follows: <em>assume</em> $p$ is true, then through a chain of valid inferences (definitions, axioms, theorems, rules of inference) derive $q$.
+  </div>
+
+  <div class="thm-box">
+    The sum of two even integers is even.
+  </div>
+  <div class="proof-box">
+    Let $a, b$ be even integers. By definition there exist integers $k, \ell$ with $a = 2k$ and $b = 2\ell$. Then
+    $$a + b = 2k + 2\ell = 2(k + \ell).$$
+    Since $k + \ell \in \mathbb{Z}$, this exhibits $a+b$ as twice an integer — even. $\square$
+  </div>
+
+  <div class="thm-box">
+    Let $n \in \mathbb{Z}$. If $n$ is odd, then $n^2$ is odd.
+  </div>
+  <div class="proof-box">
+    Assume $n$ is odd, so $n = 2k+1$ for some $k \in \mathbb{Z}$. Then
+    $$n^2 = (2k+1)^2 = 4k^2 + 4k + 1 = 2(2k^2 + 2k) + 1.$$
+    Letting $m := 2k^2 + 2k \in \mathbb{Z}$, $n^2 = 2m + 1$, which is odd. $\square$
+  </div>
+  <p class="ref-cite">Rosen 8e §1.7 Theorem 1; Velleman 3e §3.1.</p>
+  <span class="slide-number">5 / 38</span>
+</section>
+
+<!-- ══ Slide 6 — Proof by contraposition ═════════════════════════════ -->
+<section class="slide" id="s6">
+  <h2 class="frame-title">3.1 Proof by contraposition</h2>
+
+  <div class="thm-box">
+    For any propositions $p, q$: $\;p \to q \;\equiv\; \neg q \to \neg p\;$ (contrapositive law).
+  </div>
+  <div class="proof-box">
+    By truth-table verification (see Lesson 2): in every valuation the columns of $p \to q$ and $\neg q \to \neg p$ agree. Algebraically, $p \to q \equiv \neg p \vee q \equiv q \vee \neg p \equiv \neg\neg q \vee \neg p \equiv \neg q \to \neg p$. $\square$
+  </div>
+
+  <div class="def-box">
+    A <strong>proof by contraposition</strong> of $\;p \to q\;$ is a direct proof of $\;\neg q \to \neg p\;$. Useful when $\neg q$ gives more leverage than $p$ does.
+  </div>
+
+  <div class="thm-box">
+    Let $n \in \mathbb{Z}$. If $n^2$ is even, then $n$ is even.
+  </div>
+  <div class="proof-box">
+    <em>By contraposition.</em> We prove "$n$ odd $\Rightarrow$ $n^2$ odd". This is exactly the second theorem of slide 5, where we showed $n = 2k+1$ gives $n^2 = 2(2k^2 + 2k) + 1$. Hence by contraposition, $n^2$ even $\Rightarrow$ $n$ even. $\square$
+  </div>
+  <p class="ref-cite">Rosen 8e §1.7 Theorem 3; Velleman 3e §3.1.</p>
+  <span class="slide-number">6 / 38</span>
+</section>
+
+<!-- ══ Slide 7 — Proof by contradiction (reductio) ═══════════════════ -->
+<section class="slide" id="s7">
+  <h2 class="frame-title">4.1 Proof by contradiction — reductio ad absurdum</h2>
+
+  <div class="def-box">
+    A <strong>proof by contradiction</strong> of $\varphi$ proceeds by assuming $\neg \varphi$ and deriving a contradiction (a statement $\psi \wedge \neg \psi$). By the law $\neg \varphi \to \bot \;\equiv\; \varphi$, this establishes $\varphi$.
+  </div>
+
+  <p>To prove $p \to q$ by contradiction, assume $p \wedge \neg q$ and derive a contradiction. This is logically equivalent to contraposition but reaches the contradiction by combining $p$ and $\neg q$ rather than starting from $\neg q$ alone.</p>
+
+  <div class="note-box">
+    Contradiction is more flexible: it can prove statements that are not naturally implications, e.g. "$\sqrt 2$ is irrational", "there are infinitely many primes", or "no rational number squared equals $2$".
+  </div>
+
+  <h3 class="sub-title">Template</h3>
+  <ol>
+    <li>State the goal $\varphi$.</li>
+    <li>"Suppose, for contradiction, that $\neg \varphi$ …"</li>
+    <li>Derive a chain of consequences until reaching some $\psi$ <em>and</em> $\neg \psi$.</li>
+    <li>Conclude: "This contradicts … . Hence $\varphi$. $\square$"</li>
+  </ol>
+  <p class="ref-cite">Rosen 8e §1.7, p. 86; Velleman 3e §3.2.</p>
+  <span class="slide-number">7 / 38</span>
+</section>
+
+<!-- ══ Slide 8 — √2 irrational ═══════════════════════════════════════ -->
+<section class="slide" id="s8">
+  <h2 class="frame-title">4.2 Canonical contradiction — $\sqrt 2 \notin \mathbb{Q}$</h2>
+
+  <div class="thm-box">
+    There is no rational number $r$ with $r^2 = 2$. Equivalently, $\sqrt 2 \notin \mathbb{Q}$.
+  </div>
+
+  <div class="proof-box">
+    Suppose, for contradiction, that $r := p/q \in \mathbb{Q}$ satisfies $r^2 = 2$, where $p, q \in \mathbb{Z}$, $q \neq 0$, and the fraction is in lowest terms — i.e. $\gcd(p, q) = 1$. Then
+    $$\frac{p^2}{q^2} = 2 \;\Rightarrow\; p^2 = 2 q^2.$$
+    So $p^2$ is even. By the theorem of slide 6 (contraposition), $p$ is also even. Write $p = 2k$, $k \in \mathbb{Z}$. Substituting:
+    $$(2k)^2 = 2 q^2 \;\Rightarrow\; 4k^2 = 2q^2 \;\Rightarrow\; q^2 = 2k^2.$$
+    So $q^2$ is even, hence (again by slide 6) $q$ is even. But then both $p$ and $q$ are divisible by $2$, contradicting $\gcd(p, q) = 1$. $\square$
+  </div>
+  <p class="ref-cite">Rosen 8e §1.7 Theorem 4; classical, attributed to the Pythagoreans.</p>
+  <span class="slide-number">8 / 38</span>
+</section>
+
+<!-- ══ Slide 9 — Infinitely many primes ══════════════════════════════ -->
+<section class="slide" id="s9">
+  <h2 class="frame-title">4.3 Euclid — infinitely many primes</h2>
+
+  <div class="thm-box">
+    <strong>Euclid (c. 300 BC).</strong> There are infinitely many primes.
+  </div>
+
+  <div class="proof-box">
+    Suppose, for contradiction, that there are only finitely many primes: $p_1, p_2, \dots, p_n$. Consider the integer
+    $$N := p_1 \cdot p_2 \cdots p_n + 1.$$
+    By the fundamental theorem of arithmetic (slide 31), $N$ has at least one prime divisor $q$. By our assumption, $q$ is one of $p_1, \dots, p_n$. Hence $q$ divides the product $p_1 \cdots p_n$. But $q$ also divides $N$. So $q$ divides the difference $N - p_1 \cdots p_n = 1$. The only positive divisor of $1$ is $1$, which is not prime. Contradiction. Hence the set of primes is infinite. $\square$
+  </div>
+
+  <div class="note-box">
+    Note that $N = p_1 p_2 \cdots p_n + 1$ need not itself be prime — e.g. $2\cdot 3\cdot 5\cdot 7\cdot 11\cdot 13 + 1 = 30031 = 59 \cdot 509$. The argument only needs that $N$ has <em>some</em> prime divisor, which cannot be in our list.
+  </div>
+  <p class="ref-cite">Euclid, <em>Elements</em>, Book IX Prop. 20; Hardy &amp; Wright §2.1.</p>
+  <span class="slide-number">9 / 38</span>
+</section>
+
+<!-- ══ Slide 10 — Proof by cases ═════════════════════════════════════ -->
+<section class="slide" id="s10">
+  <h2 class="frame-title">5.1 Proof by cases (exhaustion)</h2>
+
+  <div class="def-box">
+    A <strong>proof by cases</strong> of $\varphi$ partitions the assumption into a finite list of mutually exhaustive cases $C_1, C_2, \dots, C_k$ — i.e. $C_1 \vee C_2 \vee \dots \vee C_k$ is known to hold — and proves $\varphi$ under each case. The validity rests on the rule "Disjunction Elimination" (proved in Lesson 5).
+  </div>
+
+  <div class="thm-box">
+    For all $x, y \in \mathbb{R}$, $|xy| = |x| \cdot |y|$.
+  </div>
+
+  <div class="proof-box">
+    By the trichotomy of $\mathbb{R}$, each of $x$ and $y$ is positive, zero, or negative — giving four meaningful cases (zeros collapse trivially).<br>
+    <em>Case 1: $x \geq 0,\; y \geq 0$.</em> Then $xy \geq 0$, so $|xy| = xy = |x|\,|y|$. ✓<br>
+    <em>Case 2: $x \geq 0,\; y &lt; 0$.</em> Then $xy \leq 0$, so $|xy| = -xy = x\,(-y) = |x|\,|y|$. ✓<br>
+    <em>Case 3: $x &lt; 0,\; y \geq 0$.</em> By symmetry of Case 2, $|xy| = (-x)\,y = |x|\,|y|$. ✓<br>
+    <em>Case 4: $x &lt; 0,\; y &lt; 0$.</em> Then $xy &gt; 0$, so $|xy| = xy = (-x)(-y) = |x|\,|y|$. ✓<br>
+    All cases give the same conclusion. Hence $|xy| = |x||y|$ for all $x, y \in \mathbb{R}$. $\square$
+  </div>
+
+  <div class="pitfall-box">
+    A proof by cases is only valid if the cases are <em>exhaustive</em> — i.e. their disjunction covers all possibilities. Forgetting a case is the commonest error.
+  </div>
+  <p class="ref-cite">Velleman 3e §3.4; Rosen 8e §1.8.</p>
+  <span class="slide-number">10 / 38</span>
+</section>
+
+<!-- ══ Slide 11 — Existence proofs ═══════════════════════════════════ -->
+<section class="slide" id="s11">
+  <h2 class="frame-title">6.1 Existence proofs — constructive vs non-constructive</h2>
+
+  <div class="def-box">
+    To prove $\exists x\,P(x)$ we may proceed:
+    <ul>
+      <li><strong>Constructively</strong> — exhibit an explicit witness $c$ and verify $P(c)$.</li>
+      <li><strong>Non-constructively</strong> — prove $\exists x\,P(x)$ without naming any witness (often by contradiction, by case analysis, or by an averaging argument).</li>
+    </ul>
+  </div>
+
+  <div class="thm-box">
+    There exist integers $x, y, z$ with $x^2 + y^2 = z^2$ (a Pythagorean triple).
+  </div>
+  <div class="proof-box">
+    Constructive: take $x = 3, y = 4, z = 5$. Then $3^2 + 4^2 = 9 + 16 = 25 = 5^2$. By EG, the existential follows. $\square$
+  </div>
+
+  <div class="thm-box">
+    There exist irrational numbers $a, b$ such that $a^b$ is rational.
+  </div>
+  <div class="proof-box">
+    <em>Non-constructive.</em> Consider $r := \sqrt 2^{\sqrt 2}$. Either $r$ is rational or $r$ is irrational.<br>
+    <em>Case 1.</em> If $r$ is rational, take $a := \sqrt 2$ and $b := \sqrt 2$. Both are irrational (slide 8), and $a^b = r$ is rational. ✓<br>
+    <em>Case 2.</em> If $r$ is irrational, take $a := r$ and $b := \sqrt 2$. Both are irrational. Then
+    $a^b = \bigl(\sqrt 2^{\sqrt 2}\bigr)^{\sqrt 2} = \sqrt 2^{\sqrt 2 \cdot \sqrt 2} = \sqrt 2^{\,2} = 2$, which is rational. ✓<br>
+    Either way, irrational $a, b$ exist with $a^b$ rational. We have not said <em>which</em> case actually obtains. $\square$
+  </div>
+  <p class="ref-cite">Rosen 8e §1.8, p. 92; Hardy &amp; Wright §11.7.</p>
+  <span class="slide-number">11 / 38</span>
+</section>
+
+<!-- ══ Slide 12 — Uniqueness proofs ══════════════════════════════════ -->
+<section class="slide" id="s12">
+  <h2 class="frame-title">7. Uniqueness proofs</h2>
+
+  <div class="def-box">
+    To prove $\exists!\,x\,P(x)$ ("there exists a unique $x$ such that $P(x)$"), recall (Lesson 4):
+    $$\exists!\,x\,P(x) \;\Longleftrightarrow\; \exists x\,\Bigl(P(x) \wedge \forall y\bigl(P(y) \to y = x\bigr)\Bigr).$$
+    The standard schema is: (i) exhibit a witness $a$ with $P(a)$ — existence; (ii) suppose $P(b)$ holds — show $b = a$ — uniqueness.
+  </div>
+
+  <div class="thm-box">
+    Every real number $x$ has a unique additive inverse — a unique $y \in \mathbb{R}$ with $x + y = 0$.
+  </div>
+  <div class="proof-box">
+    <em>Existence.</em> Take $y := -x$. Then $x + y = x + (-x) = 0$ by the field axiom.<br>
+    <em>Uniqueness.</em> Suppose $x + y_1 = 0$ and $x + y_2 = 0$. Then $x + y_1 = x + y_2$. Adding $-x$ to both sides: $y_1 = y_2$. $\square$
+  </div>
+
+  <div class="ex-box">
+    The same schema shows uniqueness in any group $(G, \cdot, e)$: each $x$ has a unique inverse $x^{-1}$.
+  </div>
+  <p class="ref-cite">Rosen 8e §1.8 Theorem 3; Velleman 3e §3.6.</p>
+  <span class="slide-number">12 / 38</span>
+</section>
+
+<!-- ══ Slide 13 — Counter-example ════════════════════════════════════ -->
+<section class="slide" id="s13">
+  <h2 class="frame-title">8. Disproof by counter-example</h2>
+
+  <div class="def-box">
+    To <strong>disprove</strong> a universal statement $\forall x\,P(x)$, it suffices to exhibit a single $x_0$ with $\neg P(x_0)$. The reason is the De Morgan law $\neg \forall x\,P(x) \equiv \exists x\,\neg P(x)$ — once one counter-example is found, the universal statement is refuted.
+  </div>
+
+  <div class="ce-box">
+    <strong>Claim (false).</strong> Every odd integer can be written as the sum of two squares. <br>
+    Counter-example: $3$. Suppose $3 = a^2 + b^2$ with $a, b \in \mathbb{Z}$. Then $|a|, |b| \leq 1$, so the only candidates are $a^2 + b^2 \in \{0, 1, 2\}$, none of which equals $3$. So the claim fails at $n = 3$.
+  </div>
+
+  <div class="ce-box">
+    <strong>Claim (false).</strong> Every positive integer $n$ satisfies $n^2 + n + 41$ is prime. <br>
+    Counter-example: $n = 40$ gives $40^2 + 40 + 41 = 1681 = 41^2$, which is not prime.
+  </div>
+
+  <div class="note-box">
+    Disproof by counter-example only refutes <em>universal</em> claims. To disprove an existential statement $\exists x\,P(x)$, one must prove $\forall x\,\neg P(x)$ — a universal claim, which generally requires a full proof, not just one example.
+  </div>
+  <p class="ref-cite">Rosen 8e §1.8 Example 9; Velleman 3e §3.5.</p>
+  <span class="slide-number">13 / 38</span>
+</section>
+
+<!-- ══ Slide 14 — Pitfalls ═══════════════════════════════════════════ -->
+<section class="slide" id="s14">
+  <h2 class="frame-title">9. Common errors and pitfalls</h2>
+
+  <div class="pitfall-box">
+    <strong>Affirming the consequent.</strong> From $p \to q$ and $q$ one cannot infer $p$. (Lesson 5 §6.) The valid step is Modus Ponens, which requires $p$ in the premises.
+  </div>
+
+  <div class="pitfall-box">
+    <strong>Circular reasoning (petitio principii).</strong> Using the conclusion (or an equivalent of it) as a step in its own proof. Always check that each justification cites <em>earlier</em> established facts only.
+  </div>
+
+  <div class="pitfall-box">
+    <strong>Non-exhaustive case split.</strong> Proving the result in cases $C_1, C_2$ when $C_1 \vee C_2$ does <em>not</em> cover all possibilities. E.g. on $\mathbb{R}$, splitting "$x &gt; 0$ or $x &lt; 0$" forgets $x = 0$.
+  </div>
+
+  <div class="pitfall-box">
+    <strong>Existence ≠ uniqueness.</strong> Producing one witness for $\exists x\,P(x)$ does not show $\exists!\,x\,P(x)$. Uniqueness requires the extra step "for any $y$ with $P(y)$, $y = x$".
+  </div>
+
+  <div class="pitfall-box">
+    <strong>Division by zero / ill-defined operation.</strong> Manipulations like $a^2 = b^2 \Rightarrow a = b$ silently drop $a = -b$; dividing by $(x - y)$ requires $x \neq y$.
+  </div>
+  <p class="ref-cite">Velleman 3e §1.5, §3.7.</p>
+  <span class="slide-number">14 / 38</span>
+</section>
+
+<!-- ══ Slide 15 — Part II divider ════════════════════════════════════ -->
+<section class="slide part-slide" id="s15">
+  <div class="part-label">Part II</div>
+  <h2>Mathematical induction</h2>
+  <p>Well-ordering, weak induction, strong induction — all proved equivalent.</p>
+  <span class="slide-number">15 / 38</span>
+</section>
+
+<!-- ══ Slide 16 — Well-ordering principle ════════════════════════════ -->
+<section class="slide" id="s16">
+  <h2 class="frame-title">10.1 Well-ordering principle</h2>
+
+  <div class="def-box">
+    <strong>Well-ordering principle (WOP).</strong> Every non-empty subset $S \subseteq \mathbb{N}$ has a least element — i.e. $\exists m \in S,\;\forall n \in S,\; m \leq n$.
+  </div>
+
+  <p>WOP is an <em>axiom</em> of the natural numbers; equivalently it is one of the Peano axioms in disguise. In the development below we will <em>prove</em> that it is equivalent to weak induction (slide 18) and to strong induction (slide 22), so any one of the three could be taken as the basic axiom and the other two proved as theorems.</p>
+
+  <div class="ex-box">
+    The set $S = \{n \in \mathbb{N} : n^2 \geq 10\}$ is non-empty (contains $4$). By WOP it has a least element. We can determine it: $3^2 = 9 &lt; 10$ but $4^2 = 16 \geq 10$, so $\min S = 4$.
+  </div>
+
+  <div class="note-box">
+    WOP fails on $\mathbb{Z}$: the non-empty set $\mathbb{Z}$ itself has no least element. It also fails on $\mathbb{Q}_{\geq 0}$ and on $\mathbb{R}_{\geq 0}$: the open interval $(0, 1)$ is non-empty and has no minimum (only an infimum, $0$). Hence WOP is a special property of $\mathbb{N}$ — it is precisely what distinguishes the natural numbers from other ordered sets.
+  </div>
+  <p class="ref-cite">Rosen 8e §5.2, p. 339; Halmos §17.</p>
+  <span class="slide-number">16 / 38</span>
+</section>
+
+<!-- ══ Slide 17 — Principle of weak induction ════════════════════════ -->
+<section class="slide" id="s17">
+  <h2 class="frame-title">10.2 Principle of (weak) induction</h2>
+
+  <div class="def-box">
+    <strong>Principle of weak induction (PWI).</strong> Let $P(n)$ be a predicate on the natural numbers. If
+    <ol>
+      <li><em>Base case:</em> $P(0)$ holds, and</li>
+      <li><em>Inductive step:</em> for every $k \in \mathbb{N}$, $P(k) \to P(k+1)$,
+    </ol>
+    then $\forall n \in \mathbb{N},\, P(n)$.
+  </div>
+
+  <p>The base case can be shifted: if $P(n_0)$ holds and $\forall k \geq n_0,\,P(k) \to P(k+1)$, then $\forall n \geq n_0,\,P(n)$. We will use this generalisation freely.</p>
+
+  <div class="note-box">
+    Intuitively: $P(0)$ holds (base); $P(0) \to P(1)$ gives $P(1)$; $P(1) \to P(2)$ gives $P(2)$; … the dominoes fall. PWI is the statement that this informal chain reaches <em>every</em> $n$.
+  </div>
+  <p class="ref-cite">Rosen 8e §5.1 Theorem 1; Velleman 3e §6.1.</p>
+  <span class="slide-number">17 / 38</span>
+</section>
+
+<!-- ══ Slide 18 — WOP ⇒ PWI ═════════════════════════════════════════ -->
+<section class="slide" id="s18">
+  <h2 class="frame-title">10.3 WOP $\Rightarrow$ PWI (proved)</h2>
+
+  <div class="thm-box">
+    The well-ordering principle implies the principle of weak induction.
+  </div>
+
+  <div class="proof-box">
+    Suppose WOP holds. Let $P(n)$ be a predicate satisfying $P(0)$ and $\forall k\,(P(k) \to P(k+1))$. We must show $\forall n,\,P(n)$.<br>
+    Suppose, for contradiction, that the "failure set"
+    $$S \;:=\; \{\,n \in \mathbb{N} \;:\; \neg P(n)\,\}$$
+    is non-empty. By WOP, $S$ has a least element $m$. Since $P(0)$ holds, $m \neq 0$, so $m \geq 1$ and $m - 1 \in \mathbb{N}$. By minimality of $m$ in $S$, the smaller number $m - 1 \notin S$, i.e. $P(m - 1)$ holds. By the inductive step at $k = m - 1$: $P(m - 1) \to P(m)$, so $P(m)$ holds. But this contradicts $m \in S$. Hence $S = \varnothing$, i.e. $\forall n,\,P(n)$. $\square$
+  </div>
+  <p class="ref-cite">Rosen 8e §5.2 Theorem 1; Velleman 3e §6.4.</p>
+  <span class="slide-number">18 / 38</span>
+</section>
+
+<!-- ══ Slide 19 — PWI ⇒ WOP ═════════════════════════════════════════ -->
+<section class="slide" id="s19">
+  <h2 class="frame-title">10.4 PWI $\Rightarrow$ WOP (proved)</h2>
+
+  <div class="thm-box">
+    The principle of weak induction implies the well-ordering principle.
+  </div>
+
+  <div class="proof-box">
+    Suppose PWI holds. Let $S \subseteq \mathbb{N}$ be non-empty; we must produce $\min S$.<br>
+    Suppose, for contradiction, $S$ has no minimum. Define the predicate
+    $$P(n) \;:\equiv\; \forall k \leq n,\; k \notin S.$$
+    <em>Base.</em> $P(0)$: if $0 \in S$ then $0$ would be the minimum of $S$ (since $0$ is already the smallest natural number), contradicting "no minimum". So $0 \notin S$, hence $P(0)$.<br>
+    <em>Step.</em> Suppose $P(n)$ holds: no $k \leq n$ is in $S$. If $n + 1 \in S$, then $n + 1$ would be the minimum of $S$ (every smaller element is excluded), contradicting "no minimum". So $n + 1 \notin S$, hence $P(n + 1)$.<br>
+    By PWI, $\forall n,\,P(n)$. In particular, no natural number is in $S$, so $S = \varnothing$ — contradicting non-emptiness. Hence $S$ has a minimum. $\square$
+  </div>
+
+  <div class="cor-box">
+    WOP, PWI and PSI (slide 22) are <em>logically equivalent</em>. Any one can serve as the foundational axiom; the other two then become theorems.
+  </div>
+  <p class="ref-cite">Velleman 3e §6.4 Theorem 6.4.1.</p>
+  <span class="slide-number">19 / 38</span>
+</section>
+
+<!-- ══ Slide 20 — Method of induction ════════════════════════════════ -->
+<section class="slide" id="s20">
+  <h2 class="frame-title">11.1 Method — the standard template</h2>
+
+  <p>To prove $\forall n \geq n_0,\,P(n)$ by induction, follow exactly three steps:</p>
+  <ol>
+    <li><strong>Base case.</strong> Verify $P(n_0)$ explicitly.</li>
+    <li><strong>Inductive hypothesis (IH).</strong> Assume $P(k)$ holds for an arbitrary fixed $k \geq n_0$.</li>
+    <li><strong>Inductive step.</strong> Using IH, prove $P(k + 1)$.</li>
+  </ol>
+  <p>Conclude: "by induction, $\forall n \geq n_0,\,P(n)$. $\square$"</p>
+
+  <div class="pitfall-box">
+    Skipping the base case is fatal. Without it the inductive step proves only "<em>if</em> $P(n_0)$ then $\forall n \geq n_0,\,P(n)$", an empty statement when $P(n_0)$ is false. See the "all horses are the same colour" pitfall on slide 35.
+  </div>
+
+  <p>Each of the next six slides applies this template to a different kind of statement: sum, set count, inequality, log estimate, geometry, divisibility.</p>
+  <p class="ref-cite">Rosen 8e §5.1; Velleman 3e §6.1.</p>
+  <span class="slide-number">20 / 38</span>
+</section>
+
+<!-- ══ Slide 21 — Example: arithmetic sum ════════════════════════════ -->
+<section class="slide" id="s21">
+  <h2 class="frame-title">11.2 Example — $\sum_{i=1}^{n} i = n(n+1)/2$</h2>
+
+  <div class="thm-box">
+    For every $n \geq 1$, $\;\displaystyle \sum_{i=1}^{n} i = \frac{n(n+1)}{2}.$
+  </div>
+
+  <div class="proof-box">
+    Let $P(n) :\equiv \bigl(\sum_{i=1}^{n} i = n(n+1)/2\bigr)$.<br>
+    <em>Base ($n = 1$).</em> LHS $= 1$. RHS $= 1 \cdot 2 / 2 = 1$. ✓<br>
+    <em>Inductive step.</em> Assume $P(k)$: $\sum_{i=1}^{k} i = k(k+1)/2$. Then
+    $$\sum_{i=1}^{k+1} i = \underbrace{\sum_{i=1}^{k} i}_{\text{IH}} + (k+1) = \frac{k(k+1)}{2} + (k+1) = \frac{k(k+1) + 2(k+1)}{2} = \frac{(k+1)(k+2)}{2},$$
+    which is the RHS at $n = k + 1$. Hence $P(k+1)$.<br>
+    By induction, $\forall n \geq 1,\,P(n)$. $\square$
+  </div>
+  <p class="ref-cite">Rosen 8e §5.1 Example 1.</p>
+  <span class="slide-number">21 / 38</span>
+</section>
+
+<!-- ══ Slide 22 — Example: subsets of an n-set ═══════════════════════ -->
+<section class="slide" id="s22">
+  <h2 class="frame-title">11.3 Example — a set of $n$ elements has $2^n$ subsets</h2>
+
+  <div class="thm-box">
+    For every $n \geq 0$, if $|A| = n$ then $|\mathcal{P}(A)| = 2^n$.
+  </div>
+
+  <div class="proof-box">
+    <em>Base ($n = 0$).</em> The only set of size $0$ is $\varnothing$, with $\mathcal{P}(\varnothing) = \{\varnothing\}$, so $|\mathcal{P}(\varnothing)| = 1 = 2^0$. ✓<br>
+    <em>Inductive step.</em> Suppose every set of size $k$ has $2^k$ subsets (IH). Let $|A| = k + 1$. Pick an element $a \in A$ and let $B := A \setminus \{a\}$, so $|B| = k$.<br>
+    Every subset of $A$ either contains $a$ or does not. The subsets <em>not</em> containing $a$ are exactly the subsets of $B$, of which there are $2^k$ by IH. The subsets <em>containing</em> $a$ are exactly the sets of the form $S \cup \{a\}$ with $S \subseteq B$, again $2^k$ such sets. These two families are disjoint, so
+    $|\mathcal{P}(A)| = 2^k + 2^k = 2 \cdot 2^k = 2^{k+1}.$
+    Hence $P(k+1)$. By induction, $\forall n \geq 0,\,P(n)$. $\square$
+  </div>
+  <p class="ref-cite">Rosen 8e §5.1 Example 10; Halmos §16.</p>
+  <span class="slide-number">22 / 38</span>
+</section>
+
+<!-- ══ Slide 23 — Example: inequality 2^n > n^2 ══════════════════════ -->
+<section class="slide" id="s23">
+  <h2 class="frame-title">11.4 Example — $2^n &gt; n^2$ for $n \geq 5$</h2>
+
+  <div class="thm-box">
+    For every integer $n \geq 5$, $\;2^n &gt; n^2$.
+  </div>
+
+  <div class="proof-box">
+    <em>Base ($n = 5$).</em> $2^5 = 32$ and $5^2 = 25$; $32 &gt; 25$. ✓<br>
+    <em>Inductive step.</em> Assume $2^k &gt; k^2$ for some $k \geq 5$ (IH). We must show $2^{k+1} &gt; (k+1)^2$.<br>
+    $2^{k+1} = 2 \cdot 2^k \;&gt;\; 2 k^2 \;=\; k^2 + k^2.$ It suffices to show $k^2 &gt; (k+1)^2 - k^2 = 2k + 1$, i.e. $k^2 - 2k - 1 &gt; 0$.<br>
+    Since $k \geq 5$, $k^2 - 2k - 1 \geq 25 - 10 - 1 = 14 &gt; 0$ ✓.<br>
+    Hence $2^{k+1} &gt; k^2 + (2k + 1) = (k+1)^2$. By induction, $\forall n \geq 5,\;2^n &gt; n^2$. $\square$
+  </div>
+
+  <div class="note-box">
+    The bound is tight: $2^4 = 16 = 4^2$, equality at $n = 4$; $2^3 = 8 &lt; 9 = 3^2$, the inequality fails for $n = 3$. Choosing the right $n_0$ matters.
+  </div>
+  <p class="ref-cite">Rosen 8e §5.1 Example 4.</p>
+  <span class="slide-number">23 / 38</span>
+</section>
+
+<!-- ══ Slide 24 — Example: divisibility ══════════════════════════════ -->
+<section class="slide" id="s24">
+  <h2 class="frame-title">11.5 Example — divisibility: $3 \mid (n^3 + 2n)$</h2>
+
+  <div class="thm-box">
+    For every $n \geq 0$, $\;3 \mid (n^3 + 2n)$.
+  </div>
+
+  <div class="proof-box">
+    Let $P(n) :\equiv \bigl(3 \mid (n^3 + 2n)\bigr)$.<br>
+    <em>Base ($n = 0$).</em> $0^3 + 2 \cdot 0 = 0$, and $3 \mid 0$. ✓<br>
+    <em>Inductive step.</em> Assume $3 \mid (k^3 + 2k)$, say $k^3 + 2k = 3m$ for some $m \in \mathbb{Z}$. Compute
+    $$(k+1)^3 + 2(k+1) = k^3 + 3k^2 + 3k + 1 + 2k + 2 = (k^3 + 2k) + 3k^2 + 3k + 3 = 3m + 3(k^2 + k + 1).$$
+    This is $3 \cdot (m + k^2 + k + 1)$, divisible by $3$. Hence $P(k+1)$.<br>
+    By induction, $\forall n \geq 0,\,P(n)$. $\square$
+  </div>
+  <p class="ref-cite">Rosen 8e §5.1 Example 5; Velleman 3e §6.1.</p>
+  <span class="slide-number">24 / 38</span>
+</section>
+
+<!-- ══ Slide 25 — Example: harmonic vs log ═══════════════════════════ -->
+<section class="slide" id="s25">
+  <h2 class="frame-title">11.6 Example — $\ln(n+1) \leq H_n$ where $H_n = \sum_{i=1}^n 1/i$</h2>
+
+  <div class="thm-box">
+    For every $n \geq 1$, $\;\ln(n+1) \leq \displaystyle\sum_{i=1}^{n} \frac{1}{i}$.
+  </div>
+
+  <div class="proof-box">
+    <em>Base ($n = 1$).</em> $\ln 2 \approx 0.693 \leq 1 = H_1$. ✓<br>
+    <em>Inductive step.</em> Assume $\ln(k+1) \leq H_k$. We must show $\ln(k+2) \leq H_{k+1} = H_k + \tfrac{1}{k+1}$.<br>
+    By the concavity inequality $\ln(k+2) - \ln(k+1) = \int_{k+1}^{k+2} \tfrac{dx}{x} \leq \tfrac{1}{k+1}$ (the rectangle over $[k+1, k+2]$ at height $1/(k+1)$ overestimates the area under $1/x$). Hence
+    $\ln(k+2) \leq \ln(k+1) + \tfrac{1}{k+1} \leq H_k + \tfrac{1}{k+1} = H_{k+1}.$ $\square$
+  </div>
+
+  <div class="cor-box">
+    Since $\ln(n+1) \to \infty$, the harmonic series $\sum 1/n$ diverges — a second proof, complementing Oresme's grouping (Sequences &amp; Series §4.2).
+  </div>
+  <p class="ref-cite">Spivak ch. 18; classical estimate $H_n = \ln n + \gamma + O(1/n)$.</p>
+  <span class="slide-number">25 / 38</span>
+</section>
+
+<!-- ══ Slide 26 — Example: triangulating a polygon ═══════════════════ -->
+<section class="slide" id="s26">
+  <h2 class="frame-title">11.7 Example — every convex $n$-gon has a triangulation into $n - 2$ triangles</h2>
+
+  <div class="thm-box">
+    Every convex polygon with $n \geq 3$ vertices admits a triangulation by non-crossing diagonals, and any such triangulation uses exactly $n - 2$ triangles.
+  </div>
+
+  <div class="proof-box">
+    <em>Base ($n = 3$).</em> A triangle is already triangulated into $3 - 2 = 1$ triangle. ✓<br>
+    <em>Inductive step.</em> Let $P$ be a convex polygon with $k + 1$ vertices. Draw any diagonal $d$ joining two non-adjacent vertices. (Such a diagonal exists since $k + 1 \geq 4$.) The diagonal $d$ splits $P$ into two convex polygons $P_1$ and $P_2$ sharing the edge $d$. If $P_1$ has $j_1$ vertices and $P_2$ has $j_2$ vertices, then each endpoint of $d$ is shared, so
+    $j_1 + j_2 = (k + 1) + 2.$
+    Both $j_1, j_2 \leq k$, so by IH, $P_1$ admits a triangulation into $j_1 - 2$ triangles and $P_2$ into $j_2 - 2$. Together: $(j_1 - 2) + (j_2 - 2) = (k+1) + 2 - 4 = k - 1 = (k+1) - 2$. ✓<br>
+    By induction, the result holds for all $n \geq 3$. $\square$
+  </div>
+  <p class="ref-cite">Rosen 8e §5.2 Example 12; classical combinatorial geometry.</p>
+  <span class="slide-number">26 / 38</span>
+</section>
+
+<!-- ══ Slide 27 — Strong induction ═══════════════════════════════════ -->
+<section class="slide" id="s27">
+  <h2 class="frame-title">12.1 Strong induction (course-of-values induction)</h2>
+
+  <div class="def-box">
+    <strong>Principle of strong induction (PSI).</strong> Let $P(n)$ be a predicate on $\mathbb{N}$. If
+    <ol>
+      <li><em>Base:</em> $P(n_0)$ holds, and</li>
+      <li><em>Strong step:</em> for every $k \geq n_0$, $\bigl(\forall j,\; n_0 \leq j \leq k \Rightarrow P(j)\bigr) \to P(k+1)$,
+    </ol>
+    then $\forall n \geq n_0,\, P(n)$.
+  </div>
+
+  <p>The strong-step <em>inductive hypothesis</em> is more generous: instead of assuming only $P(k)$, we may use $P(n_0), P(n_0+1), \dots, P(k)$ — every previously proved instance.</p>
+
+  <div class="thm-box">
+    PWI and PSI are logically equivalent.
+  </div>
+  <div class="proof-box">
+    <strong>(PSI ⇒ PWI.)</strong> Suppose PSI holds. The weak step $P(k) \to P(k+1)$ is a special case of the strong step (using only the latest $j = k$). So PWI follows.<br>
+    <strong>(PWI ⇒ PSI.)</strong> Suppose PWI holds. Given the strong step for $P$, define the auxiliary predicate $Q(n) :\equiv \bigl(\forall j,\;n_0 \leq j \leq n \Rightarrow P(j)\bigr)$. Then $Q(n_0)$ is just $P(n_0)$ — true by base. And $Q(k) \to Q(k+1)$ is exactly the strong step applied at $k$ together with $Q(k)$ giving $P(k+1)$. By PWI, $\forall n \geq n_0,\,Q(n)$. In particular $P(n)$ for every such $n$. $\square$
+  </div>
+  <p class="ref-cite">Rosen 8e §5.2 Theorem 1; Velleman 3e §6.4.</p>
+  <span class="slide-number">27 / 38</span>
+</section>
+
+<!-- ══ Slide 28 — Strong induction: prime factorization ══════════════ -->
+<section class="slide" id="s28">
+  <h2 class="frame-title">12.2 Strong induction example — existence of prime factorisation</h2>
+
+  <div class="thm-box">
+    Every integer $n \geq 2$ can be written as a product of primes (factorisation into primes exists).
+  </div>
+
+  <div class="proof-box">
+    Let $P(n) :\equiv$ "$n$ is a product of primes" (a single prime counts as a product of length $1$). We prove $\forall n \geq 2,\,P(n)$ by strong induction.<br>
+    <em>Base ($n = 2$).</em> $2$ is prime, hence a product of primes. ✓<br>
+    <em>Strong step.</em> Let $k + 1 \geq 3$ and assume $P(j)$ for every $2 \leq j \leq k$. Two cases.<br>
+    <em>(i) $k+1$ is prime.</em> Then $P(k+1)$ trivially.<br>
+    <em>(ii) $k+1$ is composite.</em> By definition, $k+1 = a \cdot b$ with $2 \leq a, b \leq k$. By IH, $a$ and $b$ are products of primes, say $a = p_1 \cdots p_s$ and $b = q_1 \cdots q_t$. Concatenating, $k + 1 = p_1 \cdots p_s \cdot q_1 \cdots q_t$, a product of primes. ✓<br>
+    By PSI, $\forall n \geq 2,\,P(n)$. $\square$
+  </div>
+
+  <div class="note-box">
+    Uniqueness of the factorisation (up to order) is the second half of the <strong>fundamental theorem of arithmetic</strong> and requires Euclid's lemma; we omit it here.
+  </div>
+  <p class="ref-cite">Rosen 8e §5.2 Theorem 2; Hardy &amp; Wright §1.3.</p>
+  <span class="slide-number">28 / 38</span>
+</section>
+
+<!-- ══ Slide 29 — Strong induction: Fibonacci bound ══════════════════ -->
+<section class="slide" id="s29">
+  <h2 class="frame-title">12.3 Strong induction example — Fibonacci bound</h2>
+
+  <div class="thm-box">
+    Let $\varphi = (1 + \sqrt 5)/2$ (golden ratio). Then for every $n \geq 1$, $\;F_n \leq \varphi^{n-1}$.
+  </div>
+
+  <div class="proof-box">
+    <em>Bases ($n = 1, 2$).</em> $F_1 = 1 \leq \varphi^0 = 1$. ✓ &nbsp; $F_2 = 1 \leq \varphi^1 \approx 1.618$. ✓<br>
+    <em>Strong step.</em> Let $k + 1 \geq 3$ and assume $F_j \leq \varphi^{j - 1}$ for all $1 \leq j \leq k$ (IH). Then
+    $$F_{k+1} = F_k + F_{k-1} \;\leq\; \varphi^{k-1} + \varphi^{k-2} = \varphi^{k-2}(\varphi + 1).$$
+    Key identity: $\varphi$ satisfies $\varphi^2 = \varphi + 1$ (its defining quadratic). Hence
+    $\varphi^{k-2}(\varphi + 1) = \varphi^{k-2} \cdot \varphi^2 = \varphi^k.$ So $F_{k+1} \leq \varphi^k = \varphi^{(k+1) - 1}$. ✓<br>
+    By PSI, $\forall n \geq 1,\,F_n \leq \varphi^{n-1}$. $\square$
+  </div>
+
+  <div class="note-box">
+    This bound is asymptotically sharp: Binet's formula (Sequences &amp; Series §5.3) gives $F_n \sim \varphi^n / \sqrt 5$, so $F_n \approx \varphi^{n-1} / (\sqrt 5 / \varphi) \approx \varphi^{n-1} \cdot \varphi/\sqrt 5 \approx 0.724\,\varphi^{n-1}$.
+  </div>
+  <p class="ref-cite">Rosen 8e §5.2 Theorem 4.</p>
+  <span class="slide-number">29 / 38</span>
+</section>
+
+<!-- ══ Slide 30 — Strong induction: postage stamps ═══════════════════ -->
+<section class="slide" id="s30">
+  <h2 class="frame-title">12.4 Strong induction example — postage stamps</h2>
+
+  <div class="thm-box">
+    Every postage of $n \geq 12$ cents can be formed using only $4$-cent and $5$-cent stamps.
+  </div>
+
+  <div class="proof-box">
+    Let $P(n) :\equiv $ "$\exists a, b \in \mathbb{N},\;n = 4a + 5b$".<br>
+    <em>Bases ($n = 12, 13, 14, 15$).</em><br>
+    $12 = 4 \cdot 3 + 5 \cdot 0$; $\;13 = 4 \cdot 2 + 5 \cdot 1$; $\;14 = 4 \cdot 1 + 5 \cdot 2$; $\;15 = 4 \cdot 0 + 5 \cdot 3$. ✓<br>
+    <em>Strong step ($k \geq 15$).</em> Assume $P(j)$ for all $12 \leq j \leq k$ (IH). We show $P(k+1)$.<br>
+    Since $k + 1 \geq 16$, $k - 3 \geq 12$, so by IH $P(k - 3)$: $k - 3 = 4a + 5b$. Then $k + 1 = (k - 3) + 4 = 4(a + 1) + 5b$. Hence $P(k+1)$. ✓<br>
+    By PSI, $\forall n \geq 12,\,P(n)$. $\square$
+  </div>
+
+  <div class="note-box">
+    The four bases are needed because the strong step depends on the value $n - 4$ being already covered; rebasing requires four consecutive base cases. This is the <strong>Frobenius / Chicken McNugget</strong> phenomenon: with coprime denominations $a$ and $b$, every sufficiently large integer is representable, the largest non-representable being $ab - a - b$.
+  </div>
+  <p class="ref-cite">Rosen 8e §5.2 Example 7.</p>
+  <span class="slide-number">30 / 38</span>
+</section>
+
+<!-- ══ Slide 31 — Structural induction ═══════════════════════════════ -->
+<section class="slide" id="s31">
+  <h2 class="frame-title">13. Structural induction</h2>
+
+  <div class="def-box">
+    <strong>Structural induction</strong> generalises induction from $\mathbb{N}$ to any inductively defined set $X$. To prove $\forall x \in X,\,P(x)$:
+    <ol>
+      <li>Show $P(b)$ for every <em>basis element</em> $b$ in the inductive definition.</li>
+      <li>For each constructor $f$ taking arguments $x_1, \dots, x_k$ and producing $f(x_1, \dots, x_k) \in X$, show
+      $$\bigl(P(x_1) \wedge \dots \wedge P(x_k)\bigr) \;\to\; P\bigl(f(x_1, \dots, x_k)\bigr).$$</li>
+    </ol>
+    Then $\forall x \in X,\,P(x)$.
+  </div>
+
+  <div class="ex-box">
+    <strong>Binary trees.</strong> Define $\mathsf{Tree}$ inductively: a leaf is a tree (base); given trees $L$ and $R$, the constructor $\mathsf{node}(L, R)$ is a tree. Define recursively the number of leaves, $\ell(t)$, and the number of internal nodes, $i(t)$: $\ell(\mathsf{leaf}) = 1$, $i(\mathsf{leaf}) = 0$, and for $t = \mathsf{node}(L, R)$: $\ell(t) = \ell(L) + \ell(R)$, $i(t) = i(L) + i(R) + 1$.<br>
+    <em>Claim.</em> For every binary tree $t$, $\ell(t) = i(t) + 1$.
+  </div>
+  <div class="proof-box">
+    <em>Base.</em> $t = \mathsf{leaf}$: $\ell(t) = 1$, $i(t) + 1 = 0 + 1 = 1$. ✓<br>
+    <em>Step.</em> Suppose $\ell(L) = i(L) + 1$ and $\ell(R) = i(R) + 1$. For $t = \mathsf{node}(L, R)$:
+    $\ell(t) = \ell(L) + \ell(R) = (i(L) + 1) + (i(R) + 1) = i(L) + i(R) + 2 = i(t) + 1.$ $\square$
+  </div>
+  <p class="ref-cite">Rosen 8e §5.3; Velleman 3e §6.5.</p>
+  <span class="slide-number">31 / 38</span>
+</section>
+
+<!-- ══ Slide 32 — Pitfall: all horses ════════════════════════════════ -->
+<section class="slide" id="s32">
+  <h2 class="frame-title">14.1 Pitfall — "all horses are the same colour"</h2>
+
+  <div class="pitfall-box">
+    <strong>Wrong claim.</strong> All horses in any non-empty set of $n$ horses have the same colour.<br>
+    <em>"Proof"</em>. Base $n = 1$: trivially the one horse has its own colour. Inductive step: take a set of $k+1$ horses, remove one to get a set of $k$ (same colour by IH), then put it back and remove a different one (same colour by IH); hence all $k+1$ horses are the same colour.
+  </div>
+
+  <div class="proof-box">
+    <strong>What went wrong.</strong> The inductive step silently assumes $k \geq 2$, so the two $k$-subsets <em>overlap</em>. At $k + 1 = 2$, removing the first horse gives a $1$-element subset, removing the second gives a <em>disjoint</em> $1$-element subset; the two singletons share no common horse, so the chain of "same colour" cannot be transmitted. The induction is broken at $n = 2$.
+  </div>
+
+  <div class="note-box">
+    Moral: the inductive step must be valid for <em>every</em> $k \geq n_0$, including the smallest values. A proof that works only for $k$ large enough is not a proof.
+  </div>
+  <p class="ref-cite">G. Pólya, classical pedagogical example.</p>
+  <span class="slide-number">32 / 38</span>
+</section>
+
+<!-- ══ Slide 33 — Pitfall: missing base ══════════════════════════════ -->
+<section class="slide" id="s33">
+  <h2 class="frame-title">14.2 Pitfall — missing or false base case</h2>
+
+  <div class="pitfall-box">
+    <strong>Wrong claim.</strong> $n = n + 1$ for all $n \in \mathbb{N}$.<br>
+    <em>"Proof"</em>. Inductive step: if $k = k + 1$, then adding $1$ to both sides gives $k + 1 = k + 2$ ✓.
+  </div>
+
+  <div class="proof-box">
+    <strong>What went wrong.</strong> The induction has no <em>base case</em> — and indeed $0 \neq 1$, so the base would fail. Without it, the step can only chain together <em>conditional</em> "if $k = k+1$ then $k+1 = k+2$" statements; nowhere does the chain become unconditional.
+  </div>
+
+  <div class="pitfall-box">
+    <strong>Bound creep.</strong> Suppose you prove $P(n) \to P(n+1)$ for $n \geq 3$, with base $P(3)$. Then the conclusion is $\forall n \geq 3$, not $\forall n \geq 1$. Always state the lower bound that matches your proof. Inequalities (slide 23) typically need the smallest base where the bound starts holding.
+  </div>
+  <p class="ref-cite">Velleman 3e §6.1 Remark.</p>
+  <span class="slide-number">33 / 38</span>
+</section>
+
+<!-- ══ Slide 34 — Programming connection ═════════════════════════════ -->
+<section class="slide" id="s34">
+  <h2 class="frame-title">15. Programming connection — recursion ↔ induction</h2>
+
+  <p>A recursive function is structured exactly like an inductive proof: a <em>base case</em> handles the smallest inputs; a <em>recursive case</em> reduces the problem to smaller inputs and combines the result. Proving correctness of a recursive function <em>is</em> doing induction on its argument.</p>
+
+  <div class="python-block">
+    <span class="pane-label">Python — factorial via recursion</span>
+    <span class="pane-code">def fact(n):
+    if n == 0:               # base case   ↔  P(0)
+        return 1
+    return n * fact(n - 1)   # step       ↔  P(k+1) follows from P(k)
+
+# Correctness claim: fact(n) returns n! for every n >= 0.
+# Proof: induction on n.
+#   Base n=0: fact(0) returns 1 = 0!. ✓
+#   Step:    assume fact(k) = k!. Then fact(k+1) = (k+1) * fact(k)
+#            = (k+1) * k! = (k+1)!. ✓</span>
+  </div>
+
+  <div class="python-block">
+    <span class="pane-label">Python — Fibonacci via recursion</span>
+    <span class="pane-code">def fib(n):
+    if n &lt;= 1:               # two base cases
+        return n
+    return fib(n - 1) + fib(n - 2)  # strong step: needs F_k AND F_{k-1}</span>
+  </div>
+
+  <p>The Fibonacci recursion mirrors <em>strong</em> induction — it depends on both $F_{n-1}$ and $F_{n-2}$, so the correctness proof needs two base cases.</p>
+  <p class="ref-cite">Rosen 8e §5.4; Velleman 3e §6.5.</p>
+  <span class="slide-number">34 / 38</span>
+</section>
+
+<!-- ══ Slide 35 — Strategy summary ═══════════════════════════════════ -->
+<section class="slide" id="s35">
+  <h2 class="frame-title">16. Strategy — picking the right method</h2>
+
+  <table class="ref-table">
+    <thead><tr><th>Goal looks like</th><th>Try first</th><th>Fall back</th></tr></thead>
+    <tbody>
+      <tr><td>$p \to q$</td><td>Direct proof</td><td>Contraposition, then contradiction</td></tr>
+      <tr><td>$\neg \varphi$</td><td>Contradiction (assume $\varphi$, derive $\bot$)</td><td>Direct on the negation</td></tr>
+      <tr><td>$p \leftrightarrow q$</td><td>Two direct proofs: $p \to q$ and $q \to p$</td><td>Chain of equivalences</td></tr>
+      <tr><td>$\exists x\,P(x)$</td><td>Constructive — exhibit a witness</td><td>Non-constructive — case analysis</td></tr>
+      <tr><td>$\exists!\,x\,P(x)$</td><td>Existence + uniqueness</td><td>—</td></tr>
+      <tr><td>$\forall x\,P(x)$</td><td>UG: "let $x$ be arbitrary"</td><td>Cases on shape of $x$, or contradiction</td></tr>
+      <tr><td>$\forall n \in \mathbb{N},\,P(n)$</td><td>Weak induction</td><td>Strong induction, well-ordering</td></tr>
+      <tr><td>Statement involves $n - k$ for small $k$</td><td>Strong induction with $k$ base cases</td><td>—</td></tr>
+      <tr><td>Statement over an inductive type</td><td>Structural induction</td><td>—</td></tr>
+      <tr><td>Disprove $\forall x\,P(x)$</td><td>Counter-example</td><td>—</td></tr>
+    </tbody>
+  </table>
+  <p class="ref-cite">Velleman 3e ch. 3 + ch. 6 (Strategy boxes throughout).</p>
+  <span class="slide-number">35 / 38</span>
+</section>
+
+<!-- ══ Slide 36 — Summary ════════════════════════════════════════════ -->
+<section class="slide" id="s36">
+  <h2 class="frame-title">17. Summary — what we proved</h2>
+
+  <h3 class="sub-title">Part I — Proofs</h3>
+  <ul>
+    <li>Direct proof, contraposition, contradiction, cases, existence (constructive + non-constructive), uniqueness, counter-example — each with at least one fully worked example.</li>
+    <li>$\sqrt 2 \notin \mathbb{Q}$ (Pythagoras) and "infinitely many primes" (Euclid) — both proved by contradiction.</li>
+    <li>$|xy| = |x|\,|y|$ proved by cases; $\exists$ irrational $a, b$ with $a^b$ rational — proved non-constructively using $\sqrt 2^{\sqrt 2}$.</li>
+  </ul>
+
+  <h3 class="sub-title">Part II — Induction</h3>
+  <ul>
+    <li><strong>Well-ordering principle ⇔ weak induction ⇔ strong induction</strong>: all three proved equivalent (slides 18–19, 27).</li>
+    <li>Six fully proved induction examples: arithmetic sum, $2^n$ subsets, $2^n &gt; n^2$, divisibility, $\ln(n+1) \leq H_n$, polygon triangulation.</li>
+    <li>Strong-induction proofs: existence of prime factorisation; $F_n \leq \varphi^{n-1}$; postage-stamp / Frobenius example.</li>
+    <li>Structural induction: example on binary trees (leaves = internal nodes + 1).</li>
+    <li>Classical pitfalls — "all horses", missing base case, bound creep.</li>
+    <li>Programming bridge: recursion mirrors induction; correctness proofs are induction on the recursive parameter.</li>
+  </ul>
+  <span class="slide-number">36 / 38</span>
+</section>
+
+<!-- ══ Slide 37 — Wolfram → Python reference ═════════════════════════ -->
+<section class="slide" id="s37">
+  <h2 class="frame-title">18. Wolfram → Python quick reference</h2>
+
+  <table class="ref-table">
+    <thead><tr><th>Task</th><th>Wolfram</th><th>Python / SymPy</th></tr></thead>
+    <tbody>
+      <tr><td>Verify a sum identity</td><td><code>Sum[i, {i, 1, n}] // FullSimplify</code></td><td><code>Sum(i, (i, 1, n)).doit()</code></td></tr>
+      <tr><td>Test an inequality at sample $n$</td><td><code>Table[2^n &gt; n^2, {n, 5, 20}]</code></td><td><code>[2**n &gt; n**2 for n in range(5, 21)]</code></td></tr>
+      <tr><td>Symbolic induction step</td><td><code>FullSimplify[k(k+1)/2 + (k+1) == (k+1)(k+2)/2]</code></td><td><code>simplify(Eq(k*(k+1)/2 + (k+1), (k+1)*(k+2)/2))</code></td></tr>
+      <tr><td>Factorial / Fibonacci</td><td><code>n!</code> · <code>Fibonacci[n]</code></td><td><code>factorial(n)</code> · <code>fibonacci(n)</code></td></tr>
+      <tr><td>Is $n$ prime?</td><td><code>PrimeQ[n]</code></td><td><code>isprime(n)</code> &nbsp;(<code>from sympy import isprime</code>)</td></tr>
+      <tr><td>Find a counter-example</td><td><code>FindInstance[P[n] &amp;&amp; n &gt; 0, n, Integers]</code></td><td><code>next((n for n in range(1, 10**6) if not P(n)), None)</code></td></tr>
+    </tbody>
+  </table>
+
+  <div class="setup-block">
+    <span class="pane-label">Python — induction-step checker</span>
+    <span class="pane-code">from sympy import symbols, simplify, Eq, Rational
+k = symbols('k', integer=True, positive=True)
+# Check the inductive step for sum_{i=1}^n i = n(n+1)/2
+lhs_k1   = k*(k+1)/2 + (k+1)          # IH + extra term
+rhs_k1   = (k+1)*(k+2)/2              # formula at k+1
+print(simplify(lhs_k1 - rhs_k1) == 0)  # True  → the step holds</span>
+  </div>
+  <span class="slide-number">37 / 38</span>
+</section>
+
+<!-- ══ Slide 38 — Bibliography ═══════════════════════════════════════ -->
+<section class="slide" id="s38">
+  <h2 class="frame-title">Bibliography</h2>
+  <ul>
+    <li>K. H. Rosen. <em>Discrete Mathematics and Its Applications</em>, 8th ed., McGraw-Hill, 2019 — §1.7–1.8 (proof methods), §5.1–5.4 (induction, strong induction, structural induction, recursion).</li>
+    <li>D. J. Velleman. <em>How To Prove It</em>, 3rd ed., Cambridge UP, 2019 — ch. 3 (proof strategies), ch. 6 (mathematical induction).</li>
+    <li>M. Spivak. <em>Calculus</em>, 4th ed., Publish or Perish, 2008 — ch. 2 (induction, well-ordering).</li>
+    <li>P. R. Halmos. <em>Naive Set Theory</em>, Springer-Verlag, 1974 — §§16–17 (Peano axioms, well-ordering).</li>
+    <li>G. H. Hardy &amp; E. M. Wright. <em>An Introduction to the Theory of Numbers</em>, 6th ed., Oxford UP, 2008 — §§1.3, 2.1, 11.7 (prime factorisation, infinitely many primes, irrationality).</li>
+    <li>G. Pólya. <em>How to Solve It</em>, Princeton UP, 1945 — proof heuristics; the "all horses" example.</li>
+    <li>Euclid. <em>Elements</em> (c. 300 BC), Book IX Prop. 20 — infinitely many primes.</li>
+  </ul>
+
+  <p style="margin-top:1rem;color:#e67e22;font-style:italic;font-weight:600;">Notes By Pr. El Hadiq Zouhair</p>
+  <span class="slide-number">38 / 38</span>
+</section>
+
+<!-- ── Navigation ─────────────────────────────────────────────────── -->
+<div id="nav">
+  <button id="btn-prev"   title="Previous">&#8592;</button>
+  <button id="btn-scroll" title="Toggle slideshow">Slideshow</button>
+  <button id="btn-next"   title="Next">&#8594;</button>
+</div>
+
+<script>
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  let current = 0, slideshowMode = false;
+
+  function enter(i) {
+    slides[current].classList.remove('active');
+    current = (i + slides.length) % slides.length;
+    slides[current].classList.add('active');
+    slides[current].scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  document.getElementById('btn-prev').addEventListener('click', () => {
+    if (slideshowMode) enter(current - 1);
+  });
+  document.getElementById('btn-next').addEventListener('click', () => {
+    if (slideshowMode) enter(current + 1);
+  });
+  document.getElementById('btn-scroll').addEventListener('click', () => {
+    slideshowMode = !slideshowMode;
+    document.body.classList.toggle('slideshow', slideshowMode);
+    document.getElementById('btn-scroll').textContent = slideshowMode ? 'Scroll' : 'Slideshow';
+    if (slideshowMode) slides[current].classList.add('active');
+    else slides.forEach(s => s.classList.remove('active'));
+  });
+
+  document.addEventListener('keydown', e => {
+    if (!slideshowMode) return;
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') enter(current + 1);
+    if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   enter(current - 1);
+  });
+</script>
+</body>
+</html>

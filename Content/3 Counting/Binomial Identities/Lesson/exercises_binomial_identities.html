@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Binomial Identities — Exercises</title>
+<script>
+  MathJax = {
+    tex: { inlineMath: [['$','$']], displayMath: [['$$','$$']] },
+    options: { skipHtmlTags: ['script','noscript','style','textarea'] }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --orange:    #e67e22;
+  --darkblue:  #2c3e50;
+  --lightbg:   #f4f9fc;
+  --border:    #dce3ea;
+  --py-fg:     #1f4e7a;
+  --py-bg:     #eaf3fb;
+  --py-border: #2a6fb3;
+  --py-head:   #2a6fb3;
+  --out-fg:    #6e4b0a;
+  --out-bg:    #fff7e0;
+  --out-border:#e0b341;
+  --out-head:  #c89324;
+  --sol-bg:    #fdf6ee;
+  --sol-border:#e67e22;
+}
+
+body {
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  background: #e8edf2;
+  color: var(--darkblue);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem 1rem 5rem;
+  gap: 1.5rem;
+}
+
+.slide {
+  background: #fff;
+  width: 100%;
+  max-width: 940px;
+  border-radius: 10px;
+  box-shadow: 0 4px 18px rgba(0,0,0,.10);
+  padding: 2rem 2.4rem 1.6rem;
+  position: relative;
+}
+
+.slide.title-slide {
+  background: linear-gradient(145deg, #f4f9fc 60%, #e0eef7);
+  text-align: center;
+  border-top: 6px solid var(--orange);
+  padding: 2.5rem 2rem;
+}
+.slide.title-slide h1 { font-size: 1.9rem; color: var(--darkblue); margin-bottom: 0.4rem; }
+.slide.title-slide .subtitle { font-size: 1.15rem; color: #555; }
+
+h2.frame-title {
+  font-size: 1.4rem;
+  color: var(--orange);
+  font-weight: 700;
+  margin-bottom: 0.4rem;
+  padding-bottom: 0.3rem;
+  border-bottom: 2px solid #f9e4cc;
+}
+.ex-number {
+  display: inline-block;
+  background: var(--orange);
+  color: #fff;
+  font-weight: 700;
+  padding: 0.15em 0.6em;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  margin-right: 0.5rem;
+}
+.difficulty {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  padding: 0.1em 0.5em;
+  border-radius: 3px;
+  margin-left: 0.4rem;
+  vertical-align: middle;
+  text-transform: uppercase;
+}
+.easy   { background: #d4f4dd; color: #1e7a3b; }
+.medium { background: #fce4b6; color: #8a5400; }
+.hard   { background: #f8c8c8; color: #952020; }
+.kind {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  padding: 0.1em 0.55em;
+  border-radius: 3px;
+  margin-left: 0.4rem;
+  vertical-align: middle;
+  text-transform: uppercase;
+}
+.kind.lab  { background: #eaf3fb; color: #1f4e7a; }
+.kind.math { background: #f8e9ff; color: #5b1e7a; }
+
+p { line-height: 1.7; margin: 0.4rem 0; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.4rem; line-height: 1.85; }
+ul li::marker, ol li::marker { color: var(--orange); }
+
+.statement { margin: 0.3rem 0 0.6rem; }
+
+.python-block, .output-block {
+  border-radius: 6px;
+  overflow: hidden;
+  margin: 0.6rem 0;
+  border: 1px solid;
+}
+.python-block { border-color: var(--py-border); }
+.output-block { border-color: var(--out-border); margin: 0.4rem 0 0.6rem; }
+.python-label, .output-label {
+  display: block;
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  color: #fff;
+}
+.python-label { background: var(--py-head); }
+.output-label { background: var(--out-head); }
+.pane-code {
+  font-family: 'Consolas', 'Fira Code', monospace;
+  font-size: 0.83rem;
+  line-height: 1.6;
+  padding: 0.5rem 0.75rem;
+  white-space: pre;
+  display: block;
+  overflow-x: auto;
+}
+.python-block .pane-code { background: var(--py-bg); color: var(--py-fg); }
+.output-block .pane-code { background: var(--out-bg); color: var(--out-fg); }
+
+details.solution {
+  margin: 0.4rem 0 0.6rem;
+  background: var(--sol-bg);
+  border-left: 4px solid var(--sol-border);
+  border-radius: 4px;
+  padding: 0.5rem 0.8rem;
+}
+details.solution summary {
+  cursor: pointer;
+  font-weight: 700;
+  color: var(--orange);
+  list-style: none;
+  font-size: 0.9rem;
+  letter-spacing: 0.04em;
+}
+details.solution summary::before { content: "▸ "; }
+details.solution[open] summary::before { content: "▾ "; }
+details.solution > *:not(summary) { margin-top: 0.5rem; }
+
+.toc {
+  background: var(--lightbg);
+  border-left: 4px solid var(--orange);
+  padding: 0.8rem 1rem;
+  border-radius: 4px;
+}
+.toc a { color: var(--darkblue); text-decoration: none; }
+.toc a:hover { color: var(--orange); }
+code { background: #f0f3f7; color: #1f4e7a; padding: 0 .25em; border-radius: 3px; font-family: 'Consolas','Fira Code',monospace; }
+</style>
+</head>
+<body>
+
+<section class="slide title-slide">
+  <h1>Discrete Mathematics — Binomial Identities</h1>
+  <p class="subtitle">Exercises &amp; Solutions — 4 Python labs + 4 math problems</p>
+  <p style="font-size:1rem;color:#e67e22;margin-top:0.8rem;font-style:italic;font-weight:600;letter-spacing:.02em;">By Pr. El Hadiq Zouhair</p>
+</section>
+
+<section class="slide">
+  <h2 class="frame-title">Contents</h2>
+  <div class="toc">
+    <p style="font-weight:700;color:var(--orange);margin-bottom:0.3rem;">Part A — Python labs</p>
+    <ol>
+      <li><a href="#ex1">Pascal's-triangle generator</a> <span class="difficulty easy">easy</span> <span class="kind lab">lab</span></li>
+      <li><a href="#ex2">Row-sum identity verifier</a> <span class="difficulty easy">easy</span> <span class="kind lab">lab</span></li>
+      <li><a href="#ex3">Vandermonde identity checker</a> <span class="difficulty medium">medium</span> <span class="kind lab">lab</span></li>
+      <li><a href="#ex4">Catalan numbers via both formulas</a> <span class="difficulty medium">medium</span> <span class="kind lab">lab</span></li>
+    </ol>
+    <p style="font-weight:700;color:var(--orange);margin:0.8rem 0 0.3rem;">Part B — Mathematical problems</p>
+    <ol start="5">
+      <li><a href="#ex5">Apply the binomial theorem to $(2+x)^{12}$</a> <span class="difficulty easy">easy</span> <span class="kind math">math</span></li>
+      <li><a href="#ex6">Pascal's identity — stock-portfolio decomposition</a> <span class="difficulty medium">medium</span> <span class="kind math">math</span></li>
+      <li><a href="#ex7">Vandermonde &amp; bouquet counting</a> <span class="difficulty medium">medium</span> <span class="kind math">math</span></li>
+      <li><a href="#ex8">Hockey-stick &amp; sum of squares</a> <span class="difficulty hard">hard</span> <span class="kind math">math</span></li>
+    </ol>
+  </div>
+</section>
+
+<!-- ══ Exercise 1 — LAB ═════════════════════════════════════════════ -->
+<section class="slide" id="ex1">
+  <h2 class="frame-title"><span class="ex-number">1</span>Pascal's-triangle generator <span class="difficulty easy">easy</span> <span class="kind lab">lab</span></h2>
+  <p class="statement">Écrire une fonction <code>pascal(n)</code> qui renvoie la liste des $n + 1$ premières lignes du triangle de Pascal (la ligne $i$ contient $\binom{i}{0}, \binom{i}{1}, \ldots, \binom{i}{i}$), <strong>sans utiliser <code>math.comb</code></strong>. Chaque nouvelle ligne se construit à partir de la précédente via l'identité de Pascal.</p>
+  <ul>
+    <li>Vérifier que <code>pascal(5)[5] == [1, 5, 10, 10, 5, 1]</code>.</li>
+    <li>Vérifier que la somme de chaque ligne $n$ vaut $2^n$ (identité $\sum \binom{n}{k} = 2^n$).</li>
+  </ul>
+
+  <details class="solution"><summary>Solution</summary>
+  <div class="python-block">
+    <span class="python-label">Python</span>
+    <span class="pane-code">def pascal(n):
+    """Lignes 0 à n du triangle de Pascal via l'identité de Pascal."""
+    triangle = [[1]]
+    for i in range(1, n + 1):
+        precedente = triangle[-1]
+        nouvelle = [1]
+        for j in range(1, i):
+            nouvelle.append(precedente[j - 1] + precedente[j])
+        nouvelle.append(1)
+        triangle.append(nouvelle)
+    return triangle
+
+T = pascal(5)
+for ligne in T:
+    print(ligne)
+
+# Vérification : ligne 5 == [1, 5, 10, 10, 5, 1]
+assert T[5] == [1, 5, 10, 10, 5, 1]
+
+# Vérification : somme de la ligne n vaut 2**n
+for n, ligne in enumerate(T):
+    assert sum(ligne) == 2**n
+print("Toutes les sommes valent 2^n. ✓")</span>
+  </div>
+  <div class="output-block">
+    <span class="output-label">Output</span>
+    <span class="pane-code">[1]
+[1, 1]
+[1, 2, 1]
+[1, 3, 3, 1]
+[1, 4, 6, 4, 1]
+[1, 5, 10, 10, 5, 1]
+Toutes les sommes valent 2^n. ✓</span>
+  </div>
+  <p><strong>Justification.</strong> Chaque entrée intérieure $\binom{i}{j}$ est obtenue par l'identité de Pascal $\binom{i}{j} = \binom{i-1}{j-1} + \binom{i-1}{j}$. Les extrémités $\binom{i}{0} = \binom{i}{i} = 1$ sont placées directement.</p>
+  </details>
+</section>
+
+<!-- ══ Exercise 2 — LAB ═════════════════════════════════════════════ -->
+<section class="slide" id="ex2">
+  <h2 class="frame-title"><span class="ex-number">2</span>Row-sum identity verifier <span class="difficulty easy">easy</span> <span class="kind lab">lab</span></h2>
+  <p class="statement">Écrire un script qui vérifie pour $n = 0, 1, \ldots, 20$ les trois identités&nbsp;:</p>
+  <ol>
+    <li>$\displaystyle \sum_{k=0}^{n} \binom{n}{k} = 2^n$</li>
+    <li>$\displaystyle \sum_{k=0}^{n} (-1)^k \binom{n}{k} = 0$ &nbsp;(pour $n \geq 1$)</li>
+    <li>$\displaystyle \sum_{k=0}^{n} 2^k \binom{n}{k} = 3^n$</li>
+  </ol>
+  <p>Renvoyer <code>True</code> si elles sont toutes vraies, sinon afficher la première qui échoue.</p>
+
+  <details class="solution"><summary>Solution</summary>
+  <div class="python-block">
+    <span class="python-label">Python</span>
+    <span class="pane-code">from math import comb
+
+def verifier(n_max=20):
+    for n in range(n_max + 1):
+        s1 = sum(comb(n, k) for k in range(n + 1))
+        s2 = sum((-1)**k * comb(n, k) for k in range(n + 1))
+        s3 = sum(2**k * comb(n, k) for k in range(n + 1))
+        if s1 != 2**n:
+            return f"Échec identité 1 à n={n} : {s1} != {2**n}"
+        if n >= 1 and s2 != 0:
+            return f"Échec identité 2 à n={n} : {s2} != 0"
+        if s3 != 3**n:
+            return f"Échec identité 3 à n={n} : {s3} != {3**n}"
+    return True
+
+print(verifier())   # True</span>
+  </div>
+  <div class="output-block">
+    <span class="output-label">Output</span>
+    <span class="pane-code">True</span>
+  </div>
+  <p><strong>Justification.</strong> Les trois identités sont des spécialisations du théorème du binôme $(x+y)^n = \sum \binom{n}{k} x^k y^{n-k}$ avec $(x,y) = (1,1)$, $(-1,1)$ et $(2,1)$ respectivement.</p>
+  </details>
+</section>
+
+<!-- ══ Exercise 3 — LAB ═════════════════════════════════════════════ -->
+<section class="slide" id="ex3">
+  <h2 class="frame-title"><span class="ex-number">3</span>Vandermonde identity checker <span class="difficulty medium">medium</span> <span class="kind lab">lab</span></h2>
+  <p class="statement">Écrire <code>vandermonde(m, n, r)</code> qui vérifie l'identité $\binom{m+n}{r} = \sum_{k=0}^{r} \binom{m}{k}\binom{n}{r-k}$ pour les paramètres donnés et renvoie le couple <code>(membre_gauche, membre_droit)</code>.</p>
+  <ul>
+    <li>Tester pour $(m, n, r) = (8, 12, 5)$, $(15, 15, 10)$, $(20, 20, 20)$.</li>
+    <li>Vérifier le corollaire $\sum_{k=0}^{n}\binom{n}{k}^2 = \binom{2n}{n}$ pour $n = 5, 10, 15$.</li>
+  </ul>
+
+  <details class="solution"><summary>Solution</summary>
+  <div class="python-block">
+    <span class="python-label">Python</span>
+    <span class="pane-code">from math import comb
+
+def vandermonde(m, n, r):
+    gauche = comb(m + n, r)
+    droite = sum(comb(m, k) * comb(n, r - k) for k in range(r + 1))
+    return gauche, droite
+
+for triple in [(8, 12, 5), (15, 15, 10), (20, 20, 20)]:
+    g, d = vandermonde(*triple)
+    print(triple, '→', g, '=', d, ':', g == d)
+
+# Corollaire : sum C(n,k)^2 = C(2n, n)
+for n in (5, 10, 15):
+    s = sum(comb(n, k)**2 for k in range(n + 1))
+    print(f"n={n}: sum C(n,k)^2 = {s}, C(2n,n) = {comb(2*n, n)}, égalité: {s == comb(2*n, n)}")</span>
+  </div>
+  <div class="output-block">
+    <span class="output-label">Output</span>
+    <span class="pane-code">(8, 12, 5) → 15504 = 15504 : True
+(15, 15, 10) → 30045015 = 30045015 : True
+(20, 20, 20) → 137846528820 = 137846528820 : True
+n=5: sum C(n,k)^2 = 252, C(2n,n) = 252, égalité: True
+n=10: sum C(n,k)^2 = 184756, C(2n,n) = 184756, égalité: True
+n=15: sum C(n,k)^2 = 155117520, C(2n,n) = 155117520, égalité: True</span>
+  </div>
+  <p><strong>Justification.</strong> L'identité de Vandermonde se démontre combinatoirement en classant les $r$-sous-ensembles de $\{1, \ldots, m+n\}$ par leur intersection avec $\{1, \ldots, m\}$. Le corollaire $\sum \binom{n}{k}^2 = \binom{2n}{n}$ s'obtient en prenant $m = n, r = n$ et en utilisant la symétrie $\binom{n}{n - k} = \binom{n}{k}$.</p>
+  </details>
+</section>
+
+<!-- ══ Exercise 4 — LAB ═════════════════════════════════════════════ -->
+<section class="slide" id="ex4">
+  <h2 class="frame-title"><span class="ex-number">4</span>Catalan numbers — deux formules <span class="difficulty medium">medium</span> <span class="kind lab">lab</span></h2>
+  <p class="statement">Le $n$-ème nombre de Catalan est défini par $C_n = \dfrac{1}{n+1}\binom{2n}{n} = \binom{2n}{n} - \binom{2n}{n+1}$.</p>
+  <ol>
+    <li>Écrire deux fonctions <code>catalan1(n)</code> et <code>catalan2(n)</code> implémentant chacune une des formules.</li>
+    <li>Vérifier qu'elles coïncident pour $n = 0, 1, \ldots, 10$.</li>
+    <li>Vérifier la récurrence $C_{n+1} = \sum_{k=0}^{n} C_k C_{n-k}$ pour $n \leq 8$.</li>
+  </ol>
+
+  <details class="solution"><summary>Solution</summary>
+  <div class="python-block">
+    <span class="python-label">Python</span>
+    <span class="pane-code">from math import comb
+
+def catalan1(n):
+    """Formule directe : C(2n, n) / (n + 1)."""
+    return comb(2 * n, n) // (n + 1)
+
+def catalan2(n):
+    """Formule différence : C(2n, n) - C(2n, n+1)."""
+    return comb(2 * n, n) - comb(2 * n, n + 1)
+
+# Comparaison
+for n in range(11):
+    a, b = catalan1(n), catalan2(n)
+    print(f"C_{n} = {a} = {b}, égalité: {a == b}")
+
+# Récurrence convolutive C_{n+1} = sum C_k C_{n-k}
+for n in range(9):
+    recur = sum(catalan1(k) * catalan1(n - k) for k in range(n + 1))
+    assert recur == catalan1(n + 1)
+print("Récurrence convolutive vérifiée. ✓")</span>
+  </div>
+  <div class="output-block">
+    <span class="output-label">Output</span>
+    <span class="pane-code">C_0 = 1 = 1, égalité: True
+C_1 = 1 = 1, égalité: True
+C_2 = 2 = 2, égalité: True
+C_3 = 5 = 5, égalité: True
+C_4 = 14 = 14, égalité: True
+C_5 = 42 = 42, égalité: True
+C_6 = 132 = 132, égalité: True
+C_7 = 429 = 429, égalité: True
+C_8 = 1430 = 1430, égalité: True
+C_9 = 4862 = 4862, égalité: True
+C_10 = 16796 = 16796, égalité: True
+Récurrence convolutive vérifiée. ✓</span>
+  </div>
+  <p><strong>Justification.</strong> L'égalité algébrique des deux formules est démontrée slide 19 du cours. La récurrence convolutive $C_{n+1} = \sum C_k C_{n-k}$ s'interprète comme le décompte des arbres binaires enracinés à $n + 1$ feuilles, paramétré par la taille du sous-arbre gauche.</p>
+  </details>
+</section>
+
+<!-- ══ Exercise 5 — MATH ════════════════════════════════════════════ -->
+<section class="slide" id="ex5">
+  <h2 class="frame-title"><span class="ex-number">5</span>Binomial theorem appliqué <span class="difficulty easy">easy</span> <span class="kind math">math</span></h2>
+  <p class="statement">Considérer le développement de $(2 + x)^{12}$.</p>
+  <ol>
+    <li>Donner le coefficient de $x^5$.</li>
+    <li>Donner le coefficient de $x^7$.</li>
+    <li>Quelle est la somme de tous les coefficients ? (Indication : évaluer en $x = 1$.)</li>
+    <li>Quelle est la somme alternée des coefficients ? (Évaluer en $x = -1$.)</li>
+  </ol>
+
+  <details class="solution"><summary>Solution</summary>
+  <p>Le théorème du binôme donne $(2 + x)^{12} = \sum_{k=0}^{12} \binom{12}{k} 2^{12-k} x^k$.</p>
+  <p><strong>1.</strong> Coefficient de $x^5$ : $\binom{12}{5} \cdot 2^7 = 792 \cdot 128 = 101\,376$.</p>
+  <p><strong>2.</strong> Coefficient de $x^7$ : $\binom{12}{7} \cdot 2^5 = 792 \cdot 32 = 25\,344$. (Symétrie $\binom{12}{7} = \binom{12}{5}$.)</p>
+  <p><strong>3.</strong> Somme des coefficients : $(2 + 1)^{12} = 3^{12} = 531\,441$.</p>
+  <p><strong>4.</strong> Somme alternée : $(2 - 1)^{12} = 1^{12} = 1$.</p>
+  <div class="python-block">
+    <span class="python-label">Python — vérification</span>
+    <span class="pane-code">from math import comb
+print(comb(12, 5) * 2**7)              # 101376
+print(comb(12, 7) * 2**5)              # 25344
+print(sum(comb(12, k) * 2**(12-k) for k in range(13)))         # 531441 = 3**12
+print(sum(comb(12, k) * 2**(12-k) * (-1)**k for k in range(13)))   # 1</span>
+  </div>
+  </details>
+</section>
+
+<!-- ══ Exercise 6 — MATH ════════════════════════════════════════════ -->
+<section class="slide" id="ex6">
+  <h2 class="frame-title"><span class="ex-number">6</span>Pascal &amp; portefeuille <span class="difficulty medium">medium</span> <span class="kind math">math</span></h2>
+  <p class="statement">Maeve doit choisir $8$ actions parmi $20$ pour constituer son portefeuille.</p>
+  <ol>
+    <li>Combien de portefeuilles possibles ?</li>
+    <li>Maeve a une action favorite. Combien de portefeuilles <strong>contiennent</strong> cette action ? Combien la <strong>excluent</strong> ?</li>
+    <li>Vérifier numériquement l'identité de Pascal $\binom{20}{8} = \binom{19}{7} + \binom{19}{8}$.</li>
+    <li>Démontrer combinatoirement Pascal en s'appuyant sur cette situation.</li>
+  </ol>
+
+  <details class="solution"><summary>Solution</summary>
+  <p><strong>1.</strong> $\binom{20}{8} = 125\,970$.</p>
+  <p><strong>2.</strong> Portefeuilles contenant l'action favorite : on la met, puis on choisit les $7$ autres parmi les $19$ restantes. $\binom{19}{7} = 50\,388$.<br>
+  Portefeuilles l'excluant : $\binom{19}{8} = 75\,582$.</p>
+  <p><strong>3.</strong> $50\,388 + 75\,582 = 125\,970 = \binom{20}{8}$. ✓</p>
+  <p><strong>4.</strong> <strong>Démonstration combinatoire de Pascal.</strong> Soit $S$ un ensemble à $n$ éléments contenant un élément distingué $a$. Tout sous-ensemble de taille $k$ de $S$ se trouve dans exactement une des deux classes disjointes :
+  <ul>
+    <li>ceux qui contiennent $a$ : il faut alors choisir les $k - 1$ autres parmi les $n - 1$ éléments restants, soit $\binom{n-1}{k-1}$ ;</li>
+    <li>ceux qui n'incluent pas $a$ : on choisit les $k$ éléments parmi les $n - 1$ autres, soit $\binom{n-1}{k}$.</li>
+  </ul>
+  Par la règle de la somme, $\binom{n}{k} = \binom{n-1}{k-1} + \binom{n-1}{k}$. $\square$</p>
+  <div class="python-block">
+    <span class="python-label">Python — vérification</span>
+    <span class="pane-code">from math import comb
+print(comb(20, 8), comb(19, 7), comb(19, 8))            # 125970 50388 75582
+print(comb(19, 7) + comb(19, 8) == comb(20, 8))          # True</span>
+  </div>
+  </details>
+</section>
+
+<!-- ══ Exercise 7 — MATH ════════════════════════════════════════════ -->
+<section class="slide" id="ex7">
+  <h2 class="frame-title"><span class="ex-number">7</span>Vandermonde &amp; bouquets <span class="difficulty medium">medium</span> <span class="kind math">math</span></h2>
+  <p class="statement">Une fleuriste a $15$ roses et $15$ brins de lavande. Un client veut un bouquet de $10$ fleurs.</p>
+  <ol>
+    <li>Combien de bouquets contiennent exactement $3$ roses et $7$ brins de lavande ?</li>
+    <li>Combien de bouquets contiennent <strong>de $1$ à $3$ roses</strong> ?</li>
+    <li>Combien de bouquets de $10$ fleurs au total ?</li>
+    <li>Énoncer l'identité de Vandermonde et l'utiliser pour exprimer la question 3 en une seule formule.</li>
+  </ol>
+
+  <details class="solution"><summary>Solution</summary>
+  <p><strong>1.</strong> $\binom{15}{3} \binom{15}{7} = 455 \cdot 6\,435 = 2\,927\,925$.</p>
+  <p><strong>2.</strong> $\displaystyle \sum_{k=1}^{3} \binom{15}{k}\binom{15}{10-k} = \binom{15}{1}\binom{15}{9} + \binom{15}{2}\binom{15}{8} + \binom{15}{3}\binom{15}{7}$
+  $= 15 \cdot 5\,005 + 105 \cdot 6\,435 + 455 \cdot 6\,435 = 75\,075 + 675\,675 + 2\,927\,925 = 3\,678\,675$.</p>
+  <p><strong>3.</strong> Par Vandermonde, $\displaystyle \sum_{k=0}^{10} \binom{15}{k}\binom{15}{10-k} = \binom{30}{10} = 30\,045\,015$.</p>
+  <p><strong>4.</strong> <strong>Identité de Vandermonde :</strong> $\binom{m+n}{r} = \sum_{k=0}^{r} \binom{m}{k}\binom{n}{r-k}$. Démonstration combinatoire : classer les $r$-sous-ensembles de $\{1, \ldots, m+n\}$ selon le nombre $k$ d'éléments pris dans les $m$ premiers. Dans notre cas $m = n = 15$, $r = 10$, et le total est $\binom{30}{10}$.</p>
+  <div class="python-block">
+    <span class="python-label">Python — vérification</span>
+    <span class="pane-code">from math import comb
+print(comb(15, 3) * comb(15, 7))                                # 2927925
+print(sum(comb(15, k) * comb(15, 10 - k) for k in (1, 2, 3)))   # 3678675
+print(sum(comb(15, k) * comb(15, 10 - k) for k in range(11)))   # 30045015
+print(comb(30, 10))                                              # 30045015</span>
+  </div>
+  </details>
+</section>
+
+<!-- ══ Exercise 8 — MATH ════════════════════════════════════════════ -->
+<section class="slide" id="ex8">
+  <h2 class="frame-title"><span class="ex-number">8</span>Hockey-stick &amp; sum of squares <span class="difficulty hard">hard</span> <span class="kind math">math</span></h2>
+  <p class="statement">Soit $n \geq 1$.</p>
+  <ol>
+    <li>Énoncer l'identité hockey-stick $\sum_{i=r}^{n}\binom{i}{r} = \binom{n+1}{r+1}$ et la démontrer par double comptage.</li>
+    <li>Évaluer $\sum_{i=2}^{10} \binom{i}{2}$ et vérifier numériquement.</li>
+    <li>Démontrer $\sum_{k=0}^{n}\binom{n}{k}^2 = \binom{2n}{n}$ via Vandermonde.</li>
+    <li>En déduire la formule asymptotique $\binom{2n}{n} \sim \dfrac{4^n}{\sqrt{\pi n}}$ (Stirling) et en estimer la valeur pour $n = 10$.</li>
+  </ol>
+
+  <details class="solution"><summary>Solution</summary>
+  <p><strong>1. Démonstration de l'identité hockey-stick.</strong> On compte les $(r+1)$-sous-ensembles de $\{1, 2, \ldots, n+1\}$ classés par leur <em>plus grand</em> élément. Si le maximum est $i + 1$, les $r$ autres éléments se choisissent dans $\{1, \ldots, i\}$ — $\binom{i}{r}$ choix. Le maximum $i + 1$ varie de $r + 1$ à $n + 1$, soit $i \in \{r, r+1, \ldots, n\}$. Par la règle de la somme :
+  $\sum_{i=r}^{n} \binom{i}{r} = \binom{n+1}{r+1}.$ $\square$</p>
+
+  <p><strong>2.</strong> $\sum_{i=2}^{10}\binom{i}{2} = 1 + 3 + 6 + 10 + 15 + 21 + 28 + 36 + 45 = 165 = \binom{11}{3}$. ✓</p>
+
+  <p><strong>3. Sum of squares via Vandermonde.</strong> Avec $m = n, r = n$ :
+  $\binom{2n}{n} = \sum_{k=0}^{n}\binom{n}{k}\binom{n}{n-k} = \sum_{k=0}^{n}\binom{n}{k}^2$
+  par la symétrie $\binom{n}{n-k} = \binom{n}{k}$. $\square$</p>
+
+  <p><strong>4. Estimation asymptotique.</strong> La formule de Stirling $n! \sim \sqrt{2\pi n}\,(n/e)^n$ donne
+  $\binom{2n}{n} = \dfrac{(2n)!}{(n!)^2} \sim \dfrac{\sqrt{4\pi n}\,(2n/e)^{2n}}{2\pi n \cdot (n/e)^{2n}} = \dfrac{4^n}{\sqrt{\pi n}}.$
+  Pour $n = 10$ : $4^{10}/\sqrt{10\pi} \approx 1\,048\,576/5.605 \approx 187\,079$ — à comparer à la valeur exacte $\binom{20}{10} = 184\,756$ (erreur $\approx 1.3\%$).</p>
+
+  <div class="python-block">
+    <span class="python-label">Python — vérification</span>
+    <span class="pane-code">from math import comb, sqrt, pi
+print(sum(comb(i, 2) for i in range(2, 11)), '==', comb(11, 3))   # 165 == 165
+print(sum(comb(10, k)**2 for k in range(11)), '==', comb(20, 10)) # 184756
+approx = 4**10 / sqrt(10 * pi)
+print(f"Approx. Stirling : {approx:.0f}, exact : {comb(20, 10)}") # 187079 vs 184756</span>
+  </div>
+  </details>
+</section>
+
+</body>
+</html>

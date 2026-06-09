@@ -1,0 +1,1022 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Binomial Identities — Full Course v2 — Discrete Mathematics</title>
+<script>
+  MathJax = {
+    tex: { inlineMath: [['$','$']], displayMath: [['$$','$$']], processEscapes: true },
+    options: { skipHtmlTags: ['script','noscript','style','textarea'] }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --orange:    #e67e22;
+  --darkblue:  #2c3e50;
+  --lightbg:   #f4f9fc;
+  --rowred:    #ffe8e8;
+  --rowblue:   #e3eeff;
+  --border:    #dce3ea;
+  --py-fg:     #1f4e7a;
+  --py-bg:     #eaf3fb;
+  --py-border: #2a6fb3;
+  --py-head:   #2a6fb3;
+  --sp-fg:     #1e824c;
+  --sp-bg:     #e8f5ec;
+  --sp-border: #27ae60;
+  --sp-head:   #27ae60;
+  --su-fg:     #4a4aaa;
+  --su-bg:     #eeeeff;
+  --su-border: #6060cc;
+  --su-head:   #6060cc;
+  --out-fg:    #6e4b0a;
+  --out-bg:    #fff7e0;
+  --out-border:#e0b341;
+  --out-head:  #c89324;
+}
+
+body {
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  background: #e8edf2;
+  color: var(--darkblue);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem 1rem 5rem;
+  gap: 2rem;
+}
+
+.slide {
+  background: #fff;
+  width: 100%;
+  max-width: 940px;
+  border-radius: 10px;
+  box-shadow: 0 4px 18px rgba(0,0,0,.10);
+  padding: 2.2rem 2.8rem 1.8rem;
+  position: relative;
+}
+.slide-number {
+  position: absolute;
+  bottom: 0.7rem;
+  right: 1.2rem;
+  font-size: 0.72rem;
+  color: #aaa;
+}
+
+.slide.title-slide {
+  background: linear-gradient(145deg, #f4f9fc 60%, #e0eef7);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 240px;
+  text-align: center;
+  border-top: 6px solid var(--orange);
+}
+.slide.title-slide h1 { font-size: 1.85rem; color: var(--darkblue); margin-bottom: 0.4rem; }
+.slide.title-slide .subtitle { font-size: 1.1rem; color: #555; }
+
+h2.frame-title {
+  font-size: 1.55rem;
+  color: var(--orange);
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  padding-bottom: 0.35rem;
+  border-bottom: 2px solid #f9e4cc;
+}
+h3.sub-title {
+  font-size: 1.05rem;
+  color: var(--orange);
+  font-weight: 600;
+  margin: 0.7rem 0 0.3rem;
+}
+
+p { line-height: 1.7; margin: 0.45rem 0; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.4rem; line-height: 1.8; }
+ul li::marker, ol li::marker { color: var(--orange); }
+code { background: #f0f3f7; color: #1f4e7a; padding: 0 .25em; border-radius: 3px; font-family: 'Consolas','Fira Code',monospace; }
+
+.note-box, .def-box, .thm-box, .proof-box, .ex-box, .ce-box, .cor-box {
+  border-radius: 6px;
+  padding: 0.7rem 1rem;
+  margin: 0.6rem 0;
+  line-height: 1.7;
+}
+.note-box  { background: #fff5e8; border-left: 4px solid var(--orange); font-style: italic; }
+.def-box   { background: #eaf3fb; border-left: 4px solid var(--py-border); }
+.def-box::before  { content: "Definition. "; font-weight: 700; color: var(--py-border); }
+.thm-box   { background: #fff7e0; border-left: 4px solid var(--out-border); }
+.thm-box::before  { content: "Theorem. "; font-weight: 700; color: var(--out-head); }
+.cor-box   { background: #fff7e0; border-left: 4px solid var(--out-border); }
+.cor-box::before  { content: "Corollary. "; font-weight: 700; color: var(--out-head); }
+.proof-box { background: #f4f9fc; border-left: 4px solid var(--darkblue); }
+.proof-box::before { content: "Proof. "; font-weight: 700; color: var(--darkblue); }
+.ex-box    { background: #e8f5ec; border-left: 4px solid var(--sp-border); }
+.ex-box::before    { content: "Example. "; font-weight: 700; color: var(--sp-border); }
+.ce-box    { background: #ffe8e8; border-left: 4px solid #c0395a; }
+.ce-box::before    { content: "Counter-example. "; font-weight: 700; color: #c0395a; }
+
+.python-block, .setup-block, .sympy-block, .output-block {
+  border-radius: 6px;
+  overflow: hidden;
+  margin: 0.6rem 0;
+  border: 1px solid;
+}
+.pane-label {
+  display: block;
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  color: #fff;
+}
+.pane-code {
+  font-family: 'Consolas','Fira Code',monospace;
+  font-size: 0.83rem;
+  line-height: 1.6;
+  padding: 0.5rem 0.75rem;
+  white-space: pre;
+  display: block;
+  overflow-x: auto;
+}
+.python-block { border-color: var(--py-border); }
+.python-block .pane-label { background: var(--py-head); }
+.python-block .pane-code  { background: var(--py-bg); color: var(--py-fg); }
+.sympy-block  { border-color: var(--sp-border); }
+.sympy-block  .pane-label { background: var(--sp-head); }
+.sympy-block  .pane-code  { background: var(--sp-bg); color: var(--sp-fg); }
+.setup-block  { border-color: var(--su-border); }
+.setup-block  .pane-label { background: var(--su-head); }
+.setup-block  .pane-code  { background: var(--su-bg); color: var(--su-fg); }
+
+.ref-table {
+  border-collapse: collapse;
+  margin: 0.6rem auto;
+  font-size: 0.9rem;
+  width: 100%;
+}
+.ref-table th, .ref-table td {
+  border: 1px solid var(--border);
+  padding: 0.4rem 0.75rem;
+  text-align: left;
+  vertical-align: top;
+}
+.ref-table th { background: var(--lightbg); font-weight: 600; color: var(--darkblue); }
+.center td, .center th { text-align: center; }
+
+.identity-table {
+  border-collapse: collapse;
+  margin: 0.6rem auto;
+  font-size: 0.95rem;
+  width: 100%;
+}
+.identity-table td {
+  border-bottom: 1px solid var(--border);
+  padding: 0.55rem 0.75rem;
+}
+.identity-table tr:last-child td { border-bottom: none; }
+.identity-table td:first-child { width: 30%; color: var(--orange); font-weight: 600; }
+
+#nav { position: fixed; bottom: 1.5rem; right: 1.5rem; display: flex; gap: 0.4rem; z-index: 100; }
+#nav button {
+  background: var(--orange); color: #fff; border: none;
+  border-radius: 50%; width: 40px; height: 40px;
+  font-size: 1.1rem; cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,.25); transition: background .2s;
+}
+#nav button:hover { background: #cf6d17; }
+#nav #btn-scroll { border-radius: 20px; width: auto; padding: 0 12px; font-size: 0.8rem; }
+
+body.slideshow .slide        { display: none; }
+body.slideshow .slide.active { display: block; }
+
+.ref-cite { color: #777; font-size: 0.85rem; font-style: italic; }
+</style>
+</head>
+<body>
+
+<!-- ══ Slide 1 — Title ════════════════════════════════════════════════ -->
+<section class="slide title-slide" id="s1">
+  <h1>Binomial Identities</h1>
+  <p class="subtitle">Discrete Mathematics — Session 4 (Full Course v2)</p>
+  <p style="font-size:1rem;color:#e67e22;margin-top:0.8rem;font-style:italic;font-weight:600;letter-spacing:.02em;">Notes By Pr. El Hadiq Zouhair</p>
+  <span class="slide-number">1 / 32</span>
+</section>
+
+<!-- ══ Slide 2 — Outline ═════════════════════════════════════════════ -->
+<section class="slide" id="s2">
+  <h2 class="frame-title">Outline of the course</h2>
+  <ol>
+    <li>Recap of $\binom{n}{k}$; combinatorial vs algebraic identity.</li>
+    <li>Symmetry identity $\binom{n}{k} = \binom{n}{n-k}$.</li>
+    <li>Pascal's identity $\binom{n}{k} = \binom{n-1}{k-1} + \binom{n-1}{k}$ — combinatorial + algebraic proofs.</li>
+    <li>Pascal's triangle: construction, symmetry, hidden patterns (Fibonacci, hockey-stick).</li>
+    <li>Absorption identity $k \binom{n}{k} = n \binom{n-1}{k-1}$ — committee/chairperson proof.</li>
+    <li>Binomial theorem $\sum_k \binom{n}{k} x^k y^{n-k}$ — combinatorial + inductive proofs.</li>
+    <li>Row-sum identity $\sum_k \binom{n}{k} = 2^n$ — three proofs.</li>
+    <li>Alternating-sum identity $\sum_k (-1)^k \binom{n}{k} = 0$ — algebraic, combinatorial (involution).</li>
+    <li>Weighted sums $\sum 2^k \binom{n}{k} = 3^n$, $\sum k \binom{n}{k} = n\,2^{n-1}$, $\sum k^2\binom{n}{k} = n(n+1)\,2^{n-2}$.</li>
+    <li>Vandermonde identity and its generalisation Chu–Vandermonde.</li>
+    <li>Hockey-stick identity $\sum_{i=r}^{n} \binom{i}{r} = \binom{n+1}{r+1}$.</li>
+    <li>Sum of squares $\sum \binom{n}{k}^2 = \binom{2n}{n}$.</li>
+    <li>Negative binomial coefficient; generating-function preview.</li>
+    <li>Multinomial extension; Catalan-number connection.</li>
+    <li>Python / SymPy toolbox; Wolfram → Python reference; bibliography.</li>
+  </ol>
+  <p class="ref-cite">References: Rosen 8e §6.4; Graham–Knuth–Patashnik, <em>Concrete Mathematics</em>, ch. 5; Tucker §5.5; Aigner, <em>A Course in Enumeration</em>.</p>
+  <span class="slide-number">2 / 32</span>
+</section>
+
+<!-- ══ Slide 3 — Recap & two-proof philosophy ═══════════════════════ -->
+<section class="slide" id="s3">
+  <h2 class="frame-title">1. Recap — $\binom{n}{k}$ and the two kinds of proof</h2>
+
+  <div class="def-box">
+    For integers $0 \leq k \leq n$:
+    $$\binom{n}{k} \;=\; \frac{n!}{k!\,(n-k)!}.$$
+    This counts the number of $k$-subsets of an $n$-element set. By convention $\binom{n}{k} = 0$ when $k &lt; 0$ or $k &gt; n$.
+  </div>
+
+  <p>An <strong>identity</strong> $A = B$ between two combinatorial quantities can be proved two complementary ways:</p>
+  <ul>
+    <li><strong>Algebraic proof.</strong> Manipulate the factorial / polynomial form until both sides agree.</li>
+    <li><strong>Combinatorial proof (bijective or double-count).</strong> Exhibit a finite set $S$ such that $|S| = A$ counted one way and $|S| = B$ counted another. Equality of the two counts is automatic.</li>
+  </ul>
+
+  <div class="note-box">
+    Combinatorial proofs are often shorter, more illuminating and easier to generalise — they make the formula <em>explain</em> something rather than just <em>compute</em>. We give both forms whenever both are natural.
+  </div>
+  <p class="ref-cite">Rosen 8e §6.4; Concrete Mathematics §5.1.</p>
+  <span class="slide-number">3 / 32</span>
+</section>
+
+<!-- ══ Slide 4 — Symmetry identity ═══════════════════════════════════ -->
+<section class="slide" id="s4">
+  <h2 class="frame-title">2. Symmetry identity</h2>
+
+  <div class="thm-box">
+    For $0 \leq k \leq n$, $\;\displaystyle \binom{n}{k} = \binom{n}{n-k}.$
+  </div>
+
+  <div class="proof-box">
+    <strong>Combinatorial.</strong> Choosing $k$ elements <em>to keep</em> from an $n$-set is the same as choosing the $n - k$ elements <em>to discard</em>. The map $S \mapsto S^c$ (complement) is a bijection between $k$-subsets and $(n-k)$-subsets, so both classes have the same size. $\square$
+  </div>
+  <div class="proof-box">
+    <strong>Algebraic.</strong> $\binom{n}{n-k} = \dfrac{n!}{(n-k)!\,k!} = \dfrac{n!}{k!\,(n-k)!} = \binom{n}{k}$. $\square$
+  </div>
+
+  <div class="ex-box">
+    $\binom{20}{7} = \binom{20}{13} = 77\,520$. Symmetry halves the workload when computing entries of Pascal's triangle: only the left half need be stored.
+  </div>
+  <p class="ref-cite">Rosen 8e §6.4 Corollary 1.</p>
+  <span class="slide-number">4 / 32</span>
+</section>
+
+<!-- ══ Slide 5 — Pascal's identity ═══════════════════════════════════ -->
+<section class="slide" id="s5">
+  <h2 class="frame-title">3. Pascal's identity</h2>
+
+  <div class="thm-box">
+    For $1 \leq k \leq n$:
+    $$\binom{n}{k} \;=\; \binom{n-1}{k-1} \;+\; \binom{n-1}{k}.$$
+  </div>
+
+  <div class="proof-box">
+    <strong>Combinatorial.</strong> Distinguish a fixed element $a$ of an $n$-set $S$. Every $k$-subset of $S$ either contains $a$ or does not:
+    <ul>
+      <li><em>Contains</em> $a$: choose $k - 1$ more elements from $S \setminus \{a\}$ — $\binom{n-1}{k-1}$ subsets.</li>
+      <li><em>Excludes</em> $a$: choose all $k$ from $S \setminus \{a\}$ — $\binom{n-1}{k}$ subsets.</li>
+    </ul>
+    The two classes are disjoint and exhaust the $k$-subsets, so by the sum rule the count is $\binom{n-1}{k-1} + \binom{n-1}{k}$. $\square$
+  </div>
+  <div class="proof-box">
+    <strong>Algebraic.</strong>
+    $\binom{n-1}{k-1} + \binom{n-1}{k} = \dfrac{(n-1)!}{(k-1)!(n-k)!} + \dfrac{(n-1)!}{k!(n-k-1)!} = \dfrac{(n-1)!\,[k + (n - k)]}{k!\,(n-k)!} = \dfrac{n!}{k!\,(n-k)!} = \binom{n}{k}$. $\square$
+  </div>
+
+  <p>Pascal's identity is the <em>recurrence</em> that builds Pascal's triangle (next slide).</p>
+  <p class="ref-cite">Rosen 8e §6.4 Theorem 2.</p>
+  <span class="slide-number">5 / 32</span>
+</section>
+
+<!-- ══ Slide 6 — Pascal's triangle ═══════════════════════════════════ -->
+<section class="slide" id="s6">
+  <h2 class="frame-title">4. Pascal's triangle — patterns</h2>
+
+  <table class="ref-table center" style="max-width:600px;">
+    <thead><tr><th>Row $n$</th><th colspan="13">Entries</th></tr></thead>
+    <tbody>
+      <tr><td>$0$</td><td></td><td></td><td></td><td></td><td></td><td></td><td>1</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+      <tr><td>$1$</td><td></td><td></td><td></td><td></td><td></td><td>1</td><td></td><td>1</td><td></td><td></td><td></td><td></td><td></td></tr>
+      <tr><td>$2$</td><td></td><td></td><td></td><td></td><td>1</td><td></td><td>2</td><td></td><td>1</td><td></td><td></td><td></td><td></td></tr>
+      <tr><td>$3$</td><td></td><td></td><td></td><td>1</td><td></td><td>3</td><td></td><td>3</td><td></td><td>1</td><td></td><td></td><td></td></tr>
+      <tr><td>$4$</td><td></td><td></td><td>1</td><td></td><td>4</td><td></td><td>6</td><td></td><td>4</td><td></td><td>1</td><td></td><td></td></tr>
+      <tr><td>$5$</td><td></td><td>1</td><td></td><td>5</td><td></td><td>10</td><td></td><td>10</td><td></td><td>5</td><td></td><td>1</td><td></td></tr>
+      <tr><td>$6$</td><td>1</td><td></td><td>6</td><td></td><td>15</td><td></td><td>20</td><td></td><td>15</td><td></td><td>6</td><td></td><td>1</td></tr>
+    </tbody>
+  </table>
+
+  <h3 class="sub-title">Hidden patterns</h3>
+  <ul>
+    <li><strong>Row symmetry</strong> (slide 4): each row reads the same backwards.</li>
+    <li><strong>Row sum:</strong> the entries of row $n$ sum to $2^n$ (slide 9).</li>
+    <li><strong>Fibonacci numbers</strong> appear as sums along the rising diagonals: $1, 1, 1+1, 1+2, 1+3+1, 1+4+3, \dots = 1, 1, 2, 3, 5, 8, \dots$</li>
+    <li><strong>Hockey-stick / Christmas-stocking:</strong> the diagonal sum from any entry slants down to its hockey-stick value (slide 17).</li>
+    <li><strong>Sierpinski triangle:</strong> shading the odd entries reveals a fractal — entry $\binom{n}{k}$ is odd iff every binary bit of $k$ is also a bit of $n$ (Kummer / Lucas).</li>
+  </ul>
+  <p class="ref-cite">Rosen 8e §6.4; Concrete Mathematics §5.1.</p>
+  <span class="slide-number">6 / 32</span>
+</section>
+
+<!-- ══ Slide 7 — Absorption identity ═════════════════════════════════ -->
+<section class="slide" id="s7">
+  <h2 class="frame-title">5. Absorption identity</h2>
+
+  <div class="thm-box">
+    For $1 \leq k \leq n$:
+    $$k \binom{n}{k} \;=\; n \binom{n-1}{k-1}.$$
+  </div>
+
+  <div class="proof-box">
+    <strong>Combinatorial (committee–chairperson).</strong> Count pairs $(S, c)$ where $S$ is a $k$-subset of $\{1, \dots, n\}$ and $c \in S$ is a distinguished chairperson.<br>
+    <em>Side 1 — choose the committee, then the chair.</em> $\binom{n}{k}$ committees, each gives $k$ chairs $\Rightarrow$ $k \binom{n}{k}$ pairs.<br>
+    <em>Side 2 — choose the chair, then the other members.</em> $n$ chairs, then $\binom{n-1}{k-1}$ ways for the remaining $k - 1$ members $\Rightarrow$ $n \binom{n-1}{k-1}$ pairs. Equate. $\square$
+  </div>
+
+  <div class="proof-box">
+    <strong>Algebraic.</strong> $k \binom{n}{k} = k \cdot \dfrac{n!}{k!(n-k)!} = \dfrac{n!}{(k-1)!(n-k)!} = n \cdot \dfrac{(n-1)!}{(k-1)!(n-k)!} = n \binom{n-1}{k-1}$. $\square$
+  </div>
+
+  <p>Reading the identity right-to-left gives $\binom{n}{k} = \dfrac{n}{k} \binom{n-1}{k-1}$ — a recurrence used to compute $\binom{n}{k}$ along a single row very efficiently.</p>
+  <p class="ref-cite">Concrete Mathematics §5.1 (5.5).</p>
+  <span class="slide-number">7 / 32</span>
+</section>
+
+<!-- ══ Slide 8 — Binomial theorem ════════════════════════════════════ -->
+<section class="slide" id="s8">
+  <h2 class="frame-title">6. Binomial theorem — central result</h2>
+
+  <div class="thm-box">
+    For any $x, y$ and integer $n \geq 0$:
+    $$(x + y)^n \;=\; \sum_{k=0}^{n} \binom{n}{k}\, x^{k}\, y^{n-k}.$$
+  </div>
+
+  <div class="proof-box">
+    <strong>Combinatorial.</strong> Expand $(x+y)^n = (x+y)(x+y) \cdots (x+y)$ — $n$ factors. Distributing yields $2^n$ monomials, each a product of one $z_i \in \{x, y\}$ per factor. The monomial $x^{k} y^{n-k}$ arises from choosing $k$ factors that contribute $x$ — there are $\binom{n}{k}$ such choices. Collecting like terms gives the formula. $\square$
+  </div>
+
+  <div class="proof-box">
+    <strong>Inductive.</strong> Base $n = 0$: $(x+y)^0 = 1 = \binom{0}{0} x^0 y^0$. Step:
+    $(x+y)^{n+1} = (x + y)(x+y)^n = (x+y)\sum_{k} \binom{n}{k} x^k y^{n-k}.$ Distributing and re-indexing,
+    the coefficient of $x^k y^{n+1-k}$ is $\binom{n}{k-1} + \binom{n}{k} = \binom{n+1}{k}$ by Pascal. $\square$
+  </div>
+
+  <div class="ex-box">
+    $(1 + x)^n = \sum_k \binom{n}{k} x^k$. Coefficient of $x^5$ in $(2+x)^{12}$ is $\binom{12}{5} \cdot 2^{7} = 792 \cdot 128 = 101\,376$.
+  </div>
+  <p class="ref-cite">Rosen 8e §6.4 Theorem 1.</p>
+  <span class="slide-number">8 / 32</span>
+</section>
+
+<!-- ══ Slide 9 — Row sum = 2^n ═══════════════════════════════════════ -->
+<section class="slide" id="s9">
+  <h2 class="frame-title">7. Row-sum identity — three proofs</h2>
+
+  <div class="thm-box">
+    $\displaystyle \sum_{k=0}^{n} \binom{n}{k} \;=\; 2^n.$
+  </div>
+
+  <div class="proof-box">
+    <strong>Proof 1 — binomial theorem.</strong> Set $x = y = 1$ in $(x + y)^n = \sum_k \binom{n}{k} x^k y^{n-k}$:
+    $2^n = \sum_k \binom{n}{k}$. $\square$
+  </div>
+
+  <div class="proof-box">
+    <strong>Proof 2 — combinatorial.</strong> Both sides count the number of subsets of an $n$-element set. Left: classify subsets by size $k$ — there are $\binom{n}{k}$ subsets of size $k$. Right: each of the $n$ elements is independently "in" or "out" of the subset — $2^n$ total. $\square$
+  </div>
+
+  <div class="proof-box">
+    <strong>Proof 3 — induction.</strong> Base $n = 0$: $\binom{0}{0} = 1 = 2^0$. Step: using Pascal,
+    $\sum_k \binom{n+1}{k} = \sum_k \binom{n}{k-1} + \sum_k \binom{n}{k} = 2 \sum_k \binom{n}{k} = 2 \cdot 2^n = 2^{n+1}.$ $\square$
+  </div>
+  <p class="ref-cite">Rosen 8e §6.4 Corollary 2.</p>
+  <span class="slide-number">9 / 32</span>
+</section>
+
+<!-- ══ Slide 10 — Alternating sum = 0 ════════════════════════════════ -->
+<section class="slide" id="s10">
+  <h2 class="frame-title">8. Alternating-sum identity</h2>
+
+  <div class="thm-box">
+    For every $n \geq 1$:
+    $$\sum_{k=0}^{n} (-1)^k \binom{n}{k} \;=\; 0.$$
+  </div>
+
+  <div class="proof-box">
+    <strong>Algebraic.</strong> Set $x = -1$ and $y = 1$ in the binomial theorem: $(1 - 1)^n = 0$ for $n \geq 1$. Expanding gives $\sum_k \binom{n}{k} (-1)^k \cdot 1^{n-k} = 0$. $\square$
+  </div>
+
+  <div class="proof-box">
+    <strong>Combinatorial — involution.</strong> Let $E$ = even-size subsets of $\{1, \dots, n\}$, $O$ = odd-size subsets. We show $|E| = |O|$. Fix the element $1 \in \{1, \dots, n\}$ (we assume $n \geq 1$). Define $\varphi : E \cup O \to E \cup O$ by $\varphi(S) = S \mathbin{\triangle} \{1\}$ (toggle membership of $1$). Then $\varphi$ is its own inverse (an involution) and it swaps subsets of even size with subsets of odd size. So $|E| = |O|$, hence $|E| - |O| = \sum_k (-1)^k \binom{n}{k} = 0$. $\square$
+  </div>
+
+  <div class="cor-box">
+    Combining with $\sum \binom{n}{k} = 2^n$ gives $\sum_{k\text{ even}} \binom{n}{k} = \sum_{k\text{ odd}} \binom{n}{k} = 2^{n-1}$ for $n \geq 1$.
+  </div>
+  <p class="ref-cite">Rosen 8e §6.4 Corollary 3.</p>
+  <span class="slide-number">10 / 32</span>
+</section>
+
+<!-- ══ Slide 11 — Sum 2^k C(n,k) = 3^n ═══════════════════════════════ -->
+<section class="slide" id="s11">
+  <h2 class="frame-title">9. Weighted sum — $\sum 2^k \binom{n}{k} = 3^n$</h2>
+
+  <div class="thm-box">
+    $\displaystyle \sum_{k=0}^{n} 2^k \binom{n}{k} \;=\; 3^n.$
+  </div>
+
+  <div class="proof-box">
+    <strong>Algebraic.</strong> Set $x = 2, y = 1$ in $(x + y)^n = \sum \binom{n}{k} x^k y^{n-k}$:
+    $(2 + 1)^n = 3^n = \sum 2^k \binom{n}{k}$. $\square$
+  </div>
+
+  <div class="proof-box">
+    <strong>Combinatorial.</strong> Count the number of ways to label each of $n$ items with one of three colours $\{R, G, B\}$.<br>
+    <em>Right side.</em> Each of the $n$ items has $3$ choices $\Rightarrow$ $3^n$ labellings.<br>
+    <em>Left side.</em> First choose the subset of items that will be labelled non-$R$ — say there are $k$ such items, with $\binom{n}{k}$ choices. Each of those $k$ items takes one of two colours ($G$ or $B$) $\Rightarrow$ $2^k$ ways. Sum over $k$: $\sum 2^k \binom{n}{k}$. $\square$
+  </div>
+
+  <div class="note-box">
+    More generally, $\sum_{k=0}^{n} a^k \binom{n}{k} = (1+a)^n$ for any $a$.
+  </div>
+  <p class="ref-cite">Rosen 8e §6.4 Ex. 13.</p>
+  <span class="slide-number">11 / 32</span>
+</section>
+
+<!-- ══ Slide 12 — Sum k C(n,k) = n 2^{n-1} ═══════════════════════════ -->
+<section class="slide" id="s12">
+  <h2 class="frame-title">10. $\sum k \binom{n}{k} = n\,2^{n-1}$</h2>
+
+  <div class="thm-box">
+    $\displaystyle \sum_{k=0}^{n} k \binom{n}{k} \;=\; n \cdot 2^{n-1}.$
+  </div>
+
+  <div class="proof-box">
+    <strong>Combinatorial (chair–committee, sum form).</strong> Count pairs $(S, c)$ with $c \in S \subseteq \{1, \dots, n\}$ (no size restriction).<br>
+    <em>Side 1 — by committee size.</em> A committee of size $k$ contributes $\binom{n}{k} \cdot k$ pairs (the committee, then the chair). Sum over $k$: $\sum_k k \binom{n}{k}$.<br>
+    <em>Side 2 — by chair first.</em> Choose the chair in $n$ ways. The remaining $n - 1$ people are independently in/out, giving $2^{n-1}$ committees. Total: $n \cdot 2^{n-1}$. Equate. $\square$
+  </div>
+
+  <div class="proof-box">
+    <strong>Algebraic.</strong> Differentiate $(1+x)^n = \sum \binom{n}{k} x^k$ with respect to $x$:
+    $n(1+x)^{n-1} = \sum_k k \binom{n}{k} x^{k-1}.$
+    Set $x = 1$: $n \cdot 2^{n-1} = \sum k \binom{n}{k}$. $\square$
+  </div>
+
+  <div class="ex-box">
+    Average size of a uniformly random subset of $\{1, \dots, n\}$:
+    $\dfrac{\sum_k k \binom{n}{k}}{2^n} = \dfrac{n \cdot 2^{n-1}}{2^n} = \dfrac{n}{2}$ — half the elements, as expected.
+  </div>
+  <p class="ref-cite">Concrete Mathematics §5.1 (5.7).</p>
+  <span class="slide-number">12 / 32</span>
+</section>
+
+<!-- ══ Slide 13 — sum k^2 C(n,k) ═════════════════════════════════════ -->
+<section class="slide" id="s13">
+  <h2 class="frame-title">11. $\sum k^2 \binom{n}{k} = n(n+1)\,2^{n-2}$</h2>
+
+  <div class="thm-box">
+    For $n \geq 1$:
+    $\displaystyle \sum_{k=0}^{n} k^2 \binom{n}{k} \;=\; n(n+1) \cdot 2^{n-2}.$
+  </div>
+
+  <div class="proof-box">
+    <strong>Algebraic.</strong> Differentiate $(1+x)^n = \sum \binom{n}{k} x^k$ twice and multiply by $x$ tactically.
+    Apply the operator $x\,\tfrac{d}{dx}$: $\sum k \binom{n}{k} x^k = x \cdot n (1+x)^{n-1}$.
+    Apply it again: $\sum k^2 \binom{n}{k} x^k = x \cdot \tfrac{d}{dx}\bigl[\,x \cdot n(1+x)^{n-1}\,\bigr] = nx(1+x)^{n-1} + n(n-1)x^2(1+x)^{n-2}.$
+    Set $x = 1$: $\sum k^2 \binom{n}{k} = n \cdot 2^{n-1} + n(n-1) \cdot 2^{n-2} = 2^{n-2}\bigl[2n + n(n-1)\bigr] = 2^{n-2} \cdot n(n+1)$. $\square$
+  </div>
+
+  <div class="ex-box">
+    Variance of the size $K$ of a uniformly random subset of $\{1, \dots, n\}$: $\mathbb{E}[K^2] = n(n+1)/4$ and $\mathbb{E}[K] = n/2$, so $\mathrm{Var}(K) = n(n+1)/4 - n^2/4 = n/4$ — confirming $K \sim \text{Binomial}(n, 1/2)$.
+  </div>
+  <p class="ref-cite">Concrete Mathematics §5.2.</p>
+  <span class="slide-number">13 / 32</span>
+</section>
+
+<!-- ══ Slide 14 — Vandermonde identity ═══════════════════════════════ -->
+<section class="slide" id="s14">
+  <h2 class="frame-title">12. Vandermonde identity</h2>
+
+  <div class="thm-box">
+    For non-negative integers $m, n, r$:
+    $$\binom{m + n}{r} \;=\; \sum_{k=0}^{r} \binom{m}{k} \binom{n}{r - k}.$$
+  </div>
+
+  <div class="proof-box">
+    <strong>Combinatorial.</strong> Count $r$-subsets of $\{1, 2, \dots, m + n\}$. Split this set into a "left" part $L = \{1, \dots, m\}$ and a "right" part $R = \{m+1, \dots, m+n\}$. Any $r$-subset $T$ takes $k$ elements from $L$ and $r - k$ from $R$ for some $0 \leq k \leq r$. The number of such pairs is $\binom{m}{k} \binom{n}{r-k}$. Summing over $k$ counts every $r$-subset exactly once. $\square$
+  </div>
+
+  <div class="proof-box">
+    <strong>Algebraic.</strong> Coefficient of $x^r$ in $(1+x)^{m+n}$ is $\binom{m+n}{r}$. But $(1+x)^{m+n} = (1+x)^m (1+x)^n$. The Cauchy product of the two binomial expansions gives, for the coefficient of $x^r$:
+    $\sum_{k} \binom{m}{k} \binom{n}{r-k}$. Equate the two coefficients. $\square$
+  </div>
+
+  <div class="cor-box">
+    Setting $m = n = r$ and using symmetry $\binom{n}{r - k} = \binom{n}{n - r + k}$ does <em>not</em> give a special identity directly; but setting $m = n, r = n$ <em>does</em> (see slide 16).
+  </div>
+  <p class="ref-cite">Rosen 8e §6.4 Theorem 4.</p>
+  <span class="slide-number">14 / 32</span>
+</section>
+
+<!-- ══ Slide 15 — Bouquet example ════════════════════════════════════ -->
+<section class="slide" id="s15">
+  <h2 class="frame-title">12.bis Worked example — Vandermonde in action</h2>
+
+  <p>A florist has $15$ roses and $15$ lavender flowers. Customer wants a bouquet of $10$ flowers.</p>
+
+  <ul>
+    <li><strong>How many bouquets with exactly $3$ roses and $7$ lavenders?</strong>
+      $\binom{15}{3} \binom{15}{7} = 455 \cdot 6\,435 = 2\,927\,925$.</li>
+    <li><strong>How many bouquets with $1$ to $3$ roses?</strong>
+      $\sum_{k=1}^{3} \binom{15}{k}\binom{15}{10-k} = 15 \cdot \binom{15}{9} + \binom{15}{2}\binom{15}{8} + \binom{15}{3}\binom{15}{7} = 75\,075 + 675\,675 + 2\,927\,925 = 3\,678\,675$.</li>
+    <li><strong>How many bouquets of $10$ flowers in total?</strong>
+      By Vandermonde, $\displaystyle \sum_{k=0}^{10} \binom{15}{k}\binom{15}{10-k} = \binom{30}{10} = 30\,045\,015$.</li>
+  </ul>
+
+  <div class="sympy-block">
+    <span class="pane-label">SymPy</span>
+    <span class="pane-code">from sympy import binomial, Sum, symbols
+k = symbols('k', integer=True, nonnegative=True)
+print(binomial(15, 3) * binomial(15, 7))                          # 2927925
+print(sum(binomial(15, j) * binomial(15, 10 - j) for j in (1,2,3)))# 3678675
+print(Sum(binomial(15, k) * binomial(15, 10-k), (k, 0, 10)).doit())# 30045015 = C(30,10)</span>
+  </div>
+  <p class="ref-cite">Course slide reproduced.</p>
+  <span class="slide-number">15 / 32</span>
+</section>
+
+<!-- ══ Slide 16 — Sum of squares ═════════════════════════════════════ -->
+<section class="slide" id="s16">
+  <h2 class="frame-title">13. Sum-of-squares identity</h2>
+
+  <div class="thm-box">
+    $\displaystyle \sum_{k=0}^{n} \binom{n}{k}^{2} \;=\; \binom{2n}{n}.$
+  </div>
+
+  <div class="proof-box">
+    <strong>Combinatorial.</strong> Set $m = n$ and $r = n$ in Vandermonde:
+    $\binom{2n}{n} = \sum_k \binom{n}{k}\binom{n}{n-k} = \sum_k \binom{n}{k}^2$
+    using symmetry $\binom{n}{n-k} = \binom{n}{k}$. $\square$
+  </div>
+
+  <div class="ex-box">
+    $\sum_{k=0}^{5} \binom{5}{k}^2 = 1 + 25 + 100 + 100 + 25 + 1 = 252 = \binom{10}{5}$. ✓<br>
+    Combinatorial meaning: number of ways to choose $n$ items from a set of $2n$ split into two halves — must take $k$ from one half and $n - k$ from the other.
+  </div>
+  <p class="ref-cite">Concrete Mathematics §5.1 (5.23).</p>
+  <span class="slide-number">16 / 32</span>
+</section>
+
+<!-- ══ Slide 17 — Hockey-stick ═══════════════════════════════════════ -->
+<section class="slide" id="s17">
+  <h2 class="frame-title">14. Hockey-stick identity</h2>
+
+  <div class="thm-box">
+    For $0 \leq r \leq n$:
+    $\displaystyle \sum_{i=r}^{n} \binom{i}{r} \;=\; \binom{n+1}{r+1}.$
+  </div>
+
+  <div class="proof-box">
+    <strong>Combinatorial.</strong> Count $(r+1)$-subsets of $\{1, 2, \dots, n+1\}$. Classify each such subset by its <em>largest</em> element, call it $i + 1$. The remaining $r$ elements are chosen from $\{1, \dots, i\}$ — $\binom{i}{r}$ ways. The largest element ranges over $r+1, r+2, \dots, n+1$, i.e. $i \in \{r, r+1, \dots, n\}$. Summing: $\sum_{i=r}^{n} \binom{i}{r} = \binom{n+1}{r+1}$. $\square$
+  </div>
+
+  <div class="proof-box">
+    <strong>Inductive.</strong> Base $n = r$: $\binom{r}{r} = 1 = \binom{r+1}{r+1}$. Step: assume at $n$. Then
+    $\sum_{i=r}^{n+1}\binom{i}{r} = \binom{n+1}{r+1} + \binom{n+1}{r} = \binom{n+2}{r+1}$ by Pascal's identity. $\square$
+  </div>
+
+  <div class="ex-box">
+    $\sum_{i=0}^{5} \binom{i}{0} = 6 = \binom{6}{1}$. ✓ &nbsp; $\sum_{i=2}^{6}\binom{i}{2} = 1 + 3 + 6 + 10 + 15 = 35 = \binom{7}{3}$. ✓
+  </div>
+
+  <p>Visually in Pascal's triangle, the identity traces a "hockey stick": start at row $r$, slide diagonally down, the sum lies one step below-and-out — the blade of the stick.</p>
+  <p class="ref-cite">Rosen 8e §6.4 Theorem 5.</p>
+  <span class="slide-number">17 / 32</span>
+</section>
+
+<!-- ══ Slide 18 — Negative binomial ══════════════════════════════════ -->
+<section class="slide" id="s18">
+  <h2 class="frame-title">15. Negative-binomial extension</h2>
+
+  <div class="def-box">
+    For any real $\alpha$ and integer $k \geq 0$, define
+    $$\binom{\alpha}{k} \;:=\; \frac{\alpha (\alpha - 1) \cdots (\alpha - k + 1)}{k!}.$$
+    For $\alpha = n$ a non-negative integer this reduces to the usual binomial; for negative $\alpha$ it makes sense and obeys the same algebra.
+  </div>
+
+  <div class="thm-box">
+    <strong>Generalised binomial theorem (Newton).</strong> For $|x| &lt; 1$ and any real $\alpha$:
+    $(1 + x)^{\alpha} \;=\; \sum_{k=0}^{\infty} \binom{\alpha}{k} x^k.$
+  </div>
+
+  <div class="thm-box">
+    For positive integer $r$ and $k \geq 0$:
+    $\binom{-r}{k} \;=\; (-1)^k \binom{r + k - 1}{k}.$
+  </div>
+  <div class="proof-box">
+    By definition,
+    $\binom{-r}{k} = \frac{(-r)(-r-1) \cdots (-r-k+1)}{k!} = (-1)^k \frac{r(r+1)\cdots(r+k-1)}{k!} = (-1)^k \frac{(r+k-1)!}{k!\,(r-1)!} = (-1)^k \binom{r+k-1}{k}.$ $\square$
+  </div>
+
+  <p>This identity is the heart of the <em>negative binomial</em> series $(1 - x)^{-r} = \sum_k \binom{r+k-1}{k} x^k$ — counting multisets of size $k$ from $r$ types (stars and bars again).</p>
+  <p class="ref-cite">Concrete Mathematics §5.3; Newton, <em>De Methodis Serierum et Fluxionum</em>.</p>
+  <span class="slide-number">18 / 32</span>
+</section>
+
+<!-- ══ Slide 19 — Catalan numbers ════════════════════════════════════ -->
+<section class="slide" id="s19">
+  <h2 class="frame-title">16. Catalan numbers from binomials</h2>
+
+  <div class="def-box">
+    The $n$-th <strong>Catalan number</strong> is
+    $C_n \;:=\; \dfrac{1}{n+1} \binom{2n}{n} \;=\; \binom{2n}{n} - \binom{2n}{n+1}.$
+    First terms: $C_0 = 1$, $C_1 = 1$, $C_2 = 2$, $C_3 = 5$, $C_4 = 14$, $C_5 = 42$, $C_6 = 132$, $C_7 = 429$.
+  </div>
+
+  <div class="thm-box">
+    The two formulas for $C_n$ are equal.
+  </div>
+  <div class="proof-box">
+    $\binom{2n}{n} - \binom{2n}{n+1} = \frac{(2n)!}{n!\,n!} - \frac{(2n)!}{(n+1)!\,(n-1)!} = \frac{(2n)!}{n!(n-1)!}\Bigl(\frac{1}{n} - \frac{1}{n+1}\Bigr) = \frac{(2n)!}{n!(n-1)!} \cdot \frac{1}{n(n+1)} = \frac{(2n)!}{n!\,n!} \cdot \frac{1}{n+1} = \frac{1}{n+1}\binom{2n}{n}$. $\square$
+  </div>
+
+  <p>$C_n$ counts an astonishing number of structures: triangulations of an $(n+2)$-gon; Dyck paths of length $2n$; balanced parenthesisations of $n$ pairs; rooted binary trees with $n$ internal nodes; and many more (Stanley's <em>Enumerative Combinatorics</em>, vol. 2, lists over $200$).</p>
+  <p class="ref-cite">Stanley, <em>EC2</em>, exercise 6.19; OEIS A000108.</p>
+  <span class="slide-number">19 / 32</span>
+</section>
+
+<!-- ══ Slide 20 — Multinomial extension ══════════════════════════════ -->
+<section class="slide" id="s20">
+  <h2 class="frame-title">17. Multinomial extension</h2>
+
+  <div class="def-box">
+    For non-negative integers $k_1, \dots, k_r$ summing to $n$:
+    $\binom{n}{k_1, k_2, \dots, k_r} \;:=\; \frac{n!}{k_1!\,k_2! \cdots k_r!}.$
+  </div>
+
+  <div class="thm-box">
+    <strong>Multinomial theorem.</strong>
+    $(x_1 + x_2 + \cdots + x_r)^n \;=\; \sum_{k_1 + \cdots + k_r = n} \binom{n}{k_1, \dots, k_r}\, x_1^{k_1} \cdots x_r^{k_r}.$
+  </div>
+
+  <div class="thm-box">
+    <strong>Multinomial Pascal-like identity.</strong>
+    $\binom{n}{k_1, \dots, k_r} \;=\; \sum_{i=1}^{r}\binom{n-1}{k_1, \dots, k_i - 1, \dots, k_r}.$
+  </div>
+  <div class="proof-box">
+    Pick a distinguished element of the $n$-set; it ends up in exactly one of the $r$ classes — say class $i$. The number of ways to partition the remaining $n - 1$ elements into classes of sizes $k_1, \dots, k_i - 1, \dots, k_r$ is the term. Summing over $i$ covers all cases. $\square$
+  </div>
+
+  <div class="ex-box">
+    Coefficient of $x^2 y^3 z$ in $(x + y + z)^6$ is $\binom{6}{2, 3, 1} = 60$. The trinomial expansion of $(x+y+z)^4$ has $\binom{4+2}{2} = 15$ terms.
+  </div>
+  <p class="ref-cite">Rosen 8e §6.4 Theorem 3.</p>
+  <span class="slide-number">20 / 32</span>
+</section>
+
+<!-- ══ Slide 21 — Generating functions preview ═══════════════════════ -->
+<section class="slide" id="s21">
+  <h2 class="frame-title">18. Generating-function preview</h2>
+
+  <div class="def-box">
+    The <strong>ordinary generating function</strong> (OGF) of a sequence $(a_n)$ is the formal power series $A(x) = \sum_{n \geq 0} a_n x^n$. Identities between sequences become identities between power series.
+  </div>
+
+  <p>The binomial theorem says $\sum_n \binom{r}{n} x^n = (1+x)^r$. From this seed, three more identities pop out at once:</p>
+
+  <table class="identity-table">
+    <tr><td>Pascal vector form</td><td>$(1+x)^{a+b} = (1+x)^a (1+x)^b \;\;\Rightarrow\;\;$ Vandermonde.</td></tr>
+    <tr><td>Geometric series</td><td>$\sum_n x^n = \dfrac{1}{1-x}$ — the OGF of the constant sequence $1, 1, 1, \dots$</td></tr>
+    <tr><td>Negative binomial</td><td>$\sum_n \binom{n + r - 1}{n} x^n = \dfrac{1}{(1-x)^r}$ — multisets of size $n$ from $r$ types.</td></tr>
+    <tr><td>Catalan GF</td><td>$C(x) = \dfrac{1 - \sqrt{1 - 4x}}{2x} = \sum_n C_n x^n$ — satisfies $C(x) = 1 + x\,C(x)^2$.</td></tr>
+  </table>
+
+  <p>Generating functions are studied in depth in a later course (Concrete Mathematics, ch. 7); for now they provide a slick way to verify any of the identities we have proved.</p>
+  <p class="ref-cite">Concrete Mathematics ch. 7; Wilf, <em>generatingfunctionology</em>.</p>
+  <span class="slide-number">21 / 32</span>
+</section>
+
+<!-- ══ Slide 22 — Combinatorial-proof template ═══════════════════════ -->
+<section class="slide" id="s22">
+  <h2 class="frame-title">19. The combinatorial-proof template</h2>
+
+  <p>Most identities on this lesson reduce to one of three combinatorial schemata:</p>
+
+  <table class="identity-table">
+    <tr><td>Double counting</td><td>Count the same finite set $S$ in two different ways — both expressions for $|S|$ must agree.</td></tr>
+    <tr><td>Bijection</td><td>Exhibit a bijection $\varphi : A \to B$ between sets of sizes $|A|, |B|$; conclude $|A| = |B|$.</td></tr>
+    <tr><td>Involution</td><td>Find a self-inverse map $\varphi : X \to X$ with no fixed points that swaps an even-coloured element with an odd-coloured one — conclude $|X_{\text{even}}| = |X_{\text{odd}}|$.</td></tr>
+  </table>
+
+  <div class="ex-box">
+    <strong>Double-counting</strong> proved $k \binom{n}{k} = n \binom{n-1}{k-1}$ (slide 7) and $\sum k \binom{n}{k} = n 2^{n-1}$ (slide 12).<br>
+    <strong>Bijection</strong> proved $\binom{n}{k} = \binom{n}{n-k}$ (slide 4) via complementation.<br>
+    <strong>Involution</strong> proved $\sum (-1)^k \binom{n}{k} = 0$ (slide 10) via the toggle map.
+  </div>
+
+  <div class="note-box">
+    When you see a binomial identity, ask: "What is being counted?" If both sides count the same thing two ways, the identity is essentially proved.
+  </div>
+  <p class="ref-cite">Aigner, <em>A Course in Enumeration</em>, ch. 1; Concrete Mathematics §5.2.</p>
+  <span class="slide-number">22 / 32</span>
+</section>
+
+<!-- ══ Slide 23 — A worked example: stock portfolio ══════════════════ -->
+<section class="slide" id="s23">
+  <h2 class="frame-title">20. Worked example — Maeve's portfolio</h2>
+
+  <p>Maeve invests $1$ unit in each of $8$ stock options out of $20$ offered.</p>
+  <ul>
+    <li><strong>(a) Total portfolios?</strong> $\binom{20}{8} = 125\,970$.</li>
+    <li><strong>(b) Maeve has a favourite stock and picks it first.</strong> The remaining $7$ stocks come from the other $19$. Portfolio count: $\binom{19}{7} = 50\,388$.</li>
+    <li><strong>(c) Portfolios that <em>exclude</em> the favourite stock?</strong> Same recipe: $\binom{19}{8} = 75\,582$.</li>
+    <li><strong>Sanity check by Pascal's identity:</strong> $\binom{19}{7} + \binom{19}{8} = 50\,388 + 75\,582 = 125\,970 = \binom{20}{8}$. ✓</li>
+  </ul>
+
+  <div class="cor-box">
+    <strong>Identity used.</strong> $\binom{n}{k} - \binom{n-1}{k} = \binom{n-1}{k-1}$ — a rearrangement of Pascal's identity (slide 5). Reading: "the portfolios containing the favourite stock = total − portfolios excluding it = $\binom{n}{k} - \binom{n-1}{k}$".
+  </div>
+
+  <div class="sympy-block">
+    <span class="pane-label">Python — verify</span>
+    <span class="pane-code">from math import comb
+print(comb(20, 8), comb(19, 7), comb(19, 8))           # 125970 50388 75582
+print(comb(19, 7) + comb(19, 8) == comb(20, 8))         # True</span>
+  </div>
+  <p class="ref-cite">Course slide reproduced.</p>
+  <span class="slide-number">23 / 32</span>
+</section>
+
+<!-- ══ Slide 24 — Sum of identities table ════════════════════════════ -->
+<section class="slide" id="s24">
+  <h2 class="frame-title">21. Master cheat-sheet of binomial identities</h2>
+
+  <table class="identity-table">
+    <tr><td>Symmetry</td><td>$\binom{n}{k} = \binom{n}{n - k}$</td></tr>
+    <tr><td>Pascal</td><td>$\binom{n}{k} = \binom{n-1}{k-1} + \binom{n-1}{k}$</td></tr>
+    <tr><td>Absorption</td><td>$k \binom{n}{k} = n \binom{n-1}{k-1}$</td></tr>
+    <tr><td>Recurrence ratio</td><td>$\binom{n}{k} = \binom{n}{k-1} \cdot \dfrac{n - k + 1}{k}$</td></tr>
+    <tr><td>Row sum</td><td>$\sum_k \binom{n}{k} = 2^n$</td></tr>
+    <tr><td>Alternating sum</td><td>$\sum_k (-1)^k \binom{n}{k} = 0$ &nbsp;$(n \geq 1)$</td></tr>
+    <tr><td>Weighted sum</td><td>$\sum_k 2^k \binom{n}{k} = 3^n$</td></tr>
+    <tr><td>$k$-weighted</td><td>$\sum_k k \binom{n}{k} = n \cdot 2^{n-1}$</td></tr>
+    <tr><td>$k^2$-weighted</td><td>$\sum_k k^2 \binom{n}{k} = n(n+1) \cdot 2^{n-2}$</td></tr>
+    <tr><td>Vandermonde</td><td>$\binom{m+n}{r} = \sum_k \binom{m}{k}\binom{n}{r-k}$</td></tr>
+    <tr><td>Hockey-stick</td><td>$\sum_{i=r}^{n}\binom{i}{r} = \binom{n+1}{r+1}$</td></tr>
+    <tr><td>Squares</td><td>$\sum_k \binom{n}{k}^2 = \binom{2n}{n}$</td></tr>
+    <tr><td>Negative</td><td>$\binom{-r}{k} = (-1)^k \binom{r+k-1}{k}$</td></tr>
+    <tr><td>Catalan</td><td>$C_n = \dfrac{1}{n+1}\binom{2n}{n} = \binom{2n}{n} - \binom{2n}{n+1}$</td></tr>
+  </table>
+  <span class="slide-number">24 / 32</span>
+</section>
+
+<!-- ══ Slide 25 — More worked examples ═══════════════════════════════ -->
+<section class="slide" id="s25">
+  <h2 class="frame-title">22. Two derived identities — quick proofs</h2>
+
+  <div class="thm-box">
+    $\displaystyle \sum_{k=0}^{n} k \binom{n}{k}^2 \;=\; n \binom{2n-1}{n-1}.$
+  </div>
+  <div class="proof-box">
+    Use absorption (slide 7) on the left, then Vandermonde:
+    $\sum_k k \binom{n}{k}\binom{n}{k} = \sum_k n \binom{n-1}{k-1}\binom{n}{k} = n \sum_k \binom{n-1}{k-1}\binom{n}{n-k} = n \binom{2n-1}{n-1}.$
+    The last step is Vandermonde with $m = n - 1, r = n - 1$, after re-indexing $k' = k - 1$. $\square$
+  </div>
+
+  <div class="thm-box">
+    $\displaystyle \sum_{k=0}^{n} \binom{n}{k}\binom{n}{k+1} \;=\; \binom{2n}{n-1}.$
+  </div>
+  <div class="proof-box">
+    By Vandermonde with $m = n$, $r = n - 1$:
+    $\binom{2n}{n-1} = \sum_k \binom{n}{k}\binom{n}{n-1-k} = \sum_k \binom{n}{k}\binom{n}{k+1}$
+    using symmetry $\binom{n}{n-1-k} = \binom{n}{k+1}$ (where the index shift accounts for $n - 1 - k = n - (k+1)$). $\square$
+  </div>
+  <p class="ref-cite">Concrete Mathematics §5.1 exercises.</p>
+  <span class="slide-number">25 / 32</span>
+</section>
+
+<!-- ══ Slide 26 — Identity discovery via SymPy ═══════════════════════ -->
+<section class="slide" id="s26">
+  <h2 class="frame-title">23. Discovering identities with SymPy</h2>
+
+  <div class="setup-block">
+    <span class="pane-label">Python — imports</span>
+    <span class="pane-code">from sympy import symbols, binomial, Sum, simplify, factor, oo
+n, k = symbols('n k', integer=True, nonnegative=True)</span>
+  </div>
+
+  <div class="sympy-block">
+    <span class="pane-label">SymPy — closed forms for sums</span>
+    <span class="pane-code">print(Sum(binomial(n, k), (k, 0, n)).doit())               # 2**n
+print(Sum((-1)**k * binomial(n, k), (k, 0, n)).doit())     # 0  for n>=1
+print(Sum(k * binomial(n, k), (k, 0, n)).doit())           # n * 2**(n-1)
+print(Sum(binomial(n, k)**2, (k, 0, n)).doit())            # binomial(2*n, n)
+print(Sum(binomial(n, k) * 2**k, (k, 0, n)).doit())        # 3**n
+print(Sum(binomial(n, k) * 3**k, (k, 0, n)).doit())        # 4**n</span>
+  </div>
+
+  <div class="sympy-block">
+    <span class="pane-label">SymPy — verify Vandermonde for specific m, n, r</span>
+    <span class="pane-code">m_val, n_val, r_val = 8, 12, 5
+lhs = binomial(m_val + n_val, r_val)
+rhs = sum(binomial(m_val, j) * binomial(n_val, r_val - j) for j in range(r_val + 1))
+print(lhs, rhs, lhs == rhs)    # 15504 15504 True</span>
+  </div>
+
+  <p>SymPy uses Gosper's algorithm and the Wilf–Zeilberger pair method to evaluate many binomial sums in closed form automatically — a remarkable XX-th-century achievement.</p>
+  <p class="ref-cite">Petkovsek–Wilf–Zeilberger, <em>A = B</em>, 1996.</p>
+  <span class="slide-number">26 / 32</span>
+</section>
+
+<!-- ══ Slide 27 — Pitfalls ═══════════════════════════════════════════ -->
+<section class="slide" id="s27">
+  <h2 class="frame-title">24. Common pitfalls</h2>
+
+  <div class="ce-box">
+    <strong>Index-shift errors.</strong> When applying Vandermonde, double-check that $k$ and $r - k$ both range over <em>valid</em> indices: both must satisfy $0 \leq k \leq r$ and $0 \leq r - k \leq n$. Outside this range, $\binom{m}{k} = 0$ — terms vanish but the bookkeeping must still be right.
+  </div>
+
+  <div class="ce-box">
+    <strong>Forgetting the base case.</strong> When proving an identity by induction on $n$, always handle $n = 0$ (or the smallest applicable $n$) explicitly. Many identities (like the alternating-sum) are vacuous or "$0/0$" at $n = 0$.
+  </div>
+
+  <div class="ce-box">
+    <strong>Confusing $\sum_{k} \binom{n}{k}^2$ with $\bigl(\sum_k \binom{n}{k}\bigr)^2$.</strong> They are <em>not</em> equal:
+    $\bigl(2^n\bigr)^2 = 4^n,\qquad \binom{2n}{n} \approx \frac{4^n}{\sqrt{\pi n}}$ (Stirling). The squared row-sum is much larger.
+  </div>
+
+  <div class="ce-box">
+    <strong>"Hockey-stick" wrong direction.</strong> The identity is
+    $\sum_{i = r}^{n} \binom{i}{r} = \binom{n+1}{r+1}$ — the lower index of $\binom{i}{r}$ varies; the upper index of $\binom{n+1}{r+1}$ rises by one. A common mistake is to vary the upper index instead.
+  </div>
+  <p class="ref-cite">Concrete Mathematics §5.5.</p>
+  <span class="slide-number">27 / 32</span>
+</section>
+
+<!-- ══ Slide 28 — Strategy summary ═══════════════════════════════════ -->
+<section class="slide" id="s28">
+  <h2 class="frame-title">25. Strategy — picking the right identity</h2>
+
+  <table class="ref-table">
+    <thead><tr><th>Pattern you see…</th><th>Try…</th></tr></thead>
+    <tbody>
+      <tr><td>Sum $\sum_k \binom{n}{k}$ alone</td><td>Row-sum identity → $2^n$ (slide 9)</td></tr>
+      <tr><td>Alternating signs $(-1)^k$</td><td>Alternating-sum → $0$ for $n \geq 1$ (slide 10)</td></tr>
+      <tr><td>Geometric weight $a^k$</td><td>Weighted sum → $(1+a)^n$ (slide 11)</td></tr>
+      <tr><td>Polynomial weight $k^p \binom{n}{k}$</td><td>Differentiation trick (slides 12–13)</td></tr>
+      <tr><td>Product of two binomials with linked indices</td><td>Vandermonde (slide 14)</td></tr>
+      <tr><td>Sum of squares of binomials</td><td>$\binom{2n}{n}$ via Vandermonde (slide 16)</td></tr>
+      <tr><td>Diagonal stripe in Pascal's triangle</td><td>Hockey-stick (slide 17)</td></tr>
+      <tr><td>Coefficient extraction in a generating function</td><td>Binomial theorem / negative binomial (slides 8, 18)</td></tr>
+      <tr><td>Counting balanced structures</td><td>Catalan numbers (slide 19)</td></tr>
+    </tbody>
+  </table>
+  <span class="slide-number">28 / 32</span>
+</section>
+
+<!-- ══ Slide 29 — Summary ════════════════════════════════════════════ -->
+<section class="slide" id="s29">
+  <h2 class="frame-title">26. Summary — what we proved</h2>
+
+  <ul>
+    <li><strong>Symmetry, Pascal, absorption</strong> — three foundational identities; each proved combinatorially and algebraically.</li>
+    <li><strong>Binomial theorem</strong> — proved by counting monomials and by induction.</li>
+    <li><strong>Row sum, alternating sum, weighted sums</strong> — proved with at least two methods each; the involution proof for the alternating sum is particularly clean.</li>
+    <li><strong>Vandermonde &amp; hockey-stick</strong> — proved combinatorially via classification by a chosen element.</li>
+    <li><strong>Sum of squares</strong> $\sum \binom{n}{k}^2 = \binom{2n}{n}$ — special case of Vandermonde.</li>
+    <li><strong>Negative binomial</strong> — extension to real / negative parameters via Newton's series.</li>
+    <li><strong>Catalan numbers</strong> — appearance via $\binom{2n}{n}/(n+1)$.</li>
+    <li><strong>Multinomial theorem</strong> generalises the binomial.</li>
+    <li>Three combinatorial-proof schemata: double-counting, bijection, involution.</li>
+  </ul>
+  <span class="slide-number">29 / 32</span>
+</section>
+
+<!-- ══ Slide 30 — Python toolbox ═════════════════════════════════════ -->
+<section class="slide" id="s30">
+  <h2 class="frame-title">27. Python / SymPy toolbox</h2>
+
+  <div class="setup-block">
+    <span class="pane-label">Python — imports</span>
+    <span class="pane-code">from math import comb, factorial
+from sympy import binomial, Sum, symbols, simplify, oo, catalan
+from sympy.functions.combinatorial.factorials import factorial as sym_fact</span>
+  </div>
+
+  <div class="python-block">
+    <span class="pane-label">Python — numeric checks</span>
+    <span class="pane-code">print(comb(20, 8))                            # 125970
+print(sum(comb(15, k) for k in range(16)))   # 32768 = 2**15
+print(sum((-1)**k * comb(15, k) for k in range(16)))   # 0
+print(sum(k * comb(15, k) for k in range(16)))  # 15 * 2**14 = 245760
+print(sum(comb(15, k)**2 for k in range(16)))   # comb(30,15) = 155117520</span>
+  </div>
+
+  <div class="sympy-block">
+    <span class="pane-label">SymPy — Pascal triangle row generator</span>
+    <span class="pane-code">def pascal(n_max):
+    row = [1]
+    yield row
+    for n in range(1, n_max + 1):
+        row = [1] + [row[i] + row[i+1] for i in range(n-1)] + [1]
+        yield row
+
+for r in pascal(7):
+    print(' '.join(str(x).rjust(3) for x in r))</span>
+  </div>
+  <span class="slide-number">30 / 32</span>
+</section>
+
+<!-- ══ Slide 31 — Wolfram → Python reference ═════════════════════════ -->
+<section class="slide" id="s31">
+  <h2 class="frame-title">28. Wolfram → Python quick reference</h2>
+
+  <table class="ref-table">
+    <thead><tr><th>Operation</th><th>Wolfram</th><th>Python / SymPy</th></tr></thead>
+    <tbody>
+      <tr><td>Binomial $\binom{n}{k}$</td><td><code>Binomial[n, k]</code></td><td><code>math.comb(n, k)</code> · <code>sympy.binomial(n, k)</code></td></tr>
+      <tr><td>Multinomial $\binom{n}{n_1,\ldots,n_r}$</td><td><code>Multinomial[n1, …]</code></td><td><code>factorial(n)//prod(factorial(ni) for ni in v)</code></td></tr>
+      <tr><td>Sum $\sum_k$ in closed form</td><td><code>Sum[Binomial[n,k]^2,{k,0,n}]</code></td><td><code>Sum(binomial(n,k)**2,(k,0,n)).doit()</code></td></tr>
+      <tr><td>$n$-th Catalan number</td><td><code>CatalanNumber[n]</code></td><td><code>sympy.catalan(n)</code></td></tr>
+      <tr><td>Pascal's triangle entry</td><td><code>PascalTriangle[n]</code></td><td><code>[comb(n, k) for k in range(n+1)]</code></td></tr>
+      <tr><td>Verify a binomial identity</td><td><code>FullSimplify[lhs - rhs]</code></td><td><code>simplify(lhs - rhs)</code></td></tr>
+      <tr><td>Falling factorial / Pochhammer</td><td><code>FactorialPower[n, k]</code></td><td><code>math.perm(n, k)</code></td></tr>
+    </tbody>
+  </table>
+  <span class="slide-number">31 / 32</span>
+</section>
+
+<!-- ══ Slide 32 — Bibliography ═══════════════════════════════════════ -->
+<section class="slide" id="s32">
+  <h2 class="frame-title">Bibliography</h2>
+  <ul>
+    <li>K. H. Rosen. <em>Discrete Mathematics and Its Applications</em>, 8th ed., McGraw-Hill, 2019 — §6.4 (binomial coefficients), §6.5 (multinomials).</li>
+    <li>R. L. Graham, D. E. Knuth, O. Patashnik. <em>Concrete Mathematics</em>, 2nd ed., Addison-Wesley, 1994 — ch. 5 (binomial coefficients) — the encyclopedia.</li>
+    <li>A. Tucker. <em>Applied Combinatorics</em>, 6th ed., Wiley, 2012 — §5.5.</li>
+    <li>R. P. Stanley. <em>Enumerative Combinatorics</em>, vols. 1 &amp; 2, 2nd ed., Cambridge UP, 2011/2024 — vol. 2 ex. 6.19 lists 200+ Catalan interpretations.</li>
+    <li>H. S. Wilf. <em>generatingfunctionology</em>, 3rd ed., A K Peters, 2006.</li>
+    <li>M. Petkovsek, H. S. Wilf, D. Zeilberger. <em>A = B</em>, A K Peters, 1996 — algorithmic proof of binomial identities.</li>
+    <li>I. Newton. <em>De Methodis Serierum et Fluxionum</em> (1671) — generalised binomial theorem.</li>
+    <li>OEIS — On-Line Encyclopedia of Integer Sequences (binomials A007318, Catalan A000108, central binomial A000984).</li>
+  </ul>
+
+  <p style="margin-top:1rem;color:#e67e22;font-style:italic;font-weight:600;">Notes By Pr. El Hadiq Zouhair</p>
+  <span class="slide-number">32 / 32</span>
+</section>
+
+<!-- ── Navigation ─────────────────────────────────────────────────── -->
+<div id="nav">
+  <button id="btn-prev"   title="Previous">&#8592;</button>
+  <button id="btn-scroll" title="Toggle slideshow">Slideshow</button>
+  <button id="btn-next"   title="Next">&#8594;</button>
+</div>
+
+<script>
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  let current = 0, slideshowMode = false;
+
+  function enter(i) {
+    slides[current].classList.remove('active');
+    current = (i + slides.length) % slides.length;
+    slides[current].classList.add('active');
+    slides[current].scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  document.getElementById('btn-prev').addEventListener('click', () => {
+    if (slideshowMode) enter(current - 1);
+  });
+  document.getElementById('btn-next').addEventListener('click', () => {
+    if (slideshowMode) enter(current + 1);
+  });
+  document.getElementById('btn-scroll').addEventListener('click', () => {
+    slideshowMode = !slideshowMode;
+    document.body.classList.toggle('slideshow', slideshowMode);
+    document.getElementById('btn-scroll').textContent = slideshowMode ? 'Scroll' : 'Slideshow';
+    if (slideshowMode) slides[current].classList.add('active');
+    else slides.forEach(s => s.classList.remove('active'));
+  });
+
+  document.addEventListener('keydown', e => {
+    if (!slideshowMode) return;
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') enter(current + 1);
+    if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   enter(current - 1);
+  });
+</script>
+</body>
+</html>
