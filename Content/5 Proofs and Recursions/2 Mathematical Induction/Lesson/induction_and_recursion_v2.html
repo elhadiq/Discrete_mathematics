@@ -1,0 +1,1296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Induction &amp; Recursive Definitions — Full Course v2 — Discrete Mathematics</title>
+<script>
+  MathJax = {
+    tex: { inlineMath: [['$','$']], displayMath: [['$$','$$']], processEscapes: true },
+    options: { skipHtmlTags: ['script','noscript','style','textarea'] }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --orange:    #e67e22;
+  --darkblue:  #2c3e50;
+  --lightbg:   #f4f9fc;
+  --rowred:    #ffe8e8;
+  --rowblue:   #e3eeff;
+  --border:    #dce3ea;
+  --py-fg:     #1f4e7a;
+  --py-bg:     #eaf3fb;
+  --py-border: #2a6fb3;
+  --py-head:   #2a6fb3;
+  --sp-fg:     #1e824c;
+  --sp-bg:     #e8f5ec;
+  --sp-border: #27ae60;
+  --sp-head:   #27ae60;
+  --su-fg:     #4a4aaa;
+  --su-bg:     #eeeeff;
+  --su-border: #6060cc;
+  --su-head:   #6060cc;
+  --out-fg:    #6e4b0a;
+  --out-bg:    #fff7e0;
+  --out-border:#e0b341;
+  --out-head:  #c89324;
+}
+
+body {
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  background: #e8edf2;
+  color: var(--darkblue);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem 1rem 5rem;
+  gap: 2rem;
+}
+
+.slide {
+  background: #fff;
+  width: 100%;
+  max-width: 940px;
+  border-radius: 10px;
+  box-shadow: 0 4px 18px rgba(0,0,0,.10);
+  padding: 2.2rem 2.8rem 1.8rem;
+  position: relative;
+}
+.slide-number {
+  position: absolute;
+  bottom: 0.7rem;
+  right: 1.2rem;
+  font-size: 0.72rem;
+  color: #aaa;
+}
+
+.slide.title-slide {
+  background: linear-gradient(145deg, #f4f9fc 60%, #e0eef7);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 240px;
+  text-align: center;
+  border-top: 6px solid var(--orange);
+}
+.slide.title-slide h1 { font-size: 1.85rem; color: var(--darkblue); margin-bottom: 0.4rem; }
+.slide.title-slide .subtitle { font-size: 1.1rem; color: #555; }
+
+.part-slide {
+  background: linear-gradient(145deg, #fdf3e7 60%, #f9e4cc);
+  text-align: center;
+  border-left: 6px solid var(--orange);
+}
+.part-slide .part-label {
+  font-size: .85rem; letter-spacing: .2em; text-transform: uppercase;
+  color: var(--orange); font-weight: 700;
+}
+.part-slide h2 { color: var(--darkblue); font-size: 1.7rem; margin: 0.5rem 0; }
+.part-slide p  { color: #666; }
+
+h2.frame-title {
+  font-size: 1.55rem;
+  color: var(--orange);
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  padding-bottom: 0.35rem;
+  border-bottom: 2px solid #f9e4cc;
+}
+h3.sub-title {
+  font-size: 1.05rem;
+  color: var(--orange);
+  font-weight: 600;
+  margin: 0.7rem 0 0.3rem;
+}
+
+p { line-height: 1.7; margin: 0.45rem 0; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.4rem; line-height: 1.8; }
+ul li::marker, ol li::marker { color: var(--orange); }
+code { background: #f0f3f7; color: #1f4e7a; padding: 0 .25em; border-radius: 3px; font-family: 'Consolas','Fira Code',monospace; }
+
+.note-box, .def-box, .thm-box, .proof-box, .ex-box, .ce-box, .cor-box, .pitfall-box {
+  border-radius: 6px;
+  padding: 0.7rem 1rem;
+  margin: 0.6rem 0;
+  line-height: 1.7;
+}
+.note-box  { background: #fff5e8; border-left: 4px solid var(--orange); font-style: italic; }
+.def-box   { background: #eaf3fb; border-left: 4px solid var(--py-border); }
+.def-box::before  { content: "Definition. "; font-weight: 700; color: var(--py-border); }
+.thm-box   { background: #fff7e0; border-left: 4px solid var(--out-border); }
+.thm-box::before  { content: "Theorem. "; font-weight: 700; color: var(--out-head); }
+.cor-box   { background: #fff7e0; border-left: 4px solid var(--out-border); }
+.cor-box::before  { content: "Corollary. "; font-weight: 700; color: var(--out-head); }
+.proof-box { background: #f4f9fc; border-left: 4px solid var(--darkblue); }
+.proof-box::before { content: "Proof. "; font-weight: 700; color: var(--darkblue); }
+.ex-box    { background: #e8f5ec; border-left: 4px solid var(--sp-border); }
+.ex-box::before    { content: "Example. "; font-weight: 700; color: var(--sp-border); }
+.ce-box    { background: #ffe8e8; border-left: 4px solid #c0395a; }
+.ce-box::before    { content: "Counter-example. "; font-weight: 700; color: #c0395a; }
+.pitfall-box { background: #ffe8e8; border-left: 4px solid #c0395a; }
+.pitfall-box::before { content: "Pitfall. "; font-weight: 700; color: #c0395a; }
+
+.python-block, .setup-block, .sympy-block, .output-block {
+  border-radius: 6px;
+  overflow: hidden;
+  margin: 0.6rem 0;
+  border: 1px solid;
+}
+.pane-label {
+  display: block;
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  color: #fff;
+}
+.pane-code {
+  font-family: 'Consolas','Fira Code',monospace;
+  font-size: 0.83rem;
+  line-height: 1.6;
+  padding: 0.5rem 0.75rem;
+  white-space: pre;
+  display: block;
+  overflow-x: auto;
+}
+.python-block { border-color: var(--py-border); }
+.python-block .pane-label { background: var(--py-head); }
+.python-block .pane-code  { background: var(--py-bg); color: var(--py-fg); }
+.sympy-block  { border-color: var(--sp-border); }
+.sympy-block  .pane-label { background: var(--sp-head); }
+.sympy-block  .pane-code  { background: var(--sp-bg); color: var(--sp-fg); }
+.setup-block  { border-color: var(--su-border); }
+.setup-block  .pane-label { background: var(--su-head); }
+.setup-block  .pane-code  { background: var(--su-bg); color: var(--su-fg); }
+.output-block { border-color: var(--out-border); }
+.output-block .pane-label { background: var(--out-head); }
+.output-block .pane-code  { background: var(--out-bg); color: var(--out-fg); }
+
+.ref-table {
+  border-collapse: collapse;
+  margin: 0.6rem auto;
+  font-size: 0.9rem;
+  width: 100%;
+}
+.ref-table th, .ref-table td {
+  border: 1px solid var(--border);
+  padding: 0.4rem 0.75rem;
+  text-align: left;
+  vertical-align: top;
+}
+.ref-table th { background: var(--lightbg); font-weight: 600; color: var(--darkblue); }
+.center td, .center th { text-align: center; }
+
+#nav { position: fixed; bottom: 1.5rem; right: 1.5rem; display: flex; gap: 0.4rem; z-index: 100; }
+#nav button {
+  background: var(--orange); color: #fff; border: none;
+  border-radius: 50%; width: 40px; height: 40px;
+  font-size: 1.1rem; cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,.25); transition: background .2s;
+}
+#nav button:hover { background: #cf6d17; }
+#nav #btn-scroll { border-radius: 20px; width: auto; padding: 0 12px; font-size: 0.8rem; }
+
+body.slideshow .slide        { display: none; }
+body.slideshow .slide.active { display: block; }
+
+.ref-cite { color: #777; font-size: 0.85rem; font-style: italic; }
+</style>
+</head>
+<body>
+
+<!-- ══ Slide 1 — Title ════════════════════════════════════════════════ -->
+<section class="slide title-slide" id="s1">
+  <h1>Mathematical Induction &amp; Recursive Definitions</h1>
+  <p class="subtitle">Discrete Mathematics — Session 3 (Full Course v2 · combined, rich in examples)</p>
+  <p style="font-size:1rem;color:#e67e22;margin-top:0.8rem;font-style:italic;font-weight:600;letter-spacing:.02em;">Notes By Pr. El Hadiq Zouhair</p>
+  <span class="slide-number">1 / 38</span>
+</section>
+
+<!-- ══ Slide 2 — Outline ═════════════════════════════════════════════ -->
+<section class="slide" id="s2">
+  <h2 class="frame-title">Outline of the combined course</h2>
+  <h3 class="sub-title">Part I — Mathematical induction</h3>
+  <ol>
+    <li>Well-ordering principle and weak induction — equivalence proved.</li>
+    <li>Method template + sum formulas: $\sum k$, $\sum k^2$, $\sum k^3$, $\sum 2^k$, $\sum k\cdot k!$.</li>
+    <li>Inequalities: $2^n &gt; n^2$, $n! \geq 2^n$, AM–GM warm-up.</li>
+    <li>Divisibility: $3 \mid n^3 + 2n$, $7 \mid (8^n - 1)$, $6 \mid n^3 - n$.</li>
+    <li>Set / counting examples: $2^n$ subsets, lines from $n$ points.</li>
+    <li>Geometry: triangulating a polygon, planar regions.</li>
+    <li>Strong induction: prime factorization, postage stamps, Fibonacci bound.</li>
+    <li>Classical pitfalls (all horses, hidden base case).</li>
+  </ol>
+  <h3 class="sub-title">Part II — Recursive definitions</h3>
+  <ol start="9">
+    <li>Recursive functions: base + recursive case; factorial, Fibonacci, Ackermann.</li>
+    <li>Recurrence relations — linear homogeneous with constant coefficients.</li>
+    <li>Closed-form derivation: characteristic equation; Binet's formula for $F_n$.</li>
+    <li>Tower of Hanoi $H_n = 2^n - 1$ (proved).</li>
+    <li>Recursively defined sets: strings, lists, trees.</li>
+    <li>Structural induction: every tree, list, formula.</li>
+    <li>Memoization, dynamic programming, time complexity.</li>
+    <li>Tail recursion ↔ iteration; mutual recursion; fixed points.</li>
+    <li>Recursion and fractals (Cantor set, Sierpinski).</li>
+    <li>Common pitfalls; summary; Python toolbox; bibliography.</li>
+  </ol>
+  <p class="ref-cite">References: Rosen 8e §§5.1–5.4; Velleman 3e ch. 6; Concrete Mathematics ch. 1; Spivak ch. 2.</p>
+  <span class="slide-number">2 / 38</span>
+</section>
+
+<!-- ══ Slide 3 — Part I divider ══════════════════════════════════════ -->
+<section class="slide part-slide" id="s3">
+  <div class="part-label">Part I</div>
+  <h2>Mathematical induction</h2>
+  <p>Well-ordering · weak induction · strong induction · structural induction · 12 worked examples.</p>
+  <span class="slide-number">3 / 38</span>
+</section>
+
+<!-- ══ Slide 4 — Well-ordering principle ═════════════════════════════ -->
+<section class="slide" id="s4">
+  <h2 class="frame-title">1.1 Well-ordering principle (WOP)</h2>
+
+  <div class="def-box">
+    <strong>Well-ordering principle.</strong> Every non-empty subset $S \subseteq \mathbb{N}$ has a least element: $\exists m \in S,\;\forall n \in S,\;m \leq n$.
+  </div>
+
+  <p>WOP is taken as an axiom of the natural numbers. It is equivalent to weak induction (next slide) and to strong induction (slide 16). Any one of the three can be taken as the foundational principle and the other two proved as theorems.</p>
+
+  <div class="ex-box">
+    The set $S = \{n \in \mathbb{N} : n^2 \geq 20\}$ is non-empty (contains $5$). By WOP it has a least element. Computing: $4^2 = 16 &lt; 20$ but $5^2 = 25 \geq 20$, so $\min S = 5$.
+  </div>
+
+  <div class="note-box">
+    WOP fails on $\mathbb{Z}$: the set $\mathbb{Z}$ itself has no least element. It also fails on $\mathbb{Q}_{\geq 0}$: the interval $(0, 1) \cap \mathbb{Q}$ is non-empty and has no minimum. WOP is the defining property of $\mathbb{N}$ — it expresses the absence of an "infinite descent".
+  </div>
+  <p class="ref-cite">Rosen 8e §5.2; Halmos §17.</p>
+  <span class="slide-number">4 / 38</span>
+</section>
+
+<!-- ══ Slide 5 — Principle of weak induction ═════════════════════════ -->
+<section class="slide" id="s5">
+  <h2 class="frame-title">1.2 Weak induction (PWI)</h2>
+
+  <div class="def-box">
+    <strong>Principle of weak induction.</strong> Let $P(n)$ be a predicate on $\mathbb{N}$. If
+    <ol>
+      <li><em>Base case:</em> $P(0)$ holds, and</li>
+      <li><em>Inductive step:</em> for every $k \in \mathbb{N}$, $P(k) \to P(k+1)$,
+    </ol>
+    then $\forall n \in \mathbb{N},\, P(n)$.
+  </div>
+
+  <p>The base may be shifted: if $P(n_0)$ holds and $\forall k \geq n_0,\, P(k) \to P(k+1)$, then $\forall n \geq n_0,\, P(n)$.</p>
+
+  <div class="thm-box">
+    WOP $\Leftrightarrow$ PWI.
+  </div>
+
+  <div class="proof-box">
+    <strong>(WOP ⇒ PWI.)</strong> Suppose WOP and the two PWI hypotheses. Let $S = \{n : \neg P(n)\}$. If $S \neq \varnothing$, by WOP it has a minimum $m$; $m \neq 0$ (base), so $m - 1 \in \mathbb{N}$. By minimality, $P(m-1)$ holds; by the step, $P(m)$ holds — contradiction.<br>
+    <strong>(PWI ⇒ WOP.)</strong> Suppose PWI. Let $S \subseteq \mathbb{N}$ non-empty without minimum; we derive a contradiction by induction on $n$ that $n \notin S$ for every $n$ (so $S = \varnothing$). Base: $0 \notin S$ (else $0$ would be the minimum). Step: if no $k \leq n$ is in $S$ then $n+1 \notin S$ (else $n+1$ would be the minimum). By PWI, $\forall n, n \notin S$. $\square$
+  </div>
+  <p class="ref-cite">Rosen 8e §5.2 Theorem 1; Velleman 3e §6.4.</p>
+  <span class="slide-number">5 / 38</span>
+</section>
+
+<!-- ══ Slide 6 — Induction template ══════════════════════════════════ -->
+<section class="slide" id="s6">
+  <h2 class="frame-title">2. The induction template</h2>
+
+  <p>To prove $\forall n \geq n_0,\, P(n)$ by induction:</p>
+  <ol>
+    <li><strong>Base case.</strong> Show $P(n_0)$ explicitly.</li>
+    <li><strong>Inductive hypothesis (IH).</strong> Fix an arbitrary $k \geq n_0$ and assume $P(k)$.</li>
+    <li><strong>Inductive step.</strong> Using IH, prove $P(k+1)$.</li>
+  </ol>
+  <p>Conclude: <em>by induction, $\forall n \geq n_0,\, P(n)$. $\square$</em></p>
+
+  <div class="pitfall-box">
+    Skipping the base case is fatal: the step alone proves only "<em>if</em> $P(n_0)$, then $\forall n \geq n_0,\,P(n)$" — useless when $P(n_0)$ is false.
+  </div>
+
+  <p>The next slides apply this template to <strong>12 different examples</strong>: sums, inequalities, divisibility, sets, and geometry.</p>
+  <p class="ref-cite">Rosen 8e §5.1; Velleman 3e §6.1.</p>
+  <span class="slide-number">6 / 38</span>
+</section>
+
+<!-- ══ Slide 7 — Sum k ═══════════════════════════════════════════════ -->
+<section class="slide" id="s7">
+  <h2 class="frame-title">3.1 Example — $\sum_{i=1}^{n} i = n(n+1)/2$</h2>
+
+  <div class="thm-box">
+    For every $n \geq 1$, $\;\displaystyle \sum_{i=1}^{n} i = \frac{n(n+1)}{2}.$
+  </div>
+
+  <div class="proof-box">
+    <em>Base ($n = 1$).</em> LHS $= 1$, RHS $= 1 \cdot 2 / 2 = 1$. ✓<br>
+    <em>Step.</em> Assume $P(k)$: $\sum_{i=1}^k i = k(k+1)/2$. Then
+    $\sum_{i=1}^{k+1} i = \tfrac{k(k+1)}{2} + (k+1) = \tfrac{k(k+1) + 2(k+1)}{2} = \tfrac{(k+1)(k+2)}{2}.$ ✓ $\square$
+  </div>
+
+  <div class="python-block">
+    <span class="pane-label">Python — verification</span>
+    <span class="pane-code">def somme_n(n):
+    return sum(range(1, n + 1))
+
+for n in (1, 5, 10, 100):
+    print(f"sum(1..{n}) = {somme_n(n)}, formule = {n*(n+1)//2}")</span>
+  </div>
+  <p class="ref-cite">Rosen 8e §5.1 Ex. 1; Gauss's school-day legend.</p>
+  <span class="slide-number">7 / 38</span>
+</section>
+
+<!-- ══ Slide 8 — Sum k^2 and k^3 ═════════════════════════════════════ -->
+<section class="slide" id="s8">
+  <h2 class="frame-title">3.2 Examples — $\sum k^2$ and $\sum k^3$</h2>
+
+  <div class="thm-box">
+    $\displaystyle \sum_{i=1}^{n} i^2 = \frac{n(n+1)(2n+1)}{6}$ &nbsp;and&nbsp; $\displaystyle \sum_{i=1}^{n} i^3 = \left(\frac{n(n+1)}{2}\right)^{\!2}.$
+  </div>
+
+  <div class="proof-box">
+    For $\sum k^2$: base $n = 1$: $1 = 1 \cdot 2 \cdot 3/6$. Step:
+    $\sum_{i=1}^{k+1} i^2 = \tfrac{k(k+1)(2k+1)}{6} + (k+1)^2 = \tfrac{(k+1)[k(2k+1) + 6(k+1)]}{6} = \tfrac{(k+1)(2k^2 + 7k + 6)}{6} = \tfrac{(k+1)(k+2)(2k+3)}{6}.$ ✓ $\square$
+  </div>
+
+  <div class="proof-box">
+    For $\sum k^3$: base $n = 1$ is $1 = 1$. Step: using the identity $(k+1)^3 = \bigl(\tfrac{(k+1)(k+2)}{2}\bigr)^{\!2} - \bigl(\tfrac{k(k+1)}{2}\bigr)^{\!2}$ (verify by expansion), the formula propagates. $\square$
+  </div>
+
+  <div class="cor-box">
+    <strong>Curious identity:</strong> $\sum_{i=1}^{n} i^3 = \bigl(\sum_{i=1}^n i\bigr)^{2}$. The cumulative sum of cubes equals the square of the cumulative sum — a fact apparent in the Nicomachus's "cubes as concentric L-shapes" diagram.
+  </div>
+  <p class="ref-cite">Rosen 8e §5.1; Concrete Mathematics §2.4.</p>
+  <span class="slide-number">8 / 38</span>
+</section>
+
+<!-- ══ Slide 9 — Sum 2^k and k*k! ════════════════════════════════════ -->
+<section class="slide" id="s9">
+  <h2 class="frame-title">3.3 Examples — $\sum 2^k$ and $\sum k \cdot k!$</h2>
+
+  <div class="thm-box">
+    $\displaystyle \sum_{k=0}^{n} 2^k = 2^{n+1} - 1.$ &nbsp;(Geometric sum with ratio $2$.)
+  </div>
+  <div class="proof-box">
+    Base $n = 0$: $2^0 = 1 = 2^1 - 1$. ✓ &nbsp; Step: $\sum_{k=0}^{n+1} 2^k = (2^{n+1} - 1) + 2^{n+1} = 2^{n+2} - 1$. ✓ $\square$
+  </div>
+
+  <div class="thm-box">
+    $\displaystyle \sum_{k=1}^{n} k \cdot k! = (n+1)! - 1.$
+  </div>
+  <div class="proof-box">
+    Base $n = 1$: $1 \cdot 1! = 1 = 2! - 1$. ✓ &nbsp; Step:
+    $\sum_{k=1}^{n+1} k \cdot k! = (n+1)! - 1 + (n+1)(n+1)! = (n+1)![1 + (n+1)] - 1 = (n+2)! - 1.$ ✓ $\square$
+  </div>
+
+  <div class="note-box">
+    <strong>Trick.</strong> Notice that $k \cdot k! = (k+1)! - k!$ — so the sum telescopes:
+    $\sum_{k=1}^{n} \bigl[(k+1)! - k!\bigr] = (n+1)! - 1!$. This gives the same result without induction.
+  </div>
+  <p class="ref-cite">Concrete Mathematics §2.</p>
+  <span class="slide-number">9 / 38</span>
+</section>
+
+<!-- ══ Slide 10 — Inequality 2^n > n^2 ═══════════════════════════════ -->
+<section class="slide" id="s10">
+  <h2 class="frame-title">4.1 Inequality — $2^n &gt; n^2$ for $n \geq 5$</h2>
+
+  <div class="thm-box">
+    For every $n \geq 5$, $\;2^n &gt; n^2$.
+  </div>
+
+  <div class="proof-box">
+    <em>Base ($n = 5$).</em> $2^5 = 32$, $5^2 = 25$; $32 &gt; 25$. ✓<br>
+    <em>Step.</em> Assume $2^k &gt; k^2$ with $k \geq 5$. Then
+    $2^{k+1} = 2 \cdot 2^k &gt; 2 k^2 = k^2 + k^2.$
+    It suffices to show $k^2 \geq 2k + 1$, i.e. $k^2 - 2k - 1 \geq 0$.
+    For $k \geq 5$: $k^2 - 2k - 1 \geq 25 - 10 - 1 = 14 &gt; 0$. ✓
+    Hence $2^{k+1} &gt; k^2 + (2k+1) = (k+1)^2$. By induction, $\forall n \geq 5,\;2^n &gt; n^2$. $\square$
+  </div>
+
+  <div class="note-box">
+    Bound is tight: at $n = 4$, $2^4 = 16 = 4^2$; at $n = 3$, $2^3 = 8 &lt; 9 = 3^2$. Choosing the right $n_0$ matters.
+  </div>
+  <p class="ref-cite">Rosen 8e §5.1 Ex. 4.</p>
+  <span class="slide-number">10 / 38</span>
+</section>
+
+<!-- ══ Slide 11 — Inequality n! >= 2^n ═══════════════════════════════ -->
+<section class="slide" id="s11">
+  <h2 class="frame-title">4.2 Inequality — $n! \geq 2^n$ for $n \geq 4$</h2>
+
+  <div class="thm-box">
+    For every $n \geq 4$, $\;n! \geq 2^n$.
+  </div>
+
+  <div class="proof-box">
+    <em>Base ($n = 4$).</em> $4! = 24$, $2^4 = 16$; $24 \geq 16$. ✓<br>
+    <em>Step.</em> Assume $k! \geq 2^k$ with $k \geq 4$. Then
+    $(k+1)! = (k+1) \cdot k! \geq (k+1) \cdot 2^k.$
+    Since $k \geq 4$, $k + 1 \geq 5 \geq 2$. Hence $(k+1) \cdot 2^k \geq 2 \cdot 2^k = 2^{k+1}$. ✓ $\square$
+  </div>
+
+  <div class="cor-box">
+    More generally, $n! / 2^n \to \infty$ — factorials beat exponentials. By Stirling, $n!/n^n \cdot e^n \to \sqrt{2\pi n}$.
+  </div>
+  <p class="ref-cite">Rosen 8e §5.1; Spivak ch. 22.</p>
+  <span class="slide-number">11 / 38</span>
+</section>
+
+<!-- ══ Slide 12 — Divisibility 3 | n^3+2n ════════════════════════════ -->
+<section class="slide" id="s12">
+  <h2 class="frame-title">5.1 Divisibility — $3 \mid (n^3 + 2n)$</h2>
+
+  <div class="thm-box">
+    For every $n \geq 0$, $\;3 \mid (n^3 + 2n)$.
+  </div>
+
+  <div class="proof-box">
+    <em>Base ($n = 0$).</em> $0^3 + 0 = 0$ and $3 \mid 0$. ✓<br>
+    <em>Step.</em> Assume $k^3 + 2k = 3m$. Then
+    $(k+1)^3 + 2(k+1) = k^3 + 3k^2 + 3k + 1 + 2k + 2 = (k^3 + 2k) + 3(k^2 + k + 1) = 3m + 3(k^2 + k + 1)$
+    which is divisible by $3$. ✓ $\square$
+  </div>
+
+  <div class="thm-box">
+    For every $n \geq 0$, $\;7 \mid (8^n - 1)$.
+  </div>
+  <div class="proof-box">
+    Base $n = 0$: $8^0 - 1 = 0$, and $7 \mid 0$. Step: $8^{k+1} - 1 = 8 \cdot 8^k - 1 = 8(8^k - 1) + 7$, divisible by $7$. $\square$
+  </div>
+
+  <div class="thm-box">
+    For every $n \geq 0$, $\;6 \mid (n^3 - n)$.
+  </div>
+  <div class="proof-box">
+    Note $n^3 - n = n(n-1)(n+1)$ — product of three consecutive integers, which always contains a multiple of $2$ and a multiple of $3$. (Or direct induction.) $\square$
+  </div>
+  <p class="ref-cite">Rosen 8e §5.1 Ex. 5; Hardy &amp; Wright §1.</p>
+  <span class="slide-number">12 / 38</span>
+</section>
+
+<!-- ══ Slide 13 — Set example: subsets ═══════════════════════════════ -->
+<section class="slide" id="s13">
+  <h2 class="frame-title">6.1 Set example — $2^n$ subsets</h2>
+
+  <div class="thm-box">
+    For every $n \geq 0$, every set of $n$ elements has exactly $2^n$ subsets.
+  </div>
+
+  <div class="proof-box">
+    <em>Base ($n = 0$).</em> $\mathcal{P}(\varnothing) = \{\varnothing\}$, so $|\mathcal{P}(\varnothing)| = 1 = 2^0$. ✓<br>
+    <em>Step.</em> Suppose every $k$-set has $2^k$ subsets. Let $|A| = k + 1$; pick $a \in A$ and let $B = A \setminus \{a\}$, $|B| = k$. Each subset of $A$ either contains $a$ or does not — the two classes are disjoint and each has $2^k$ subsets of $B$ (those not containing $a$) plus $2^k$ subsets of the form $S \cup \{a\}$ (containing $a$). Total: $2^k + 2^k = 2^{k+1}$. ✓ $\square$
+  </div>
+
+  <div class="thm-box">
+    <strong>Counting lines.</strong> $n$ points in general position (no three collinear) determine exactly $\binom{n}{2} = n(n-1)/2$ distinct lines.
+  </div>
+  <div class="proof-box">
+    Base $n = 2$: one line. Step: adding a new point $P$ to a set of $k$ points gives $k$ new lines (one to each existing point); the previous $\binom{k}{2}$ lines remain, so the total becomes $\binom{k}{2} + k = \binom{k+1}{2}$ (Pascal's identity). $\square$
+  </div>
+  <p class="ref-cite">Rosen 8e §5.1 Ex. 10.</p>
+  <span class="slide-number">13 / 38</span>
+</section>
+
+<!-- ══ Slide 14 — Geometry: triangulating polygons ═══════════════════ -->
+<section class="slide" id="s14">
+  <h2 class="frame-title">7.1 Geometry — triangulating a convex $n$-gon</h2>
+
+  <div class="thm-box">
+    Every convex polygon with $n \geq 3$ vertices admits a triangulation by non-crossing diagonals, and every such triangulation uses exactly $n - 2$ triangles.
+  </div>
+
+  <div class="proof-box">
+    Base $n = 3$: a triangle is already triangulated into $3 - 2 = 1$ triangle. ✓<br>
+    Step: a convex $(k+1)$-gon has at least one diagonal $d$ (for $k + 1 \geq 4$). Cutting along $d$ splits the polygon into two convex polygons sharing $d$, with $j_1$ and $j_2$ vertices where $j_1 + j_2 = (k+1) + 2$. Both $j_i \leq k$, so by IH each has $(j_i - 2)$ triangles, summing to $(k+1) + 2 - 4 = (k+1) - 2$. ✓ $\square$
+  </div>
+
+  <div class="thm-box">
+    <strong>Plane regions.</strong> $n$ lines in general position divide the plane into $1 + n + \binom{n}{2}$ regions.
+  </div>
+  <div class="proof-box">
+    Base $n = 0$: $1$ region. Step: a new line, in general position with the existing $k$ lines, crosses each of them in $1$ point, so it is divided into $k + 1$ arcs; each arc cuts an existing region into two. So $R_{k+1} = R_k + (k+1) = 1 + k + \binom{k}{2} + k + 1 = 1 + (k+1) + \binom{k+1}{2}$. ✓ $\square$
+  </div>
+  <p class="ref-cite">Rosen 8e §5.2 Ex. 12; Steiner's theorem (1826).</p>
+  <span class="slide-number">14 / 38</span>
+</section>
+
+<!-- ══ Slide 15 — Bernoulli & AM-GM ══════════════════════════════════ -->
+<section class="slide" id="s15">
+  <h2 class="frame-title">8. Two classical inductive inequalities</h2>
+
+  <div class="thm-box">
+    <strong>Bernoulli's inequality.</strong> For every $x &gt; -1$ and every $n \geq 0$, $(1 + x)^n \geq 1 + nx$.
+  </div>
+  <div class="proof-box">
+    Base $n = 0$: $(1+x)^0 = 1 = 1 + 0$. ✓ &nbsp; Step:
+    $(1+x)^{k+1} = (1+x)(1+x)^k \geq (1+x)(1+kx)$ since $1 + x &gt; 0$ and IH.
+    Expanding: $(1+x)(1+kx) = 1 + (k+1)x + kx^2 \geq 1 + (k+1)x$ since $kx^2 \geq 0$. ✓ $\square$
+  </div>
+
+  <div class="thm-box">
+    <strong>AM–GM, $n = 2^m$ case.</strong> For positive reals $a_1, \ldots, a_n$:
+    $\;\dfrac{a_1 + \cdots + a_n}{n} \geq \sqrt[n]{a_1 \cdots a_n}.$
+  </div>
+  <div class="proof-box">
+    By induction on $m$: base $m = 0$ ($n = 1$): trivial. Base $m = 1$ ($n = 2$): $(a_1 + a_2)/2 \geq \sqrt{a_1 a_2}$ by $(a_1 - a_2)^2 \geq 0$ (re-arrange).
+    Step: assume for $n = 2^m$. Pair up $2^{m+1}$ numbers as $(a_1, a_2), \ldots, (a_{2^{m+1}-1}, a_{2^{m+1}})$. By the $n = 2$ case applied $2^m$ times, replace each pair by its arithmetic mean; the overall mean is unchanged, and the product is no larger. Apply IH to the $2^m$ pair-means. $\square$
+  </div>
+  <p class="ref-cite">Cauchy's proof of AM–GM; Bernoulli (1689).</p>
+  <span class="slide-number">15 / 38</span>
+</section>
+
+<!-- ══ Slide 16 — Strong induction ═══════════════════════════════════ -->
+<section class="slide" id="s16">
+  <h2 class="frame-title">9. Strong induction (course-of-values)</h2>
+
+  <div class="def-box">
+    <strong>Principle of strong induction.</strong> If $P(n_0)$ holds and for every $k \geq n_0$
+    $\bigl(\forall j,\; n_0 \leq j \leq k \Rightarrow P(j)\bigr) \;\to\; P(k+1),$
+    then $\forall n \geq n_0,\; P(n)$.
+  </div>
+
+  <p>The strong-step inductive hypothesis is generous: instead of just $P(k)$, we may use all $P(j)$ for $j \leq k$. This is needed when the recurrence reaches back more than one step.</p>
+
+  <div class="thm-box">
+    Strong induction $\Leftrightarrow$ Weak induction.
+  </div>
+  <div class="proof-box">
+    <strong>(PSI ⇒ PWI.)</strong> The weak step is the special case of the strong step where only $j = k$ is used.<br>
+    <strong>(PWI ⇒ PSI.)</strong> Define $Q(n) :\equiv \bigl(\forall j \leq n,\, P(j)\bigr)$. Apply weak induction to $Q$: base $Q(n_0)$ is $P(n_0)$; step $Q(k) \to Q(k+1)$ is the strong step. By PWI, $\forall n, Q(n)$, so $\forall n, P(n)$. $\square$
+  </div>
+  <p class="ref-cite">Rosen 8e §5.2 Theorem 1; Velleman 3e §6.4.</p>
+  <span class="slide-number">16 / 38</span>
+</section>
+
+<!-- ══ Slide 17 — Strong induction examples ═════════════════════════ -->
+<section class="slide" id="s17">
+  <h2 class="frame-title">10. Two key strong-induction examples</h2>
+
+  <div class="thm-box">
+    <strong>Existence of prime factorization.</strong> Every integer $n \geq 2$ is a product of primes.
+  </div>
+  <div class="proof-box">
+    Base $n = 2$: $2$ is prime. Strong step: suppose $P(j)$ for all $2 \leq j \leq k$. For $k + 1$: if it is prime, $P(k+1)$ holds trivially. Otherwise $k + 1 = ab$ with $2 \leq a, b \leq k$; by IH both are products of primes, so $k + 1 = a \cdot b$ is too. $\square$
+  </div>
+
+  <div class="thm-box">
+    <strong>Frobenius / postage stamps.</strong> Every postage $n \geq 12$ cents can be formed with $4$ and $5$ cent stamps.
+  </div>
+  <div class="proof-box">
+    Bases: $12 = 4\cdot3$, $13 = 4\cdot2 + 5$, $14 = 4 + 5\cdot2$, $15 = 5\cdot3$. ✓ (Four bases.)<br>
+    Step: for $k + 1 \geq 16$, $k - 3 \geq 12$, so by IH $k - 3 = 4a + 5b$; thus $k + 1 = (k - 3) + 4 = 4(a+1) + 5b$. $\square$
+  </div>
+
+  <div class="thm-box">
+    <strong>Fibonacci bound.</strong> $F_n \leq \varphi^{n-1}$ where $\varphi = (1+\sqrt 5)/2$.
+  </div>
+  <div class="proof-box">
+    Bases $n = 1, 2$: $F_1 = 1 \leq \varphi^0$, $F_2 = 1 \leq \varphi$. Step:
+    $F_{k+1} = F_k + F_{k-1} \leq \varphi^{k-1} + \varphi^{k-2} = \varphi^{k-2}(\varphi + 1) = \varphi^{k-2}\cdot \varphi^2 = \varphi^k.$
+    using $\varphi^2 = \varphi + 1$. $\square$
+  </div>
+  <p class="ref-cite">Rosen 8e §5.2 Theorems 2, 3, 4.</p>
+  <span class="slide-number">17 / 38</span>
+</section>
+
+<!-- ══ Slide 18 — Pitfalls ═══════════════════════════════════════════ -->
+<section class="slide" id="s18">
+  <h2 class="frame-title">11. Common induction pitfalls</h2>
+
+  <div class="pitfall-box">
+    <strong>"All horses have the same colour."</strong> A famous "proof": base $n = 1$ is trivial. Step: remove a horse from a group of $k+1$, the remaining $k$ have the same colour (IH); put it back, remove a different one — same colour. So all $k+1$ have the same colour. <br>
+    <strong>Where it breaks.</strong> At $k+1 = 2$, the two subsets of size $1$ are disjoint, so the "common colour" cannot be transmitted. The step is only valid for $k \geq 2$, but the base only gives $k = 1$.
+  </div>
+
+  <div class="pitfall-box">
+    <strong>Missing base case.</strong> "Theorem: $n = n + 1$ for all $n \in \mathbb{N}$." "Proof": step works algebraically ($k = k + 1 \Rightarrow k + 1 = k + 2$). But the base $0 = 1$ is false, so the chain never starts.
+  </div>
+
+  <div class="pitfall-box">
+    <strong>Bound creep.</strong> If the step requires $k \geq 3$, the conclusion is $\forall n \geq 3,\,P(n)$, not $\forall n \geq 0$. Always match the base and the step.
+  </div>
+
+  <div class="pitfall-box">
+    <strong>Hidden non-arbitrariness.</strong> Each application of the inductive step must work for an <em>arbitrary</em> $k$. A proof that secretly assumes "$k$ is large enough" is no proof at all.
+  </div>
+  <p class="ref-cite">Pólya's classical pedagogical examples; Velleman 3e §6.1.</p>
+  <span class="slide-number">18 / 38</span>
+</section>
+
+<!-- ══ Slide 19 — Part II divider ════════════════════════════════════ -->
+<section class="slide part-slide" id="s19">
+  <div class="part-label">Part II</div>
+  <h2>Recursive definitions</h2>
+  <p>Recursive functions · recurrences · closed forms · recursive sets &amp; structures · structural induction · fractals.</p>
+  <span class="slide-number">19 / 38</span>
+</section>
+
+<!-- ══ Slide 20 — Recursive functions ════════════════════════════════ -->
+<section class="slide" id="s20">
+  <h2 class="frame-title">12. Recursive functions — definition</h2>
+
+  <div class="def-box">
+    A <strong>recursive definition</strong> of a function $f : \mathbb{N} \to X$ specifies two pieces:
+    <ol>
+      <li><strong>Base case(s).</strong> The value $f(n)$ is given explicitly for some initial $n_0$ (and possibly $n_0 + 1, \ldots, n_0 + k - 1$).</li>
+      <li><strong>Recursive case.</strong> For $n &gt; n_0 + k - 1$, $f(n)$ is computed from one or more earlier values $f(n - 1), f(n - 2), \ldots$</li>
+    </ol>
+    Well-definedness is justified by induction on $n$.
+  </div>
+
+  <div class="ex-box">
+    <strong>Factorial.</strong> $f(0) = 1$; $f(n) = n \cdot f(n-1)$ for $n \geq 1$. Then $f(n) = n!$.<br>
+    <strong>Fibonacci.</strong> $F_0 = 0$, $F_1 = 1$; $F_n = F_{n-1} + F_{n-2}$ for $n \geq 2$. First terms: $0, 1, 1, 2, 3, 5, 8, 13, 21, 34, \ldots$<br>
+    <strong>Lucas.</strong> $L_0 = 2$, $L_1 = 1$; $L_n = L_{n-1} + L_{n-2}$.<br>
+    <strong>Ackermann.</strong> $A(0, n) = n + 1$; $A(m, 0) = A(m-1, 1)$; $A(m, n) = A(m-1, A(m, n-1))$ — grows faster than any primitive recursive function.
+  </div>
+
+  <div class="python-block">
+    <span class="pane-label">Python — recursive implementations</span>
+    <span class="pane-code">def fact(n):  return 1 if n == 0 else n * fact(n - 1)
+def fib(n):   return n if n &lt; 2 else fib(n-1) + fib(n-2)
+def lucas(n): return 2 if n == 0 else 1 if n == 1 else lucas(n-1) + lucas(n-2)
+
+print([fact(k) for k in range(7)])    # [1, 1, 2, 6, 24, 120, 720]
+print([fib(k)  for k in range(10)])   # [0, 1, 1, 2, 3, 5, 8, 13, 21, 34]</span>
+  </div>
+  <p class="ref-cite">Rosen 8e §5.3; Concrete Mathematics §1.1.</p>
+  <span class="slide-number">20 / 38</span>
+</section>
+
+<!-- ══ Slide 21 — Recurrences and characteristic equation ════════════ -->
+<section class="slide" id="s21">
+  <h2 class="frame-title">13. From recurrence to closed form</h2>
+
+  <div class="def-box">
+    A <strong>linear homogeneous recurrence with constant coefficients of order $k$</strong> is
+    $a_n = c_1 a_{n-1} + c_2 a_{n-2} + \cdots + c_k a_{n-k}, \;\; c_k \neq 0, \; c_i \in \mathbb{R}.$
+    Its <strong>characteristic equation</strong> is $x^k = c_1 x^{k-1} + \cdots + c_k.$
+  </div>
+
+  <div class="thm-box">
+    If the characteristic equation has $k$ distinct real roots $r_1, \ldots, r_k$, then every solution has the form
+    $a_n = \alpha_1 r_1^n + \cdots + \alpha_k r_k^n,$
+    where $\alpha_i$ are determined by the $k$ initial values.
+  </div>
+
+  <div class="proof-box">
+    Each $r_i^n$ satisfies the recurrence (substitute and divide by $r_i^{n-k}$). Linearity preserves the property. The initial-value Vandermonde system has a unique solution since the $r_i$ are distinct. By induction the formula extends to all $n$. $\square$
+  </div>
+
+  <div class="ex-box">
+    <strong>Constant recurrence.</strong> $a_n = a_{n-1}$, $a_0 = c$: solution $a_n = c$.<br>
+    <strong>Doubling.</strong> $a_n = 2 a_{n-1}$, $a_0 = 1$: solution $a_n = 2^n$.<br>
+    <strong>Linear repeated.</strong> $a_n = 2 a_{n-1} - a_{n-2}$: root $1$ with multiplicity $2$, solution $a_n = (\alpha + \beta n) \cdot 1^n = \alpha + \beta n$ (arithmetic progression).
+  </div>
+  <p class="ref-cite">Rosen 8e §8.2 Theorem 1.</p>
+  <span class="slide-number">21 / 38</span>
+</section>
+
+<!-- ══ Slide 22 — Binet's formula ════════════════════════════════════ -->
+<section class="slide" id="s22">
+  <h2 class="frame-title">14. Binet's formula for Fibonacci</h2>
+
+  <div class="thm-box">
+    Let $\varphi = (1+\sqrt 5)/2$ and $\psi = (1-\sqrt 5)/2$. Then for every $n \geq 0$:
+    $F_n = \dfrac{\varphi^n - \psi^n}{\sqrt 5}.$
+  </div>
+
+  <div class="proof-box">
+    The recurrence $F_n = F_{n-1} + F_{n-2}$ has characteristic equation $x^2 = x + 1$, i.e. $x^2 - x - 1 = 0$, with roots $\varphi, \psi$. So $F_n = \alpha \varphi^n + \beta \psi^n$ for some $\alpha, \beta$. Initial conditions:
+    $F_0 = 0 \Rightarrow \alpha + \beta = 0;\quad F_1 = 1 \Rightarrow \alpha\varphi + \beta\psi = 1.$
+    Solve: $\beta = -\alpha$, $\alpha(\varphi - \psi) = 1$, $\alpha\sqrt 5 = 1$, $\alpha = 1/\sqrt 5$, $\beta = -1/\sqrt 5$. $\square$
+  </div>
+
+  <div class="note-box">
+    Since $|\psi| &lt; 1$, $\psi^n \to 0$, so $F_n \sim \varphi^n / \sqrt 5$ — Fibonacci grows geometrically with ratio $\varphi \approx 1.618$. In fact, $F_n$ is the nearest integer to $\varphi^n / \sqrt 5$ for all $n \geq 0$.
+  </div>
+
+  <div class="sympy-block">
+    <span class="pane-label">SymPy — derives Binet automatically</span>
+    <span class="pane-code">from sympy import Function, symbols, rsolve
+n = symbols('n', integer=True, nonnegative=True)
+a = Function('a')
+print(rsolve(a(n+2) - a(n+1) - a(n), a(n), {a(0): 0, a(1): 1}))
+# (sqrt(5)/5) * ((1/2 + sqrt(5)/2)**n - (1/2 - sqrt(5)/2)**n)  —  Binet</span>
+  </div>
+  <p class="ref-cite">Rosen 8e §8.2 Ex. 6; Binet (1843).</p>
+  <span class="slide-number">22 / 38</span>
+</section>
+
+<!-- ══ Slide 23 — Tower of Hanoi ═════════════════════════════════════ -->
+<section class="slide" id="s23">
+  <h2 class="frame-title">15. Tower of Hanoi — $H_n = 2^n - 1$</h2>
+
+  <p>Three pegs $A, B, C$; $n$ disks of decreasing size stacked on $A$. Move the entire stack to $C$, one disk at a time, never placing a bigger disk on a smaller one.</p>
+
+  <div class="thm-box">
+    Let $H_n$ be the minimum number of moves. Then $H_n = 2^n - 1$.
+  </div>
+
+  <div class="proof-box">
+    <strong>Recurrence.</strong> To move $n$ disks $A \to C$: (i) move the top $n-1$ to $B$ via $C$, using $H_{n-1}$ moves; (ii) move the largest disk $A \to C$, $1$ move; (iii) move the $n-1$ from $B$ to $C$ via $A$, $H_{n-1}$ moves. Total: $H_n = 2 H_{n-1} + 1$, with $H_0 = 0$.<br>
+    <strong>Closed form by induction.</strong> Base: $H_0 = 0 = 2^0 - 1$. Step: $H_{k+1} = 2 H_k + 1 = 2(2^k - 1) + 1 = 2^{k+1} - 1$. ✓ $\square$
+  </div>
+
+  <div class="python-block">
+    <span class="pane-label">Python — recursive solver</span>
+    <span class="pane-code">def hanoi(n, src='A', dst='C', via='B', moves=None):
+    if moves is None: moves = []
+    if n == 0: return moves
+    hanoi(n - 1, src, via, dst, moves)
+    moves.append(f"{src} → {dst}")
+    hanoi(n - 1, via, dst, src, moves)
+    return moves
+
+m = hanoi(3)
+print(len(m), m)     # 7 ['A → C', 'A → B', 'C → B', 'A → C', 'B → A', 'B → C', 'A → C']</span>
+  </div>
+
+  <div class="note-box">
+    With $64$ disks (Brahma legend), at one move per second the puzzle requires $2^{64} - 1 \approx 5.85 \times 10^{17}$ seconds $\approx 585$ billion years — longer than the age of the universe.
+  </div>
+  <p class="ref-cite">Rosen 8e §8.1 Ex. 2; Lucas (1883).</p>
+  <span class="slide-number">23 / 38</span>
+</section>
+
+<!-- ══ Slide 24 — Recursive sets ═════════════════════════════════════ -->
+<section class="slide" id="s24">
+  <h2 class="frame-title">16. Recursively defined sets</h2>
+
+  <div class="def-box">
+    To define a set $S$ <strong>recursively</strong>:
+    <ol>
+      <li>Specify base elements: $b_1, b_2, \ldots \in S$.</li>
+      <li>Specify construction rules: <em>"if $x_1, \ldots, x_k \in S$ then $f(x_1, \ldots, x_k) \in S$"</em>.</li>
+      <li>Implicit closure: $S$ contains <em>nothing else</em> — only what is forced by 1 and 2.</li>
+    </ol>
+  </div>
+
+  <div class="ex-box">
+    <strong>The natural numbers.</strong> Peano: $0 \in \mathbb{N}$; if $n \in \mathbb{N}$ then $S(n) \in \mathbb{N}$ (successor).<br>
+    <strong>The set of binary strings $\Sigma^*$ on $\Sigma = \{0, 1\}$.</strong> $\varepsilon \in \Sigma^*$ (empty string); if $w \in \Sigma^*$ then $w0 \in \Sigma^*$ and $w1 \in \Sigma^*$.<br>
+    <strong>Palindromes.</strong> $\varepsilon$ and every single character $a$ are palindromes; if $w$ is a palindrome and $a$ a character, then $awa$ is a palindrome.<br>
+    <strong>Well-formed propositional formulas.</strong> Every variable $p_i$ is a wff; if $\varphi, \psi$ are wffs, so are $\neg\varphi$, $(\varphi \wedge \psi)$, $(\varphi \vee \psi)$, $(\varphi \to \psi)$, $(\varphi \leftrightarrow \psi)$ (Lesson 2).
+  </div>
+  <p class="ref-cite">Rosen 8e §5.3; Halmos §13.</p>
+  <span class="slide-number">24 / 38</span>
+</section>
+
+<!-- ══ Slide 25 — Recursive structures ═══════════════════════════════ -->
+<section class="slide" id="s25">
+  <h2 class="frame-title">17. Recursively defined structures</h2>
+
+  <div class="def-box">
+    <strong>Lists.</strong> A list is either <code>nil</code> (the empty list) or <code>cons(x, L)</code> where $x$ is an element and $L$ is a list. (Same as Lisp's <code>(x . L)</code>.)
+  </div>
+
+  <div class="def-box">
+    <strong>Binary trees.</strong> A binary tree is either a <code>leaf</code>, or a <code>node(L, R)</code> where $L$ and $R$ are binary trees. <em>Internal nodes</em> have two children; leaves have none.
+  </div>
+
+  <div class="def-box">
+    <strong>Recursive functions on these structures.</strong>
+    <ul>
+      <li>$\mathrm{length}(\text{nil}) = 0; \;\;\mathrm{length}(\text{cons}(x, L)) = 1 + \mathrm{length}(L).$</li>
+      <li>$\mathrm{append}(\text{nil}, M) = M; \;\;\mathrm{append}(\text{cons}(x, L), M) = \text{cons}(x, \mathrm{append}(L, M)).$</li>
+      <li>$\ell(\text{leaf}) = 1, \;\; \ell(\text{node}(L, R)) = \ell(L) + \ell(R)$ — counts leaves.</li>
+      <li>$i(\text{leaf}) = 0, \;\; i(\text{node}(L, R)) = i(L) + i(R) + 1$ — counts internal nodes.</li>
+    </ul>
+  </div>
+
+  <div class="python-block">
+    <span class="pane-label">Python</span>
+    <span class="pane-code">def length(L):
+    return 0 if L == [] else 1 + length(L[1:])
+
+def leaves(t):  # binary tree as tuple ('leaf',) or ('node', L, R)
+    return 1 if t[0] == 'leaf' else leaves(t[1]) + leaves(t[2])
+
+t = ('node', ('leaf',), ('node', ('leaf',), ('leaf',)))
+print(leaves(t))   # 3</span>
+  </div>
+  <p class="ref-cite">Rosen 8e §5.3; Knuth, <em>TAOCP</em>, vol. 1 §2.3.</p>
+  <span class="slide-number">25 / 38</span>
+</section>
+
+<!-- ══ Slide 26 — Structural induction ═══════════════════════════════ -->
+<section class="slide" id="s26">
+  <h2 class="frame-title">18. Structural induction</h2>
+
+  <div class="def-box">
+    To prove $\forall x \in S,\, P(x)$ for a recursively defined set $S$:
+    <ol>
+      <li>Verify $P(b)$ for every base element $b$.</li>
+      <li>For each constructor $f$: show $P(x_1) \wedge \ldots \wedge P(x_k) \to P(f(x_1, \ldots, x_k))$.</li>
+    </ol>
+    Then $\forall x \in S,\,P(x)$.
+  </div>
+
+  <div class="thm-box">
+    For every binary tree $t$, $\;\ell(t) = i(t) + 1.$
+  </div>
+  <div class="proof-box">
+    Base $t = \text{leaf}$: $\ell(t) = 1$, $i(t) = 0$, $i(t) + 1 = 1$. ✓<br>
+    Step $t = \text{node}(L, R)$ with IH on $L$ and $R$:
+    $\ell(t) = \ell(L) + \ell(R) = (i(L) + 1) + (i(R) + 1) = i(L) + i(R) + 2 = i(t) + 1.$ ✓ $\square$
+  </div>
+
+  <div class="thm-box">
+    For all lists $L, M$, $\;\mathrm{length}(\mathrm{append}(L, M)) = \mathrm{length}(L) + \mathrm{length}(M).$
+  </div>
+  <div class="proof-box">
+    Structural induction on $L$. Base $L = \text{nil}$: LHS $= \mathrm{length}(M) = 0 + \mathrm{length}(M) =$ RHS. Step $L = \text{cons}(x, L')$:
+    $\mathrm{length}(\mathrm{append}(\text{cons}(x, L'), M)) = \mathrm{length}(\text{cons}(x, \mathrm{append}(L', M))) = 1 + \mathrm{length}(\mathrm{append}(L', M)) \;\overset{IH}{=}\; 1 + \mathrm{length}(L') + \mathrm{length}(M) = \mathrm{length}(L) + \mathrm{length}(M).$ ✓ $\square$
+  </div>
+  <p class="ref-cite">Rosen 8e §5.3 Theorem 3.</p>
+  <span class="slide-number">26 / 38</span>
+</section>
+
+<!-- ══ Slide 27 — Length of a string ═════════════════════════════════ -->
+<section class="slide" id="s27">
+  <h2 class="frame-title">19. Examples on strings</h2>
+
+  <div class="def-box">
+    On the alphabet $\Sigma$, the <strong>concatenation</strong> of $w_1 = a_1 \cdots a_m$ and $w_2 = b_1 \cdots b_n$ is $w_1 \cdot w_2 = a_1 \cdots a_m b_1 \cdots b_n$. Recursively: $\varepsilon \cdot w = w$; $(aw_1) \cdot w_2 = a (w_1 \cdot w_2)$.<br>
+    The <strong>length</strong> $|w|$: $|\varepsilon| = 0$, $|aw| = 1 + |w|$.<br>
+    The <strong>reverse</strong> $w^R$: $\varepsilon^R = \varepsilon$, $(aw)^R = w^R \cdot a$.
+  </div>
+
+  <div class="thm-box">
+    For all strings $w_1, w_2$, $\;|w_1 \cdot w_2| = |w_1| + |w_2|.$
+  </div>
+  <div class="proof-box">
+    Structural induction on $w_1$. Base $w_1 = \varepsilon$: $|w_2| = 0 + |w_2|$. ✓
+    Step $w_1 = a w_1'$: $|aw_1' \cdot w_2| = |a(w_1' \cdot w_2)| = 1 + |w_1' \cdot w_2| \overset{IH}{=} 1 + |w_1'| + |w_2| = |w_1| + |w_2|$. ✓ $\square$
+  </div>
+
+  <div class="thm-box">
+    For all strings $w_1, w_2$, $\;(w_1 \cdot w_2)^R = w_2^R \cdot w_1^R$ &nbsp; (reverse swaps the order!).
+  </div>
+  <div class="proof-box">
+    Induction on $w_1$. Base $w_1 = \varepsilon$: $(w_2)^R = w_2^R = w_2^R \cdot \varepsilon = w_2^R \cdot w_1^R$. ✓
+    Step $w_1 = a w_1'$: $(aw_1' \cdot w_2)^R = (a(w_1' \cdot w_2))^R = (w_1' \cdot w_2)^R \cdot a \overset{IH}{=} (w_2^R \cdot w_1'^R) \cdot a = w_2^R \cdot (w_1'^R \cdot a) = w_2^R \cdot (aw_1')^R = w_2^R \cdot w_1^R$. ✓ $\square$
+  </div>
+  <p class="ref-cite">Rosen 8e §5.3 Theorem 1; Hopcroft–Ullman §1.</p>
+  <span class="slide-number">27 / 38</span>
+</section>
+
+<!-- ══ Slide 28 — Memoization & dynamic programming ══════════════════ -->
+<section class="slide" id="s28">
+  <h2 class="frame-title">20. Memoization &amp; dynamic programming</h2>
+
+  <p>The naive Fibonacci recursion <code>fib(n) = fib(n-1) + fib(n-2)</code> recomputes the same subproblems exponentially many times: $\Theta(\varphi^n)$ calls. Storing previously computed values transforms the complexity from $\Theta(\varphi^n)$ to $\Theta(n)$.</p>
+
+  <div class="python-block">
+    <span class="pane-label">Python — three variants</span>
+    <span class="pane-code">import functools, time
+
+def fib_naive(n):
+    return n if n &lt; 2 else fib_naive(n-1) + fib_naive(n-2)
+
+@functools.lru_cache(maxsize=None)
+def fib_memo(n):
+    return n if n &lt; 2 else fib_memo(n-1) + fib_memo(n-2)
+
+def fib_iter(n):
+    a, b = 0, 1
+    for _ in range(n): a, b = b, a + b
+    return a
+
+# Benchmark on n = 30
+for f in (fib_naive, fib_memo, fib_iter):
+    t = time.time(); v = f(30); print(f"{f.__name__:10s} = {v}  ({time.time()-t:.3f}s)")</span>
+  </div>
+
+  <div class="output-block">
+    <span class="pane-label">Typical output</span>
+    <span class="pane-code">fib_naive  = 832040  (0.350s)
+fib_memo   = 832040  (0.000s)
+fib_iter   = 832040  (0.000s)</span>
+  </div>
+
+  <div class="note-box">
+    <strong>General lesson.</strong> If a recursive function has overlapping sub-problems and an optimal substructure, <em>memoization</em> (top-down) or <em>dynamic programming</em> (bottom-up) turns exponential into polynomial.
+  </div>
+  <p class="ref-cite">Rosen 8e §8.1; CLRS, <em>Introduction to Algorithms</em>, ch. 15.</p>
+  <span class="slide-number">28 / 38</span>
+</section>
+
+<!-- ══ Slide 29 — Tail recursion & iteration ═════════════════════════ -->
+<section class="slide" id="s29">
+  <h2 class="frame-title">21. Tail recursion ↔ iteration</h2>
+
+  <div class="def-box">
+    A function is <strong>tail-recursive</strong> if every recursive call is its <em>last</em> action — there is nothing left to do once the recursive call returns. Such a call can be replaced by a jump, eliminating the stack frame and giving constant-space iteration.
+  </div>
+
+  <div class="ex-box">
+    <strong>Factorial — naive vs tail-recursive.</strong>
+  </div>
+  <div class="python-block">
+    <span class="pane-label">Python</span>
+    <span class="pane-code">def fact(n):                          # NOT tail-recursive
+    if n == 0: return 1
+    return n * fact(n - 1)            # multiplication after the call
+
+def fact_tail(n, acc=1):              # tail-recursive
+    if n == 0: return acc
+    return fact_tail(n - 1, n * acc)  # call is the last action
+
+# Python doesn't optimise tail calls, but the equivalent iteration is:
+def fact_iter(n):
+    acc = 1
+    for k in range(1, n + 1):
+        acc *= k
+    return acc</span>
+  </div>
+
+  <div class="note-box">
+    Functional languages (Scheme, Haskell, OCaml, Scala) guarantee tail-call optimisation. Python explicitly does not. For deeply recursive algorithms on Python use an iterative form or <code>sys.setrecursionlimit</code> cautiously.
+  </div>
+  <p class="ref-cite">Abelson &amp; Sussman, <em>SICP</em>, §1.2.</p>
+  <span class="slide-number">29 / 38</span>
+</section>
+
+<!-- ══ Slide 30 — Mutual recursion ═══════════════════════════════════ -->
+<section class="slide" id="s30">
+  <h2 class="frame-title">22. Mutual recursion</h2>
+
+  <div class="def-box">
+    Two functions are <strong>mutually recursive</strong> when each calls the other in its definition. Correctness still follows by induction on a common measure (e.g. the size of the input).
+  </div>
+
+  <div class="ex-box">
+    <strong>Parity by mutual recursion.</strong>
+  </div>
+  <div class="python-block">
+    <span class="pane-label">Python</span>
+    <span class="pane-code">def even(n):
+    return True if n == 0 else odd(n - 1)
+
+def odd(n):
+    return False if n == 0 else even(n - 1)
+
+print([even(k) for k in range(6)])   # [True, False, True, False, True, False]</span>
+  </div>
+
+  <div class="ex-box">
+    <strong>Hofstadter female–male sequences.</strong>
+    $F(0) = 1, \; M(0) = 0;$ $F(n) = n - M(F(n-1)),\; M(n) = n - F(M(n-1)).$
+  </div>
+  <div class="python-block">
+    <span class="pane-label">Python</span>
+    <span class="pane-code">from functools import lru_cache
+@lru_cache(maxsize=None)
+def F(n): return 1 if n == 0 else n - M(F(n - 1))
+@lru_cache(maxsize=None)
+def M(n): return 0 if n == 0 else n - F(M(n - 1))
+
+print([F(k) for k in range(10)])   # [1, 1, 2, 2, 3, 3, 4, 5, 5, 6]
+print([M(k) for k in range(10)])   # [0, 0, 1, 2, 2, 3, 4, 4, 5, 6]</span>
+  </div>
+  <p class="ref-cite">Hofstadter, <em>Gödel, Escher, Bach</em>, 1979.</p>
+  <span class="slide-number">30 / 38</span>
+</section>
+
+<!-- ══ Slide 31 — Fixed points & fractals ════════════════════════════ -->
+<section class="slide" id="s31">
+  <h2 class="frame-title">23. Fixed points and fractals</h2>
+
+  <div class="def-box">
+    A <strong>fixed point</strong> of a function $f$ is an element $x$ with $f(x) = x$. Recursive structures often arise as fixed points of set-valued functions, e.g. the smallest $S$ such that $f(S) \subseteq S$.
+  </div>
+
+  <div class="ex-box">
+    <strong>Cantor set.</strong> Start with $C_0 = [0, 1]$. At step $n$, $C_n$ is the union of $2^n$ closed intervals of length $3^{-n}$ each. The Cantor set $C = \bigcap_n C_n$ is the fixed point of the contraction $C \mapsto (C/3) \cup ((C + 2)/3)$.
+  </div>
+
+  <div class="ex-box">
+    <strong>Sierpinski triangle.</strong> Start with an equilateral triangle $T_0$. Replace $T_n$ by three half-size copies, one at each vertex: $T_{n+1} = T_n/2 \cup (T_n/2 + v_1) \cup (T_n/2 + v_2)$ — the union of three contracted copies of itself.
+  </div>
+
+  <div class="python-block">
+    <span class="pane-label">Python — Cantor set as nested intervals</span>
+    <span class="pane-code">def cantor(n, a=0.0, b=1.0):
+    if n == 0:
+        return [(a, b)]
+    third = (b - a) / 3
+    return cantor(n - 1, a, a + third) + cantor(n - 1, b - third, b)
+
+for k in range(4):
+    print(f"Level {k}: {cantor(k)}")</span>
+  </div>
+
+  <p>Fractals are the prototypical example of a "structure equal to a union of smaller copies of itself" — a recursive definition made geometric.</p>
+  <p class="ref-cite">Mandelbrot (1982); Falconer, <em>Fractal Geometry</em>.</p>
+  <span class="slide-number">31 / 38</span>
+</section>
+
+<!-- ══ Slide 32 — Mergesort & master theorem ═════════════════════════ -->
+<section class="slide" id="s32">
+  <h2 class="frame-title">24. Recursive algorithms — Mergesort &amp; master theorem</h2>
+
+  <div class="def-box">
+    <strong>Mergesort.</strong> To sort an array $A$ of length $n$:
+    <ol>
+      <li>If $n \leq 1$, $A$ is already sorted.</li>
+      <li>Split $A$ into halves $A_1, A_2$ (length $\lfloor n/2 \rfloor$ and $\lceil n/2 \rceil$).</li>
+      <li>Recursively sort $A_1$ and $A_2$.</li>
+      <li>Merge the two sorted halves into a single sorted array.</li>
+    </ol>
+  </div>
+
+  <div class="thm-box">
+    <strong>Time complexity.</strong> $T(n) = 2 T(n/2) + \Theta(n) = \Theta(n \log n)$.
+  </div>
+  <div class="proof-box">
+    Unrolling: $T(n) = 2 T(n/2) + cn = 4 T(n/4) + 2cn = \cdots = 2^k T(n/2^k) + kcn$. Stop at $k = \log_2 n$: $T(n) = n \cdot T(1) + cn \log n = \Theta(n \log n)$. $\square$
+  </div>
+
+  <div class="thm-box">
+    <strong>Master theorem (simplified).</strong> If $T(n) = a T(n/b) + \Theta(n^d)$ with $a \geq 1, b &gt; 1, d \geq 0$, then
+    <ul>
+      <li>$T(n) = \Theta(n^d)$ if $d &gt; \log_b a$,</li>
+      <li>$T(n) = \Theta(n^d \log n)$ if $d = \log_b a$,</li>
+      <li>$T(n) = \Theta(n^{\log_b a})$ if $d &lt; \log_b a$.</li>
+    </ul>
+  </div>
+
+  <div class="ex-box">
+    Mergesort: $a = b = 2, d = 1, \log_b a = 1$ → middle case, $\Theta(n \log n)$. Binary search: $a = 1, b = 2, d = 0$ → middle, $\Theta(\log n)$. Strassen's matrix multiplication: $a = 7, b = 2, d = 2$, $\log_2 7 \approx 2.81 &gt; 2$ → third case, $\Theta(n^{\log_2 7})$.
+  </div>
+  <p class="ref-cite">CLRS ch. 4; Knuth, <em>TAOCP</em>, vol. 3.</p>
+  <span class="slide-number">32 / 38</span>
+</section>
+
+<!-- ══ Slide 33 — Iteration ↔ induction correctness ══════════════════ -->
+<section class="slide" id="s33">
+  <h2 class="frame-title">25. Programming connection — induction proves correctness</h2>
+
+  <p>A recursive function's correctness is exactly an induction proof on the recursion measure (typically the input size).</p>
+
+  <h3 class="sub-title">Worked example — proof of correctness of factorial</h3>
+  <div class="python-block">
+    <span class="pane-label">Python</span>
+    <span class="pane-code">def fact(n):
+    if n == 0:
+        return 1
+    return n * fact(n - 1)</span>
+  </div>
+
+  <div class="thm-box">
+    For every $n \geq 0$, <code>fact(n)</code> returns $n!$.
+  </div>
+  <div class="proof-box">
+    Induction on $n$. Base $n = 0$: the code returns $1 = 0!$. Step: assume <code>fact(k)</code> returns $k!$. For input $n = k + 1$, the recursive call <code>fact(k)</code> returns $k!$ by IH; the function returns $(k+1) \cdot k! = (k+1)!$. ✓ $\square$
+  </div>
+
+  <h3 class="sub-title">Worked example — loop invariant for the iterative factorial</h3>
+  <div class="python-block">
+    <span class="pane-label">Python</span>
+    <span class="pane-code">def fact_iter(n):
+    acc = 1
+    for k in range(1, n + 1):   # invariant: after this iteration, acc == k!
+        acc *= k
+    return acc</span>
+  </div>
+
+  <p>The <em>loop invariant</em> "after the $k$-th iteration, <code>acc == k!</code>" is proved by induction on $k$ — the iterative version is the loop-form of the recursive proof.</p>
+  <p class="ref-cite">CLRS §2.1; SICP §1.</p>
+  <span class="slide-number">33 / 38</span>
+</section>
+
+<!-- ══ Slide 34 — Recursion pitfalls ═════════════════════════════════ -->
+<section class="slide" id="s34">
+  <h2 class="frame-title">26. Common recursion pitfalls</h2>
+
+  <div class="pitfall-box">
+    <strong>Forgetting the base case.</strong> The function recurses forever; in Python, you get a <code>RecursionError: maximum recursion depth exceeded</code>.
+  </div>
+
+  <div class="pitfall-box">
+    <strong>Wrong base case.</strong> A subtle bug: $f(0) = 0$ instead of $f(0) = 1$ in factorial — all values become zero.
+  </div>
+
+  <div class="pitfall-box">
+    <strong>Non-decreasing recursion.</strong> The recursive call must reduce the argument (or some well-founded measure). Recursing on $f(n)$ with $f(n) = f(n)$ or $f(n+1)$ never terminates.
+  </div>
+
+  <div class="pitfall-box">
+    <strong>Exponential blow-up by overlapping sub-problems.</strong> Naive Fibonacci is $\Theta(\varphi^n)$. Always check whether memoization saves work.
+  </div>
+
+  <div class="pitfall-box">
+    <strong>Stack overflow.</strong> Python defaults to a recursion limit of ~1000. Deep recursion needs iteration or an explicit stack.
+  </div>
+  <p class="ref-cite">Rosen 8e §5.4; SICP §1.</p>
+  <span class="slide-number">34 / 38</span>
+</section>
+
+<!-- ══ Slide 35 — Strategy guide ═════════════════════════════════════ -->
+<section class="slide" id="s35">
+  <h2 class="frame-title">27. Strategy — induction vs recursion</h2>
+
+  <table class="ref-table">
+    <thead><tr><th>Situation</th><th>Tool</th></tr></thead>
+    <tbody>
+      <tr><td>Prove $\forall n \geq n_0,\,P(n)$ where the step only uses $P(k)$</td><td>Weak induction (§2)</td></tr>
+      <tr><td>Prove $\forall n,\,P(n)$ where the step needs $P(k-1), P(k-2),\ldots$</td><td>Strong induction (§9)</td></tr>
+      <tr><td>Prove $\forall x \in S,\,P(x)$ for an inductively defined set</td><td>Structural induction (§18)</td></tr>
+      <tr><td>Compute a sequence defined by recurrence</td><td>Closed form via characteristic equation (§13)</td></tr>
+      <tr><td>Recursive algorithm with overlapping subproblems</td><td>Memoization / DP (§20)</td></tr>
+      <tr><td>Recursive algorithm with tail call</td><td>Tail recursion ↔ iteration (§21)</td></tr>
+      <tr><td>Recurrence $T(n) = a T(n/b) + n^d$</td><td>Master theorem (§24)</td></tr>
+      <tr><td>Self-similar geometry</td><td>Fixed-point / fractal recursion (§23)</td></tr>
+    </tbody>
+  </table>
+  <span class="slide-number">35 / 38</span>
+</section>
+
+<!-- ══ Slide 36 — Python toolbox ═════════════════════════════════════ -->
+<section class="slide" id="s36">
+  <h2 class="frame-title">28. Python / SymPy toolbox</h2>
+
+  <div class="setup-block">
+    <span class="pane-label">Python — imports</span>
+    <span class="pane-code">import functools, sys
+from sympy import Function, symbols, rsolve, Sum, simplify
+n = symbols('n', integer=True, nonnegative=True)
+a = Function('a')</span>
+  </div>
+
+  <div class="sympy-block">
+    <span class="pane-label">SymPy — solve recurrences automatically</span>
+    <span class="pane-code">print(rsolve(a(n+1) - 2*a(n) - 1, a(n), {a(0): 0}))
+# 2**n - 1   →  Tower of Hanoi closed form
+
+print(rsolve(a(n+2) - a(n+1) - a(n), a(n), {a(0): 0, a(1): 1}))
+# Fibonacci → Binet's formula
+
+print(rsolve(a(n+2) - 3*a(n+1) + 2*a(n), a(n), {a(0): 0, a(1): 1}))
+# 2**n - 1  →  recurrence with characteristic roots 1, 2</span>
+  </div>
+
+  <div class="sympy-block">
+    <span class="pane-label">SymPy — verify induction step symbolically</span>
+    <span class="pane-code">from sympy import symbols, Eq, simplify, Rational
+k = symbols('k', integer=True, positive=True)
+
+# Inductive step for sum_{i=1}^n i = n(n+1)/2
+lhs_kp1 = k*(k+1)/2 + (k+1)             # IH + extra term
+rhs_kp1 = (k+1)*(k+2)/2                  # formula at k+1
+print(simplify(lhs_kp1 - rhs_kp1))       # 0  → step holds
+
+# Inductive step for sum_{i=1}^n i^2 = n(n+1)(2n+1)/6
+lhs2 = k*(k+1)*(2*k+1)/6 + (k+1)**2
+rhs2 = (k+1)*(k+2)*(2*k+3)/6
+print(simplify(lhs2 - rhs2))             # 0</span>
+  </div>
+
+  <div class="python-block">
+    <span class="pane-label">Python — increase recursion limit when needed</span>
+    <span class="pane-code">sys.setrecursionlimit(10_000)   # default ~1000; use sparingly</span>
+  </div>
+  <span class="slide-number">36 / 38</span>
+</section>
+
+<!-- ══ Slide 37 — Summary ════════════════════════════════════════════ -->
+<section class="slide" id="s37">
+  <h2 class="frame-title">29. Summary — what we proved</h2>
+
+  <h3 class="sub-title">Part I — Induction</h3>
+  <ul>
+    <li><strong>WOP $\Leftrightarrow$ PWI $\Leftrightarrow$ PSI</strong>: all three principles proved equivalent.</li>
+    <li>Six sum identities ($\sum k$, $\sum k^2$, $\sum k^3$, $\sum 2^k$, $\sum k\cdot k!$, geometric).</li>
+    <li>Two inequalities by induction ($2^n &gt; n^2$ for $n \geq 5$; $n! \geq 2^n$ for $n \geq 4$).</li>
+    <li>Three divisibility theorems ($3 \mid n^3+2n$; $7 \mid 8^n - 1$; $6 \mid n^3 - n$).</li>
+    <li>Two set/counting identities ($2^n$ subsets, $\binom{n}{2}$ lines through $n$ points).</li>
+    <li>Two geometric induction theorems (convex polygon triangulation; plane regions cut by $n$ lines).</li>
+    <li>Bernoulli's inequality + Cauchy's AM–GM proof.</li>
+    <li>Three strong-induction theorems (prime factorization; postage; Fibonacci bound).</li>
+    <li>Classical pitfalls (all horses, missing base).</li>
+  </ul>
+
+  <h3 class="sub-title">Part II — Recursion</h3>
+  <ul>
+    <li>Recursive functions: factorial, Fibonacci, Lucas, Ackermann.</li>
+    <li>Linear-homogeneous recurrences with characteristic equation; <strong>Binet's formula</strong> for Fibonacci derived in full.</li>
+    <li>Tower of Hanoi: $H_n = 2^n - 1$ proved.</li>
+    <li>Recursive sets: $\mathbb{N}$, strings, palindromes, wff.</li>
+    <li>Recursive structures: lists, binary trees, with structural-induction proofs (leaves = internal nodes $+1$; $|w_1 \cdot w_2| = |w_1| + |w_2|$; $(w_1 w_2)^R = w_2^R w_1^R$).</li>
+    <li>Memoization, tail recursion, mutual recursion (Hofstadter sequences).</li>
+    <li>Fixed points and fractals (Cantor set, Sierpinski).</li>
+    <li>Mergesort + master theorem with the three cases.</li>
+    <li>Correctness of recursive algorithms = induction on the input size.</li>
+  </ul>
+  <span class="slide-number">37 / 38</span>
+</section>
+
+<!-- ══ Slide 38 — Bibliography ═══════════════════════════════════════ -->
+<section class="slide" id="s38">
+  <h2 class="frame-title">Bibliography</h2>
+  <ul>
+    <li>K. H. Rosen. <em>Discrete Mathematics and Its Applications</em>, 8th ed., McGraw-Hill, 2019 — §§5.1–5.4 (induction, recursive definitions, recursive algorithms), §8.1–8.2 (recurrence relations).</li>
+    <li>D. J. Velleman. <em>How To Prove It</em>, 3rd ed., Cambridge UP, 2019 — ch. 6 (mathematical induction).</li>
+    <li>R. L. Graham, D. E. Knuth, O. Patashnik. <em>Concrete Mathematics</em>, 2nd ed., Addison-Wesley, 1994 — ch. 1 (recurrent problems), ch. 7 (generating functions).</li>
+    <li>H. Abelson &amp; G. J. Sussman. <em>Structure and Interpretation of Computer Programs</em>, 2nd ed., MIT Press, 1996 — §§1.2, 2.2 (recursion, structural recursion).</li>
+    <li>T. H. Cormen, C. E. Leiserson, R. L. Rivest, C. Stein. <em>Introduction to Algorithms</em>, 4th ed., MIT Press, 2022 — ch. 4 (recurrences, master theorem), ch. 15 (dynamic programming).</li>
+    <li>D. E. Knuth. <em>The Art of Computer Programming</em>, vol. 1: <em>Fundamental Algorithms</em>, 3rd ed., Addison-Wesley, 1997 — §§2.3 (trees), §1.2 (induction).</li>
+    <li>D. R. Hofstadter. <em>Gödel, Escher, Bach: an Eternal Golden Braid</em>, Basic Books, 1979 — mutual recursion, fixed points.</li>
+    <li>É. Lucas. <em>Récréations mathématiques</em>, 1883 — Tower of Hanoi.</li>
+    <li>J. Binet (1843). <em>Mémoire sur l'intégration des équations linéaires aux différences finies</em> — Binet's formula.</li>
+    <li>B. Mandelbrot. <em>The Fractal Geometry of Nature</em>, W. H. Freeman, 1982.</li>
+  </ul>
+
+  <p style="margin-top:1rem;color:#e67e22;font-style:italic;font-weight:600;">Notes By Pr. El Hadiq Zouhair</p>
+  <span class="slide-number">38 / 38</span>
+</section>
+
+<!-- ── Navigation ─────────────────────────────────────────────────── -->
+<div id="nav">
+  <button id="btn-prev"   title="Previous">&#8592;</button>
+  <button id="btn-scroll" title="Toggle slideshow">Slideshow</button>
+  <button id="btn-next"   title="Next">&#8594;</button>
+</div>
+
+<script>
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  let current = 0, slideshowMode = false;
+
+  function enter(i) {
+    slides[current].classList.remove('active');
+    current = (i + slides.length) % slides.length;
+    slides[current].classList.add('active');
+    slides[current].scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  document.getElementById('btn-prev').addEventListener('click', () => {
+    if (slideshowMode) enter(current - 1);
+  });
+  document.getElementById('btn-next').addEventListener('click', () => {
+    if (slideshowMode) enter(current + 1);
+  });
+  document.getElementById('btn-scroll').addEventListener('click', () => {
+    slideshowMode = !slideshowMode;
+    document.body.classList.toggle('slideshow', slideshowMode);
+    document.getElementById('btn-scroll').textContent = slideshowMode ? 'Scroll' : 'Slideshow';
+    if (slideshowMode) slides[current].classList.add('active');
+    else slides.forEach(s => s.classList.remove('active'));
+  });
+
+  document.addEventListener('keydown', e => {
+    if (!slideshowMode) return;
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') enter(current + 1);
+    if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   enter(current - 1);
+  });
+</script>
+</body>
+</html>

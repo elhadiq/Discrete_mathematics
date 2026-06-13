@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Counting in Practice — Permutations, Combinations &amp; Binomial Identities</title>
+<script>
+  MathJax = {
+    tex: { inlineMath: [['$','$']], displayMath: [['$$','$$']], processEscapes: true },
+    options: { skipHtmlTags: ['script','noscript','style','textarea'] }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --orange:    #e67e22;
+  --darkblue:  #2c3e50;
+  --lightbg:   #f4f9fc;
+  --border:    #dce3ea;
+  --py-fg:     #1f4e7a;
+  --py-bg:     #eaf3fb;
+  --py-border: #2a6fb3;
+  --py-head:   #2a6fb3;
+  --sp-border: #27ae60;
+  --out-border:#e0b341;
+  --out-head:  #c89324;
+}
+
+body {
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  background: #e8edf2;
+  color: var(--darkblue);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem 1rem 5rem;
+  gap: 2rem;
+}
+
+.slide {
+  background: #fff;
+  width: 100%;
+  max-width: 940px;
+  border-radius: 10px;
+  box-shadow: 0 4px 18px rgba(0,0,0,.10);
+  padding: 2.2rem 2.8rem 1.8rem;
+  position: relative;
+}
+.slide-number {
+  position: absolute;
+  bottom: 0.7rem;
+  right: 1.2rem;
+  font-size: 0.72rem;
+  color: #aaa;
+}
+
+.slide.title-slide {
+  background: linear-gradient(145deg, #f4f9fc 60%, #e0eef7);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 240px;
+  text-align: center;
+  border-top: 6px solid var(--orange);
+}
+.slide.title-slide h1 { font-size: 1.9rem; color: var(--darkblue); margin-bottom: 0.4rem; }
+.slide.title-slide .subtitle { font-size: 1.15rem; color: #555; }
+
+h2.frame-title {
+  font-size: 1.55rem;
+  color: var(--orange);
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  padding-bottom: 0.35rem;
+  border-bottom: 2px solid #f9e4cc;
+}
+h3.sub-title {
+  font-size: 1.05rem;
+  color: var(--orange);
+  font-weight: 600;
+  margin: 0.7rem 0 0.3rem;
+}
+
+p { line-height: 1.7; margin: 0.45rem 0; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.4rem; line-height: 1.8; }
+ul li::marker, ol li::marker { color: var(--orange); }
+code { background: #f0f3f7; color: #1f4e7a; padding: 0 .25em; border-radius: 3px; font-family: 'Consolas','Fira Code',monospace; }
+
+.rule-box, .use-box, .ex-box, .mem-box {
+  border-radius: 6px;
+  padding: 0.7rem 1rem;
+  margin: 0.6rem 0;
+  line-height: 1.7;
+}
+.rule-box { background: #fff7e0; border-left: 4px solid var(--out-border); }
+.rule-box::before { content: "Rule. "; font-weight: 700; color: var(--out-head); }
+.use-box  { background: #eaf3fb; border-left: 4px solid var(--py-border); }
+.use-box::before  { content: "Use it when… "; font-weight: 700; color: var(--py-border); }
+.ex-box   { background: #e8f5ec; border-left: 4px solid var(--sp-border); }
+.ex-box::before   { content: "Examples. "; font-weight: 700; color: var(--sp-border); }
+.mem-box  { background: #fff5e8; border-left: 4px solid var(--orange); font-style: italic; }
+.mem-box::before  { content: "Remember. "; font-weight: 700; color: var(--orange); font-style: normal; }
+
+.python-block {
+  border-radius: 6px;
+  overflow: hidden;
+  margin: 0.6rem 0;
+  border: 1px solid var(--py-border);
+}
+.pane-label {
+  display: block;
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  color: #fff;
+  background: var(--py-head);
+}
+.pane-code {
+  font-family: 'Consolas','Fira Code',monospace;
+  font-size: 0.83rem;
+  line-height: 1.6;
+  padding: 0.5rem 0.75rem;
+  white-space: pre;
+  display: block;
+  overflow-x: auto;
+  background: var(--py-bg);
+  color: var(--py-fg);
+}
+
+.ref-table {
+  border-collapse: collapse;
+  margin: 0.6rem auto;
+  font-size: 0.9rem;
+  width: 100%;
+}
+.ref-table th, .ref-table td {
+  border: 1px solid var(--border);
+  padding: 0.4rem 0.75rem;
+  text-align: left;
+  vertical-align: top;
+}
+.ref-table th { background: var(--lightbg); font-weight: 600; color: var(--darkblue); }
+.center td, .center th { text-align: center; }
+
+.identity-table {
+  border-collapse: collapse;
+  margin: 0.6rem auto;
+  font-size: 0.95rem;
+  width: 100%;
+}
+.identity-table td {
+  border-bottom: 1px solid var(--border);
+  padding: 0.55rem 0.75rem;
+}
+.identity-table tr:last-child td { border-bottom: none; }
+.identity-table td:first-child { width: 26%; color: var(--orange); font-weight: 600; }
+
+details.quiz { margin: 0.45rem 0; background: var(--lightbg); border-radius: 6px; padding: 0.55rem 0.9rem; border-left: 4px solid var(--py-border); }
+details.quiz summary { cursor: pointer; font-weight: 600; line-height: 1.6; }
+details.quiz p { margin: 0.4rem 0 0.1rem; }
+
+#nav { position: fixed; bottom: 1.5rem; right: 1.5rem; display: flex; gap: 0.4rem; z-index: 100; }
+#nav button {
+  background: var(--orange); color: #fff; border: none;
+  border-radius: 50%; width: 40px; height: 40px;
+  font-size: 1.1rem; cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,.25); transition: background .2s;
+}
+#nav button:hover { background: #cf6d17; }
+#nav #btn-scroll { border-radius: 20px; width: auto; padding: 0 12px; font-size: 0.8rem; }
+
+body.slideshow .slide        { display: none; }
+body.slideshow .slide.active { display: block; }
+</style>
+</head>
+<body>
+
+<!-- ══ Slide 1 — Title ════════════════════════════════════════════════ -->
+<section class="slide title-slide" id="s1">
+  <h1>Counting in Practice</h1>
+  <p class="subtitle">Permutations, Combinations &amp; Binomial Identities — Practical Course</p>
+  <p style="font-size:0.95rem;color:#555;margin-top:0.5rem;">No proofs — every rule comes with <em>when to use it</em> and worked examples.</p>
+  <p style="font-size:1rem;color:#e67e22;margin-top:0.8rem;font-style:italic;font-weight:600;letter-spacing:.02em;">Notes By Pr. El Hadiq Zouhair</p>
+  <span class="slide-number">1 / 23</span>
+</section>
+
+<!-- ══ Slide 2 — The 2-question GPS ══════════════════════════════════ -->
+<section class="slide" id="s2">
+  <h2 class="frame-title">0. The whole course in two questions</h2>
+
+  <p>Before any counting problem, ask exactly two questions:</p>
+  <ol>
+    <li><strong>Does the ORDER of the chosen items matter?</strong></li>
+    <li><strong>Can the same item be chosen MORE THAN ONCE (repetition)?</strong></li>
+  </ol>
+
+  <table class="ref-table center">
+    <thead><tr><th>Order?</th><th>Repetition?</th><th>Formula</th><th>Name</th></tr></thead>
+    <tbody>
+      <tr><td>Yes</td><td>Yes</td><td>$n^k$</td><td>Strings / codes</td></tr>
+      <tr><td>Yes</td><td>No</td><td>$P(n,k) = \dfrac{n!}{(n-k)!}$</td><td>$k$-permutation</td></tr>
+      <tr><td>No</td><td>No</td><td>$\dbinom{n}{k} = \dfrac{n!}{k!(n-k)!}$</td><td>$k$-combination</td></tr>
+      <tr><td>No</td><td>Yes</td><td>$\dbinom{n+k-1}{k}$</td><td>Stars &amp; bars</td></tr>
+    </tbody>
+  </table>
+
+  <div class="mem-box">
+    Order matters → there is a <em>position</em>, a <em>rank</em>, a <em>word</em>, a <em>podium</em>. Order ignored → it is a <em>team</em>, a <em>subset</em>, a <em>handful</em>. Repetition → "with replacement", "as many times as you like".
+  </div>
+  <span class="slide-number">2 / 23</span>
+</section>
+
+<!-- ══ Slide 3 — Sum rule ════════════════════════════════════════════ -->
+<section class="slide" id="s3">
+  <h2 class="frame-title">1. Sum rule — "OR" means add</h2>
+
+  <div class="rule-box">
+    If a choice is made from case A <em>or</em> case B (cases that cannot overlap), the counts <strong>add</strong>: $\;N = N_A + N_B$.
+  </div>
+
+  <div class="use-box">
+    the problem splits into disjoint scenarios — you do <em>one</em> of them, never both. Keyword: <strong>"or"</strong>, "either … or", counting by cases.
+  </div>
+
+  <div class="ex-box">
+    <strong>1.</strong> Choose a math course ($12$ options) <em>or</em> a physics course ($9$ options): $12 + 9 = 21$ choices.<br>
+    <strong>2.</strong> Travel by train ($5$ departures) <em>or</em> by bus ($7$ departures): $5 + 7 = 12$ ways.<br>
+    <strong>3.</strong> Pick one book from $4$ novels <em>or</em> $6$ biographies: $4 + 6 = 10$.
+  </div>
+
+  <div class="mem-box">
+    If the cases can overlap, do NOT just add — subtract the overlap: $|A \cup B| = |A| + |B| - |A \cap B|$.
+  </div>
+  <span class="slide-number">3 / 23</span>
+</section>
+
+<!-- ══ Slide 4 — Product rule ════════════════════════════════════════ -->
+<section class="slide" id="s4">
+  <h2 class="frame-title">2. Product rule — "THEN / AND" means multiply</h2>
+
+  <div class="rule-box">
+    If a task is a sequence of steps — $m$ ways for step 1, then $n$ ways for step 2 (whatever step 1 was) — the counts <strong>multiply</strong>: $\;N = m \cdot n$.
+  </div>
+
+  <div class="use-box">
+    you build the outcome step by step and every step is free of the previous ones. Keywords: <strong>"then"</strong>, <strong>"and"</strong>, "for each", successive choices.
+  </div>
+
+  <div class="ex-box">
+    <strong>1.</strong> Outfit = shirt ($4$) then pants ($3$): $4 \times 3 = 12$ outfits.<br>
+    <strong>2.</strong> Full menu = starter ($3$) and main ($5$) and dessert ($2$): $3 \times 5 \times 2 = 30$ meals.<br>
+    <strong>3.</strong> $4$-letter lowercase password: $26 \times 26 \times 26 \times 26 = 26^4 = 456{,}976$.
+  </div>
+
+  <div class="mem-box">
+    OR → $+$ &nbsp;&nbsp;|&nbsp;&nbsp; AND/THEN → $\times$. Most problems are a mix: multiply inside each case, add across the cases.
+  </div>
+  <span class="slide-number">4 / 23</span>
+</section>
+
+<!-- ══ Slide 5 — Strings n^k ═════════════════════════════════════════ -->
+<section class="slide" id="s5">
+  <h2 class="frame-title">3. Ordered + repetition allowed → $n^k$</h2>
+
+  <div class="rule-box">
+    Filling $k$ positions, each with any of $n$ symbols, repetition allowed: $\;n^k$ outcomes.
+  </div>
+
+  <div class="use-box">
+    you form <em>codes, PINs, words, bit strings</em> — each slot is independent and symbols may repeat.
+  </div>
+
+  <div class="ex-box">
+    <strong>1.</strong> $4$-digit PIN codes: $10^4 = 10{,}000$.<br>
+    <strong>2.</strong> Binary strings of length $8$: $2^8 = 256$.<br>
+    <strong>3.</strong> License plates of $3$ letters: $26^3 = 17{,}576$.
+  </div>
+
+  <div class="mem-box">
+    "$n$ choices, $k$ times" → $n^k$. It is just the product rule applied $k$ times.
+  </div>
+  <span class="slide-number">5 / 23</span>
+</section>
+
+<!-- ══ Slide 6 — n! ══════════════════════════════════════════════════ -->
+<section class="slide" id="s6">
+  <h2 class="frame-title">4. Arrange ALL $n$ distinct objects → $n!$</h2>
+
+  <div class="rule-box">
+    The number of ways to put $n$ distinct objects in a row is $\;n! = n(n-1)(n-2)\cdots 1$, with $0! = 1$.
+  </div>
+
+  <div class="use-box">
+    <em>everything</em> gets a position: rankings, queues, shelf arrangements, seatings in a row.
+  </div>
+
+  <div class="ex-box">
+    <strong>1.</strong> $9$ athletes finish a race: $9! = 362{,}880$ possible rankings.<br>
+    <strong>2.</strong> $5$ books on a shelf: $5! = 120$ arrangements.<br>
+    <strong>3.</strong> $4$ people in a queue: $4! = 24$ orders.
+  </div>
+
+  <div class="mem-box">
+    First position: $n$ choices, next: $n-1$, … last: $1$. Multiply — that's all $n!$ is.
+  </div>
+  <span class="slide-number">6 / 23</span>
+</section>
+
+<!-- ══ Slide 7 — P(n,k) ══════════════════════════════════════════════ -->
+<section class="slide" id="s7">
+  <h2 class="frame-title">5. Arrange only $k$ of the $n$ → $P(n,k)$</h2>
+
+  <div class="rule-box">
+    Ordered selection of $k$ distinct items out of $n$:
+    $$P(n,k) = n(n-1)\cdots(n-k+1) = \frac{n!}{(n-k)!}.$$
+  </div>
+
+  <div class="use-box">
+    only $k$ "seats" exist and the seats are <em>different</em>: podiums, ranked lists, distinct offices/roles.
+  </div>
+
+  <div class="ex-box">
+    <strong>1.</strong> Gold–silver–bronze among $9$ athletes: $P(9,3) = 9 \cdot 8 \cdot 7 = 504$.<br>
+    <strong>2.</strong> President, secretary, treasurer from $10$ people: $P(10,3) = 10 \cdot 9 \cdot 8 = 720$.<br>
+    <strong>3.</strong> $4$-letter words from $7$ distinct letters, no repeats: $P(7,4) = 7 \cdot 6 \cdot 5 \cdot 4 = 840$.
+  </div>
+
+  <div class="mem-box">
+    Start at $n$ and multiply $k$ decreasing factors. $P(n,n) = n!$ — arranging everybody is the special case.
+  </div>
+  <span class="slide-number">7 / 23</span>
+</section>
+
+<!-- ══ Slide 8 — Anagrams ════════════════════════════════════════════ -->
+<section class="slide" id="s8">
+  <h2 class="frame-title">6. Arrange with REPEATED items → divide by repeats</h2>
+
+  <div class="rule-box">
+    $n$ items where identical copies appear in groups of sizes $n_1, n_2, \dots, n_k$:
+    $$\frac{n!}{n_1!\, n_2! \cdots n_k!} \quad \text{distinct arrangements.}$$
+  </div>
+
+  <div class="use-box">
+    arranging letters of a word with repeated letters, or any lineup containing indistinguishable copies.
+  </div>
+
+  <div class="ex-box">
+    <strong>1.</strong> "BANANA" ($3$ A, $2$ N, $1$ B): $\dfrac{6!}{3!\,2!} = \dfrac{720}{12} = 60$.<br>
+    <strong>2.</strong> "MISSISSIPPI" ($1$ M, $4$ I, $4$ S, $2$ P): $\dfrac{11!}{4!\,4!\,2!} = 34{,}650$.<br>
+    <strong>3.</strong> "BOOKKEEPER" ($2$ O, $2$ K, $3$ E): $\dfrac{10!}{2!\,2!\,3!} = 151{,}200$.
+  </div>
+
+  <div class="mem-box">
+    Pretend everything is distinct ($n!$), then <em>divide</em> by $n_i!$ for each group of clones — they were overcounted.
+  </div>
+  <span class="slide-number">8 / 23</span>
+</section>
+
+<!-- ══ Slide 9 — Circular ════════════════════════════════════════════ -->
+<section class="slide" id="s9">
+  <h2 class="frame-title">7. Arrange around a CIRCLE → $(n-1)!$</h2>
+
+  <div class="rule-box">
+    $n$ distinct objects around a circle (rotations look the same): $\;(n-1)!$ arrangements.
+    If reflections also look the same (e.g. a necklace): $\;(n-1)!/2$ for $n \geq 3$.
+  </div>
+
+  <div class="use-box">
+    round tables, necklaces, keyrings — anything where "rotating everyone one seat" changes nothing.
+  </div>
+
+  <div class="ex-box">
+    <strong>1.</strong> $6$ guests at a round table: $(6-1)! = 5! = 120$.<br>
+    <strong>2.</strong> $8$ keys on a keyring (rotations <em>and</em> flips equal): $\dfrac{7!}{2} = 2{,}520$.
+  </div>
+
+  <div class="mem-box">
+    Fix one person as an anchor — only the other $n-1$ really choose a seat.
+  </div>
+  <span class="slide-number">9 / 23</span>
+</section>
+
+<!-- ══ Slide 10 — C(n,k) ═════════════════════════════════════════════ -->
+<section class="slide" id="s10">
+  <h2 class="frame-title">8. Choose a SUBSET (order ignored) → $\binom{n}{k}$</h2>
+
+  <div class="rule-box">
+    Unordered selection of $k$ items out of $n$:
+    $$\binom{n}{k} = \frac{n!}{k!\,(n-k)!} = \frac{P(n,k)}{k!}.$$
+  </div>
+
+  <div class="use-box">
+    you pick a <em>group</em> and nobody inside it has a special role: teams, hands of cards, lottery tickets, pizza toppings.
+  </div>
+
+  <div class="ex-box">
+    <strong>1.</strong> Team of $5$ from $12$ players: $\binom{12}{5} = 792$.<br>
+    <strong>2.</strong> $3$ pizza toppings out of $8$: $\binom{8}{3} = 56$.<br>
+    <strong>3.</strong> Lottery: $6$ numbers out of $49$: $\binom{49}{6} = 13{,}983{,}816$.
+  </div>
+
+  <div class="mem-box">
+    Combination = permutation with the order "erased": divide $P(n,k)$ by the $k!$ orderings of the chosen group.
+  </div>
+  <span class="slide-number">10 / 23</span>
+</section>
+
+<!-- ══ Slide 11 — Stars and bars ═════════════════════════════════════ -->
+<section class="slide" id="s11">
+  <h2 class="frame-title">9. Choose with REPETITION (order ignored) → stars &amp; bars</h2>
+
+  <div class="rule-box">
+    Number of ways to pick $k$ items from $n$ types, repetition allowed — equivalently, solutions of $x_1 + x_2 + \cdots + x_n = k$ in non-negative integers:
+    $$\binom{n+k-1}{k}.$$
+  </div>
+
+  <div class="use-box">
+    distributing <em>identical</em> objects into <em>distinct</em> boxes, or shopping where flavours can repeat. Keywords: "identical", "any number of each".
+  </div>
+
+  <div class="ex-box">
+    <strong>1.</strong> $10$ identical candies for $4$ children: $\binom{4+10-1}{10} = \binom{13}{10} = 286$.<br>
+    <strong>2.</strong> A dozen donuts from $5$ flavours: $\binom{5+12-1}{12} = \binom{16}{12} = 1{,}820$.<br>
+    <strong>3.</strong> Solutions of $x_1 + x_2 + x_3 = 7$, $x_i \geq 0$: $\binom{3+7-1}{7} = \binom{9}{7} = \binom{9}{2} = 36$.
+  </div>
+
+  <div class="mem-box">
+    Draw $k$ stars (the items) and $n-1$ bars (the walls between types): $\star\star|\,|\star\star \;\to\; (2,0,2)$. Choose where the stars go among $n+k-1$ slots.
+  </div>
+  <span class="slide-number">11 / 23</span>
+</section>
+
+<!-- ══ Slide 12 — Mixed constraints ══════════════════════════════════ -->
+<section class="slide" id="s12">
+  <h2 class="frame-title">10. "Exactly … of each kind" → choose per group, multiply</h2>
+
+  <div class="rule-box">
+    To build a selection with quotas from several categories: choose inside each category separately with $\binom{\cdot}{\cdot}$, then <strong>multiply</strong> the counts (product rule).
+  </div>
+
+  <div class="use-box">
+    the problem says <strong>"exactly $a$ of type X and $b$ of type Y"</strong> — committees with quotas, card hands with fixed ranks.
+  </div>
+
+  <div class="ex-box">
+    <strong>1.</strong> Team of $5$: exactly $2$ Swiss (of $4$), $2$ Ethiopians (of $5$), $1$ Brazilian (of $3$):
+    $\binom{4}{2}\binom{5}{2}\binom{3}{1} = 6 \cdot 10 \cdot 3 = 180$.<br>
+    <strong>2.</strong> Committee of $3$ men (of $6$) and $2$ women (of $7$): $\binom{6}{3}\binom{7}{2} = 20 \cdot 21 = 420$.<br>
+    <strong>3.</strong> $5$-card hands with exactly $2$ aces: $\binom{4}{2}\binom{48}{3} = 6 \cdot 17{,}296 = 103{,}776$.
+  </div>
+
+  <div class="mem-box">
+    "Exactly" → split into groups, choose, multiply. "At least / at most" → add the "exactly" cases, or count the complement.
+  </div>
+  <span class="slide-number">12 / 23</span>
+</section>
+
+<!-- ══ Slide 13 — Binomial theorem ═══════════════════════════════════ -->
+<section class="slide" id="s13">
+  <h2 class="frame-title">11. Binomial theorem — read coefficients directly</h2>
+
+  <div class="rule-box">
+    $$(x+y)^n = \sum_{k=0}^{n} \binom{n}{k} x^{n-k} y^{k}.$$
+    The coefficient of $x^{n-k}y^k$ is $\binom{n}{k}$ — no expansion needed.
+  </div>
+
+  <div class="use-box">
+    asked for <em>one coefficient</em> of a power of a binomial. If the binomial has constants inside, keep their powers!
+  </div>
+
+  <div class="ex-box">
+    <strong>1.</strong> Coefficient of $x^3y^4$ in $(x+y)^7$: $\binom{7}{4} = 35$.<br>
+    <strong>2.</strong> Coefficient of $x^5$ in $(2+x)^9$: $\binom{9}{5}\,2^{9-5} = 126 \cdot 16 = 2{,}016$.<br>
+    <strong>3.</strong> Coefficient of $x^2$ in $(3x-2)^5$: $\binom{5}{2}(3)^2(-2)^3 = 10 \cdot 9 \cdot (-8) = -720$.
+  </div>
+
+  <div class="mem-box">
+    Template: term $= \binom{n}{k} (\text{first})^{n-k} (\text{second})^{k}$. Match the power of $x$ you need, then plug in.
+  </div>
+  <span class="slide-number">13 / 23</span>
+</section>
+
+<!-- ══ Slide 14 — Symmetry ═══════════════════════════════════════════ -->
+<section class="slide" id="s14">
+  <h2 class="frame-title">12. Symmetry — $\binom{n}{k} = \binom{n}{n-k}$</h2>
+
+  <div class="rule-box">
+    $$\binom{n}{k} = \binom{n}{n-k}.$$ Choosing $k$ to keep = choosing $n-k$ to throw away.
+  </div>
+
+  <div class="use-box">
+    $k$ is close to $n$ — flip it to a small number and compute in one line.
+  </div>
+
+  <div class="ex-box">
+    <strong>1.</strong> $\binom{100}{98} = \binom{100}{2} = \dfrac{100 \cdot 99}{2} = 4{,}950$.<br>
+    <strong>2.</strong> $\binom{20}{13} = \binom{20}{7} = 77{,}520$.<br>
+    <strong>3.</strong> $\binom{50}{49} = \binom{50}{1} = 50$.
+  </div>
+
+  <div class="mem-box">
+    Always shrink $k$: never compute $\binom{n}{k}$ with $k &gt; n/2$ by hand.
+  </div>
+  <span class="slide-number">14 / 23</span>
+</section>
+
+<!-- ══ Slide 15 — Pascal ═════════════════════════════════════════════ -->
+<section class="slide" id="s15">
+  <h2 class="frame-title">13. Pascal — split on one special element</h2>
+
+  <div class="rule-box">
+    $$\binom{n}{k} = \binom{n-1}{k-1} + \binom{n-1}{k}.$$
+    (selections <em>containing</em> a fixed item) $+$ (selections <em>without</em> it).
+  </div>
+
+  <div class="use-box">
+    one element is special ("my favourite stock", "the captain") — split total count into <em>with it</em> / <em>without it</em>. Also: build Pascal's triangle row by row.
+  </div>
+
+  <div class="ex-box">
+    <strong>1.</strong> Portfolios of $8$ stocks out of $20$: total $\binom{20}{8} = 125{,}970$; containing the favourite: $\binom{19}{7} = 50{,}388$; avoiding it: $\binom{19}{8} = 75{,}582$. Check: $50{,}388 + 75{,}582 = 125{,}970$. ✓<br>
+    <strong>2.</strong> Row $5$ of Pascal's triangle from row $4$ ($1,4,6,4,1$): $1,\;1{+}4,\;4{+}6,\;6{+}4,\;4{+}1,\;1 = 1,5,10,10,5,1$.<br>
+    <strong>3.</strong> Teams of $5$ from $12$ that include the captain: $\binom{11}{4} = 330$; that exclude her: $\binom{11}{5} = 462$; total $792 = \binom{12}{5}$. ✓
+  </div>
+
+  <div class="mem-box">
+    "With or without the special one" — the most useful splitting trick in counting.
+  </div>
+  <span class="slide-number">15 / 23</span>
+</section>
+
+<!-- ══ Slide 16 — Absorption ═════════════════════════════════════════ -->
+<section class="slide" id="s16">
+  <h2 class="frame-title">14. Absorption — $k\binom{n}{k} = n\binom{n-1}{k-1}$</h2>
+
+  <div class="rule-box">
+    $$k\binom{n}{k} = n\binom{n-1}{k-1} \qquad\Longleftrightarrow\qquad \binom{n}{k} = \frac{n}{k}\binom{n-1}{k-1}.$$
+  </div>
+
+  <div class="use-box">
+    a stray factor $k$ multiplies a binomial (typical in sums), or you want to compute $\binom{n}{k}$ recursively. Story: "committee of $k$ with one chair" counted two ways.
+  </div>
+
+  <div class="ex-box">
+    <strong>1.</strong> Committees of $4$ from $10$ people, with a chair: $4\binom{10}{4} = 4 \cdot 210 = 840$, or chair first: $10\binom{9}{3} = 10 \cdot 84 = 840$. Same. ✓<br>
+    <strong>2.</strong> Compute along a row: $\binom{10}{3} = \frac{10}{3}\binom{9}{2} = \frac{10}{3}\cdot 36 = 120$.<br>
+    <strong>3.</strong> Simplify $\sum_k k\binom{n}{k}$: absorb $k$ to get $n\sum_k \binom{n-1}{k-1} = n\,2^{n-1}$ — one line (see slide 18).
+  </div>
+
+  <div class="mem-box">
+    The $k$ gets "absorbed" into the binomial, leaving a clean $n$ outside.
+  </div>
+  <span class="slide-number">16 / 23</span>
+</section>
+
+<!-- ══ Slide 17 — Plug-in trick ══════════════════════════════════════ -->
+<section class="slide" id="s17">
+  <h2 class="frame-title">15. The plug-in trick — substitute values in $(x+y)^n$</h2>
+
+  <div class="rule-box">
+    Choose $x, y$ in the binomial theorem to evaluate sums:
+    $$x{=}y{=}1:\;\sum_k \binom{n}{k} = 2^n \qquad x{=}-1,y{=}1:\;\sum_k (-1)^k\binom{n}{k} = 0 \qquad x{=}2,y{=}1:\;\sum_k 2^k\binom{n}{k} = 3^n$$
+  </div>
+
+  <div class="use-box">
+    a sum runs over <em>all</em> $k$ with powers of a constant times $\binom{n}{k}$ — recognise $(x+y)^n$ in disguise. In general $\sum_k a^k \binom{n}{k} = (1+a)^n$.
+  </div>
+
+  <div class="ex-box">
+    <strong>1.</strong> Number of subsets of $8$ pizza toppings (any size): $2^8 = 256$.<br>
+    <strong>2.</strong> Even-size subsets = odd-size subsets $= 2^{n-1}$. For $n=4$: $\binom{4}{0}+\binom{4}{2}+\binom{4}{4} = 1+6+1 = 8 = 2^3$. ✓<br>
+    <strong>3.</strong> $\sum_{k=0}^{5} 2^k \binom{5}{k} = 3^5 = 243$.
+  </div>
+
+  <div class="mem-box">
+    See $\sum (\text{const})^k \binom{n}{k}$? Don't compute — <em>plug into</em> $(1+a)^n$.
+  </div>
+  <span class="slide-number">17 / 23</span>
+</section>
+
+<!-- ══ Slide 18 — Derivative trick ═══════════════════════════════════ -->
+<section class="slide" id="s18">
+  <h2 class="frame-title">16. The $k$-weighted sums</h2>
+
+  <div class="rule-box">
+    $$\sum_{k=0}^{n} k\binom{n}{k} = n\,2^{n-1} \qquad\qquad \sum_{k=0}^{n} k^2\binom{n}{k} = n(n+1)\,2^{n-2}.$$
+  </div>
+
+  <div class="use-box">
+    the summand has an extra $k$ or $k^2$. Two routes: absorb the $k$ (slide 14), or differentiate $(1+x)^n = \sum \binom{n}{k}x^k$ and set $x = 1$.
+  </div>
+
+  <div class="ex-box">
+    <strong>1.</strong> $\sum_k k\binom{5}{k} = 5 \cdot 2^4 = 80$. Check by hand: $5 + 20 + 30 + 20 + 5 = 80$. ✓<br>
+    <strong>2.</strong> Average size of a random subset of $\{1,\dots,n\}$: $\dfrac{n\,2^{n-1}}{2^n} = \dfrac{n}{2}$.<br>
+    <strong>3.</strong> $\sum_k k^2\binom{3}{k} = 3 \cdot 4 \cdot 2^1 = 24$. Check: $1{\cdot}3 + 4{\cdot}3 + 9{\cdot}1 = 24$. ✓
+  </div>
+
+  <div class="mem-box">
+    Factor $k$ → answer keeps a factor $n$ and loses one power of $2$. ($k^2$ → loses two.)
+  </div>
+  <span class="slide-number">18 / 23</span>
+</section>
+
+<!-- ══ Slide 19 — Vandermonde ════════════════════════════════════════ -->
+<section class="slide" id="s19">
+  <h2 class="frame-title">17. Vandermonde — two groups, one selection</h2>
+
+  <div class="rule-box">
+    $$\binom{m+n}{r} = \sum_{k=0}^{r} \binom{m}{k}\binom{n}{r-k} \qquad\text{special case } m{=}n{=}r:\quad \sum_{k=0}^{n}\binom{n}{k}^2 = \binom{2n}{n}.$$
+  </div>
+
+  <div class="use-box">
+    a sum of <em>products of two binomials</em> whose lower indices add to a constant — it collapses to a single binomial. Story: choose $r$ from a pool split in two parts.
+  </div>
+
+  <div class="ex-box">
+    <strong>1.</strong> Florist with $15$ roses and $15$ lavenders, bouquets of $10$: $\sum_{k}\binom{15}{k}\binom{15}{10-k} = \binom{30}{10} = 30{,}045{,}015$ — and the "exactly 3 roses" term alone is $\binom{15}{3}\binom{15}{7} = 2{,}927{,}925$.<br>
+    <strong>2.</strong> Committee of $5$ from $6$ men + $7$ women, all gender splits combined: $\binom{13}{5} = 1{,}287$.<br>
+    <strong>3.</strong> $\sum_{k=0}^{5}\binom{5}{k}^2 = 1 + 25 + 100 + 100 + 25 + 1 = 252 = \binom{10}{5}$. ✓
+  </div>
+
+  <div class="mem-box">
+    Product of binomials, lower indices summing to $r$ → merge the two upper indices: $\binom{m+n}{r}$.
+  </div>
+  <span class="slide-number">19 / 23</span>
+</section>
+
+<!-- ══ Slide 20 — Hockey-stick ═══════════════════════════════════════ -->
+<section class="slide" id="s20">
+  <h2 class="frame-title">18. Hockey-stick — sum down a diagonal</h2>
+
+  <div class="rule-box">
+    $$\sum_{i=r}^{n} \binom{i}{r} = \binom{n+1}{r+1}.$$
+  </div>
+
+  <div class="use-box">
+    you sum binomials with <em>constant lower index</em> and growing upper index — a diagonal of Pascal's triangle. The answer sits one step below-and-right: the blade of the stick.
+  </div>
+
+  <div class="ex-box">
+    <strong>1.</strong> $\binom{2}{2}+\binom{3}{2}+\binom{4}{2}+\binom{5}{2}+\binom{6}{2} = 1+3+6+10+15 = 35 = \binom{7}{3}$. ✓<br>
+    <strong>2.</strong> Sum of the first triangular numbers $1+3+6+10 = 20 = \binom{6}{3}$.<br>
+    <strong>3.</strong> $1 + 2 + 3 + \cdots + n = \sum_{i=1}^{n}\binom{i}{1} = \binom{n+1}{2}$ — Gauss's formula for free.
+  </div>
+
+  <div class="mem-box">
+    Same bottom, growing top → result has both indices bumped by one: $\binom{n+1}{r+1}$.
+  </div>
+  <span class="slide-number">20 / 23</span>
+</section>
+
+<!-- ══ Slide 21 — Cheat sheet ════════════════════════════════════════ -->
+<section class="slide" id="s21">
+  <h2 class="frame-title">19. Master cheat-sheet</h2>
+
+  <h3 class="sub-title">Counting tools</h3>
+  <table class="ref-table">
+    <thead><tr><th>You see…</th><th>Use</th><th>Formula</th></tr></thead>
+    <tbody>
+      <tr><td>"or" between disjoint cases</td><td>Sum rule</td><td>$N_A + N_B$</td></tr>
+      <tr><td>"then" / "and" — steps</td><td>Product rule</td><td>$m \cdot n$</td></tr>
+      <tr><td>codes, slots, repetition OK</td><td>Strings</td><td>$n^k$</td></tr>
+      <tr><td>arrange all $n$</td><td>Factorial</td><td>$n!$</td></tr>
+      <tr><td>ranked $k$ of $n$</td><td>$k$-permutation</td><td>$P(n,k) = n!/(n-k)!$</td></tr>
+      <tr><td>word with repeated letters</td><td>Divide by repeats</td><td>$n!/(n_1!\cdots n_k!)$</td></tr>
+      <tr><td>round table</td><td>Circular</td><td>$(n-1)!$</td></tr>
+      <tr><td>team / subset of $k$</td><td>Combination</td><td>$\binom{n}{k}$</td></tr>
+      <tr><td>identical items into boxes</td><td>Stars &amp; bars</td><td>$\binom{n+k-1}{k}$</td></tr>
+      <tr><td>"exactly $a$ of X, $b$ of Y"</td><td>Choose per group</td><td>$\binom{\cdot}{a}\binom{\cdot}{b}\cdots$</td></tr>
+    </tbody>
+  </table>
+
+  <h3 class="sub-title">Binomial identities</h3>
+  <table class="identity-table">
+    <tr><td>Symmetry</td><td>$\binom{n}{k} = \binom{n}{n-k}$ — shrink large $k$.</td></tr>
+    <tr><td>Pascal</td><td>$\binom{n}{k} = \binom{n-1}{k-1} + \binom{n-1}{k}$ — with / without a special element.</td></tr>
+    <tr><td>Absorption</td><td>$k\binom{n}{k} = n\binom{n-1}{k-1}$ — kill a stray factor $k$.</td></tr>
+    <tr><td>Row sum</td><td>$\sum_k \binom{n}{k} = 2^n$ — all subsets.</td></tr>
+    <tr><td>Alternating</td><td>$\sum_k (-1)^k\binom{n}{k} = 0$ — even = odd $= 2^{n-1}$.</td></tr>
+    <tr><td>Plug-in</td><td>$\sum_k a^k\binom{n}{k} = (1+a)^n$ — e.g. $a=2$ gives $3^n$.</td></tr>
+    <tr><td>$k$-weighted</td><td>$\sum_k k\binom{n}{k} = n\,2^{n-1}$; $\;\sum_k k^2\binom{n}{k} = n(n+1)2^{n-2}$.</td></tr>
+    <tr><td>Vandermonde</td><td>$\sum_k \binom{m}{k}\binom{n}{r-k} = \binom{m+n}{r}$ — two pools merge.</td></tr>
+    <tr><td>Squares</td><td>$\sum_k \binom{n}{k}^2 = \binom{2n}{n}$ — Vandermonde with $m{=}n{=}r$.</td></tr>
+    <tr><td>Hockey-stick</td><td>$\sum_{i=r}^{n}\binom{i}{r} = \binom{n+1}{r+1}$ — diagonal sum.</td></tr>
+  </table>
+  <span class="slide-number">21 / 23</span>
+</section>
+
+<!-- ══ Slide 22 — Quiz ═══════════════════════════════════════════════ -->
+<section class="slide" id="s22">
+  <h2 class="frame-title">20. Spot the tool — self-test (click to reveal)</h2>
+
+  <details class="quiz">
+    <summary>1. How many ways to seat $5$ friends around a campfire?</summary>
+    <p>Circular → $(5-1)! = 4! = 24$.</p>
+  </details>
+  <details class="quiz">
+    <summary>2. How many $6$-character passwords from $36$ symbols (repeats allowed)?</summary>
+    <p>Ordered + repetition → $36^6 = 2{,}176{,}782{,}336$.</p>
+  </details>
+  <details class="quiz">
+    <summary>3. How many anagrams of "COFFEE"?</summary>
+    <p>Repeated letters ($2$ F, $2$ E) → $\dfrac{6!}{2!\,2!} = 180$.</p>
+  </details>
+  <details class="quiz">
+    <summary>4. How many ways to give $8$ identical pencils to $3$ kids?</summary>
+    <p>Stars &amp; bars → $\binom{3+8-1}{8} = \binom{10}{8} = \binom{10}{2} = 45$.</p>
+  </details>
+  <details class="quiz">
+    <summary>5. Compute $\sum_{k=0}^{10} 3^k \binom{10}{k}$ without summing.</summary>
+    <p>Plug-in with $a = 3$ → $(1+3)^{10} = 4^{10} = 1{,}048{,}576$.</p>
+  </details>
+  <details class="quiz">
+    <summary>6. Hands of $4$ cards with exactly $1$ king ($52$-card deck)?</summary>
+    <p>Quotas → $\binom{4}{1}\binom{48}{3} = 4 \cdot 17{,}296 = 69{,}184$.</p>
+  </details>
+  <details class="quiz">
+    <summary>7. Simplify $\binom{2}{2}+\binom{3}{2}+\cdots+\binom{9}{2}$.</summary>
+    <p>Hockey-stick → $\binom{10}{3} = 120$.</p>
+  </details>
+  <span class="slide-number">22 / 23</span>
+</section>
+
+<!-- ══ Slide 23 — Python toolbox ═════════════════════════════════════ -->
+<section class="slide" id="s23">
+  <h2 class="frame-title">21. Python toolbox — check any answer in one line</h2>
+
+  <div class="python-block">
+    <span class="pane-label">Python — everything you need</span>
+    <span class="pane-code">from math import factorial, perm, comb
+
+factorial(9)        # 362880      9!  — arrange all
+perm(9, 3)          # 504         P(9,3) — ranked k of n
+comb(12, 5)         # 792         C(12,5) — team of k
+comb(13, 10)        # 286         stars &amp; bars: C(n+k-1, k)
+factorial(11)//(factorial(4)*factorial(4)*factorial(2))   # 34650  MISSISSIPPI
+
+# verify identities numerically
+comb(19, 7) + comb(19, 8) == comb(20, 8)                  # Pascal     → True
+sum(comb(8, k) for k in range(9)) == 2**8                 # row sum    → True
+sum(k * comb(5, k) for k in range(6)) == 5 * 2**4         # k-weighted → True
+sum(comb(5, k)**2 for k in range(6)) == comb(10, 5)       # squares    → True</span>
+  </div>
+
+  <div class="mem-box">
+    Two questions (order? repetition?), one cheat-sheet, and <code>math.comb</code> to verify — that is the whole course.
+  </div>
+
+  <p style="margin-top:1rem;color:#e67e22;font-style:italic;font-weight:600;">Notes By Pr. El Hadiq Zouhair</p>
+  <span class="slide-number">23 / 23</span>
+</section>
+
+<!-- ── Navigation ─────────────────────────────────────────────────── -->
+<div id="nav">
+  <button id="btn-prev"   title="Previous">&#8592;</button>
+  <button id="btn-scroll" title="Toggle slideshow">Slideshow</button>
+  <button id="btn-next"   title="Next">&#8594;</button>
+</div>
+
+<script>
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  let current = 0, slideshowMode = false;
+
+  function enter(i) {
+    slides[current].classList.remove('active');
+    current = (i + slides.length) % slides.length;
+    slides[current].classList.add('active');
+    slides[current].scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  document.getElementById('btn-prev').addEventListener('click', () => {
+    if (slideshowMode) enter(current - 1);
+  });
+  document.getElementById('btn-next').addEventListener('click', () => {
+    if (slideshowMode) enter(current + 1);
+  });
+  document.getElementById('btn-scroll').addEventListener('click', () => {
+    slideshowMode = !slideshowMode;
+    document.body.classList.toggle('slideshow', slideshowMode);
+    document.getElementById('btn-scroll').textContent = slideshowMode ? 'Scroll' : 'Slideshow';
+    if (slideshowMode) slides[current].classList.add('active');
+    else slides.forEach(s => s.classList.remove('active'));
+  });
+
+  document.addEventListener('keydown', e => {
+    if (!slideshowMode) return;
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') enter(current + 1);
+    if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   enter(current - 1);
+  });
+</script>
+</body>
+</html>

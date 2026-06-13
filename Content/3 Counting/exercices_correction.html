@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Exercises with Correction — Counting in Practice</title>
+<script>
+  MathJax = {
+    tex: { inlineMath: [['$','$']], displayMath: [['$$','$$']], processEscapes: true },
+    options: { skipHtmlTags: ['script','noscript','style','textarea'] }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --orange:    #e67e22;
+  --darkblue:  #2c3e50;
+  --lightbg:   #f4f9fc;
+  --border:    #dce3ea;
+  --py-border: #2a6fb3;
+  --sp-border: #27ae60;
+  --out-border:#e0b341;
+  --out-head:  #c89324;
+}
+
+body {
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  background: #e8edf2;
+  color: var(--darkblue);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem 1rem 5rem;
+  gap: 2rem;
+}
+
+.slide {
+  background: #fff;
+  width: 100%;
+  max-width: 940px;
+  border-radius: 10px;
+  box-shadow: 0 4px 18px rgba(0,0,0,.10);
+  padding: 2.2rem 2.8rem 1.8rem;
+  position: relative;
+}
+.slide-number {
+  position: absolute;
+  bottom: 0.7rem;
+  right: 1.2rem;
+  font-size: 0.72rem;
+  color: #aaa;
+}
+
+.slide.title-slide {
+  background: linear-gradient(145deg, #f4f9fc 60%, #e0eef7);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 240px;
+  text-align: center;
+  border-top: 6px solid var(--orange);
+}
+.slide.title-slide h1 { font-size: 1.9rem; color: var(--darkblue); margin-bottom: 0.4rem; }
+.slide.title-slide .subtitle { font-size: 1.15rem; color: #555; }
+
+h2.frame-title {
+  font-size: 1.55rem;
+  color: var(--orange);
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  padding-bottom: 0.35rem;
+  border-bottom: 2px solid #f9e4cc;
+}
+
+p { line-height: 1.7; margin: 0.45rem 0; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.4rem; line-height: 1.8; }
+ul li::marker, ol li::marker { color: var(--orange); }
+code { background: #f0f3f7; color: #1f4e7a; padding: 0 .25em; border-radius: 3px; font-family: 'Consolas','Fira Code',monospace; }
+
+.formula-box {
+  background: #fff7e0; border-left: 4px solid var(--out-border);
+  border-radius: 6px; padding: 0.55rem 1rem; margin: 0.4rem 0 0.9rem; line-height: 1.7;
+}
+.formula-box::before { content: "Formula in play. "; font-weight: 700; color: var(--out-head); }
+
+.exo {
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--py-border);
+  border-radius: 6px;
+  padding: 0.7rem 1rem;
+  margin: 0.7rem 0;
+  line-height: 1.7;
+  background: #fdfdfe;
+}
+.exo .exo-label { font-weight: 700; color: var(--py-border); }
+
+details.corr {
+  margin-top: 0.5rem;
+  background: #e8f5ec;
+  border-left: 4px solid var(--sp-border);
+  border-radius: 6px;
+  padding: 0.5rem 0.9rem;
+}
+details.corr summary {
+  cursor: pointer; font-weight: 700; color: var(--sp-border);
+  line-height: 1.6; list-style-position: inside;
+}
+details.corr p { margin: 0.4rem 0 0.15rem; }
+
+#toolbar {
+  position: fixed; bottom: 1.5rem; right: 1.5rem; display: flex; gap: 0.4rem; z-index: 100;
+}
+#toolbar button {
+  background: var(--orange); color: #fff; border: none;
+  border-radius: 20px; padding: 0 14px; height: 40px;
+  font-size: 0.85rem; cursor: pointer; font-weight: 600;
+  box-shadow: 0 2px 8px rgba(0,0,0,.25); transition: background .2s;
+}
+#toolbar button:hover { background: #cf6d17; }
+</style>
+</head>
+<body>
+
+<!-- ══ Title ══════════════════════════════════════════════════════════ -->
+<section class="slide title-slide">
+  <h1>Exercises with Correction</h1>
+  <p class="subtitle">Counting in Practice — Permutations, Combinations &amp; Binomial Identities</p>
+  <p style="font-size:0.95rem;color:#555;margin-top:0.5rem;">One section per formula of the practical course. Try first, then click <strong>Correction</strong>.</p>
+  <p style="font-size:1rem;color:#e67e22;margin-top:0.8rem;font-style:italic;font-weight:600;letter-spacing:.02em;">Notes By Pr. El Hadiq Zouhair</p>
+  <span class="slide-number">1 / 19</span>
+</section>
+
+<!-- ══ 1. Sum rule ════════════════════════════════════════════════════ -->
+<section class="slide">
+  <h2 class="frame-title">1. Sum rule — "OR" means add</h2>
+  <div class="formula-box">$N = N_A + N_B$ for disjoint cases.</div>
+
+  <div class="exo">
+    <span class="exo-label">Exercise 1.1.</span> A student buys one laptop: $7$ Windows models or $4$ Mac models are available. How many possible choices?
+    <details class="corr"><summary>Correction</summary>
+      <p>The two catalogues are disjoint and exactly one laptop is bought — "or" → add:</p>
+      <p>$7 + 4 = \boxed{11}$ choices.</p>
+    </details>
+  </div>
+
+  <div class="exo">
+    <span class="exo-label">Exercise 1.2.</span> An elective must be picked from $5$ art classes, $6$ music classes or $3$ theater classes. How many options?
+    <details class="corr"><summary>Correction</summary>
+      <p>Three disjoint lists, one pick: $5 + 6 + 3 = \boxed{14}$.</p>
+    </details>
+  </div>
+
+  <div class="exo">
+    <span class="exo-label">Exercise 1.3.</span> To go from Casablanca to Marrakech one can take one of $6$ trains, $8$ buses or $2$ flights. How many ways to make the trip?
+    <details class="corr"><summary>Correction</summary>
+      <p>One trip = one of the disjoint options: $6 + 8 + 2 = \boxed{16}$ ways.</p>
+    </details>
+  </div>
+  <span class="slide-number">2 / 19</span>
+</section>
+
+<!-- ══ 2. Product rule ════════════════════════════════════════════════ -->
+<section class="slide">
+  <h2 class="frame-title">2. Product rule — "THEN / AND" means multiply</h2>
+  <div class="formula-box">$N = m \cdot n$ for sequential independent steps.</div>
+
+  <div class="exo">
+    <span class="exo-label">Exercise 2.1.</span> An outfit is a shirt, a pair of pants and a pair of shoes. With $5$ shirts, $4$ pants and $3$ pairs of shoes, how many outfits?
+    <details class="corr"><summary>Correction</summary>
+      <p>Three successive independent choices — "and" → multiply:</p>
+      <p>$5 \times 4 \times 3 = \boxed{60}$ outfits.</p>
+    </details>
+  </div>
+
+  <div class="exo">
+    <span class="exo-label">Exercise 2.2.</span> A restaurant offers $4$ starters, $6$ mains and $3$ desserts. How many complete meals (one of each)?
+    <details class="corr"><summary>Correction</summary>
+      <p>$4 \times 6 \times 3 = \boxed{72}$ meals.</p>
+    </details>
+  </div>
+
+  <div class="exo">
+    <span class="exo-label">Exercise 2.3.</span> A license plate is $2$ letters followed by $3$ digits. How many plates are possible?
+    <details class="corr"><summary>Correction</summary>
+      <p>Each slot is independent: $26 \times 26 \times 10 \times 10 \times 10 = 26^2 \cdot 10^3 = \boxed{676{,}000}$.</p>
+    </details>
+  </div>
+  <span class="slide-number">3 / 19</span>
+</section>
+
+<!-- ══ 3. Strings n^k ═════════════════════════════════════════════════ -->
+<section class="slide">
+  <h2 class="frame-title">3. Ordered + repetition → $n^k$</h2>
+  <div class="formula-box">$k$ slots, $n$ symbols each, repeats allowed: $n^k$.</div>
+
+  <div class="exo">
+    <span class="exo-label">Exercise 3.1.</span> How many $5$-digit PIN codes exist?
+    <details class="corr"><summary>Correction</summary>
+      <p>$5$ slots, $10$ digits each, repetition allowed: $10^5 = \boxed{100{,}000}$.</p>
+    </details>
+  </div>
+
+  <div class="exo">
+    <span class="exo-label">Exercise 3.2.</span> A true/false test has $10$ questions. How many answer sheets are possible?
+    <details class="corr"><summary>Correction</summary>
+      <p>Each question: $2$ choices, $10$ questions: $2^{10} = \boxed{1{,}024}$.</p>
+    </details>
+  </div>
+
+  <div class="exo">
+    <span class="exo-label">Exercise 3.3.</span> How many words of length $3$ over the alphabet $\{a, b, c, d\}$ (repeats allowed)?
+    <details class="corr"><summary>Correction</summary>
+      <p>$4^3 = \boxed{64}$ words.</p>
+    </details>
+  </div>
+  <span class="slide-number">4 / 19</span>
+</section>
+
+<!-- ══ 4. n! ══════════════════════════════════════════════════════════ -->
+<section class="slide">
+  <h2 class="frame-title">4. Arrange all $n$ → $n!$</h2>
+  <div class="formula-box">$n$ distinct objects in a row: $n!$ arrangements.</div>
+
+  <div class="exo">
+    <span class="exo-label">Exercise 4.1.</span> In how many ways can $6$ students stand in a row for a photo?
+    <details class="corr"><summary>Correction</summary>
+      <p>All $6$ get a position: $6! = \boxed{720}$.</p>
+    </details>
+  </div>
+
+  <div class="exo">
+    <span class="exo-label">Exercise 4.2.</span> How many ways to order $7$ different books on a shelf?
+    <details class="corr"><summary>Correction</summary>
+      <p>$7! = \boxed{5{,}040}$.</p>
+    </details>
+  </div>
+
+  <div class="exo">
+    <span class="exo-label">Exercise 4.3.</span> How many possible final rankings (no ties) in a race of $8$ athletes?
+    <details class="corr"><summary>Correction</summary>
+      <p>A ranking is an arrangement of all $8$: $8! = \boxed{40{,}320}$.</p>
+    </details>
+  </div>
+  <span class="slide-number">5 / 19</span>
+</section>
+
+<!-- ══ 5. P(n,k) ══════════════════════════════════════════════════════ -->
+<section class="slide">
+  <h2 class="frame-title">5. Ranked $k$ of $n$ → $P(n,k)$</h2>
+  <div class="formula-box">$P(n,k) = n(n-1)\cdots(n-k+1) = \dfrac{n!}{(n-k)!}$.</div>
+
+  <div class="exo">
+    <span class="exo-label">Exercise 5.1.</span> How many possible podiums (gold, silver, bronze) in a race of $12$ runners?
+    <details class="corr"><summary>Correction</summary>
+      <p>$3$ distinct "seats", order matters, no repetition:</p>
+      <p>$P(12,3) = 12 \cdot 11 \cdot 10 = \boxed{1{,}320}$.</p>
+    </details>
+  </div>
+
+  <div class="exo">
+    <span class="exo-label">Exercise 5.2.</span> A club of $15$ members elects a president and a vice-president (different people). How many outcomes?
+    <details class="corr"><summary>Correction</summary>
+      <p>$P(15,2) = 15 \cdot 14 = \boxed{210}$.</p>
+    </details>
+  </div>
+
+  <div class="exo">
+    <span class="exo-label">Exercise 5.3.</span> How many $4$-letter codes can be formed from $10$ distinct letters if no letter repeats?
+    <details class="corr"><summary>Correction</summary>
+      <p>$P(10,4) = 10 \cdot 9 \cdot 8 \cdot 7 = \boxed{5{,}040}$.</p>
+    </details>
+  </div>
+  <span class="slide-number">6 / 19</span>
+</section>
+
+<!-- ══ 6. Repeated items ══════════════════════════════════════════════ -->
+<section class="slide">
+  <h2 class="frame-title">6. Arrangements with repeated items → divide by repeats</h2>
+  <div class="formula-box">$\dfrac{n!}{n_1!\,n_2!\cdots n_k!}$ — divide $n!$ by the factorial of each group of clones.</div>
+
+  <div class="exo">
+    <span class="exo-label">Exercise 6.1.</span> How many distinct anagrams of "SUCCESS"?
+    <details class="corr"><summary>Correction</summary>
+      <p>$7$ letters: $3$ S, $2$ C, $1$ U, $1$ E.</p>
+      <p>$\dfrac{7!}{3!\,2!} = \dfrac{5040}{12} = \boxed{420}$.</p>
+    </details>
+  </div>
+
+  <div class="exo">
+    <span class="exo-label">Exercise 6.2.</span> How many distinct anagrams of "ABRACADABRA"?
+    <details class="corr"><summary>Correction</summary>
+      <p>$11$ letters: $5$ A, $2$ B, $2$ R, $1$ C, $1$ D.</p>
+      <p>$\dfrac{11!}{5!\,2!\,2!} = \boxed{83{,}160}$.</p>
+    </details>
+  </div>
+
+  <div class="exo">
+    <span class="exo-label">Exercise 6.3.</span> A signal is a row of $7$ flags: $3$ identical red, $2$ identical blue, $2$ identical green. How many distinct signals?
+    <details class="corr"><summary>Correction</summary>
+      <p>$\dfrac{7!}{3!\,2!\,2!} = \dfrac{5040}{24} = \boxed{210}$.</p>
+    </details>
+  </div>
+  <span class="slide-number">7 / 19</span>
+</section>
+
+<!-- ══ 7. Circular ════════════════════════════════════════════════════ -->
+<section class="slide">
+  <h2 class="frame-title">7. Circular arrangements → $(n-1)!$</h2>
+  <div class="formula-box">Round table: $(n-1)!$. Necklace/keyring (flips equal too): $(n-1)!/2$.</div>
+
+  <div class="exo">
+    <span class="exo-label">Exercise 7.1.</span> In how many ways can $7$ people sit around a round table?
+    <details class="corr"><summary>Correction</summary>
+      <p>Fix one person as anchor; the others choose seats: $(7-1)! = 6! = \boxed{720}$.</p>
+    </details>
+  </div>
+
+  <div class="exo">
+    <span class="exo-label">Exercise 7.2.</span> How many distinct bracelets from $5$ different charms (rotations <em>and</em> reflections identical)?
+    <details class="corr"><summary>Correction</summary>
+      <p>$\dfrac{(5-1)!}{2} = \dfrac{24}{2} = \boxed{12}$.</p>
+    </details>
+  </div>
+
+  <div class="exo">
+    <span class="exo-label">Exercise 7.3.</span> $8$ people sit around a round table, but Amal and Badr insist on sitting together. How many seatings?
+    <details class="corr"><summary>Correction</summary>
+      <p>Glue Amal+Badr into one block → $7$ objects around a circle: $(7-1)! = 720$.</p>
+      <p>The block has $2$ internal orders: $720 \times 2 = \boxed{1{,}440}$.</p>
+    </details>
+  </div>
+  <span class="slide-number">8 / 19</span>
+</section>
+
+<!-- ══ 8. C(n,k) ══════════════════════════════════════════════════════ -->
+<section class="slide">
+  <h2 class="frame-title">8. Subsets → $\binom{n}{k}$</h2>
+  <div class="formula-box">$\dbinom{n}{k} = \dfrac{n!}{k!\,(n-k)!}$ — unordered selection.</div>
+
+  <div class="exo">
+    <span class="exo-label">Exercise 8.1.</span> Choose a committee of $4$ from $15$ students (no roles). How many committees?
+    <details class="corr"><summary>Correction</summary>
+      <p>Group, no order: $\dbinom{15}{4} = \dfrac{15 \cdot 14 \cdot 13 \cdot 12}{4!} = \boxed{1{,}365}$.</p>
+    </details>
+  </div>
+
+  <div class="exo">
+    <span class="exo-label">Exercise 8.2.</span> How many $5$-card hands from a standard $52$-card deck?
+    <details class="corr"><summary>Correction</summary>
+      <p>$\dbinom{52}{5} = \boxed{2{,}598{,}960}$.</p>
+    </details>
+  </div>
+
+  <div class="exo">
+    <span class="exo-label">Exercise 8.3.</span> A pizzeria offers $10$ toppings. How many pizzas with exactly $2$ different toppings?
+    <details class="corr"><summary>Correction</summary>
+      <p>$\dbinom{10}{2} = \dfrac{10 \cdot 9}{2} = \boxed{45}$.</p>
+    </details>
+  </div>
+  <span class="slide-number">9 / 19</span>
+</section>
+
+<!-- ══ 9. Stars & bars ════════════════════════════════════════════════ -->
+<section class="slide">
+  <h2 class="frame-title">9. Repetition, order ignored → stars &amp; bars</h2>
+  <div class="formula-box">$k$ identical items into $n$ types/boxes: $\dbinom{n+k-1}{k}$.</div>
+
+  <div class="exo">
+    <span class="exo-label">Exercise 9.1.</span> Distribute $12$ identical balloons among $3$ children. How many ways?
+    <details class="corr"><summary>Correction</summary>
+      <p>$n = 3$ boxes, $k = 12$ stars: $\dbinom{3+12-1}{12} = \dbinom{14}{12} = \dbinom{14}{2} = \boxed{91}$.</p>
+    </details>
+  </div>
+
+  <div class="exo">
+    <span class="exo-label">Exercise 9.2.</span> How many solutions of $x + y + z + w = 9$ in non-negative integers?
+    <details class="corr"><summary>Correction</summary>
+      <p>$n = 4$ variables, $k = 9$: $\dbinom{4+9-1}{9} = \dbinom{12}{9} = \dbinom{12}{3} = \boxed{220}$.</p>
+    </details>
+  </div>
+
+  <div class="exo">
+    <span class="exo-label">Exercise 9.3.</span> A café sells $4$ types of drinks. In how many ways can a group order $8$ drinks (types may repeat, only quantities matter)?
+    <details class="corr"><summary>Correction</summary>
+      <p>$\dbinom{4+8-1}{8} = \dbinom{11}{8} = \dbinom{11}{3} = \boxed{165}$.</p>
+    </details>
+  </div>
+  <span class="slide-number">10 / 19</span>
+</section>
+
+<!-- ══ 10. Quotas ═════════════════════════════════════════════════════ -->
+<section class="slide">
+  <h2 class="frame-title">10. "Exactly … of each kind" → choose per group, multiply</h2>
+  <div class="formula-box">Quotas: $\dbinom{\cdot}{a}\dbinom{\cdot}{b}\cdots$ — then multiply. "At least" → sum the exact cases.</div>
+
+  <div class="exo">
+    <span class="exo-label">Exercise 10.1.</span> Form a committee of $2$ professors (from $5$) and $3$ students (from $9$). How many committees?
+    <details class="corr"><summary>Correction</summary>
+      <p>$\dbinom{5}{2}\dbinom{9}{3} = 10 \cdot 84 = \boxed{840}$.</p>
+    </details>
+  </div>
+
+  <div class="exo">
+    <span class="exo-label">Exercise 10.2.</span> How many $5$-card hands contain exactly $3$ hearts?
+    <details class="corr"><summary>Correction</summary>
+      <p>$3$ hearts from $13$, then $2$ non-hearts from $39$:</p>
+      <p>$\dbinom{13}{3}\dbinom{39}{2} = 286 \cdot 741 = \boxed{211{,}926}$.</p>
+    </details>
+  </div>
+
+  <div class="exo">
+    <span class="exo-label">Exercise 10.3.</span> A team of $6$ is chosen from $7$ women and $5$ men, with <em>at least</em> $4$ women. How many teams?
+    <details class="corr"><summary>Correction</summary>
+      <p>Split "at least 4" into exact cases $4, 5, 6$ women:</p>
+      <p>$\dbinom{7}{4}\dbinom{5}{2} + \dbinom{7}{5}\dbinom{5}{1} + \dbinom{7}{6}\dbinom{5}{0} = 35 \cdot 10 + 21 \cdot 5 + 7 = 350 + 105 + 7 = \boxed{462}$.</p>
+    </details>
+  </div>
+  <span class="slide-number">11 / 19</span>
+</section>
+
+<!-- ══ 11. Binomial theorem ═══════════════════════════════════════════ -->
+<section class="slide">
+  <h2 class="frame-title">11. Binomial theorem — coefficient extraction</h2>
+  <div class="formula-box">Term of $(a+b)^n$: $\dbinom{n}{k} a^{n-k} b^{k}$ — keep the constants' powers!</div>
+
+  <div class="exo">
+    <span class="exo-label">Exercise 11.1.</span> Find the coefficient of $x^2 y^6$ in $(x+y)^8$.
+    <details class="corr"><summary>Correction</summary>
+      <p>Take $k = 6$ (power of $y$): $\dbinom{8}{6} = \dbinom{8}{2} = \boxed{28}$.</p>
+    </details>
+  </div>
+
+  <div class="exo">
+    <span class="exo-label">Exercise 11.2.</span> Find the coefficient of $x^3$ in $(x+3)^6$.
+    <details class="corr"><summary>Correction</summary>
+      <p>Term: $\dbinom{6}{3} x^3 \cdot 3^{3} = 20 \cdot 27 \, x^3$ → coefficient $\boxed{540}$.</p>
+    </details>
+  </div>
+
+  <div class="exo">
+    <span class="exo-label">Exercise 11.3.</span> Find the coefficient of $x^4$ in $(2x-1)^7$.
+    <details class="corr"><summary>Correction</summary>
+      <p>Term with $x^4$: $\dbinom{7}{4}(2x)^4(-1)^{3} = 35 \cdot 16 \cdot (-1)\,x^4$ → coefficient $\boxed{-560}$.</p>
+      <p>Trap: don't forget $2^4$ from $(2x)^4$ and the sign from $(-1)^3$.</p>
+    </details>
+  </div>
+  <span class="slide-number">12 / 19</span>
+</section>
+
+<!-- ══ 12. Symmetry ═══════════════════════════════════════════════════ -->
+<section class="slide">
+  <h2 class="frame-title">12. Symmetry — $\binom{n}{k} = \binom{n}{n-k}$</h2>
+  <div class="formula-box">Flip a large $k$ to a small one before computing.</div>
+
+  <div class="exo">
+    <span class="exo-label">Exercise 12.1.</span> Compute $\dbinom{60}{58}$ by hand.
+    <details class="corr"><summary>Correction</summary>
+      <p>$\dbinom{60}{58} = \dbinom{60}{2} = \dfrac{60 \cdot 59}{2} = \boxed{1{,}770}$.</p>
+    </details>
+  </div>
+
+  <div class="exo">
+    <span class="exo-label">Exercise 12.2.</span> Compute $\dbinom{25}{22}$ by hand.
+    <details class="corr"><summary>Correction</summary>
+      <p>$\dbinom{25}{22} = \dbinom{25}{3} = \dfrac{25 \cdot 24 \cdot 23}{6} = \boxed{2{,}300}$.</p>
+    </details>
+  </div>
+
+  <div class="exo">
+    <span class="exo-label">Exercise 12.3.</span> Find all $n$ such that $\dbinom{n}{2} = \dbinom{n}{5}$.
+    <details class="corr"><summary>Correction</summary>
+      <p>By symmetry, $\dbinom{n}{2} = \dbinom{n}{n-2}$. Equality with $\dbinom{n}{5}$ forces $n - 2 = 5$, i.e. $\boxed{n = 7}$.</p>
+      <p>Check: $\dbinom{7}{2} = \dbinom{7}{5} = 21$. ✓</p>
+    </details>
+  </div>
+  <span class="slide-number">13 / 19</span>
+</section>
+
+<!-- ══ 13. Pascal ═════════════════════════════════════════════════════ -->
+<section class="slide">
+  <h2 class="frame-title">13. Pascal — with / without a special element</h2>
+  <div class="formula-box">$\dbinom{n}{k} = \dbinom{n-1}{k-1} + \dbinom{n-1}{k}$.</div>
+
+  <div class="exo">
+    <span class="exo-label">Exercise 13.1.</span> Verify Pascal's identity for $n = 15$, $k = 6$.
+    <details class="corr"><summary>Correction</summary>
+      <p>$\dbinom{14}{5} + \dbinom{14}{6} = 2{,}002 + 3{,}003 = 5{,}005 = \dbinom{15}{6}$. ✓</p>
+    </details>
+  </div>
+
+  <div class="exo">
+    <span class="exo-label">Exercise 13.2.</span> Teams of $4$ are chosen from $10$ players, one of whom is the star. How many teams include the star? Exclude her? Check the total.
+    <details class="corr"><summary>Correction</summary>
+      <p>Include: pick the other $3$ from $9$: $\dbinom{9}{3} = 84$.</p>
+      <p>Exclude: pick all $4$ from $9$: $\dbinom{9}{4} = 126$.</p>
+      <p>Total: $84 + 126 = 210 = \dbinom{10}{4}$ — exactly Pascal. ✓</p>
+    </details>
+  </div>
+
+  <div class="exo">
+    <span class="exo-label">Exercise 13.3.</span> Row $5$ of Pascal's triangle is $1, 5, 10, 10, 5, 1$. Build row $6$.
+    <details class="corr"><summary>Correction</summary>
+      <p>Each entry = sum of the two above: $1,\;1{+}5,\;5{+}10,\;10{+}10,\;10{+}5,\;5{+}1,\;1$</p>
+      <p>$\Rightarrow \boxed{1, 6, 15, 20, 15, 6, 1}$.</p>
+    </details>
+  </div>
+  <span class="slide-number">14 / 19</span>
+</section>
+
+<!-- ══ 14. Absorption ═════════════════════════════════════════════════ -->
+<section class="slide">
+  <h2 class="frame-title">14. Absorption — $k\binom{n}{k} = n\binom{n-1}{k-1}$</h2>
+  <div class="formula-box">Kill a stray $k$; or compute via $\dbinom{n}{k} = \frac{n}{k}\dbinom{n-1}{k-1}$.</div>
+
+  <div class="exo">
+    <span class="exo-label">Exercise 14.1.</span> Verify the absorption identity for $n = 8$, $k = 3$.
+    <details class="corr"><summary>Correction</summary>
+      <p>$3\dbinom{8}{3} = 3 \cdot 56 = 168$ and $8\dbinom{7}{2} = 8 \cdot 21 = 168$. ✓</p>
+    </details>
+  </div>
+
+  <div class="exo">
+    <span class="exo-label">Exercise 14.2.</span> Knowing $\dbinom{11}{3} = 165$, compute $\dbinom{12}{4}$ with one multiplication.
+    <details class="corr"><summary>Correction</summary>
+      <p>$\dbinom{12}{4} = \dfrac{12}{4}\dbinom{11}{3} = 3 \cdot 165 = \boxed{495}$.</p>
+    </details>
+  </div>
+
+  <div class="exo">
+    <span class="exo-label">Exercise 14.3.</span> From $12$ people, count the (committee of $5$, chair) pairs in two ways.
+    <details class="corr"><summary>Correction</summary>
+      <p>Committee first: $\dbinom{12}{5} \cdot 5 = 792 \cdot 5 = 3{,}960$.</p>
+      <p>Chair first: $12 \cdot \dbinom{11}{4} = 12 \cdot 330 = 3{,}960$. Same count — that <em>is</em> absorption. ✓</p>
+    </details>
+  </div>
+  <span class="slide-number">15 / 19</span>
+</section>
+
+<!-- ══ 15. Plug-in ════════════════════════════════════════════════════ -->
+<section class="slide">
+  <h2 class="frame-title">15. Plug-in trick — $\sum_k a^k \binom{n}{k} = (1+a)^n$</h2>
+  <div class="formula-box">$a{=}1$: $2^n$ &nbsp;|&nbsp; $a{=}-1$: $0$ &nbsp;|&nbsp; $a{=}2$: $3^n$ …</div>
+
+  <div class="exo">
+    <span class="exo-label">Exercise 15.1.</span> How many subsets (of any size) does a set of $10$ elements have?
+    <details class="corr"><summary>Correction</summary>
+      <p>$\sum_{k=0}^{10}\dbinom{10}{k} = 2^{10} = \boxed{1{,}024}$.</p>
+    </details>
+  </div>
+
+  <div class="exo">
+    <span class="exo-label">Exercise 15.2.</span> How many subsets of a $7$-element set have even size?
+    <details class="corr"><summary>Correction</summary>
+      <p>Alternating sum $= 0$ → even-size and odd-size subsets are equal in number, each $2^{7-1} = 2^6 = \boxed{64}$.</p>
+    </details>
+  </div>
+
+  <div class="exo">
+    <span class="exo-label">Exercise 15.3.</span> Compute $\displaystyle\sum_{k=0}^{6} 4^k \binom{6}{k}$ without summing term by term.
+    <details class="corr"><summary>Correction</summary>
+      <p>Plug $a = 4$: $(1+4)^6 = 5^6 = \boxed{15{,}625}$.</p>
+    </details>
+  </div>
+  <span class="slide-number">16 / 19</span>
+</section>
+
+<!-- ══ 16. k-weighted ═════════════════════════════════════════════════ -->
+<section class="slide">
+  <h2 class="frame-title">16. $k$-weighted sums</h2>
+  <div class="formula-box">$\sum_k k\binom{n}{k} = n\,2^{n-1}$ &nbsp;|&nbsp; $\sum_k k^2\binom{n}{k} = n(n+1)\,2^{n-2}$.</div>
+
+  <div class="exo">
+    <span class="exo-label">Exercise 16.1.</span> Compute $\displaystyle\sum_{k=0}^{6} k\binom{6}{k}$.
+    <details class="corr"><summary>Correction</summary>
+      <p>$n\,2^{n-1} = 6 \cdot 2^5 = \boxed{192}$.</p>
+    </details>
+  </div>
+
+  <div class="exo">
+    <span class="exo-label">Exercise 16.2.</span> Compute $\displaystyle\sum_{k=0}^{4} k^2\binom{4}{k}$ and check by hand.
+    <details class="corr"><summary>Correction</summary>
+      <p>Formula: $4 \cdot 5 \cdot 2^{2} = \boxed{80}$.</p>
+      <p>Hand check: $1{\cdot}4 + 4{\cdot}6 + 9{\cdot}4 + 16{\cdot}1 = 4 + 24 + 36 + 16 = 80$. ✓</p>
+    </details>
+  </div>
+
+  <div class="exo">
+    <span class="exo-label">Exercise 16.3.</span> Over all committees (any size) formed from $8$ people, what is the average committee size?
+    <details class="corr"><summary>Correction</summary>
+      <p>Total of sizes: $\sum_k k\binom{8}{k} = 8 \cdot 2^7$. Number of committees: $2^8$.</p>
+      <p>Average: $\dfrac{8 \cdot 2^7}{2^8} = \dfrac{8}{2} = \boxed{4}$.</p>
+    </details>
+  </div>
+  <span class="slide-number">17 / 19</span>
+</section>
+
+<!-- ══ 17. Vandermonde ════════════════════════════════════════════════ -->
+<section class="slide">
+  <h2 class="frame-title">17. Vandermonde — $\sum_k \binom{m}{k}\binom{n}{r-k} = \binom{m+n}{r}$</h2>
+  <div class="formula-box">Two pools merge; special case $\sum_k \binom{n}{k}^2 = \binom{2n}{n}$.</div>
+
+  <div class="exo">
+    <span class="exo-label">Exercise 17.1.</span> Compute $\displaystyle\sum_{k=0}^{5} \binom{10}{k}\binom{8}{5-k}$.
+    <details class="corr"><summary>Correction</summary>
+      <p>Vandermonde with $m = 10$, $n = 8$, $r = 5$: $\dbinom{18}{5} = \boxed{8{,}568}$.</p>
+    </details>
+  </div>
+
+  <div class="exo">
+    <span class="exo-label">Exercise 17.2.</span> Compute $\displaystyle\sum_{k=0}^{6} \binom{6}{k}^2$.
+    <details class="corr"><summary>Correction</summary>
+      <p>Sum of squares: $\dbinom{12}{6} = \boxed{924}$.</p>
+    </details>
+  </div>
+
+  <div class="exo">
+    <span class="exo-label">Exercise 17.3.</span> A bookshop has $9$ novels and $7$ comics. (a) How many ways to buy $4$ books? (b) With exactly $2$ novels?
+    <details class="corr"><summary>Correction</summary>
+      <p>(a) One merged pool: $\dbinom{16}{4} = \boxed{1{,}820}$ — this is $\sum_k \binom{9}{k}\binom{7}{4-k}$ collapsed by Vandermonde.</p>
+      <p>(b) The single term $k = 2$: $\dbinom{9}{2}\dbinom{7}{2} = 36 \cdot 21 = \boxed{756}$.</p>
+    </details>
+  </div>
+  <span class="slide-number">18 / 19</span>
+</section>
+
+<!-- ══ 18. Hockey-stick ═══════════════════════════════════════════════ -->
+<section class="slide">
+  <h2 class="frame-title">18. Hockey-stick — $\sum_{i=r}^{n}\binom{i}{r} = \binom{n+1}{r+1}$</h2>
+  <div class="formula-box">Constant lower index, growing upper index → bump both indices of the result.</div>
+
+  <div class="exo">
+    <span class="exo-label">Exercise 18.1.</span> Compute $\dbinom{3}{3}+\dbinom{4}{3}+\dbinom{5}{3}+\dbinom{6}{3}+\dbinom{7}{3}+\dbinom{8}{3}$.
+    <details class="corr"><summary>Correction</summary>
+      <p>Hockey-stick with $r = 3$, $n = 8$: $\dbinom{9}{4} = \boxed{126}$.</p>
+    </details>
+  </div>
+
+  <div class="exo">
+    <span class="exo-label">Exercise 18.2.</span> Compute $1 + 2 + 3 + \cdots + 50$ with a binomial.
+    <details class="corr"><summary>Correction</summary>
+      <p>$\sum_{i=1}^{50} i = \sum_{i=1}^{50}\dbinom{i}{1} = \dbinom{51}{2} = \dfrac{51 \cdot 50}{2} = \boxed{1{,}275}$.</p>
+    </details>
+  </div>
+
+  <div class="exo">
+    <span class="exo-label">Exercise 18.3.</span> The triangular numbers are $T_i = \binom{i+1}{2}$: $1, 3, 6, 10, \dots$ Compute $T_1 + T_2 + \cdots + T_6$.
+    <details class="corr"><summary>Correction</summary>
+      <p>$\sum_{i=2}^{7}\dbinom{i}{2} = \dbinom{8}{3} = \boxed{56}$.</p>
+      <p>Check: $1+3+6+10+15+21 = 56$. ✓</p>
+    </details>
+  </div>
+  <span class="slide-number">19 / 19</span>
+</section>
+
+<!-- ── Toolbar ────────────────────────────────────────────────────── -->
+<div id="toolbar">
+  <button id="btn-show">Show all corrections</button>
+  <button id="btn-hide">Hide all</button>
+</div>
+
+<script>
+  const all = document.querySelectorAll('details.corr');
+  document.getElementById('btn-show').addEventListener('click', () => all.forEach(d => d.open = true));
+  document.getElementById('btn-hide').addEventListener('click', () => all.forEach(d => d.open = false));
+</script>
+</body>
+</html>

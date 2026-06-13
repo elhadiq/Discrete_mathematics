@@ -290,7 +290,7 @@ body {
   <div class="label">DMath</div>
   <h1>Discrete Mathematics</h1>
   <p class="sub">Logic · Sets · Proofs · Counting · Graphs</p>
-  <p class="v2-banner">📚 8 <strong>Full Courses (v2)</strong> available — every notion defined, every theorem proved</p>
+  <p class="v2-banner">📚 10 <strong>Full Courses (v2)</strong> available — every notion defined, every theorem proved</p>
   <div class="team">
     <div class="prof">Pr. Zouhair El Hadiq <span>· Co-instructor</span></div>
     <div class="prof">Pr. Ismail Bouishak <span>· Co-instructor</span></div>
@@ -360,7 +360,7 @@ body {
         <div class="seq-weeks">Proof Techniques · Induction · Recursion</div>
       </div>
       <div class="seq-footer">
-        <span class="count">1 combined lesson</span><span class="v2-tag">v2</span>
+        <span class="count">2 combined lessons</span><span class="v2-tag">2 v2</span>
         <span class="chevron">▸</span>
       </div>
     </div>
@@ -378,27 +378,16 @@ body {
       </div>
     </div>
 
-    <!-- Session 5 · Coming soon -->
-    <div class="session coming">
+    <!-- Session 5 · Graphs, Trees & Binary Trees -->
+    <div class="session" data-target="panel-graphs">
       <div class="seq-head">
-        <div class="seq-num">Session 5 · Weeks 13–14</div>
-        <div class="seq-name">Graphs — Part 1</div>
-        <div class="seq-weeks">Vertices · Edges · Special Graphs</div>
+        <div class="seq-num">Session 5 · Weeks 13–16</div>
+        <div class="seq-name">Graphs, Trees &amp; Binary Trees</div>
+        <div class="seq-weeks">Vertices · Edges · BFS/DFS · Dijkstra · MST · Trees · BST · Heap</div>
       </div>
       <div class="seq-footer">
-        <span class="coming-tag">Coming soon</span>
-      </div>
-    </div>
-
-    <!-- Session 6 · Coming soon -->
-    <div class="session coming">
-      <div class="seq-head">
-        <div class="seq-num">Session 6 · Weeks 15–16</div>
-        <div class="seq-name">Graphs — Part 2</div>
-        <div class="seq-weeks">Isomorphism · Routing · Shortest Paths</div>
-      </div>
-      <div class="seq-footer">
-        <span class="coming-tag">Coming soon</span>
+        <span class="count">1 course · 3 labs</span><span class="v2-tag">v2</span>
+        <span class="chevron">▸</span>
       </div>
     </div>
 
@@ -540,6 +529,16 @@ body {
         </div>
       </div>
 
+      <div class="lesson-card">
+        <div class="l-num">Lessons 2 + 3</div>
+        <div class="l-name">Induction &amp; Recursive Definitions — Combined</div>
+        <div class="l-links">
+          <a class="full" href="Content/5%20Proofs%20and%20Recursions/2%20Mathematical%20Induction/Lesson/induction_and_recursion_v2.html" title="Combined full course rich in examples — induction (12 worked examples), recursive functions, recurrences, Binet, Hanoi, structural induction, fractals, master theorem">📚 Full Course (combined, rich examples)</a>
+          <a class="lecture" href="Content/5%20Proofs%20and%20Recursions/2%20Mathematical%20Induction/Lesson/presentation_simple.html" title="1h30 in-class presentation — 10 slides with built-in timer">🎬 1h30 Slides (HTML)</a>
+          <a class="optional" href="Content/5%20Proofs%20and%20Recursions/2%20Mathematical%20Induction/Lesson/presentation_induction_recursion.qmd" title="Quarto RevealJS source — render with: quarto render presentation_induction_recursion.qmd">📑 Quarto Source (.qmd)</a>
+        </div>
+      </div>
+
     </div>
   </div>
 
@@ -567,6 +566,48 @@ body {
           <a href="Content/3%20Counting/Binomial%20Identities/Lesson/exercises_binomial_identities_enonces.html" title="8 exercises — 4 Python labs + 4 math problems (no solutions)">✏️ Exercises</a>
           <a class="lecture" href="Content/3%20Counting/Binomial%20Identities/Lesson/exercises_binomial_identities.html" title="Same 8 exercises with detailed solutions">✅ Solutions</a>
           <a class="xml" href="Content/3%20Counting/Binomial%20Identities/Lesson/exercises_binomial_identities.xml" title="Moodle quiz XML — 4 CodeRunner Python labs + 4 STACK math exercises">📦 Moodle XML (8)</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Panel: Graphs, Trees & Binary Trees -->
+  <div class="course-panel" id="panel-graphs">
+    <div class="panel-title">🌳 Session 5 · Graphs, Trees &amp; Binary Trees — full course + 3 Python labs</div>
+    <div class="lesson-grid">
+
+      <div class="lesson-card">
+        <div class="l-num">Combined Course</div>
+        <div class="l-name">Graphs, Trees &amp; Binary Trees</div>
+        <div class="l-links">
+          <a class="full" href="Content/Graphs/Lesson/graphs_trees_v2.html" title="Combined full course — graphs as dict, binary trees as [a,L,R] lists, BFS/DFS/Dijkstra/Kruskal/Prim, BST, heap, all proved and implemented in Python">📚 Full Course (Graphs + Trees + Binary Trees)</a>
+        </div>
+      </div>
+
+      <div class="lesson-card">
+        <div class="l-num">Lab 1</div>
+        <div class="l-name">Graphs in Python</div>
+        <div class="l-links">
+          <a class="lecture" href="Content/Graphs/Labs/Lab1_Graphs_student.html" title="Static lab handout — build a graph library from scratch: degrees, BFS, DFS, components, cycles, 2-coloring, greedy coloring">📖 Lab (HTML)</a>
+          <a href="Content/Graphs/Labs/Lab1_Graphs_student.ipynb" title="Student notebook with TODO stubs">📓 Notebook</a>
+        </div>
+      </div>
+
+      <div class="lesson-card">
+        <div class="l-num">Lab 2</div>
+        <div class="l-name">Trees &amp; Binary Trees in Python</div>
+        <div class="l-links">
+          <a class="lecture" href="Content/Graphs/Labs/Lab2_Trees_BinaryTrees_student.html" title="Static lab handout — size/height/leaves, traversals, rebuild from traversals, BST, expression trees, tree-as-graph">📖 Lab (HTML)</a>
+          <a href="Content/Graphs/Labs/Lab2_Trees_BinaryTrees_student.ipynb" title="Student notebook with TODO stubs">📓 Notebook</a>
+        </div>
+      </div>
+
+      <div class="lesson-card">
+        <div class="l-num">★ Project</div>
+        <div class="l-name">3-SAT as a Graph-Coloring Problem</div>
+        <div class="l-links">
+          <a class="optional" href="Content/Graphs/Labs/Project_3SAT_Coloring_student.html" title="Standalone guided project — reduce Boolean satisfiability to graph 3-coloring: variable/clause gadgets, backtracking 3-coloring solver, decode the assignment">🧪 Project (HTML)</a>
         </div>
       </div>
 

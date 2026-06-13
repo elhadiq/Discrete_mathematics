@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Induction &amp; Recursive Definitions — 1h30 Presentation</title>
+<script>
+  MathJax = {
+    tex: { inlineMath: [['$','$']], displayMath: [['$$','$$']], processEscapes: true },
+    options: { skipHtmlTags: ['script','noscript','style','textarea'] }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --orange:    #e67e22;
+  --darkblue:  #2c3e50;
+  --lightbg:   #f4f9fc;
+  --border:    #dce3ea;
+  --bg:        #1a1a2e;
+  --slide-bg:  #fff;
+  --py-fg:     #1f4e7a;
+  --py-bg:     #eaf3fb;
+  --py-border: #2a6fb3;
+  --py-head:   #2a6fb3;
+  --sp-fg:     #1e824c;
+  --sp-bg:     #e8f5ec;
+  --sp-border: #27ae60;
+  --sp-head:   #27ae60;
+  --out-fg:    #6e4b0a;
+  --out-bg:    #fff7e0;
+  --out-border:#e0b341;
+  --out-head:  #c89324;
+}
+
+html, body { height: 100%; overflow: hidden; }
+body {
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--darkblue);
+}
+
+/* ── Slide container — full-screen 16:9 ─────────────────────────────── */
+.deck { position: relative; width: 100vw; height: 100vh; overflow: hidden; }
+
+.slide {
+  position: absolute;
+  inset: 0;
+  background: var(--slide-bg);
+  padding: 4vh 6vw;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity .25s ease-in-out;
+}
+.slide.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.slide-number {
+  position: absolute;
+  bottom: 1.2vh;
+  right: 2vw;
+  font-size: .85rem;
+  color: #aaa;
+  font-weight: 600;
+}
+.slide-title-tag {
+  position: absolute;
+  top: 1.2vh;
+  left: 2vw;
+  font-size: .75rem;
+  color: var(--orange);
+  font-weight: 800;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+
+/* ── Title slide ────────────────────────────────────────────────────── */
+.title-slide {
+  background: linear-gradient(135deg, #1a1a2e 0%, #2c3e6b 60%, #e67e22 130%);
+  color: #fff;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+.title-slide h1 {
+  font-size: clamp(2rem, 4.2vw, 4rem);
+  font-weight: 800;
+  margin-bottom: 1.5vh;
+}
+.title-slide .subtitle {
+  font-size: clamp(1rem, 2vw, 1.6rem);
+  color: rgba(255,255,255,.85);
+  margin-bottom: 4vh;
+}
+.title-slide .meta {
+  font-size: clamp(.9rem, 1.4vw, 1.2rem);
+  color: rgba(255,255,255,.7);
+}
+.title-slide .author { color: #f0a500; font-style: italic; margin-top: 1.5vh; }
+
+/* ── Section divider slide ──────────────────────────────────────────── */
+.section-slide {
+  background: linear-gradient(135deg, #e67e22 0%, #cf6d17 100%);
+  color: #fff;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+.section-slide .section-num {
+  font-size: clamp(1rem, 1.4vw, 1.3rem);
+  letter-spacing: .25em;
+  text-transform: uppercase;
+  opacity: .8;
+}
+.section-slide h2 {
+  font-size: clamp(2rem, 4vw, 3.5rem);
+  font-weight: 800;
+  margin: 1.5vh 0;
+}
+.section-slide .section-desc {
+  font-size: clamp(1rem, 1.6vw, 1.4rem);
+  opacity: .9;
+}
+
+/* ── Slide headings ─────────────────────────────────────────────────── */
+h2.frame-title {
+  font-size: clamp(1.4rem, 2.6vw, 2.4rem);
+  color: var(--orange);
+  font-weight: 800;
+  margin-bottom: 1.5vh;
+  padding-bottom: .8vh;
+  border-bottom: 3px solid #f9e4cc;
+}
+h3 {
+  font-size: clamp(1.05rem, 1.7vw, 1.4rem);
+  color: var(--orange);
+  font-weight: 700;
+  margin: 1.5vh 0 .5vh;
+}
+p { line-height: 1.55; margin: .5vh 0; font-size: clamp(.95rem, 1.4vw, 1.15rem); }
+ul, ol { margin: .5vh 0 .5vh 2.5vw; line-height: 1.7; font-size: clamp(.92rem, 1.35vw, 1.1rem); }
+ul li::marker, ol li::marker { color: var(--orange); }
+code { background: #f0f3f7; color: #1f4e7a; padding: 0 .3em; border-radius: 3px; font-family: 'Consolas','Fira Code',monospace; font-size: 95%; }
+
+/* ── Boxes (compact for projection) ────────────────────────────────── */
+.def-box, .thm-box, .proof-box, .ex-box, .note-box {
+  border-radius: 6px;
+  padding: 1.2vh 1.4vw;
+  margin: 1vh 0;
+  line-height: 1.55;
+  font-size: clamp(.92rem, 1.35vw, 1.1rem);
+}
+.def-box   { background: #eaf3fb; border-left: 5px solid var(--py-border); }
+.def-box::before  { content: "Definition. "; font-weight: 800; color: var(--py-border); }
+.thm-box   { background: #fff7e0; border-left: 5px solid var(--out-border); }
+.thm-box::before  { content: "Theorem. "; font-weight: 800; color: var(--out-head); }
+.proof-box { background: #f4f9fc; border-left: 5px solid var(--darkblue); }
+.proof-box::before { content: "Proof. "; font-weight: 800; color: var(--darkblue); }
+.ex-box    { background: #e8f5ec; border-left: 5px solid var(--sp-border); }
+.ex-box::before    { content: "Example. "; font-weight: 800; color: var(--sp-border); }
+.note-box  { background: #fff5e8; border-left: 5px solid var(--orange); font-style: italic; }
+
+/* ── Code blocks ───────────────────────────────────────────────────── */
+.python-block {
+  border-radius: 6px;
+  overflow: hidden;
+  margin: 1vh 0;
+  border: 1px solid var(--py-border);
+}
+.python-block .pane-label {
+  display: block;
+  font-size: .7rem;
+  font-weight: 800;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  padding: .4vh 1vw;
+  background: var(--py-head);
+  color: #fff;
+}
+.python-block .pane-code {
+  font-family: 'Consolas','Fira Code', monospace;
+  font-size: clamp(.85rem, 1.2vw, 1rem);
+  line-height: 1.55;
+  padding: .8vh 1vw;
+  white-space: pre;
+  display: block;
+  background: var(--py-bg);
+  color: var(--py-fg);
+  overflow-x: auto;
+}
+
+/* ── Two-column layout ─────────────────────────────────────────────── */
+.cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.6vw;
+  margin: 1vh 0;
+}
+
+/* ── Navigation controls ───────────────────────────────────────────── */
+#nav {
+  position: fixed;
+  bottom: 1.5vh;
+  right: 1.5vw;
+  display: flex;
+  gap: .5vw;
+  z-index: 100;
+}
+#nav button {
+  background: rgba(230,126,34,.92);
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: clamp(36px, 3vw, 50px);
+  height: clamp(36px, 3vw, 50px);
+  font-size: clamp(1rem, 1.3vw, 1.3rem);
+  cursor: pointer;
+  box-shadow: 0 3px 10px rgba(0,0,0,.4);
+  transition: background .2s, transform .15s;
+}
+#nav button:hover { background: var(--orange); transform: scale(1.07); }
+
+#progress {
+  position: fixed;
+  top: 0; left: 0;
+  width: 0;
+  height: 3px;
+  background: var(--orange);
+  z-index: 200;
+  transition: width .25s;
+}
+
+/* ── Timer ─────────────────────────────────────────────────────────── */
+#timer {
+  position: fixed;
+  bottom: 1.5vh;
+  left: 1.5vw;
+  background: rgba(0,0,0,.65);
+  color: #fff;
+  padding: .8vh 1.4vw;
+  border-radius: 8px;
+  font-family: 'Consolas', monospace;
+  font-size: clamp(.85rem, 1.3vw, 1.2rem);
+  font-weight: 700;
+  letter-spacing: .04em;
+  z-index: 100;
+  cursor: pointer;
+  user-select: none;
+}
+#timer.running { background: rgba(39,174,96,.85); }
+#timer.warning { background: rgba(230,126,34,.85); }
+#timer.over    { background: rgba(192,57,90,.85); }
+
+@media print {
+  .slide { position: relative; opacity: 1; visibility: visible; page-break-after: always; height: 100vh; }
+  #nav, #progress, #timer { display: none; }
+}
+</style>
+</head>
+<body>
+
+<div id="progress"></div>
+
+<div class="deck">
+
+<!-- ══ Slide 0 — Title ═══════════════════════════════════════════════ -->
+<section class="slide title-slide active">
+  <h1>Induction &amp; Recursive Definitions</h1>
+  <p class="subtitle">10 slides for a 1h30 lecture</p>
+  <p class="meta">Discrete Mathematics — Session 3</p>
+  <p class="author">Pr. El Hadiq Zouhair</p>
+</section>
+
+<!-- ══ Slide 1 — Part I divider ══════════════════════════════════════ -->
+<section class="slide section-slide">
+  <div class="section-num">Part I · 60 minutes</div>
+  <h2>Mathematical Induction</h2>
+  <p class="section-desc">Well-ordering · Weak induction · Examples · Strong induction</p>
+</section>
+
+<!-- ══ Slide 2 — Well-ordering principle ═════════════════════════════ -->
+<section class="slide">
+  <span class="slide-title-tag">§1 · ~7 min</span>
+  <h2 class="frame-title">Well-ordering principle (WOP)</h2>
+
+  <div class="def-box">
+    Every non-empty subset $S \subseteq \mathbb{N}$ has a least element:
+    $$\exists\, m \in S, \;\; \forall\, n \in S, \;\; m \leq n.$$
+  </div>
+
+  <p>WOP is taken as an <strong>axiom</strong> of the natural numbers. It is <strong>equivalent</strong> to weak induction (slide 3) and to strong induction (slide 8).</p>
+
+  <div class="ex-box">
+    $S = \{n \in \mathbb{N} : n^2 \geq 20\}$ is non-empty (contains $5$). By WOP, $\min S$ exists. Computing: $4^2 = 16 &lt; 20$ but $5^2 = 25 \geq 20$, so $\min S = 5$.
+  </div>
+
+  <div class="note-box">
+    WOP <strong>fails on $\mathbb{Z}$</strong>: $\mathbb{Z}$ itself has no minimum. It also fails on $\mathbb{Q}_{\geq 0}$: the interval $(0, 1) \cap \mathbb{Q}$ has no minimum. <br>
+    WOP is the <strong>defining property of $\mathbb{N}$</strong> — it expresses the absence of an infinite descending chain.
+  </div>
+
+  <span class="slide-number">2 / 11</span>
+</section>
+
+<!-- ══ Slide 3 — Weak induction ══════════════════════════════════════ -->
+<section class="slide">
+  <span class="slide-title-tag">§2 · ~10 min</span>
+  <h2 class="frame-title">Principle of weak induction</h2>
+
+  <div class="def-box">
+    Let $P(n)$ be a predicate on $\mathbb{N}$. If
+    <ol>
+      <li><em>Base case:</em> $P(0)$ holds, and</li>
+      <li><em>Inductive step:</em> for every $k \in \mathbb{N}$, $\;P(k) \to P(k+1)$,</li>
+    </ol>
+    then $\forall n \in \mathbb{N},\, P(n)$.
+  </div>
+
+  <div class="thm-box">
+    WOP $\;\Leftrightarrow\;$ PWI &nbsp;(both directions proved by minimal-counter-example arguments).
+  </div>
+
+  <div class="cols">
+    <div class="proof-box">
+      <strong>(WOP ⇒ PWI).</strong> Let $S = \{n : \neg P(n)\}$. If $S \neq \varnothing$, by WOP it has a minimum $m$; since $P(0)$, $m \geq 1$ and $m - 1 \in \mathbb{N}$. By minimality, $P(m-1)$; by step, $P(m)$ — contradiction. $\square$
+    </div>
+    <div class="proof-box">
+      <strong>(PWI ⇒ WOP).</strong> Let $S$ non-empty without minimum. Let $Q(n) :\equiv \forall j \leq n,\, j \notin S$. Base $Q(0)$: $0 \notin S$ else $0 = \min S$. Step: similar. By PWI, $\forall n,\,Q(n)$, so $S = \varnothing$. $\square$
+    </div>
+  </div>
+
+  <span class="slide-number">3 / 11</span>
+</section>
+
+<!-- ══ Slide 4 — Induction template ══════════════════════════════════ -->
+<section class="slide">
+  <span class="slide-title-tag">§3 · ~5 min</span>
+  <h2 class="frame-title">The induction template</h2>
+
+  <p>To prove $\forall n \geq n_0,\, P(n)$:</p>
+  <ol>
+    <li><strong>Base case.</strong> Verify $P(n_0)$ explicitly.</li>
+    <li><strong>Inductive hypothesis (IH).</strong> Fix arbitrary $k \geq n_0$, assume $P(k)$.</li>
+    <li><strong>Inductive step.</strong> Using IH, prove $P(k+1)$.</li>
+  </ol>
+  <p>Conclude: <em>"by induction, $\forall n \geq n_0,\,P(n)$. $\square$"</em></p>
+
+  <div class="note-box">
+    <strong>Skipping the base case is fatal.</strong> The step alone proves only the conditional statement <em>"if $P(n_0)$, then $\forall n,\,P(n)$"</em> — useless when $P(n_0)$ is false. (See the "all horses" counter-example.)
+  </div>
+
+  <div class="ex-box">
+    The next slides apply this template to <strong>three different categories</strong> of examples: sum formulas, divisibility, set counting.
+  </div>
+
+  <span class="slide-number">4 / 11</span>
+</section>
+
+<!-- ══ Slide 5 — Sum formulas ════════════════════════════════════════ -->
+<section class="slide">
+  <span class="slide-title-tag">§4 · ~12 min</span>
+  <h2 class="frame-title">Sum formulas — three examples</h2>
+
+  <div class="thm-box">
+    For every $n \geq 1$,
+    $\displaystyle \sum_{i=1}^{n} i = \frac{n(n+1)}{2},\;\;\sum_{i=1}^{n} i^2 = \frac{n(n+1)(2n+1)}{6},\;\;\sum_{i=1}^{n} i^3 = \Bigl(\frac{n(n+1)}{2}\Bigr)^{\!2}.$
+  </div>
+
+  <div class="proof-box">
+    <strong>For $\sum i$.</strong> Base $n = 1$: $1 = 1 \cdot 2/2$. ✓<br>
+    Step: $\sum_{i=1}^{k+1} i = \tfrac{k(k+1)}{2} + (k+1) = \tfrac{(k+1)(k+2)}{2}.$ ✓ $\square$
+  </div>
+
+  <div class="proof-box">
+    <strong>For $\sum i^2$.</strong> Base $n = 1$: $1 = 1\cdot 2\cdot 3 / 6$. Step: $\sum_{i=1}^{k+1} i^2 = \tfrac{k(k+1)(2k+1)}{6} + (k+1)^2 = \tfrac{(k+1)(k+2)(2k+3)}{6}.$ ✓ $\square$
+  </div>
+
+  <div class="note-box">
+    <strong>Curious identity:</strong> $\sum_{i=1}^{n} i^3 = \bigl(\sum_{i=1}^n i\bigr)^{2}$ — cumulative sum of cubes = square of cumulative sum. Visible in Nicomachus's "concentric L-shapes" picture (1st century AD).
+  </div>
+
+  <span class="slide-number">5 / 11</span>
+</section>
+
+<!-- ══ Slide 6 — Divisibility ════════════════════════════════════════ -->
+<section class="slide">
+  <span class="slide-title-tag">§5 · ~8 min</span>
+  <h2 class="frame-title">Divisibility — $3 \mid (n^3 + 2n)$</h2>
+
+  <div class="thm-box">
+    For every $n \geq 0$, $\;3 \mid (n^3 + 2n)$.
+  </div>
+
+  <div class="proof-box">
+    <strong>Base ($n = 0$).</strong> $0^3 + 2 \cdot 0 = 0$ and $3 \mid 0$. ✓<br>
+    <strong>Step.</strong> Assume $k^3 + 2k = 3m$ for some $m \in \mathbb{Z}$. Then
+    $$(k+1)^3 + 2(k+1) = k^3 + 3k^2 + 3k + 1 + 2k + 2 = (k^3 + 2k) + 3(k^2 + k + 1) = 3(m + k^2 + k + 1),$$
+    divisible by $3$. ✓ $\square$
+  </div>
+
+  <div class="ex-box">
+    <strong>Two more by the same recipe:</strong><br>
+    $\;7 \mid (8^n - 1)$ &nbsp;(use $8^{k+1} - 1 = 8(8^k - 1) + 7$).<br>
+    $\;6 \mid (n^3 - n)$ &nbsp;(note $n^3 - n = n(n-1)(n+1)$ is a product of three consecutive integers).
+  </div>
+
+  <span class="slide-number">6 / 11</span>
+</section>
+
+<!-- ══ Slide 7 — 2^n subsets ═════════════════════════════════════════ -->
+<section class="slide">
+  <span class="slide-title-tag">§6 · ~8 min</span>
+  <h2 class="frame-title">Counting — a set of $n$ elements has $2^n$ subsets</h2>
+
+  <div class="thm-box">
+    For every $n \geq 0$, if $|A| = n$ then $|\mathcal{P}(A)| = 2^n$.
+  </div>
+
+  <div class="proof-box">
+    <strong>Base ($n = 0$).</strong> $\mathcal{P}(\varnothing) = \{\varnothing\}$, so $|\mathcal{P}(\varnothing)| = 1 = 2^0$. ✓<br>
+    <strong>Step.</strong> Suppose every $k$-set has $2^k$ subsets. Let $|A| = k + 1$; pick $a \in A$ and let $B = A \setminus \{a\}$, $|B| = k$. Every subset of $A$ either:
+    <ul>
+      <li><em>excludes</em> $a$: $S \subseteq B$ — $2^k$ choices (by IH);</li>
+      <li><em>contains</em> $a$: $S \setminus \{a\} \subseteq B$ — $2^k$ choices.</li>
+    </ul>
+    These classes are disjoint and exhaustive, giving $|\mathcal{P}(A)| = 2^k + 2^k = 2^{k+1}$. ✓ $\square$
+  </div>
+
+  <div class="note-box">
+    <strong>Pascal-style restatement:</strong> $\sum_{k=0}^{n} \binom{n}{k} = 2^n$ — partition the subsets by size $k$. This is the row-sum identity of Pascal's triangle.
+  </div>
+
+  <span class="slide-number">7 / 11</span>
+</section>
+
+<!-- ══ Slide 8 — Strong induction ════════════════════════════════════ -->
+<section class="slide">
+  <span class="slide-title-tag">§7 · ~6 min</span>
+  <h2 class="frame-title">Strong induction (PSI)</h2>
+
+  <div class="def-box">
+    If $P(n_0)$ holds and, for every $k \geq n_0$,
+    $\bigl(\forall j,\;n_0 \leq j \leq k \Rightarrow P(j)\bigr) \to P(k+1),$
+    then $\forall n \geq n_0,\,P(n)$.
+  </div>
+
+  <p>The strong-step IH is <strong>generous</strong>: instead of just $P(k)$, we may use <strong>every</strong> previously proved $P(j)$. Needed when the recurrence reaches back more than one step.</p>
+
+  <div class="thm-box">
+    PSI $\;\Leftrightarrow\;$ PWI.
+  </div>
+
+  <div class="cols">
+    <div class="proof-box">
+      <strong>(PSI ⇒ PWI).</strong> The weak step is the special case of the strong step using only $j = k$.
+    </div>
+    <div class="proof-box">
+      <strong>(PWI ⇒ PSI).</strong> Define $Q(n) :\equiv \forall j \leq n,\, P(j)$. Then $Q(n_0) = P(n_0)$ (base) and $Q(k) \to Q(k+1)$ via the strong step. PWI on $Q$. $\square$
+    </div>
+  </div>
+
+  <span class="slide-number">8 / 11</span>
+</section>
+
+<!-- ══ Slide 9 — Strong induction examples ═══════════════════════════ -->
+<section class="slide">
+  <span class="slide-title-tag">§7 bis · ~6 min</span>
+  <h2 class="frame-title">Three strong-induction theorems</h2>
+
+  <div class="thm-box">
+    <strong>1. Prime factorization.</strong> Every integer $n \geq 2$ is a product of primes.
+  </div>
+  <div class="proof-box">
+    Base $n = 2$: prime. Step: if $k+1$ is prime, done. Else $k + 1 = ab$, $2 \leq a, b \leq k$; by IH both are products of primes. $\square$
+  </div>
+
+  <div class="thm-box">
+    <strong>2. Postage stamps (Frobenius).</strong> Every $n \geq 12$ cents is $4a + 5b$ with $a, b \in \mathbb{N}$.
+  </div>
+  <div class="proof-box">
+    Bases $n = 12, 13, 14, 15$ — explicit. Step: for $k + 1 \geq 16$, $k - 3 \geq 12$, by IH $k - 3 = 4a + 5b$; so $k + 1 = 4(a+1) + 5b$. $\square$
+  </div>
+
+  <div class="thm-box">
+    <strong>3. Fibonacci bound.</strong> $F_n \leq \varphi^{n-1}$ where $\varphi = (1+\sqrt 5)/2$.
+  </div>
+  <div class="proof-box">
+    Bases $F_1, F_2$ explicit. Step: $F_{k+1} = F_k + F_{k-1} \leq \varphi^{k-1} + \varphi^{k-2} = \varphi^{k-2}(\varphi + 1) = \varphi^{k}$ &nbsp;(using $\varphi^2 = \varphi + 1$). $\square$
+  </div>
+
+  <span class="slide-number">9 / 11</span>
+</section>
+
+<!-- ══ Slide 10 — Part II divider ════════════════════════════════════ -->
+<section class="slide section-slide">
+  <div class="section-num">Part II · 30 minutes</div>
+  <h2>Recursive Definitions</h2>
+  <p class="section-desc">Base + recursive case · Factorial · Fibonacci · Lucas · Ackermann</p>
+</section>
+
+<!-- ══ Slide 11 — Recursive functions ════════════════════════════════ -->
+<section class="slide">
+  <span class="slide-title-tag">§8 · ~15 min</span>
+  <h2 class="frame-title">Recursive functions — definition &amp; examples</h2>
+
+  <div class="def-box">
+    A <strong>recursive definition</strong> of $f : \mathbb{N} \to X$ specifies:
+    <ol>
+      <li><strong>Base case(s):</strong> value(s) for the smallest argument(s).</li>
+      <li><strong>Recursive case:</strong> $f(n)$ from one or more earlier values $f(n-1), f(n-2), \ldots$</li>
+    </ol>
+    Well-definedness is justified by induction on $n$ — proving correctness <em>is</em> doing induction.
+  </div>
+
+  <div class="cols">
+    <div>
+      <h3>Factorial</h3>
+      <p>$f(0) = 1$, $\;f(n) = n \cdot f(n-1)$ &nbsp;⇒&nbsp; $f(n) = n!$</p>
+      <div class="python-block">
+        <span class="pane-label">Python</span>
+        <span class="pane-code">def fact(n):
+    if n == 0: return 1
+    return n * fact(n - 1)</span>
+      </div>
+    </div>
+    <div>
+      <h3>Fibonacci</h3>
+      <p>$F_0 = 0, F_1 = 1, \;F_n = F_{n-1} + F_{n-2}$</p>
+      <div class="python-block">
+        <span class="pane-label">Python</span>
+        <span class="pane-code">def fib(n):
+    if n &lt; 2: return n
+    return fib(n-1) + fib(n-2)</span>
+      </div>
+    </div>
+  </div>
+
+  <p><strong>Lucas:</strong> $L_0 = 2, L_1 = 1, L_n = L_{n-1} + L_{n-2}$ — sequence $2, 1, 3, 4, 7, 11, 18, 29, \ldots$ &nbsp;&nbsp; <strong>Ackermann:</strong> $A(0,n) = n+1;\; A(m,0) = A(m-1,1);\; A(m,n) = A(m-1, A(m,n-1))$ — grows faster than any primitive recursive function.</p>
+
+  <span class="slide-number">10 / 11</span>
+</section>
+
+</div><!-- /deck -->
+
+<!-- ── Progress bar ──────────────────────────────────────────────── -->
+
+<!-- ── Timer (click to start / stop) ─────────────────────────────── -->
+<div id="timer" title="Click to start / pause · double-click to reset">00:00</div>
+
+<!-- ── Navigation buttons ────────────────────────────────────────── -->
+<div id="nav">
+  <button id="btn-prev" title="Previous (←)">&#8592;</button>
+  <button id="btn-next" title="Next (→ / Space)">&#8594;</button>
+</div>
+
+<script>
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const progress = document.getElementById('progress');
+  let current = 0;
+
+  function go(i) {
+    slides[current].classList.remove('active');
+    current = (i + slides.length) % slides.length;
+    slides[current].classList.add('active');
+    progress.style.width = ((current + 1) / slides.length * 100) + '%';
+  }
+
+  document.getElementById('btn-prev').onclick = () => go(current - 1);
+  document.getElementById('btn-next').onclick = () => go(current + 1);
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') { go(current + 1); e.preventDefault(); }
+    if (e.key === 'ArrowLeft'  || e.key === 'PageUp')                     { go(current - 1); e.preventDefault(); }
+    if (e.key === 'Home') go(0);
+    if (e.key === 'End')  go(slides.length - 1);
+  });
+
+  // Init progress bar
+  progress.style.width = (1 / slides.length * 100) + '%';
+
+  // ── Timer: aimed at 90 minutes total ─────────────────────────────
+  const TIMER_TARGET = 90 * 60;     // seconds
+  const TIMER_WARN   = 75 * 60;     // turn orange at 75 min
+  const timerEl = document.getElementById('timer');
+  let elapsed = 0, running = false, timerInt;
+
+  function fmt(s) {
+    const m = Math.floor(s / 60), ss = s % 60;
+    return String(m).padStart(2, '0') + ':' + String(ss).padStart(2, '0');
+  }
+  function render() {
+    timerEl.textContent = fmt(elapsed);
+    timerEl.classList.toggle('running', running && elapsed < TIMER_WARN);
+    timerEl.classList.toggle('warning', running && elapsed >= TIMER_WARN && elapsed < TIMER_TARGET);
+    timerEl.classList.toggle('over',    elapsed >= TIMER_TARGET);
+  }
+  function tick() { elapsed++; render(); }
+
+  timerEl.onclick = () => {
+    if (running) { clearInterval(timerInt); running = false; }
+    else         { timerInt = setInterval(tick, 1000); running = true; }
+    render();
+  };
+  timerEl.ondblclick = () => {
+    clearInterval(timerInt); running = false; elapsed = 0; render();
+  };
+  render();
+</script>
+</body>
+</html>
