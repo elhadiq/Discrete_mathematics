@@ -22,19 +22,21 @@
 }
 body {
   font-family:'Segoe UI', system-ui, sans-serif;
-  background:#e8edf2; color:var(--darkblue);
-  display:flex; flex-direction:column; align-items:center;
-  padding:2rem 1rem 5rem; gap:1.6rem;
+  background:#fff; color:var(--darkblue);
+  max-width:880px; margin:0 auto; padding:0 1.4rem 4rem;
 }
+/* one continuous scroll document — sections just flow, no cards */
 .slide {
-  background:#fff; width:100%; max-width:940px;
-  border-radius:10px; box-shadow:0 4px 18px rgba(0,0,0,.10);
-  padding:2.0rem 2.6rem 1.8rem; position:relative;
+  width:100%; padding:1.5rem 0 0.4rem; position:relative;
 }
+.slide + .slide { border-top:1px solid #eef2f6; }
 .title-slide {
   background:linear-gradient(145deg,#fdf3e7 60%,#f9e4cc);
   text-align:center; border-top:6px solid var(--orange);
+  border-radius:0 0 10px 10px;
+  padding:2rem 1.4rem 1.6rem; margin:0 -1.4rem 0.6rem;
 }
+.title-slide + .slide { border-top:none; }
 .title-slide h1 { font-size:1.95rem; margin-bottom:0.4rem; }
 .title-slide .subtitle { font-size:1.05rem; color:#555; }
 .title-slide .badge { display:inline-block; margin-top:.7rem; background:var(--orange); color:#fff; padding:.25rem .8rem; border-radius:14px; font-size:.78rem; font-weight:800; letter-spacing:.1em; text-transform:uppercase; }
@@ -102,11 +104,98 @@ svg.gadget { display:block; margin:0.8rem auto; max-width:100%; }
   <p><strong>The 3-SAT decision problem:</strong> is there a True/False assignment of the variables making the whole formula true?</p>
   <p>This is a famously hard problem — and it can be <strong>encoded as graph 3-coloring</strong>: from any formula $\varphi$ we build a graph $G_\varphi$ that is 3-colorable <strong>if and only if</strong> $\varphi$ is satisfiable. Translating one problem into another like this is called a <em>reduction</em>, and it is the standard tool for comparing the difficulty of problems.</p>
   <div class="goal-box">By the end you will have a program that <em>solves a logic formula by coloring a graph</em> — and reads the satisfying assignment straight off the colors.</div>
+  <p style="font-size:.9rem;color:#777;">New to all this? The next four slides explain every word from scratch, with pictures. If you already know SAT and graph coloring, skip to <em>The three colors</em>.</p>
+</section>
+
+<section class="slide">
+  <h2 class="frame-title">Step 0 — Boolean formulas, in plain words</h2>
+  <p>Everything here is built from <strong>True / False</strong> values. Just three words to learn:</p>
+  <ul>
+    <li>A <strong>variable</strong> is something that is either True or False — e.g. <code>x</code>, <code>y</code>, <code>z</code>.</li>
+    <li>A <strong>literal</strong> is a variable or its negation: <code>x</code> (read "x is true") or <code>~x</code> (read "x is false").</li>
+    <li>A <strong>clause</strong> is a few literals joined by <strong>OR</strong> ($\lor$). It is satisfied when <em>at least one</em> of its literals is true. In 3-SAT every clause has exactly three literals, e.g. $(x \lor \lnot y \lor z)$.</li>
+    <li>A <strong>formula</strong> is several clauses joined by <strong>AND</strong> ($\land$). It is satisfied only when <em>every</em> clause is satisfied at once.</li>
+  </ul>
+  <div style="background:#e8f5ec;border-left:4px solid #27ae60;border-radius:6px;padding:.6rem .9rem;margin:.6rem 0;"><strong style="color:#1e824c;">Example — </strong>$\varphi = (x \lor \lnot y \lor z)\ \land\ (\lnot x \lor y \lor z)$ has <strong>2 clauses</strong> and <strong>3 variables</strong>. The literal <code>~y</code> is true exactly when <code>y</code> is false.</div>
+  <p>Think of it like a checklist: <strong>OR is forgiving</strong> (one true literal satisfies a clause), <strong>AND is strict</strong> (every clause must be satisfied).</p>
+</section>
+
+<section class="slide">
+  <h2 class="frame-title">From any formula to 3-CNF — why "three literals" loses nothing</h2>
+  <p>Real Boolean formulas use <code>¬</code> (not), <code>∧</code> (and), <code>∨</code> (or), <code>→</code> (implies), <code>↔</code> (iff) and nested parentheses — they rarely look like a tidy AND of 3-literal clauses. So why does this project only deal with that special shape?</p>
+  <div class="thm-box">Because <strong>every</strong> Boolean formula can be rewritten as an <em>equisatisfiable</em> <strong>3-CNF</strong> formula — an AND of clauses, each an OR of exactly three literals (possibly using a few new helper variables). It is satisfiable exactly when the original is. So 3-SAT is not a toy special case: it captures <em>all</em> of Boolean satisfiability.</div>
+
+  <h3 class="sub-title">The conversion, in four moves</h3>
+  <ol>
+    <li><strong>Remove → and ↔.</strong> Use $A \to B \equiv \lnot A \lor B$ and $A \leftrightarrow B \equiv (\lnot A \lor B) \land (A \lor \lnot B)$.</li>
+    <li><strong>Push negations inward</strong> (De Morgan): $\lnot(A \land B) \equiv \lnot A \lor \lnot B$, &nbsp; $\lnot(A \lor B) \equiv \lnot A \land \lnot B$, &nbsp; $\lnot\lnot A \equiv A$.</li>
+    <li><strong>Distribute ∨ over ∧</strong> until you have a <strong>CNF</strong> (an AND of OR-clauses). To avoid size blow-up, real solvers use the <em>Tseitin</em> trick: give each sub-expression a fresh name variable — small, and still equisatisfiable.</li>
+    <li><strong>Make every clause exactly three literals</strong> (next).</li>
+  </ol>
+
+  <h3 class="sub-title">Forcing every clause to exactly 3 literals</h3>
+  <ul>
+    <li><strong>Too short → repeat a literal.</strong> $(x) \equiv (x \lor x \lor x)$ &nbsp; and &nbsp; $(x \lor y) \equiv (x \lor y \lor y)$.</li>
+    <li><strong>Too long → split with fresh variables.</strong> $(a \lor b \lor c \lor d \lor e)$ becomes $(a \lor b \lor z_1) \land (\lnot z_1 \lor c \lor z_2) \land (\lnot z_2 \lor d \lor e)$ — satisfiable exactly when the long clause is.</li>
+  </ul>
+
+  <div style="background:#e8f5ec;border-left:4px solid #27ae60;border-radius:6px;padding:.6rem .9rem;margin:.6rem 0;"><strong style="color:#1e824c;">Worked example — </strong>start with $\varphi = \lnot(x \land y) \to z$. &nbsp;Remove →: $\lnot\lnot(x \land y) \lor z = (x \land y) \lor z$. &nbsp;Distribute: $(x \lor z) \land (y \lor z)$. &nbsp;Pad each clause to three literals: $(x \lor z \lor z) \land (y \lor z \lor z)$ — a 3-CNF formula, ready for the coloring construction.</div>
+
+  <p>That is why the rest of this project assumes the formula already arrives as a list of 3-literal clauses: any formula you start with can be put into this form first.</p>
+</section>
+
+<section class="slide">
+  <h2 class="frame-title">Step 1 — What does "satisfiable" mean?</h2>
+  <p>A formula is <strong>satisfiable</strong> if <em>some</em> assignment of True/False to the variables makes the whole thing true. "Solving" 3-SAT means finding such an assignment — or proving that none exists.</p>
+  <div style="background:#e8f5ec;border-left:4px solid #27ae60;border-radius:6px;padding:.6rem .9rem;margin:.6rem 0;"><strong style="color:#1e824c;">Satisfiable example — </strong>$\varphi = (x \lor y) \land (\lnot x \lor \lnot y)$. Try all four assignments of <code>x</code>, <code>y</code>:</div>
+  <ul style="font-family:'Consolas',monospace;font-size:.9rem;">
+    <li>x=F, y=F → (F)∧(T) = <span style="color:#c0395a;">False</span></li>
+    <li>x=F, y=T → (T)∧(T) = <span style="color:#1e824c;font-weight:700;">True ✓</span></li>
+    <li>x=T, y=F → (T)∧(T) = <span style="color:#1e824c;font-weight:700;">True ✓</span></li>
+    <li>x=T, y=T → (T)∧(F) = <span style="color:#c0395a;">False</span></li>
+  </ul>
+  <p>Two assignments work, so this formula is <strong>satisfiable</strong>.</p>
+  <div class="note-box">Not every formula is satisfiable. $\varphi = (x) \land (\lnot x)$ asks <code>x</code> to be true and false at the same time — <strong>impossible</strong>, so it is <em>unsatisfiable</em>.</div>
+  <p>With $n$ variables there are $2^n$ possible assignments — far too many to try one by one for large $n$. That difficulty is what makes 3-SAT famous (it is <em>NP-complete</em>).</p>
+</section>
+
+<section class="slide">
+  <h2 class="frame-title">Step 2 — Reminder: proper graph 3-coloring</h2>
+  <p>A <strong>proper coloring</strong> of a graph gives every vertex a color so that <em>no edge joins two vertices of the same color</em>. A <strong>3-coloring</strong> is one that uses (at most) three colors.</p>
+  <svg class="gadget" viewBox="0 0 300 215" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="a triangle needs three colours">
+    <line x1="150" y1="48" x2="68" y2="172" stroke="#9aa6b2" stroke-width="2"/>
+    <line x1="150" y1="48" x2="232" y2="172" stroke="#9aa6b2" stroke-width="2"/>
+    <line x1="68" y1="172" x2="232" y2="172" stroke="#9aa6b2" stroke-width="2"/>
+    <circle cx="150" cy="48" r="22" fill="#2a9d8f" stroke="#2c3e50" stroke-width="2"/><text x="150" y="53" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">1</text>
+    <circle cx="68" cy="172" r="22" fill="#e63946" stroke="#2c3e50" stroke-width="2"/><text x="68" y="177" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">2</text>
+    <circle cx="232" cy="172" r="22" fill="#457b9d" stroke="#2c3e50" stroke-width="2"/><text x="232" y="177" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">3</text>
+  </svg>
+  <div class="thm-box">A <strong>triangle</strong> (three vertices, every pair joined) needs <strong>all three colors</strong> — none of its vertices may share. This "a triangle forces three different colors" fact is the single trick that powers the entire 3-SAT construction.</div>
+  <p>Deciding whether an arbitrary graph can be 3-colored is itself a hard problem — and that is exactly the bridge we cross from 3-SAT.</p>
+</section>
+
+<section class="slide">
+  <h2 class="frame-title">Step 3 — The big idea: solve a formula by COLORING</h2>
+  <p>We translate a formula $\varphi$ into a graph $G_\varphi$ so cleverly that the graph and the formula become two faces of the same question:</p>
+  <div class="thm-box">$G_\varphi$ can be properly <strong>3-colored</strong> &nbsp;⟺&nbsp; $\varphi$ is <strong>satisfiable</strong>. Better still, a coloring literally <em>spells out</em> a satisfying assignment.</div>
+  <p>Turning one problem into another like this is called a <strong>reduction</strong>. Here is the whole pipeline on a tiny one-clause formula $\varphi = (x \lor y \lor z)$ — this is its graph $G_\varphi$, already properly 3-colored (green = the <code>T</code> color, red = <code>F</code>, blue = <code>B</code>):</p>
+  <svg class="gadget" viewBox="0 0 720 460" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="full SAT graph of a one-clause formula, 3-coloured"><line x1="86.1" y1="99.8" x2="256.3" y2="110.5" stroke="#9aa6b2" stroke-width="2"/><line x1="86.1" y1="99.8" x2="257.8" y2="183.7" stroke="#9aa6b2" stroke-width="2"/><line x1="256.3" y1="110.5" x2="257.8" y2="183.7" stroke="#9aa6b2" stroke-width="2"/><line x1="256.3" y1="110.5" x2="483.0" y2="158.6" stroke="#9aa6b2" stroke-width="2"/><line x1="257.8" y1="183.7" x2="361.7" y2="309.8" stroke="#9aa6b2" stroke-width="2"/><line x1="257.8" y1="183.7" x2="222.0" y2="263.3" stroke="#9aa6b2" stroke-width="2"/><line x1="257.8" y1="183.7" x2="184.5" y2="325.2" stroke="#9aa6b2" stroke-width="2"/><line x1="257.8" y1="183.7" x2="46.0" y2="257.4" stroke="#9aa6b2" stroke-width="2"/><line x1="257.8" y1="183.7" x2="446.5" y2="80.8" stroke="#9aa6b2" stroke-width="2"/><line x1="257.8" y1="183.7" x2="299.5" y2="46.0" stroke="#9aa6b2" stroke-width="2"/><line x1="257.8" y1="183.7" x2="483.0" y2="158.6" stroke="#9aa6b2" stroke-width="2"/><line x1="361.7" y1="309.8" x2="222.0" y2="263.3" stroke="#9aa6b2" stroke-width="2"/><line x1="361.7" y1="309.8" x2="509.7" y2="414.0" stroke="#9aa6b2" stroke-width="2"/><line x1="184.5" y1="325.2" x2="46.0" y2="257.4" stroke="#9aa6b2" stroke-width="2"/><line x1="184.5" y1="325.2" x2="390.2" y2="411.9" stroke="#9aa6b2" stroke-width="2"/><line x1="446.5" y1="80.8" x2="299.5" y2="46.0" stroke="#9aa6b2" stroke-width="2"/><line x1="446.5" y1="80.8" x2="648.0" y2="124.1" stroke="#9aa6b2" stroke-width="2"/><line x1="509.7" y1="414.0" x2="390.2" y2="411.9" stroke="#9aa6b2" stroke-width="2"/><line x1="509.7" y1="414.0" x2="622.0" y2="363.6" stroke="#9aa6b2" stroke-width="2"/><line x1="390.2" y1="411.9" x2="622.0" y2="363.6" stroke="#9aa6b2" stroke-width="2"/><line x1="622.0" y1="363.6" x2="674.0" y2="230.4" stroke="#9aa6b2" stroke-width="2"/><line x1="674.0" y1="230.4" x2="648.0" y2="124.1" stroke="#9aa6b2" stroke-width="2"/><line x1="674.0" y1="230.4" x2="483.0" y2="158.6" stroke="#9aa6b2" stroke-width="2"/><line x1="648.0" y1="124.1" x2="483.0" y2="158.6" stroke="#9aa6b2" stroke-width="2"/><circle cx="86.1" cy="99.8" r="19" fill="#2a9d8f" stroke="#2c3e50" stroke-width="2"/><text x="86.1" y="103.8" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">T</text><circle cx="256.3" cy="110.5" r="19" fill="#e63946" stroke="#2c3e50" stroke-width="2"/><text x="256.3" y="114.5" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">F</text><circle cx="257.8" cy="183.7" r="19" fill="#457b9d" stroke="#2c3e50" stroke-width="2"/><text x="257.8" y="187.7" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">B</text><circle cx="361.7" cy="309.8" r="19" fill="#2a9d8f" stroke="#2c3e50" stroke-width="2"/><text x="361.7" y="313.8" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">x</text><circle cx="222.0" cy="263.3" r="19" fill="#e63946" stroke="#2c3e50" stroke-width="2"/><text x="222.0" y="267.3" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">~x</text><circle cx="184.5" cy="325.2" r="19" fill="#2a9d8f" stroke="#2c3e50" stroke-width="2"/><text x="184.5" y="329.2" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">y</text><circle cx="46.0" cy="257.4" r="19" fill="#e63946" stroke="#2c3e50" stroke-width="2"/><text x="46.0" y="261.4" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">~y</text><circle cx="446.5" cy="80.8" r="19" fill="#2a9d8f" stroke="#2c3e50" stroke-width="2"/><text x="446.5" y="84.8" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">z</text><circle cx="299.5" cy="46.0" r="19" fill="#e63946" stroke="#2c3e50" stroke-width="2"/><text x="299.5" y="50.0" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">~z</text><circle cx="509.7" cy="414.0" r="19" fill="#457b9d" stroke="#2c3e50" stroke-width="2"/><text x="509.7" y="418.0" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">a₁</text><circle cx="390.2" cy="411.9" r="19" fill="#e63946" stroke="#2c3e50" stroke-width="2"/><text x="390.2" y="415.9" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">b₁</text><circle cx="622.0" cy="363.6" r="19" fill="#2a9d8f" stroke="#2c3e50" stroke-width="2"/><text x="622.0" y="367.6" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">o₁</text><circle cx="674.0" cy="230.4" r="19" fill="#457b9d" stroke="#2c3e50" stroke-width="2"/><text x="674.0" y="234.4" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">a₂</text><circle cx="648.0" cy="124.1" r="19" fill="#e63946" stroke="#2c3e50" stroke-width="2"/><text x="648.0" y="128.1" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">b₂</text><circle cx="483.0" cy="158.6" r="19" fill="#2a9d8f" stroke="#2c3e50" stroke-width="2"/><text x="483.0" y="162.6" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">o₂</text></svg>
+  <p><strong>How to read it.</strong> A variable is <strong>True</strong> when its vertex has the <em>same color as the <code>T</code> vertex</em> (green). Here <code>x</code>, <code>y</code>, <code>z</code> are all green, so the coloring says <strong>x = y = z = True</strong> — and indeed that makes $(x \lor y \lor z)$ true. The coloring solved the formula!</p>
+  <p style="font-size:.85rem;color:#777;">The little vertices labelled <code>a₁ b₁ o₁ a₂ b₂ o₂</code> are the "gadgets" that wire the clause together — the rest of this project explains exactly how $G_\varphi$ is built (base triangle, one triangle per variable, OR gadgets per clause) and asks you to build and color it yourself.</p>
 </section>
 
 <section class="slide">
   <h2 class="frame-title">Setup — run first</h2>
   <p>These are the Lab 1 helpers this project needs, plus a <code>draw_graph</code> tuned for the larger SAT graph (it has $3 + 2V + 6C$ vertices — 33 already for the test formula — so the figure is bigger and the nodes smaller than in Lab 1).</p>
+  <div style="background:#eef4fb;border-left:4px solid #457b9d;border-radius:6px;padding:.6rem .9rem;margin:.6rem 0;line-height:1.65;"><strong style="color:#2c5d86;">Where does $3 + 2V + 6C$ come from? &nbsp;</strong> It just counts the pieces of the construction, where $V$ = number of variables and $C$ = number of clauses:
+    <ul style="margin-top:.4rem;">
+      <li><strong>$3$</strong> — the base triangle, vertices <code>T</code>, <code>F</code>, <code>B</code> (added once for the whole graph).</li>
+      <li><strong>$2V$</strong> — each variable adds <em>two</em> literal vertices, <code>x</code> and <code>~x</code>; with $V$ variables that is $2V$.</li>
+      <li><strong>$6C$</strong> — each clause adds two OR gadgets, and each gadget has $3$ fresh vertices (<code>a, b, o</code>), so $2 \times 3 = 6$ per clause; with $C$ clauses that is $6C$.</li>
+    </ul>
+    The test formula used later (on the "Putting it together" slide) is
+    $$\text{PHI} \;=\; (x \lor y \lor z)\,\land\,(\lnot x \lor \lnot y \lor z)\,\land\,(x \lor \lnot y \lor \lnot z)\,\land\,(\lnot x \lor y \lor \lnot z).$$
+    In the code it is written with <code>~</code> for negation: <code>[("x","y","z"), ("~x","~y","z"), ("x","~y","~z"), ("~x","y","~z")]</code>. It has $V = 3$ variables (<code>x, y, z</code>) and $C = 4$ clauses, so $3 + 2{\cdot}3 + 6{\cdot}4 = 3 + 6 + 24 = \mathbf{33}$ vertices. (Counting the <em>edges</em> the same way is left to you — it is part of "What to hand in" at the end.)</div>
   <div class="python-block"><span class="pane-label">Python · provided</span><code class="pane-code">import networkx as nx
 import matplotlib.pyplot as plt
 
@@ -159,13 +248,55 @@ print("Setup OK — networkx", nx.__version__)</code></div>
     <span><span class="dot" style="background:var(--F)"></span> F — &ldquo;False&rdquo;</span>
     <span><span class="dot" style="background:var(--B)"></span> B — &ldquo;Base&rdquo;</span>
   </div>
+  <div class="note-box">Why a triangle? A coloring only hands out <em>abstract</em> colors — nothing in it says "this color means True." Because <code>T</code>, <code>F</code>, <code>B</code> are mutually adjacent, they are forced to take three <strong>different</strong> colors; we then simply <em>name</em> them — the color the <code>T</code> vertex receives is "the T color," and so on. That anchor gives every other vertex a meaning: a vertex colored like <code>T</code> reads as <em>true</em>, like <code>F</code> as <em>false</em>, like <code>B</code> as neither.</div>
+  <svg class="gadget" viewBox="0 0 300 215" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="base triangle T F B in three colours">
+    <line x1="150" y1="48" x2="68" y2="172" stroke="#9aa6b2" stroke-width="2"/>
+    <line x1="150" y1="48" x2="232" y2="172" stroke="#9aa6b2" stroke-width="2"/>
+    <line x1="68" y1="172" x2="232" y2="172" stroke="#9aa6b2" stroke-width="2"/>
+    <circle cx="150" cy="48" r="22" fill="#2a9d8f" stroke="#2c3e50" stroke-width="2"/><text x="150" y="53" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">T</text>
+    <circle cx="68" cy="172" r="22" fill="#e63946" stroke="#2c3e50" stroke-width="2"/><text x="68" y="177" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">F</text>
+    <circle cx="232" cy="172" r="22" fill="#457b9d" stroke="#2c3e50" stroke-width="2"/><text x="232" y="177" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">B</text>
+  </svg>
+  <p style="font-size:.85rem;color:#777;text-align:center;margin-top:-.4rem;">The base triangle: three mutually-joined vertices forced onto three different colors — our T, F, B anchors.</p>
+
+  <div style="background:#eef4fb;border-left:4px solid #457b9d;border-radius:6px;padding:.6rem .9rem;margin:.6rem 0;line-height:1.65;"><strong style="color:#2c5d86;">What is B (Base) for? &nbsp;</strong> You might wonder why we need a <em>third</em> color when a literal is only ever True or False. <code>B</code> is a deliberately <strong>neutral, "non-truth" color</strong>, and it does three jobs:
+    <ul style="margin-top:.4rem;">
+      <li><strong>It makes coloring non-trivial.</strong> With only two colors almost everything is forced or impossible; three colors (and the triangle that needs all three) are what give the construction room to encode logic.</li>
+      <li><strong>It forbids a color, squeezing each literal to True/False.</strong> Every literal vertex is joined to <code>B</code>, so it <em>cannot</em> be the B color — only the T or F color is left. This is the trick that turns an arbitrary 3-coloring into a clean truth value: a literal is never "Base," always True or False.</li>
+      <li><strong>It helps pin clause outputs.</strong> Later, a clause's output vertex is joined to both <code>F</code> and <code>B</code>, leaving only the T color — that is how we demand "this clause is satisfied."</li>
+    </ul>
+    In short, <code>B</code> never <em>means</em> a truth value; it is the spare anchor color we use to push literals onto exactly two options and to force outputs to True.</div>
+
   <h3 class="sub-title">Variable gadget</h3>
-  <p>For each variable <code>x</code>, a <strong>variable triangle</strong> <code>x – ~x – B</code>: both literal vertices are joined to <code>B</code>, so each must avoid B's color, i.e. each is colored "T" or "F" — and <code>x</code>, <code>~x</code> get <strong>opposite</strong> truth values. That is exactly what we want: a variable and its negation can never both be true.</p>
+  <p>For each variable <code>x</code> we add two vertices — one for the literal <code>x</code>, one for its negation <code>~x</code> — wired into a <strong>variable triangle</strong> <code>x – ~x – B</code> with edges <code>x–~x</code>, <code>x–B</code> and <code>~x–B</code>. Those three edges pin down both literals:</p>
+  <ul>
+    <li><strong>Each literal is True or False, never Base.</strong> Both <code>x</code> and <code>~x</code> are joined to <code>B</code>, so neither can take the B color — only the T color or the F color is left.</li>
+    <li><strong>The two are opposite.</strong> <code>x</code> and <code>~x</code> are also joined to <em>each other</em>, so they must differ — one gets the T color, the other the F color.</li>
+  </ul>
+  <svg class="gadget" viewBox="0 0 340 230" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="variable gadget x, not-x, B with x=True, not-x=False">
+    <line x1="90" y1="55" x2="90" y2="175" stroke="#9aa6b2" stroke-width="2"/>
+    <line x1="90" y1="55" x2="260" y2="115" stroke="#9aa6b2" stroke-width="2"/>
+    <line x1="90" y1="175" x2="260" y2="115" stroke="#9aa6b2" stroke-width="2"/>
+    <circle cx="90" cy="55" r="24" fill="#2a9d8f" stroke="#2c3e50" stroke-width="2"/><text x="90" y="60" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">x</text>
+    <text x="90" y="22" text-anchor="middle" font-size="12" font-weight="700" fill="#2a9d8f">= T (true)</text>
+    <circle cx="90" cy="175" r="24" fill="#e63946" stroke="#2c3e50" stroke-width="2"/><text x="90" y="180" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">~x</text>
+    <text x="90" y="213" text-anchor="middle" font-size="12" font-weight="700" fill="#e63946">= F (false)</text>
+    <circle cx="260" cy="115" r="24" fill="#457b9d" stroke="#2c3e50" stroke-width="2"/><text x="260" y="120" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">B</text>
+  </svg>
+  <p style="font-size:.85rem;color:#777;text-align:center;margin-top:-.4rem;">One valid coloring of a variable gadget: <code>x</code> and <code>~x</code> avoid B's color and land on opposite truth values (here <code>x</code> true, <code>~x</code> false).</p>
+  <div class="thm-box">A proper 3-coloring of this gadget <strong>is</strong> a consistent truth value for the variable: you can never color both <code>x</code> and <code>~x</code> true, mirroring the fact that <code>x</code> and <code>¬x</code> cannot both hold. The OR gadgets (next) then wire these literal vertices together to demand that every clause has at least one true literal.</div>
+  <p style="font-size:.85rem;color:#777;font-style:italic;">The coloured dots above are only a legend for the three colour <em>classes</em>; in an actual solution the <code>x</code> / <code>~x</code> vertices take whichever of the T / F colours the search happens to assign.</p>
 </section>
 
 <section class="slide">
   <h2 class="frame-title">The OR gadget</h2>
   <p>For two inputs <code>u</code>, <code>v</code>: a fresh triangle <code>a – b – out</code>, plus the wires <code>a – u</code> and <code>b – v</code>.</p>
+  <div style="background:#eef4fb;border-left:4px solid #457b9d;border-radius:6px;padding:.6rem .9rem;margin:.6rem 0;line-height:1.65;"><strong style="color:#2c5d86;">Who is who here? &nbsp;</strong>
+    <ul style="margin-top:.4rem;">
+      <li><strong><code>u</code> and <code>v</code> are the two INPUTS.</strong> They are <em>existing</em> vertices that already live in the graph — a literal like <code>x</code> or <code>~y</code>, or the output of a previous gadget. They are the two things we want to OR together.</li>
+      <li><strong><code>a</code>, <code>b</code>, <code>out</code> are three NEW vertices</strong> the gadget creates. <code>a</code> and <code>b</code> are internal helpers (just machinery); <code>out</code> is the <strong>result</strong> vertex.</li>
+    </ul>
+    So the formula this gadget computes is <strong><code>u ∨ v</code></strong> (the inputs), and the answer is read off the color of <strong><code>out</code></strong>: <code>out</code> can be colored T exactly when <code>u ∨ v</code> can be true. There is <em>no</em> "<code>a ∨ b</code>" — <code>a</code> and <code>b</code> are not variables of the formula, they only exist to force <code>out</code> to behave like an OR. In short: <code>out = OR(u, v)</code>.</div>
   <svg class="gadget" viewBox="0 0 460 230" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="OR gadget diagram">
     <!-- wires -->
     <line class="gedge" x1="70" y1="60" x2="190" y2="60"/>
@@ -187,12 +318,145 @@ print("Setup OK — networkx", nx.__version__)</code></div>
     <circle class="gnode" cx="320" cy="115" r="24" fill="#2a9d8f"/>
     <text class="glabel" x="320" y="120" text-anchor="middle">out</text>
   </svg>
+  <p style="font-size:.85rem;color:#777;font-style:italic;margin-top:-.3rem;">↑ Colours here show each vertex's <strong>role</strong> (purple = input · orange = gadget · teal = output), <strong>not</strong> a 3-colouring — that is why adjacent <code>a</code> and <code>b</code> share the same orange. In a real 3-colouring they must differ, as shown next.</p>
+
+  <h3 class="sub-title">The same gadget in one valid 3-colouring</h3>
+  <p>Take both inputs colored F (red). The triangle then forces <code>a</code> and <code>b</code> onto the two remaining colors T (green) and B (blue) — necessarily <strong>different</strong> — so <code>out</code> is forced to F. Legend: <span style="color:#2a9d8f;font-weight:700;">● T</span> &nbsp; <span style="color:#e63946;font-weight:700;">● F</span> &nbsp; <span style="color:#457b9d;font-weight:700;">● B</span>.</p>
+  <svg class="gadget" viewBox="0 0 460 250" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="OR gadget in a valid 3-colouring (both inputs F)">
+    <!-- wires + inner triangle -->
+    <line class="gedge" x1="70" y1="60" x2="190" y2="60"/>
+    <line class="gedge" x1="70" y1="170" x2="190" y2="170"/>
+    <line class="gedge" x1="190" y1="60" x2="190" y2="170"/>
+    <line class="gedge" x1="190" y1="60" x2="320" y2="115"/>
+    <line class="gedge" x1="190" y1="170" x2="320" y2="115"/>
+    <!-- u = F -->
+    <circle class="gnode" cx="70" cy="60" r="22" fill="#e63946"/>
+    <text class="glabel" x="70" y="65" text-anchor="middle">u</text>
+    <text x="70" y="100" text-anchor="middle" font-size="12" font-weight="700" fill="#e63946">F</text>
+    <!-- v = F -->
+    <circle class="gnode" cx="70" cy="170" r="22" fill="#e63946"/>
+    <text class="glabel" x="70" y="175" text-anchor="middle">v</text>
+    <text x="70" y="210" text-anchor="middle" font-size="12" font-weight="700" fill="#e63946">F</text>
+    <!-- a = T -->
+    <circle class="gnode" cx="190" cy="60" r="22" fill="#2a9d8f"/>
+    <text class="glabel" x="190" y="65" text-anchor="middle">a</text>
+    <text x="190" y="28" text-anchor="middle" font-size="12" font-weight="700" fill="#2a9d8f">T</text>
+    <!-- b = B -->
+    <circle class="gnode" cx="190" cy="170" r="22" fill="#457b9d"/>
+    <text class="glabel" x="190" y="175" text-anchor="middle">b</text>
+    <text x="190" y="210" text-anchor="middle" font-size="12" font-weight="700" fill="#457b9d">B</text>
+    <!-- out = F -->
+    <circle class="gnode" cx="320" cy="115" r="24" fill="#e63946"/>
+    <text class="glabel" x="320" y="120" text-anchor="middle">out</text>
+    <text x="320" y="155" text-anchor="middle" font-size="12" font-weight="700" fill="#e63946">F</text>
+  </svg>
+  <p style="font-size:.85rem;color:#555;">Check the edges: <code>a–u</code> (green≠red ✓), <code>b–v</code> (blue≠red ✓), and the triangle <code>a–b–out</code> uses three distinct colours ✓. Both inputs F ⟹ <code>out</code> = F, exactly as the rule below states.</p>
+
+  <h3 class="sub-title">…and the opposite case: both inputs True</h3>
+  <p>Now color both inputs T (green). Then <code>a ≠ T</code> and <code>b ≠ T</code> push <code>a</code> and <code>b</code> onto F and B — so the triangle's third vertex <code>out</code> is forced to <strong>T</strong>. Both inputs true ⟹ the OR is true:</p>
+  <svg class="gadget" viewBox="0 0 460 250" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="OR gadget with both inputs T, output forced to T">
+    <line x1="70" y1="60" x2="190" y2="60" stroke="#9aa6b2" stroke-width="2"/>
+    <line x1="70" y1="170" x2="190" y2="170" stroke="#9aa6b2" stroke-width="2"/>
+    <line x1="190" y1="60" x2="190" y2="170" stroke="#9aa6b2" stroke-width="2"/>
+    <line x1="190" y1="60" x2="320" y2="115" stroke="#9aa6b2" stroke-width="2"/>
+    <line x1="190" y1="170" x2="320" y2="115" stroke="#9aa6b2" stroke-width="2"/>
+    <!-- u = T -->
+    <circle cx="70" cy="60" r="22" fill="#2a9d8f" stroke="#2c3e50" stroke-width="2"/><text class="glabel" x="70" y="65" text-anchor="middle">u</text>
+    <text x="70" y="100" text-anchor="middle" font-size="12" font-weight="700" fill="#2a9d8f">T</text>
+    <!-- v = T -->
+    <circle cx="70" cy="170" r="22" fill="#2a9d8f" stroke="#2c3e50" stroke-width="2"/><text class="glabel" x="70" y="175" text-anchor="middle">v</text>
+    <text x="70" y="210" text-anchor="middle" font-size="12" font-weight="700" fill="#2a9d8f">T</text>
+    <!-- a = F -->
+    <circle cx="190" cy="60" r="22" fill="#e63946" stroke="#2c3e50" stroke-width="2"/><text class="glabel" x="190" y="65" text-anchor="middle">a</text>
+    <text x="190" y="28" text-anchor="middle" font-size="12" font-weight="700" fill="#e63946">F</text>
+    <!-- b = B -->
+    <circle cx="190" cy="170" r="22" fill="#457b9d" stroke="#2c3e50" stroke-width="2"/><text class="glabel" x="190" y="175" text-anchor="middle">b</text>
+    <text x="190" y="210" text-anchor="middle" font-size="12" font-weight="700" fill="#457b9d">B</text>
+    <!-- out = T -->
+    <circle cx="320" cy="115" r="24" fill="#2a9d8f" stroke="#2c3e50" stroke-width="2"/><text class="glabel" x="320" y="120" text-anchor="middle">out</text>
+    <text x="320" y="155" text-anchor="middle" font-size="12" font-weight="700" fill="#2a9d8f">T</text>
+  </svg>
+  <p style="font-size:.85rem;color:#555;">Check the edges: <code>a–u</code> (red≠green ✓), <code>b–v</code> (blue≠green ✓), triangle uses three distinct colours ✓. Both inputs T ⟹ <code>out</code> = T (here it is even forced).</p>
+
+  <h3 class="sub-title">A mixed case: one input True, one False</h3>
+  <p>If just one input is true — say <code>u = T</code> (green), <code>v = F</code> (red) — then <code>out</code> is <em>allowed</em> to be T, though not forced. One valid coloring puts <code>a = F</code>, <code>b = B</code>, leaving <code>out = T</code>:</p>
+  <svg class="gadget" viewBox="0 0 460 250" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="OR gadget with u=T, v=F, output coloured T">
+    <line x1="70" y1="60" x2="190" y2="60" stroke="#9aa6b2" stroke-width="2"/>
+    <line x1="70" y1="170" x2="190" y2="170" stroke="#9aa6b2" stroke-width="2"/>
+    <line x1="190" y1="60" x2="190" y2="170" stroke="#9aa6b2" stroke-width="2"/>
+    <line x1="190" y1="60" x2="320" y2="115" stroke="#9aa6b2" stroke-width="2"/>
+    <line x1="190" y1="170" x2="320" y2="115" stroke="#9aa6b2" stroke-width="2"/>
+    <!-- u = T -->
+    <circle cx="70" cy="60" r="22" fill="#2a9d8f" stroke="#2c3e50" stroke-width="2"/><text class="glabel" x="70" y="65" text-anchor="middle">u</text>
+    <text x="70" y="100" text-anchor="middle" font-size="12" font-weight="700" fill="#2a9d8f">T</text>
+    <!-- v = F -->
+    <circle cx="70" cy="170" r="22" fill="#e63946" stroke="#2c3e50" stroke-width="2"/><text class="glabel" x="70" y="175" text-anchor="middle">v</text>
+    <text x="70" y="210" text-anchor="middle" font-size="12" font-weight="700" fill="#e63946">F</text>
+    <!-- a = F -->
+    <circle cx="190" cy="60" r="22" fill="#e63946" stroke="#2c3e50" stroke-width="2"/><text class="glabel" x="190" y="65" text-anchor="middle">a</text>
+    <text x="190" y="28" text-anchor="middle" font-size="12" font-weight="700" fill="#e63946">F</text>
+    <!-- b = B -->
+    <circle cx="190" cy="170" r="22" fill="#457b9d" stroke="#2c3e50" stroke-width="2"/><text class="glabel" x="190" y="175" text-anchor="middle">b</text>
+    <text x="190" y="210" text-anchor="middle" font-size="12" font-weight="700" fill="#457b9d">B</text>
+    <!-- out = T -->
+    <circle cx="320" cy="115" r="24" fill="#2a9d8f" stroke="#2c3e50" stroke-width="2"/><text class="glabel" x="320" y="120" text-anchor="middle">out</text>
+    <text x="320" y="155" text-anchor="middle" font-size="12" font-weight="700" fill="#2a9d8f">T</text>
+  </svg>
+  <p style="font-size:.85rem;color:#555;">Check the edges: <code>a–u</code> (red≠green ✓), <code>b–v</code> (blue≠red ✓), triangle uses three distinct colours ✓. At least one input T ⟹ <code>out</code> can be T. (By symmetry <code>u = F, v = T</code> behaves the same.)</p>
+
+  <div class="note-box">Important: here <code>out</code> was <strong>not forced</strong> — we <em>chose</em> to color it T. The exact same gadget (still <code>u = T</code>, <code>v = F</code>) also has a perfectly valid coloring with <code>out = F</code>, for instance <code>a = B</code>, <code>b = T</code>:</div>
+  <svg class="gadget" viewBox="0 0 460 250" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="OR gadget u=T v=F with the alternative valid colouring out=F">
+    <line x1="70" y1="60" x2="190" y2="60" stroke="#9aa6b2" stroke-width="2"/>
+    <line x1="70" y1="170" x2="190" y2="170" stroke="#9aa6b2" stroke-width="2"/>
+    <line x1="190" y1="60" x2="190" y2="170" stroke="#9aa6b2" stroke-width="2"/>
+    <line x1="190" y1="60" x2="320" y2="115" stroke="#9aa6b2" stroke-width="2"/>
+    <line x1="190" y1="170" x2="320" y2="115" stroke="#9aa6b2" stroke-width="2"/>
+    <!-- u = T -->
+    <circle cx="70" cy="60" r="22" fill="#2a9d8f" stroke="#2c3e50" stroke-width="2"/><text class="glabel" x="70" y="65" text-anchor="middle">u</text>
+    <text x="70" y="100" text-anchor="middle" font-size="12" font-weight="700" fill="#2a9d8f">T</text>
+    <!-- v = F -->
+    <circle cx="70" cy="170" r="22" fill="#e63946" stroke="#2c3e50" stroke-width="2"/><text class="glabel" x="70" y="175" text-anchor="middle">v</text>
+    <text x="70" y="210" text-anchor="middle" font-size="12" font-weight="700" fill="#e63946">F</text>
+    <!-- a = B -->
+    <circle cx="190" cy="60" r="22" fill="#457b9d" stroke="#2c3e50" stroke-width="2"/><text class="glabel" x="190" y="65" text-anchor="middle">a</text>
+    <text x="190" y="28" text-anchor="middle" font-size="12" font-weight="700" fill="#457b9d">B</text>
+    <!-- b = T -->
+    <circle cx="190" cy="170" r="22" fill="#2a9d8f" stroke="#2c3e50" stroke-width="2"/><text class="glabel" x="190" y="175" text-anchor="middle">b</text>
+    <text x="190" y="210" text-anchor="middle" font-size="12" font-weight="700" fill="#2a9d8f">T</text>
+    <!-- out = F -->
+    <circle cx="320" cy="115" r="24" fill="#e63946" stroke="#2c3e50" stroke-width="2"/><text class="glabel" x="320" y="120" text-anchor="middle">out</text>
+    <text x="320" y="155" text-anchor="middle" font-size="12" font-weight="700" fill="#e63946">F</text>
+  </svg>
+  <p style="font-size:.85rem;color:#555;">Check the edges: <code>a–u</code> (blue≠green ✓), <code>b–v</code> (green≠red ✓), triangle uses three distinct colours ✓. So with one input T, <code>out</code> may be <strong>T or F</strong> — it is only <em>forced</em> to F when <strong>both</strong> inputs are F.</p>
+  <div class="thm-box">Why "can be T" is exactly what we need: later, each clause's final output is <strong>forced</strong> to T (it is joined to <code>F</code> and <code>B</code>, so only the T color is left). That forcing is <em>possible</em> only when the gadget <em>allows</em> <code>out = T</code> — i.e. when at least one input is True. If both inputs were False, <code>out</code> would be forced to F, clashing with the external "must be T," and the whole graph would become <strong>uncolorable</strong>. So a proper coloring exists exactly when every clause has at least one true literal.</div>
   <div class="thm-box">
     If <code>u</code> and <code>v</code> are <strong>both</strong> colored F, then <code>a</code> and <code>b</code> must use the colors of T and B, forcing <code>out</code> to be colored F. If at least one input is colored T, <code>out</code> <strong>can</strong> be colored T.
   </div>
   <div class="q-box">Verify both claims by hand: try every assignment of T/F to <code>u</code> and <code>v</code>, and check which color <code>out</code> is forced into or allowed to take.</div>
+
+  <h3 class="sub-title">Why does this gadget compute OR? — all four cases</h3>
+  <p>Keep two facts in mind: the triangle <code>a–b–out</code> forces <code>a</code>, <code>b</code>, <code>out</code> onto <strong>three different</strong> colors (T, F, B in some order); and the wires force <code>a</code> ≠ color of <code>u</code>, and <code>b</code> ≠ color of <code>v</code>. The inputs <code>u</code>, <code>v</code> are each already colored T or F. Now walk through every possibility:</p>
+  <ul>
+    <li><strong>u = F, v = F.</strong> Then <code>a ≠ F</code> and <code>b ≠ F</code>, so <code>a</code> and <code>b</code> grab the colors T and B (in some order). The triangle's third vertex <code>out</code> must be the leftover color — <strong style="color:#c0395a;">forced to F</strong>.</li>
+    <li><strong>u = T, v = F</strong> (or symmetrically F, T). Now <code>a ≠ T</code> leaves <code>a ∈ {F, B}</code>; choose <code>a = F</code>, <code>b = B</code>, and <code>out</code> is free to be <strong style="color:#1e824c;">T</strong>. (It could also be F — the key point is that T is now <em>allowed</em>.)</li>
+    <li><strong>u = T, v = T.</strong> Then <code>a ≠ T</code> and <code>b ≠ T</code>, so <code>a</code> and <code>b</code> are F and B, and <code>out</code> is <strong style="color:#1e824c;">forced to T</strong>.</li>
+  </ul>
+  <table style="border-collapse:collapse;font-size:.9rem;margin:.5rem auto;">
+    <tr style="background:#f4f9fc;"><th style="border:1px solid #dce3ea;padding:4px 16px;">u</th><th style="border:1px solid #dce3ea;padding:4px 16px;">v</th><th style="border:1px solid #dce3ea;padding:4px 16px;">color of <code>out</code></th></tr>
+    <tr><td style="border:1px solid #dce3ea;padding:4px 16px;text-align:center;">F</td><td style="border:1px solid #dce3ea;padding:4px 16px;text-align:center;">F</td><td style="border:1px solid #dce3ea;padding:4px 16px;text-align:center;color:#c0395a;font-weight:700;">forced to F</td></tr>
+    <tr><td style="border:1px solid #dce3ea;padding:4px 16px;text-align:center;">T</td><td style="border:1px solid #dce3ea;padding:4px 16px;text-align:center;">F</td><td style="border:1px solid #dce3ea;padding:4px 16px;text-align:center;color:#1e824c;">can be T</td></tr>
+    <tr><td style="border:1px solid #dce3ea;padding:4px 16px;text-align:center;">F</td><td style="border:1px solid #dce3ea;padding:4px 16px;text-align:center;">T</td><td style="border:1px solid #dce3ea;padding:4px 16px;text-align:center;color:#1e824c;">can be T</td></tr>
+    <tr><td style="border:1px solid #dce3ea;padding:4px 16px;text-align:center;">T</td><td style="border:1px solid #dce3ea;padding:4px 16px;text-align:center;">T</td><td style="border:1px solid #dce3ea;padding:4px 16px;text-align:center;color:#1e824c;font-weight:700;">forced to T</td></tr>
+  </table>
+  <p>Read the right column as the truth value of <code>out</code>: it is forced to F <strong>only</strong> when both inputs are F, and it can be T whenever at least one input is T. That is exactly the truth table of <strong>OR</strong> (false only when both inputs are false).</p>
+
+  <div class="thm-box">Why this exact design? We needed an "OR" built <em>purely from coloring constraints</em> — no arithmetic, only "these two vertices must differ." A <strong>triangle</strong> is the smallest shape that forces three different colors, which hands us a spare slot to exploit; the two <strong>wires</strong> make <code>a</code> and <code>b</code> depend on the inputs. The whole thing is tuned so that <em>only</em> the all-False case squeezes <code>a</code>, <code>b</code> onto {T, B} and pushes <code>out</code> to F — every other case leaves <code>out</code> free to be T. That single asymmetry is what encodes OR.</div>
+  <div class="note-box">One gadget handles <strong>two</strong> inputs. A clause has three literals, so the next step chains two gadgets: OR the first two literals, then OR that result with the third.</div>
+
   <h3 class="sub-title">Clause gadget</h3>
-  <p>For a 3-literal clause $(\ell_1 \lor \ell_2 \lor \ell_3)$, chain two OR gadgets — <code>o1 = OR(l1, l2)</code>, then <code>o2 = OR(o1, l3)</code> — and <strong>force</strong> <code>o2</code> to be colored T by joining it to both <code>F</code> and <code>B</code>.</p>
+  <p>For a 3-literal clause $(\ell_1 \lor \ell_2 \lor \ell_3)$, chain two OR gadgets — <code>o1 = OR(l1, l2)</code>, then <code>o2 = OR(o1, l3)</code> — and <strong>force</strong> <code>o2</code> to be colored T by joining it to both <code>F</code> and <code>B</code>. Here is what the whole clause gadget looks like:</p>
+  <svg class="gadget" viewBox="0 0 780 420" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="clause gadget: two chained OR gadgets with the output forced to T"><line x1="60" y1="60" x2="190" y2="60" stroke="#9aa6b2" stroke-width="2"/><line x1="60" y1="170" x2="190" y2="170" stroke="#9aa6b2" stroke-width="2"/><line x1="190" y1="60" x2="190" y2="170" stroke="#9aa6b2" stroke-width="2"/><line x1="190" y1="60" x2="300" y2="115" stroke="#9aa6b2" stroke-width="2"/><line x1="190" y1="170" x2="300" y2="115" stroke="#9aa6b2" stroke-width="2"/><line x1="300" y1="115" x2="430" y2="115" stroke="#9aa6b2" stroke-width="2"/><line x1="60" y1="330" x2="430" y2="300" stroke="#9aa6b2" stroke-width="2"/><line x1="430" y1="115" x2="430" y2="300" stroke="#9aa6b2" stroke-width="2"/><line x1="430" y1="115" x2="560" y2="210" stroke="#9aa6b2" stroke-width="2"/><line x1="430" y1="300" x2="560" y2="210" stroke="#9aa6b2" stroke-width="2"/><line x1="560" y1="210" x2="700" y2="150" stroke="#9aa6b2" stroke-width="2"/><line x1="560" y1="210" x2="700" y2="300" stroke="#9aa6b2" stroke-width="2"/><text x="250" y="30" text-anchor="middle" font-size="13" font-style="italic" fill="#888" font-family="Segoe UI,sans-serif">OR(ℓ₁, ℓ₂)</text><text x="500" y="95" text-anchor="middle" font-size="13" font-style="italic" fill="#888" font-family="Segoe UI,sans-serif">OR(o₁, ℓ₃)</text><text x="560" y="360" text-anchor="middle" font-size="13" font-style="italic" fill="#888" font-family="Segoe UI,sans-serif">force o₂ = T  (joined to F and B)</text><circle cx="60" cy="60" r="22" fill="#9b5de5" stroke="#2c3e50" stroke-width="2"/><text x="60" y="64" text-anchor="middle" font-size="13" font-weight="700" fill="#fff" font-family="Segoe UI,sans-serif">ℓ₁</text><circle cx="60" cy="170" r="22" fill="#9b5de5" stroke="#2c3e50" stroke-width="2"/><text x="60" y="174" text-anchor="middle" font-size="13" font-weight="700" fill="#fff" font-family="Segoe UI,sans-serif">ℓ₂</text><circle cx="60" cy="330" r="22" fill="#9b5de5" stroke="#2c3e50" stroke-width="2"/><text x="60" y="334" text-anchor="middle" font-size="13" font-weight="700" fill="#fff" font-family="Segoe UI,sans-serif">ℓ₃</text><circle cx="190" cy="60" r="22" fill="#f4a261" stroke="#2c3e50" stroke-width="2"/><text x="190" y="64" text-anchor="middle" font-size="13" font-weight="700" fill="#fff" font-family="Segoe UI,sans-serif">a₁</text><circle cx="190" cy="170" r="22" fill="#f4a261" stroke="#2c3e50" stroke-width="2"/><text x="190" y="174" text-anchor="middle" font-size="13" font-weight="700" fill="#fff" font-family="Segoe UI,sans-serif">b₁</text><circle cx="300" cy="115" r="22" fill="#2a9d8f" stroke="#2c3e50" stroke-width="2"/><text x="300" y="119" text-anchor="middle" font-size="13" font-weight="700" fill="#fff" font-family="Segoe UI,sans-serif">o₁</text><circle cx="430" cy="115" r="22" fill="#f4a261" stroke="#2c3e50" stroke-width="2"/><text x="430" y="119" text-anchor="middle" font-size="13" font-weight="700" fill="#fff" font-family="Segoe UI,sans-serif">a₂</text><circle cx="430" cy="300" r="22" fill="#f4a261" stroke="#2c3e50" stroke-width="2"/><text x="430" y="304" text-anchor="middle" font-size="13" font-weight="700" fill="#fff" font-family="Segoe UI,sans-serif">b₂</text><circle cx="560" cy="210" r="22" fill="#2a9d8f" stroke="#2c3e50" stroke-width="2"/><text x="560" y="214" text-anchor="middle" font-size="13" font-weight="700" fill="#fff" font-family="Segoe UI,sans-serif">o₂</text><circle cx="700" cy="150" r="22" fill="#e63946" stroke="#2c3e50" stroke-width="2"/><text x="700" y="154" text-anchor="middle" font-size="13" font-weight="700" fill="#fff" font-family="Segoe UI,sans-serif">F</text><circle cx="700" cy="300" r="22" fill="#457b9d" stroke="#2c3e50" stroke-width="2"/><text x="700" y="304" text-anchor="middle" font-size="13" font-weight="700" fill="#fff" font-family="Segoe UI,sans-serif">B</text></svg>
+  <p style="font-size:.85rem;color:#777;">Left to right: the three literals <code>ℓ₁, ℓ₂, ℓ₃</code> feed two chained OR gadgets — first <code>o₁ = OR(ℓ₁, ℓ₂)</code>, then <code>o₂ = OR(o₁, ℓ₃)</code> — and <code>o₂</code> is joined to <code>F</code> and <code>B</code>, which leaves only the T color for it. Colours show each vertex's <strong>role</strong> (purple = literal, orange = gadget helper, teal = output); <code>F</code> and <code>B</code> are the fixed base anchors. One whole clause adds the 6 helper/output vertices <code>a₁ b₁ o₁ a₂ b₂ o₂</code> — that is the <code>6C</code> in the vertex count.</p>
   <div class="thm-box">If every literal of a clause were colored F, its <code>o2</code> would be forced to F — impossible. So <strong>any</strong> proper 3-coloring of $G_\varphi$ hands us a satisfying assignment: read off which literals share T's color.</div>
 </section>
 
@@ -204,6 +468,32 @@ print("Setup OK — networkx", nx.__version__)</code></div>
     return lit[1:] if lit.startswith("~") else "~" + lit
 
 assert neg("x") == "~x" and neg("~x") == "x"</code></div>
+</section>
+
+<section class="slide">
+  <h2 class="frame-title">How the graph $G_\varphi$ is built — step by step</h2>
+  <p>The construction is mechanical: scan the formula and glue together three kinds of pieces. Here is the whole recipe, with the running example $\varphi = (x \lor y \lor z)$ so you can match every edge to the drawing earlier.</p>
+
+  <h3 class="sub-title">Step 1 — one base triangle (added once)</h3>
+  <p>Add vertices <code>T</code>, <code>F</code>, <code>B</code> and join all three pairs:</p>
+  <p style="font-family:'Consolas',monospace;font-size:.9rem;color:#1f4e7a;background:#f4f9fc;padding:.45rem .7rem;border-radius:4px;">T – F &nbsp;&nbsp; T – B &nbsp;&nbsp; F – B</p>
+  <p>This fixes what the three colors mean (already written for you in the skeleton).</p>
+
+  <h3 class="sub-title">Step 2 — one variable triangle per variable</h3>
+  <p>Collect the variables of the formula (here <code>x</code>, <code>y</code>, <code>z</code>). For each variable <code>v</code> add <code>v</code> and <code>~v</code> with the edges <code>v–~v</code>, <code>v–B</code>, <code>~v–B</code>. For the example:</p>
+  <p style="font-family:'Consolas',monospace;font-size:.9rem;color:#1f4e7a;background:#f4f9fc;padding:.45rem .7rem;border-radius:4px;">x – ~x &nbsp; x – B &nbsp; ~x – B &nbsp;|&nbsp; y – ~y &nbsp; y – B &nbsp; ~y – B &nbsp;|&nbsp; z – ~z &nbsp; z – B &nbsp; ~z – B</p>
+  <p>Each literal is now forced to the T or F color, and <code>v</code>, <code>~v</code> always end up opposite (also given in the skeleton).</p>
+
+  <h3 class="sub-title">Step 3 — one clause gadget per clause &nbsp;<span style="color:var(--orange);font-size:.85rem;">(this is your Task&nbsp;1)</span></h3>
+  <p>A clause $(\ell_1 \lor \ell_2 \lor \ell_3)$ becomes two chained OR gadgets, then a "force True" step. For the clause $(x \lor y \lor z)$, with $\ell_1=x,\ \ell_2=y,\ \ell_3=z$:</p>
+  <ul>
+    <li><strong>First OR gadget</strong> <code>o₁ = OR(x, y)</code> — fresh vertices <code>a₁, b₁, o₁</code>: triangle <code>a₁–b₁</code>, <code>a₁–o₁</code>, <code>b₁–o₁</code>, plus input wires <code>a₁–x</code> and <code>b₁–y</code>.</li>
+    <li><strong>Second OR gadget</strong> <code>o₂ = OR(o₁, z)</code> — fresh vertices <code>a₂, b₂, o₂</code>: triangle <code>a₂–b₂</code>, <code>a₂–o₂</code>, <code>b₂–o₂</code>, plus wires <code>a₂–o₁</code> (the previous output) and <code>b₂–z</code> (the third literal).</li>
+    <li><strong>Force the output True</strong> — add <code>o₂–F</code> and <code>o₂–B</code>, so <code>o₂</code> can only take the T color.</li>
+  </ul>
+  <div class="thm-box">That is the whole graph: $3$ (base) $+\ 2{\cdot}3$ (literals) $+\ 6{\cdot}1$ (two gadgets) $=$ <strong>15 vertices</strong> — exactly the picture earlier. Steps 1–2 are already in the skeleton; in Task 1 you turn Step 3 into <code>add_edge</code> calls (write <code>or_gadget</code>, call it twice per clause, then add the two "force" edges).</div>
+
+  <div style="background:#e8f5ec;border-left:4px solid #27ae60;border-radius:6px;padding:.6rem .9rem;margin:.6rem 0;"><strong style="color:#1e824c;">Reading it back — </strong>once $G_\varphi$ is properly 3-colored, a variable is <em>True</em> iff its vertex has the same color as <code>T</code>. Each clause's forced-T output <code>o₂</code> guarantees that clause has at least one true literal — which is why a valid coloring exists <strong>exactly when</strong> the formula is satisfiable.</div>
 </section>
 
 <section class="slide">
@@ -234,10 +524,61 @@ assert neg("x") == "~x" and neg("~x") == "x"</code></div>
         #        by joining it to "F" and to "B".
         raise NotImplementedError
     return G</code></div>
+  <p style="margin-top:.6rem;">Run this cell to check your <code>build_sat_graph</code> — it tests the graph's <strong>structure only</strong>, so you can verify Task 1 before doing Task 2. It assumes the tag naming from the comments (<code>tag+'a'</code>, <code>tag+'b'</code>, <code>tag+'o'</code>; clause tags <code>f"c{i}_1"</code>, <code>f"c{i}_2"</code>).</p>
+  <div class="output-block"><span class="pane-label">Self-test · Task 1 (no 3-colouring needed)</span><code class="pane-code">def _adj(G, a, b):                       # undirected edge present?
+    return b in G.get(a, []) and a in G.get(b, [])
+
+PHI1 = [("x", "y", "z")]
+G1 = build_sat_graph(PHI1)
+
+# 1) base triangle T - F - B
+assert _adj(G1, "T", "F") and _adj(G1, "T", "B") and _adj(G1, "F", "B"), "base triangle missing"
+
+# 2) a variable triangle  x -- ~x -- B  for every variable
+for x in ("x", "y", "z"):
+    assert _adj(G1, x, neg(x)) and _adj(G1, x, "B") and _adj(G1, neg(x), "B"), f"variable triangle for {x} is wrong"
+
+# 3) number of vertices = 3 (base) + 2*V (literals) + 6*C (two OR gadgets per clause)
+V, C = 3, 1
+assert len(G1) == 3 + 2*V + 6*C, f"expected {3 + 2*V + 6*C} vertices, got {len(G1)}"
+
+# 4) first OR gadget of clause 0: triangle a-b-o, wires a-l1 and b-l2
+a, b, o = "c0_1a", "c0_1b", "c0_1o"
+assert _adj(G1, a, b) and _adj(G1, a, o) and _adj(G1, b, o), "OR-gadget triangle a-b-o is broken"
+assert _adj(G1, a, "x"), "wire a-u missing (first input l1)"
+assert _adj(G1, b, "y"), "wire b-v missing (second input l2)"
+
+# 5) second gadget chains the first output, takes l3, output forced toward T (joined to F and B)
+assert _adj(G1, "c0_2a", "c0_1o"), "second gadget not chained to the first output o1"
+assert _adj(G1, "c0_2b", "z"),     "third literal l3 not wired into the second gadget"
+assert _adj(G1, "c0_2o", "F") and _adj(G1, "c0_2o", "B"), "clause output must be joined to F and B"
+
+# 6) no duplicated neighbours (add_edge must not double-insert)
+for u in G1:
+    assert len(G1[u]) == len(set(G1[u])), f"duplicate neighbour stored for {u}"
+
+# 7) vertex-count formula on a 2-clause formula
+G2 = build_sat_graph([("x", "y", "z"), ("~x", "~y", "z")])
+assert len(G2) == 3 + 2*3 + 6*2     # V=3, C=2  -> 21 vertices
+
+print("Task 1 ✔  build_sat_graph has the right structure")</code></div>
 </section>
 
 <section class="slide">
   <h2 class="frame-title"><span style="color:var(--orange)">Task 2</span> — The 3-coloring solver</h2>
+  <h3 class="sub-title">How the solver works — it is recursive (backtracking)</h3>
+  <p>The 3-coloring solver is <strong>recursive</strong>, not a plain loop: it is a <em>backtracking search</em>. It colors the vertices one at a time, and whenever it gets stuck it <strong>undoes</strong> its last choice and tries another. The idea, step by step:</p>
+  <ol>
+    <li><strong>Fix an order</strong> of the vertices — here by <em>decreasing degree</em>, so the most constrained vertices (most neighbours) are handled first. That makes dead ends show up sooner and prunes the search.</li>
+    <li><strong>Colour one vertex at a time.</strong> For the current vertex <code>nodes[i]</code>, try each colour <code>c ∈ {0, 1, 2}</code> in turn.</li>
+    <li><strong>Check it is safe:</strong> colour <code>c</code> is allowed only if <em>no already-coloured neighbour</em> of <code>nodes[i]</code> already uses <code>c</code>.</li>
+    <li><strong>Assign and recurse.</strong> If <code>c</code> is safe, set <code>color[nodes[i]] = c</code> and call <code>backtrack(i + 1)</code> to colour the next vertex.</li>
+    <li><strong>Backtrack on failure.</strong> If that recursive call fails, <em>undo</em> the choice (<code>del color[nodes[i]]</code>) and try the next colour. If <em>no</em> colour works, return <code>False</code> — and the caller backtracks in turn.</li>
+    <li><strong>Base case (success).</strong> When <code>i == len(nodes)</code>, every vertex is coloured — return <code>True</code>.</li>
+  </ol>
+  <div class="thm-box">It is a depth-first search over partial colourings. <code>backtrack(0)</code> returns <code>True</code> exactly when a full proper 3-colouring exists — and then the <code>color</code> dict holds it. If the search exhausts every option, the graph is <strong>not</strong> 3-colourable and <code>three_color</code> returns <code>None</code>.</div>
+  <div class="note-box">Why recursion fits: each "pick a colour, then solve the rest" step is naturally the function calling itself on the next vertex; the call stack remembers the partial colouring, so undoing a choice is automatic. (3-colouring is NP-hard, so this can be slow in the worst case — but it is fast on the small graphs here.)</div>
+
   <div class="task-box">Write the backtracking inside <code>three_color</code>: when <code>i == len(nodes)</code> you are done; otherwise try each color <code>c</code> in 0, 1, 2 that no already-colored neighbor of <code>nodes[i]</code> uses, assign it, recurse, and undo on failure.</div>
   <div class="python-block"><span class="pane-label">Python · your turn</span><code class="pane-code">def three_color(G):
     """A proper 3-coloring of G as a dict {vertex: 0, 1 or 2}, or None if impossible.
@@ -252,10 +593,55 @@ assert neg("x") == "~x" and neg("~x") == "x"</code></div>
         raise NotImplementedError
 
     return color if backtrack(0) else None</code></div>
+  <p style="margin-top:.6rem;">Run this to check <code>three_color</code> on small graphs (no SAT construction needed): a triangle, a non-3-colourable <code>K₄</code>, a path, and a satisfiable formula's graph.</p>
+  <div class="output-block"><span class="pane-label">Self-test · Task 2 (three_color)</span><code class="pane-code">def _proper(G, c):                        # proper colouring? (and not None)
+    return c is not None and all(c[u] != c[v] for u in G for v in G[u])
+
+# a triangle IS 3-colourable, and uses all three colours
+tri = {}
+add_edge(tri, "p", "q"); add_edge(tri, "p", "r"); add_edge(tri, "q", "r")
+c = three_color(tri)
+assert _proper(tri, c), "the triangle should be properly 3-coloured"
+assert len(set(c.values())) == 3, "a triangle needs all three colours"
+
+# K4 (every pair joined) is NOT 3-colourable -> None
+K4 = {}
+vs = ["a", "b", "c", "d"]
+for i in range(4):
+    for j in range(i + 1, 4):
+        add_edge(K4, vs[i], vs[j])
+assert three_color(K4) is None, "K4 cannot be 3-coloured"
+
+# a path (bipartite) is 3-colourable
+path = {}
+add_edge(path, 1, 2); add_edge(path, 2, 3); add_edge(path, 3, 4)
+assert _proper(path, three_color(path))
+
+# on the SAT graph of a satisfiable formula, a proper colouring must exist
+Gs = build_sat_graph([("x", "y", "z")])
+assert _proper(Gs, three_color(Gs)), "satisfiable formula -> a 3-colouring must exist"
+
+print("Task 2 ✔  three_color gives proper 3-colourings (and None when impossible)")</code></div>
 </section>
 
 <section class="slide">
   <h2 class="frame-title"><span style="color:var(--orange)">Task 3</span> — Decode the assignment</h2>
+  <h3 class="sub-title">What <code>decode</code> does — precisely</h3>
+  <p><code>decode(coloring, formula)</code> turns a finished 3-coloring back into a True/False assignment of the variables.</p>
+  <ul>
+    <li><strong>Input:</strong> <code>coloring</code> — a dict <code>{vertex: 0 / 1 / 2}</code> (a <em>proper</em> 3-coloring of the SAT graph) — and the <code>formula</code> it was built from.</li>
+    <li><strong>Output:</strong> a dict <code>{variable: bool}</code>, one True/False value per variable.</li>
+    <li><strong>The rule:</strong> a variable <code>x</code> is <strong>True</strong> if and only if its vertex has the <em>same color as the vertex</em> <code>'T'</code> — that is, <code>coloring[x] == coloring["T"]</code>; otherwise it is <strong>False</strong>.</li>
+  </ul>
+  <p><strong>How it computes that, step by step:</strong></p>
+  <ol>
+    <li><strong>List the variables.</strong> Strip the <code>~</code> off every literal in every clause (<code>lit.lstrip("~")</code>) and keep the distinct names — these are the variables <code>x, y, z, …</code> (with no negation).</li>
+    <li><strong>Read each one off the colors.</strong> For every variable <code>x</code>, set <code>assignment[x] = (coloring[x] == coloring["T"])</code>.</li>
+    <li><strong>Return</strong> the resulting dict <code>{x: True/False, …}</code>.</li>
+  </ol>
+  <div class="thm-box">Why this is correct: the variable triangle forced each literal vertex onto either the <strong>T color</strong> or the <strong>F color</strong>. So <code>x</code>'s color is exactly one of those two, and comparing it to <code>coloring["T"]</code> reads off its truth value. Only the <em>positive</em> vertex <code>x</code> is needed — its partner <code>~x</code> automatically received the opposite color.</div>
+  <div class="note-box">Two things to be careful about: (1) compare against <code>coloring["T"]</code>, <strong>not</strong> the literal number <code>0</code> — the solver may assign the colors 0/1/2 to T, F, B in <em>any</em> order. (2) The keys of the returned dict are variable names <em>without</em> <code>~</code>, and the values are Python booleans (<code>True</code>/<code>False</code>).</div>
+
   <div class="task-box">Write <code>decode</code>: a variable is True iff its vertex has the same color as vertex <code>'T'</code>. Return a dict <code>{variable: bool}</code>. (<code>evaluate</code> is provided — no work there.)</div>
   <div class="python-block"><span class="pane-label">Python · your turn</span><code class="pane-code">def decode(coloring, formula):
     """Read the truth assignment off a 3-coloring of the SAT graph:
@@ -268,6 +654,22 @@ def evaluate(formula, assignment):
     def value(lit):
         return not assignment[lit[1:]] if lit.startswith("~") else assignment[lit]
     return all(any(value(lit) for lit in clause) for clause in formula)</code></div>
+  <p style="margin-top:.6rem;">Run this to check <code>decode</code>: first on a hand-made colouring with a known answer, then end-to-end (build → colour → decode → the assignment must satisfy the formula).</p>
+  <div class="output-block"><span class="pane-label">Self-test · Task 3 (decode)</span><code class="pane-code"># a hand-made colouring (take T=0, F=1, B=2): x shares T, y shares F, z shares T
+fake = {"T": 0, "F": 1, "B": 2, "x": 0, "~x": 1, "y": 1, "~y": 0, "z": 0, "~z": 1}
+PHI_d = [("x", "y", "z"), ("~x", "y", "z")]
+asg = decode(fake, PHI_d)
+assert asg == {"x": True, "y": False, "z": True}, f"decode misread the colouring: {asg}"
+assert set(asg) == {"x", "y", "z"}, "keys must be the variables (no '~')"
+assert all(isinstance(b, bool) for b in asg.values()), "values must be True / False"
+
+# end to end: build -> colour -> decode -> the assignment must satisfy the formula
+G_d = build_sat_graph(PHI_d)
+col_d = three_color(G_d)
+assert col_d is not None, "PHI_d is satisfiable, so a colouring must exist"
+assert evaluate(PHI_d, decode(col_d, PHI_d)), "decoded assignment must satisfy the formula"
+
+print("Task 3 ✔  decode reads a satisfying assignment off the colouring")</code></div>
 </section>
 
 <section class="slide">
@@ -319,7 +721,32 @@ print("Reduction matches a brute-force solver on 100 random formulas ✔")</code
     <li>Your completed <code>build_sat_graph</code>, <code>three_color</code> and <code>decode</code>, with the test cell printing <em>Challenge ✔</em>.</li>
     <li>Your paper verification of the OR-gadget claims (the two "Check on paper" boxes).</li>
     <li>A short note: how many vertices and edges does $G_\varphi$ have as a function of the number of variables and clauses?</li>
+    <li>A short <strong>reflection</strong> (a few sentences) answering the questions in the next section.</li>
   </ul>
+</section>
+
+<section class="slide">
+  <h2 class="frame-title">Reflection — what did you take away?</h2>
+  <p>Before moving on, write a few sentences on each prompt below. There is no single right answer — the point is to connect this one project to the bigger picture.</p>
+
+  <h3 class="sub-title">From this problem (3-SAT as colouring)</h3>
+  <ul>
+    <li>A hard <em>logic</em> question ("is this formula satisfiable?") turned into a hard <em>picture</em> question ("can this graph be 3-coloured?"). What does it mean that two such different-looking problems are really the <strong>same</strong> problem?</li>
+    <li>The whole graph was assembled from a few tiny, reusable <strong>gadgets</strong> (a base triangle, a variable gadget, an OR gadget). Why is building complex behaviour out of small, well-understood pieces so powerful — in mathematics and in programming?</li>
+    <li>Your solver can take exponential time to <em>find</em> a colouring, yet <em>checking</em> a finished colouring is instant. Why is it often easy to verify a solution but hard to find one? (That gap is the heart of the famous <strong>P vs NP</strong> question.)</li>
+    <li>What is a <strong>reduction</strong>, in your own words, and why does turning problem A into problem B let us carry knowledge — difficulty, algorithms — from one to the other?</li>
+  </ul>
+
+  <h3 class="sub-title">From discrete mathematics in general</h3>
+  <ul>
+    <li><strong>Modelling.</strong> You turned an English question into precise objects — first a formula, then a graph. Where else have you had to translate a real question into a clean mathematical structure?</li>
+    <li><strong>Definitions &amp; proof by construction.</strong> Each gadget came with a one-line argument ("a triangle forces three colours"). How does starting from careful definitions make the later reasoning almost automatic?</li>
+    <li><strong>Connections.</strong> This single project touched <em>logic</em> (SAT), <em>graph theory</em> (colouring), <em>algorithms</em> (backtracking) and <em>programming</em> (your Python). Discrete maths is full of such bridges — which connection surprised you most?</li>
+    <li><strong>From maths to code.</strong> You did not just argue that a colouring <em>exists</em> — you built the graph and ran a solver. How did implementing the idea change or deepen your understanding of it?</li>
+  </ul>
+
+  <div style="background:#e8f5ec;border-left:4px solid #27ae60;border-radius:6px;padding:.6rem .9rem;margin:.6rem 0;line-height:1.65;"><strong style="color:#1e824c;">In a nutshell — </strong> discrete mathematics gives you both a <em>language</em> (sets, logic, relations, functions, graphs) and a set of <em>habits of mind</em> — define precisely, build from small pieces, reduce one problem to another, then compute — that let you model and solve problems across all of computer science. This project used every one of those at once.</div>
+
   <p><a class="back-link" href="Lab1_Graphs_student.html">← back to Lab 1</a></p>
 </section>
 

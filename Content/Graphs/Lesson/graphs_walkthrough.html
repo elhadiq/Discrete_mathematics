@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Graph Algorithms — Step-by-Step Walkthrough</title>
+<script>
+  MathJax = {
+    tex: { inlineMath: [['$','$']], displayMath: [['$$','$$']], processEscapes: true },
+    options: { skipHtmlTags: ['script','noscript','style','textarea'] }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --orange:    #e67e22;
+  --darkblue:  #2c3e50;
+  --lightbg:   #f4f9fc;
+  --rowred:    #ffe8e8;
+  --rowblue:   #e3eeff;
+  --border:    #dce3ea;
+  --py-fg:     #1f4e7a;
+  --py-bg:     #eaf3fb;
+  --py-border: #2a6fb3;
+  --py-head:   #2a6fb3;
+  --sp-fg:     #1e824c;
+  --sp-bg:     #e8f5ec;
+  --sp-border: #27ae60;
+  --sp-head:   #27ae60;
+  --su-fg:     #4a4aaa;
+  --su-bg:     #eeeeff;
+  --su-border: #6060cc;
+  --su-head:   #6060cc;
+  --out-fg:    #6e4b0a;
+  --out-bg:    #fff7e0;
+  --out-border:#e0b341;
+  --out-head:  #c89324;
+}
+
+body {
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  background: #e8edf2;
+  color: var(--darkblue);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem 1rem 5rem;
+  gap: 2rem;
+}
+
+.slide {
+  background: #fff;
+  width: 100%;
+  max-width: 940px;
+  border-radius: 10px;
+  box-shadow: 0 4px 18px rgba(0,0,0,.10);
+  padding: 2.2rem 2.8rem 1.8rem;
+  position: relative;
+}
+.slide-number {
+  position: absolute;
+  bottom: 0.7rem;
+  right: 1.2rem;
+  font-size: 0.72rem;
+  color: #aaa;
+}
+
+.slide.title-slide {
+  background: linear-gradient(145deg, #f4f9fc 60%, #e0eef7);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 240px;
+  text-align: center;
+  border-top: 6px solid var(--orange);
+}
+.slide.title-slide h1 { font-size: 1.85rem; color: var(--darkblue); margin-bottom: 0.4rem; }
+.slide.title-slide .subtitle { font-size: 1.1rem; color: #555; }
+
+.part-slide {
+  background: linear-gradient(145deg, #fdf3e7 60%, #f9e4cc);
+  text-align: center;
+  border-left: 6px solid var(--orange);
+}
+.part-slide .part-label {
+  font-size: .85rem; letter-spacing: .2em; text-transform: uppercase;
+  color: var(--orange); font-weight: 700;
+}
+.part-slide h2 { color: var(--darkblue); font-size: 1.7rem; margin: 0.5rem 0; }
+.part-slide p  { color: #666; }
+
+h2.frame-title {
+  font-size: 1.45rem;
+  color: var(--orange);
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  padding-bottom: 0.35rem;
+  border-bottom: 2px solid #f9e4cc;
+}
+h3.sub-title {
+  font-size: 1.02rem;
+  color: var(--orange);
+  font-weight: 600;
+  margin: 0.7rem 0 0.3rem;
+}
+
+p { line-height: 1.65; margin: 0.4rem 0; }
+ul, ol { margin: 0.35rem 0 0.35rem 1.4rem; line-height: 1.75; }
+ul li::marker, ol li::marker { color: var(--orange); }
+code { background: #f0f3f7; color: #1f4e7a; padding: 0 .25em; border-radius: 3px; font-family: 'Consolas','Fira Code',monospace; }
+
+.note-box, .def-box, .thm-box, .proof-box, .ex-box, .ce-box, .cor-box, .aside-box {
+  border-radius: 6px;
+  padding: 0.6rem 0.9rem;
+  margin: 0.5rem 0;
+  line-height: 1.65;
+}
+.note-box  { background: #fff5e8; border-left: 4px solid var(--orange); font-style: italic; }
+.def-box   { background: #eaf3fb; border-left: 4px solid var(--py-border); }
+.def-box::before  { content: "Definition. "; font-weight: 700; color: var(--py-border); }
+.thm-box   { background: #fff7e0; border-left: 4px solid var(--out-border); }
+.thm-box::before  { content: "Theorem. "; font-weight: 700; color: var(--out-head); }
+.cor-box   { background: #fff7e0; border-left: 4px solid var(--out-border); }
+.cor-box::before  { content: "Corollary. "; font-weight: 700; color: var(--out-head); }
+.proof-box { background: #f4f9fc; border-left: 4px solid var(--darkblue); }
+.proof-box::before { content: "Proof. "; font-weight: 700; color: var(--darkblue); }
+.ex-box    { background: #e8f5ec; border-left: 4px solid var(--sp-border); }
+.ex-box::before    { content: "Example. "; font-weight: 700; color: var(--sp-border); }
+.ce-box    { background: #ffe8e8; border-left: 4px solid #c0395a; }
+.ce-box::before    { content: "Counter-example. "; font-weight: 700; color: #c0395a; }
+.aside-box { background: #eef1ff; border-left: 4px solid #6060cc; font-size: 0.92rem; }
+.aside-box::before { content: "Note. "; font-weight: 700; color: #6060cc; }
+
+.python-block, .setup-block, .sympy-block, .output-block {
+  border-radius: 6px;
+  overflow: hidden;
+  margin: 0.5rem 0;
+  border: 1px solid;
+}
+.pane-label {
+  display: block;
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 2px 10px;
+  color: #fff;
+}
+.pane-code {
+  font-family: 'Consolas','Fira Code',monospace;
+  font-size: 0.8rem;
+  line-height: 1.55;
+  padding: 0.5rem 0.75rem;
+  white-space: pre;
+  display: block;
+  overflow-x: auto;
+}
+.python-block { border-color: var(--py-border); }
+.python-block .pane-label { background: var(--py-head); }
+.python-block .pane-code  { background: var(--py-bg); color: var(--py-fg); }
+.output-block { border-color: var(--out-border); }
+.output-block .pane-label { background: var(--out-head); }
+.output-block .pane-code  { background: var(--out-bg); color: var(--out-fg); }
+
+.ref-table {
+  border-collapse: collapse;
+  margin: 0.5rem auto;
+  font-size: 0.88rem;
+  width: 100%;
+}
+.ref-table th, .ref-table td {
+  border: 1px solid var(--border);
+  padding: 0.35rem 0.65rem;
+  text-align: left;
+  vertical-align: top;
+}
+.ref-table th { background: var(--lightbg); font-weight: 600; color: var(--darkblue); }
+.center td, .center th { text-align: center; }
+
+/* Graph SVG illustrations */
+svg.graph-svg { display: block; margin: 0.5rem auto; max-width: 100%; }
+.svg-node { fill: #fff; stroke: var(--darkblue); stroke-width: 2; }
+.svg-node-label { font-size: 14px; font-family: 'Segoe UI', sans-serif; fill: var(--darkblue); font-weight: 700; }
+.svg-edge { stroke: var(--orange); stroke-width: 2; fill: none; }
+.svg-arrow { fill: var(--orange); }
+.svg-edge-label { font-size: 11px; fill: #555; }
+
+#nav { position: fixed; bottom: 1.5rem; right: 1.5rem; display: flex; gap: 0.4rem; z-index: 100; }
+#nav button {
+  background: var(--orange); color: #fff; border: none;
+  border-radius: 50%; width: 40px; height: 40px;
+  font-size: 1.1rem; cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,.25); transition: background .2s;
+}
+#nav button:hover { background: #cf6d17; }
+#nav #btn-scroll { border-radius: 20px; width: auto; padding: 0 12px; font-size: 0.8rem; }
+
+body.slideshow .slide        { display: none; }
+body.slideshow .slide.active { display: block; }
+
+.ref-cite { color: #777; font-size: 0.83rem; font-style: italic; }
+
+.wt-real{background:#eaf3fb;border-left:4px solid #2a6fb3;border-radius:6px;padding:.6rem .9rem;margin:.6rem 0;line-height:1.6;}
+.wt-real::before{content:"🌍 Real-life example — ";font-weight:700;color:#1f4e7a;}
+.wt-good{background:#e8f5ec;border-left:4px solid #27ae60;border-radius:6px;padding:.6rem .9rem;margin:.6rem 0;line-height:1.6;}
+.wt-good::before{content:"✓ Good when — ";font-weight:700;color:#1e824c;}
+.wt-bad{background:#ffe8e8;border-left:4px solid #c0395a;border-radius:6px;padding:.6rem .9rem;margin:.6rem 0;line-height:1.6;}
+.wt-bad::before{content:"✗ Poor choice / fails when — ";font-weight:700;color:#c0395a;}
+.trace-table{border-collapse:collapse;margin:.6rem 0;font-size:.76rem;width:100%;display:block;overflow-x:auto;}
+.trace-table caption{caption-side:top;text-align:left;font-size:.8rem;color:#555;margin-bottom:.35rem;font-style:italic;}
+.trace-table th,.trace-table td{border:1px solid var(--border);padding:.28rem .5rem;text-align:left;vertical-align:top;font-family:'Consolas','Fira Code',monospace;white-space:nowrap;}
+.trace-table th{background:var(--lightbg);color:var(--darkblue);font-weight:700;}
+.trace-table tbody tr:nth-child(even){background:#fafcfe;}
+.legend-box{background:#f4f9fc;border:1px solid var(--border);border-radius:6px;padding:.5rem .8rem;margin:.5rem 0;font-size:.82rem;line-height:1.8;}
+</style>
+</head>
+<body>
+
+<!-- Title -->
+<section class="slide title-slide">
+  <h1>Graph Algorithms — Step-by-Step</h1>
+  <p class="subtitle">Discrete Mathematics — Walkthrough Track · real-life examples, full execution traces, good &amp; bad cases</p>
+  <p style="font-size:1rem;color:#e67e22;margin-top:0.8rem;font-style:italic;font-weight:600;letter-spacing:.02em;">Notes By Pr. El Hadiq Zouhair</p>
+  <span class="slide-number">1 / 14</span>
+</section>
+
+<!-- How to read -->
+<section class="slide">
+  <h2 class="frame-title">How to read this walkthrough</h2>
+  <p>Eight core algorithms, each presented the same way so you really <em>understand</em> what happens inside:</p>
+  <ul>
+    <li><strong>🌍 Real-life example</strong> — a concrete situation the algorithm solves.</li>
+    <li><strong>Idea &amp; Python</strong> — what it does and a short implementation.</li>
+    <li><strong>Execution trace</strong> — the value of every variable (queue, stack, dist, in-degree, heap, colours…) <em>at each iteration and each recursion</em>, on a real example.</li>
+    <li><strong>✓ Good when / ✗ Poor choice</strong> — the situations where the algorithm shines and where it gives a wrong or slow answer (with a trace of the failure).</li>
+  </ul>
+  <p>Algorithms covered: BFS · DFS · Topological sort · Bipartite check · Dijkstra · Bellman–Ford · Minimum Spanning Tree (Kruskal &amp; Prim) · Greedy colouring.</p>
+</section>
+
+<!-- ============================ BFS ============================ -->
+<section class="slide">
+  <h2 class="frame-title">1. Breadth-First Search (BFS)</h2>
+  <div class="wt-real">how many introductions away is one person from another in a small group? BFS finds the shortest chain of friendships ("degrees of separation").</div>
+  <p><strong>Idea.</strong> Explore layer by layer from the source using a FIFO <code>queue</code>. The first time a vertex is reached, the number of edges used is its shortest (hop) distance — so it is final immediately.</p>
+  <div class="python-block"><span class="pane-label">Python — BFS</span><span class="pane-code">from collections import deque
+
+def bfs(G, s):
+    dist, parent = {s: 0}, {s: None}
+    q = deque([s])
+    while q:
+        u = q.popleft()                 # take the oldest frontier vertex
+        for v in G[u]:
+            if v not in dist:           # first time seen = shortest
+                dist[v] = dist[u] + 1
+                parent[v] = u
+                q.append(v)
+    return dist, parent</span></div>
+  <p><strong>Example graph.</strong> Friendships: Ana–Bilal, Ana–Carla, Bilal–Diego, Carla–Diego, Carla–Eva, Diego–Farah. We run <code>bfs(G, "Ana")</code> and watch the queue and <code>dist</code> at every dequeue:</p>
+  <table class="trace-table"><caption>BFS from Ana — the queue holds the current frontier; dist is final the moment a vertex is dequeued.</caption><thead><tr><th>Step</th><th>Dequeue u</th><th>Discovered (v:dist)</th><th>Queue after</th><th>dist</th></tr></thead><tbody><tr><td>0</td><td>— (init)</td><td>—</td><td>[Ana]</td><td>{Ana:0}</td></tr><tr><td>1</td><td>Ana</td><td>Bilal:1, Carla:1</td><td>[Bilal, Carla]</td><td>{Ana:0, Bilal:1, Carla:1}</td></tr><tr><td>2</td><td>Bilal</td><td>Diego:2</td><td>[Carla, Diego]</td><td>{Ana:0, Bilal:1, Carla:1, Diego:2}</td></tr><tr><td>3</td><td>Carla</td><td>Eva:2</td><td>[Diego, Eva]</td><td>{Ana:0, Bilal:1, Carla:1, Diego:2, Eva:2}</td></tr><tr><td>4</td><td>Diego</td><td>Farah:3</td><td>[Eva, Farah]</td><td>{Ana:0, Bilal:1, Carla:1, Diego:2, Eva:2, Farah:3}</td></tr><tr><td>5</td><td>Eva</td><td>—</td><td>[Farah]</td><td>{Ana:0, Bilal:1, Carla:1, Diego:2, Eva:2, Farah:3}</td></tr><tr><td>6</td><td>Farah</td><td>—</td><td>[]</td><td>{Ana:0, Bilal:1, Carla:1, Diego:2, Eva:2, Farah:3}</td></tr></tbody></table>
+  <div class="wt-good">edges are all equal (one "hop"): shortest social distance, maze with unit steps, fewest-transfers metro route, network broadcast, puzzles solved in fewest moves. Always $O(n+m)$.</div>
+  <div class="wt-bad">edges have <em>different</em> costs. BFS counts hops, not weight, so on a weighted map it can return a path that uses fewer edges but costs more — use Dijkstra instead.</div>
+  <table class="trace-table"><caption>BFS counts hops, not weight: it would pick A→C (1 hop, cost 20) over the cheaper A→B→C (cost 11).</caption><thead><tr><th>Path</th><th>BFS sees</th><th>Real cost</th></tr></thead><tbody><tr><td>A→C direct</td><td>1 hop</td><td>20 (expensive)</td></tr><tr><td>A→B→C</td><td>2 hops</td><td>5 + 6 = 11 (cheaper)</td></tr></tbody></table>
+  <span class="slide-number">2 / 14</span>
+</section>
+
+<!-- ============================ DFS ============================ -->
+<section class="slide">
+  <h2 class="frame-title">2. Depth-First Search (DFS)</h2>
+  <div class="wt-real">exploring all rooms of a maze (or all folders in a file tree): go as deep as you can, then back up and try the next branch.</div>
+  <p><strong>Idea.</strong> Dive deep before backtracking. Iteratively this uses an explicit <code>stack</code> (LIFO); recursively it uses the function call stack. Great for reachability, connected components and cycle detection.</p>
+  <div class="python-block"><span class="pane-label">Python — iterative (stack) &amp; recursive</span><span class="pane-code">def dfs_iter(G, s):
+    seen, stack = set(), [s]
+    while stack:
+        u = stack.pop()                 # LIFO → go deep
+        if u not in seen:
+            seen.add(u)
+            stack.extend(v for v in G[u] if v not in seen)
+    return seen
+
+def dfs_rec(G, u, seen=None):
+    if seen is None: seen = set()
+    seen.add(u)
+    for v in G[u]:
+        if v not in seen:
+            dfs_rec(G, v, seen)         # recursion = implicit stack
+    return seen</span></div>
+  <p><strong>Iterative trace</strong> on the maze <code>a–b, a–c, b–d, c–d, d–e</code> (the explicit stack):</p>
+  <table class="trace-table"><caption>Iterative DFS from a — the explicit stack replaces the call stack; LIFO order makes it dive deep first.</caption><thead><tr><th>Step</th><th>Action</th><th>Pushed</th><th>Stack after</th><th>Visited</th></tr></thead><tbody><tr><td>0</td><td>— (init)</td><td>—</td><td>[a]</td><td>{}</td></tr><tr><td>1</td><td>pop a</td><td>push [b, c]</td><td>[b, c]</td><td>[a]</td></tr><tr><td>2</td><td>pop c</td><td>push [d]</td><td>[b, d]</td><td>[a, c]</td></tr><tr><td>3</td><td>pop d</td><td>push [b, e]</td><td>[b, b, e]</td><td>[a, c, d]</td></tr><tr><td>4</td><td>pop e</td><td>—</td><td>[b, b]</td><td>[a, c, d, e]</td></tr><tr><td>5</td><td>pop b</td><td>—</td><td>[b]</td><td>[a, b, c, d, e]</td></tr><tr><td>6</td><td>pop b</td><td>already seen → skip</td><td>[]</td><td>[a, b, c, d, e]</td></tr></tbody></table>
+  <p><strong>Recursive trace</strong> on the same graph — watch the call stack grow on <em>enter</em> and unwind on <em>finish</em> (a primed step number marks the backtrack):</p>
+  <table class="trace-table"><caption>Recursive DFS from a — note how the call stack grows on 'enter' and unwinds on 'finish' (backtracking).</caption><thead><tr><th>Step</th><th>Event</th><th>Call stack</th><th>Visited</th></tr></thead><tbody><tr><td>1</td><td>enter a</td><td>→ [a]</td><td>[a]</td></tr><tr><td>2</td><td>enter b</td><td>→ [a, b]</td><td>[a, b]</td></tr><tr><td>3</td><td>enter d</td><td>→ [a, b, d]</td><td>[a, b, d]</td></tr><tr><td>4</td><td>enter c</td><td>→ [a, b, d, c]</td><td>[a, b, c, d]</td></tr><tr><td>4′</td><td>finish c</td><td>↑ [a, b, d, c]</td><td>[a, b, c, d]</td></tr><tr><td>5</td><td>enter e</td><td>→ [a, b, d, e]</td><td>[a, b, c, d, e]</td></tr><tr><td>5′</td><td>finish e</td><td>↑ [a, b, d, e]</td><td>[a, b, c, d, e]</td></tr><tr><td>5′</td><td>finish d</td><td>↑ [a, b, d]</td><td>[a, b, c, d, e]</td></tr><tr><td>5′</td><td>finish b</td><td>↑ [a, b]</td><td>[a, b, c, d, e]</td></tr><tr><td>5′</td><td>finish a</td><td>↑ [a]</td><td>[a, b, c, d, e]</td></tr></tbody></table>
+  <div class="wt-good">you must visit/explore everything: connected components, cycle detection, maze generation, topological sort, flood-fill, reachability (garbage collection).</div>
+  <div class="wt-bad">you need a <em>shortest</em> path — DFS finds <em>a</em> path, rarely the shortest. Also, the recursive version can hit Python's recursion limit on very long chains (thousands of vertices); use the iterative stack version there.</div>
+  <span class="slide-number">3 / 14</span>
+</section>
+
+<!-- ===================== TOPOLOGICAL SORT ===================== -->
+<section class="slide">
+  <h2 class="frame-title">3. Topological sort — ordering courses by prerequisites</h2>
+  <div class="wt-real">in what order can you take the Discrete-Mathematics courses so that every course comes <em>after</em> its prerequisites? Each course is a vertex; an arrow X → Y means "X is required before Y". A valid study plan is a topological order of this DAG.</div>
+  <div class="legend-box"><strong>PL</strong>=Propositional Logic · <strong>LE</strong>=Logical Equivalences · <strong>PR</strong>=Predicate Logic & Quantifiers · <strong>RI</strong>=Rules of Inference · <strong>ST</strong>=Sets · <strong>OS</strong>=Operations on Sets · <strong>RF</strong>=Relations & Functions · <strong>SS</strong>=Sequences & Series · <strong>PT</strong>=Proof Techniques · <strong>MI</strong>=Mathematical Induction · <strong>CO</strong>=Counting · <strong>BI</strong>=Binomial Identities · <strong>GR</strong>=Graphs</div>
+  <p>The prerequisite graph:</p>
+  <div class="python-block"><span class="pane-label">Python — the prerequisite DAG (X → courses needing X)</span><span class="pane-code">prereq = {
+  "PL": ["LE"],            # Propositional Logic  →  Logical Equivalences
+  "LE": ["PR"],            # Logical Equivalences →  Predicate Logic
+  "PR": ["RI", "ST"],      # Predicate Logic      →  Rules of Inference, Sets
+  "RI": ["PT"],            # Rules of Inference   →  Proof Techniques
+  "ST": ["OS", "CO"],      # Sets                 →  Operations on Sets, Counting
+  "OS": ["RF"],            # Operations on Sets   →  Relations & Functions
+  "RF": ["SS", "GR"],      # Relations & Functions→  Sequences & Series, Graphs
+  "PT": ["MI"],            # Proof Techniques     →  Mathematical Induction
+  "MI": ["GR"],            # Math Induction       →  Graphs
+  "CO": ["BI"],            # Counting             →  Binomial Identities
+  "SS": [], "BI": [], "GR": [],
+}</span></div>
+  <p><strong>Step 0 — initial in-degree</strong> (how many prerequisites each course still has):</p>
+  <table class="trace-table"><caption>Initial in-degree = number of prerequisites. Courses with in-degree 0 can be taken first.</caption><thead><tr><th>Course</th><th>In-degree</th><th>Prerequisites</th></tr></thead><tbody><tr><td>PL</td><td>0</td><td>— (none)</td></tr><tr><td>LE</td><td>1</td><td>PL</td></tr><tr><td>PR</td><td>1</td><td>LE</td></tr><tr><td>RI</td><td>1</td><td>PR</td></tr><tr><td>ST</td><td>1</td><td>PR</td></tr><tr><td>OS</td><td>1</td><td>ST</td></tr><tr><td>RF</td><td>1</td><td>OS</td></tr><tr><td>SS</td><td>1</td><td>RF</td></tr><tr><td>PT</td><td>1</td><td>RI</td></tr><tr><td>MI</td><td>1</td><td>PT</td></tr><tr><td>CO</td><td>1</td><td>ST</td></tr><tr><td>BI</td><td>1</td><td>CO</td></tr><tr><td>GR</td><td>2</td><td>RF, MI</td></tr></tbody></table>
+  <span class="slide-number">4 / 14</span>
+</section>
+
+<section class="slide">
+  <h2 class="frame-title">3a. Topological sort — Kahn's algorithm, iteration by iteration</h2>
+  <div class="python-block"><span class="pane-label">Python — Kahn (BFS-style)</span><span class="pane-code">from collections import deque
+
+def topo_kahn(G):
+    indeg = {u: 0 for u in G}
+    for u in G:
+        for v in G[u]:
+            indeg[v] += 1
+    q = deque([u for u in indeg if indeg[u] == 0])   # no prerequisites
+    order = []
+    while q:
+        u = q.popleft()
+        order.append(u)                              # take this course
+        for v in G[u]:
+            indeg[v] -= 1                            # one prerequisite cleared
+            if indeg[v] == 0:
+                q.append(v)                          # now unlocked
+    return order if len(order) == len(G) else None   # None ⇒ cycle</span></div>
+  <p>Every iteration: dequeue an unlocked course, decrement its successors' in-degrees, enqueue any that just hit 0.</p>
+  <table class="trace-table"><caption>Kahn's algorithm on the prerequisite DAG — repeatedly take a course with no unmet prerequisites.</caption><thead><tr><th>Step</th><th>Dequeue</th><th>Neighbours' in-degree −1</th><th>Newly 0 (enqueue)</th><th>Queue after</th><th>Order so far</th></tr></thead><tbody><tr><td>0</td><td>— (init)</td><td>—</td><td>—</td><td>[PL]</td><td>[]</td></tr><tr><td>1</td><td>PL</td><td>LE:0</td><td>[LE]</td><td>[LE]</td><td>[PL]</td></tr><tr><td>2</td><td>LE</td><td>PR:0</td><td>[PR]</td><td>[PR]</td><td>[PL, LE]</td></tr><tr><td>3</td><td>PR</td><td>RI:0, ST:0</td><td>[RI, ST]</td><td>[RI, ST]</td><td>[PL, LE, PR]</td></tr><tr><td>4</td><td>RI</td><td>PT:0</td><td>[PT]</td><td>[ST, PT]</td><td>[PL, LE, PR, RI]</td></tr><tr><td>5</td><td>ST</td><td>OS:0, CO:0</td><td>[OS, CO]</td><td>[PT, OS, CO]</td><td>[PL, LE, PR, RI, ST]</td></tr><tr><td>6</td><td>PT</td><td>MI:0</td><td>[MI]</td><td>[OS, CO, MI]</td><td>[PL, LE, PR, RI, ST, PT]</td></tr><tr><td>7</td><td>OS</td><td>RF:0</td><td>[RF]</td><td>[CO, MI, RF]</td><td>[PL, LE, PR, RI, ST, PT, OS]</td></tr><tr><td>8</td><td>CO</td><td>BI:0</td><td>[BI]</td><td>[MI, RF, BI]</td><td>[PL, LE, PR, RI, ST, PT, OS, CO]</td></tr><tr><td>9</td><td>MI</td><td>GR:1</td><td>—</td><td>[RF, BI]</td><td>[PL, LE, PR, RI, ST, PT, OS, CO, MI]</td></tr><tr><td>10</td><td>RF</td><td>SS:0, GR:0</td><td>[SS, GR]</td><td>[BI, SS, GR]</td><td>[PL, LE, PR, RI, ST, PT, OS, CO, MI, RF]</td></tr><tr><td>11</td><td>BI</td><td>—</td><td>—</td><td>[SS, GR]</td><td>[PL, LE, PR, RI, ST, PT, OS, CO, MI, RF, BI]</td></tr><tr><td>12</td><td>SS</td><td>—</td><td>—</td><td>[GR]</td><td>[PL, LE, PR, RI, ST, PT, OS, CO, MI, RF, BI, SS]</td></tr><tr><td>13</td><td>GR</td><td>—</td><td>—</td><td>[]</td><td>[PL, LE, PR, RI, ST, PT, OS, CO, MI, RF, BI, SS, GR]</td></tr></tbody></table>
+  <p><strong>Resulting study plan:</strong> PL → LE → PR → RI → ST → PT → OS → CO → MI → RF → BI → SS → GR.</p>
+  <span class="slide-number">5 / 14</span>
+</section>
+
+<section class="slide">
+  <h2 class="frame-title">3b. Topological sort — DFS version (recursion), step by step</h2>
+  <p>The same ordering can be produced by DFS: a course is <strong>prepended</strong> to the plan only once <em>all</em> the courses it unlocks are finished. Watch the recursion enter and finish:</p>
+  <div class="python-block"><span class="pane-label">Python — DFS post-order topological sort</span><span class="pane-code">def topo_dfs(G):
+    seen, order = set(), []
+    def visit(u):
+        seen.add(u)
+        for v in G[u]:
+            if v not in seen:
+                visit(v)                # recurse first
+        order.insert(0, u)              # prepend when finished
+    for u in G:
+        if u not in seen:
+            visit(u)
+    return order</span></div>
+  <table class="trace-table"><caption>DFS-based topological sort (recursion) — a course is prepended to the order only when its whole prerequisite subtree is finished.</caption><thead><tr><th>Step</th><th>Event</th><th>Call stack</th><th>Order (prepend on finish)</th></tr></thead><tbody><tr><td>1</td><td>enter PL</td><td>→ [PL]</td><td>[]</td></tr><tr><td>2</td><td>enter LE</td><td>→ [PL, LE]</td><td>[]</td></tr><tr><td>3</td><td>enter PR</td><td>→ [PL, LE, PR]</td><td>[]</td></tr><tr><td>4</td><td>enter RI</td><td>→ [PL, LE, PR, RI]</td><td>[]</td></tr><tr><td>5</td><td>enter PT</td><td>→ [PL, LE, PR, RI, PT]</td><td>[]</td></tr><tr><td>6</td><td>enter MI</td><td>→ [PL, LE, PR, RI, PT, MI]</td><td>[]</td></tr><tr><td>7</td><td>enter GR</td><td>→ [PL, LE, PR, RI, PT, MI, GR]</td><td>[]</td></tr><tr><td>7′</td><td>finish GR → prepend</td><td>↑ [PL, LE, PR, RI, PT, MI, GR]</td><td>[GR]</td></tr><tr><td>7′</td><td>finish MI → prepend</td><td>↑ [PL, LE, PR, RI, PT, MI]</td><td>[MI, GR]</td></tr><tr><td>7′</td><td>finish PT → prepend</td><td>↑ [PL, LE, PR, RI, PT]</td><td>[PT, MI, GR]</td></tr><tr><td>7′</td><td>finish RI → prepend</td><td>↑ [PL, LE, PR, RI]</td><td>[RI, PT, MI, GR]</td></tr><tr><td>8</td><td>enter ST</td><td>→ [PL, LE, PR, ST]</td><td>[RI, PT, MI, GR]</td></tr><tr><td>9</td><td>enter OS</td><td>→ [PL, LE, PR, ST, OS]</td><td>[RI, PT, MI, GR]</td></tr><tr><td>10</td><td>enter RF</td><td>→ [PL, LE, PR, ST, OS, RF]</td><td>[RI, PT, MI, GR]</td></tr><tr><td>11</td><td>enter SS</td><td>→ [PL, LE, PR, ST, OS, RF, SS]</td><td>[RI, PT, MI, GR]</td></tr><tr><td>11′</td><td>finish SS → prepend</td><td>↑ [PL, LE, PR, ST, OS, RF, SS]</td><td>[SS, RI, PT, MI, GR]</td></tr><tr><td>11′</td><td>finish RF → prepend</td><td>↑ [PL, LE, PR, ST, OS, RF]</td><td>[RF, SS, RI, PT, MI, GR]</td></tr><tr><td>11′</td><td>finish OS → prepend</td><td>↑ [PL, LE, PR, ST, OS]</td><td>[OS, RF, SS, RI, PT, MI, GR]</td></tr><tr><td>12</td><td>enter CO</td><td>→ [PL, LE, PR, ST, CO]</td><td>[OS, RF, SS, RI, PT, MI, GR]</td></tr><tr><td>13</td><td>enter BI</td><td>→ [PL, LE, PR, ST, CO, BI]</td><td>[OS, RF, SS, RI, PT, MI, GR]</td></tr><tr><td>13′</td><td>finish BI → prepend</td><td>↑ [PL, LE, PR, ST, CO, BI]</td><td>[BI, OS, RF, SS, RI, PT, MI, GR]</td></tr><tr><td>13′</td><td>finish CO → prepend</td><td>↑ [PL, LE, PR, ST, CO]</td><td>[CO, BI, OS, RF, SS, RI, PT, MI, GR]</td></tr><tr><td>13′</td><td>finish ST → prepend</td><td>↑ [PL, LE, PR, ST]</td><td>[ST, CO, BI, OS, RF, SS, RI, PT, MI, GR]</td></tr><tr><td>13′</td><td>finish PR → prepend</td><td>↑ [PL, LE, PR]</td><td>[PR, ST, CO, BI, OS, RF, SS, RI, PT, MI, GR]</td></tr><tr><td>13′</td><td>finish LE → prepend</td><td>↑ [PL, LE]</td><td>[LE, PR, ST, CO, BI, OS, RF, SS, RI, PT, MI, GR]</td></tr><tr><td>13′</td><td>finish PL → prepend</td><td>↑ [PL]</td><td>[PL, LE, PR, ST, CO, BI, OS, RF, SS, RI, PT, MI, GR]</td></tr></tbody></table>
+  <div class="wt-good">any "must happen before" structure: course plans, build systems (Make/Gradle), task scheduling, package install order, spreadsheet recalculation. Runs in $O(n+m)$.</div>
+  <div class="wt-bad">the graph has a <strong>cycle</strong> — then no valid order exists. If two courses were each other's prerequisite (A → B → C → A), Kahn's queue empties before all courses are placed:</div>
+  <table class="trace-table"><caption>Cyclic prerequisites A→B→C→A: the queue empties early, order is incomplete ⇒ Kahn reports 'no valid order'.</caption><thead><tr><th>Step</th><th>Dequeue</th><th>note</th><th>Queue</th><th>Order</th></tr></thead><tbody><tr><td>0</td><td>init</td><td>—</td><td>[D]</td><td>[]</td></tr><tr><td>1</td><td>D</td><td>—</td><td>[]</td><td>[D]</td></tr><tr><td>END</td><td>len(order)=1 ≠ 4</td><td>queue empty but B,C unprocessed</td><td>[]</td><td>[D]</td></tr></tbody></table>
+  <span class="slide-number">6 / 14</span>
+</section>
+
+<!-- ===================== BIPARTITE ===================== -->
+<section class="slide">
+  <h2 class="frame-title">4. Bipartite check (two-colouring)</h2>
+  <div class="wt-real">can six lab sessions that conflict be split between exactly <em>two</em> rooms with no two conflicting sessions in the same room? That is asking whether the conflict graph is bipartite.</div>
+  <p><strong>Idea.</strong> BFS-colour the graph alternately 0/1. If an edge ever joins two same-coloured vertices, an odd cycle exists and no 2-split is possible.</p>
+  <div class="python-block"><span class="pane-label">Python — 2-colouring</span><span class="pane-code">from collections import deque
+
+def two_color(G):
+    color = {}
+    for s in G:
+        if s in color: continue
+        color[s] = 0
+        q = deque([s])
+        while q:
+            u = q.popleft()
+            for v in G[u]:
+                if v not in color:
+                    color[v] = 1 - color[u]     # opposite side
+                    q.append(v)
+                elif color[v] == color[u]:
+                    return None                  # clash ⇒ not bipartite
+    return color</span></div>
+  <p><strong>Good case</strong> — conflict graph 1–4,1–5,2–4,2–6,3–5,3–6 (an even structure). The colour map fills without clash:</p>
+  <table class="trace-table"><thead><tr><th>Step</th><th>Action</th><th>Assigned (v=color)</th><th>Queue</th><th>color map</th></tr></thead><tbody><tr><td>0</td><td>seed 1=0</td><td>—</td><td>[1]</td><td>{1:0}</td></tr><tr><td>1</td><td>pop 1</td><td>4=1, 5=1</td><td>[4, 5]</td><td>{1:0, 4:1, 5:1}</td></tr><tr><td>2</td><td>pop 4</td><td>2=0</td><td>[5, 2]</td><td>{1:0, 4:1, 5:1, 2:0}</td></tr><tr><td>3</td><td>pop 5</td><td>3=0</td><td>[2, 3]</td><td>{1:0, 4:1, 5:1, 2:0, 3:0}</td></tr><tr><td>4</td><td>pop 2</td><td>6=1</td><td>[3, 6]</td><td>{1:0, 4:1, 5:1, 2:0, 3:0, 6:1}</td></tr><tr><td>5</td><td>pop 3</td><td>—</td><td>[6]</td><td>{1:0, 4:1, 5:1, 2:0, 3:0, 6:1}</td></tr><tr><td>6</td><td>pop 6</td><td>—</td><td>[]</td><td>{1:0, 4:1, 5:1, 2:0, 3:0, 6:1}</td></tr></tbody></table>
+  <div class="wt-good">two-sided structures: assigning to two rooms/shifts/teams, matching applicants to jobs, user–item recommendation graphs, detecting odd cycles.</div>
+  <div class="wt-bad">an <strong>odd cycle</strong> exists. A triangle u–v–w needs 3 colours; the BFS hits a same-colour edge and returns <code>None</code>:</div>
+  <table class="trace-table"><thead><tr><th>Step</th><th>Action</th><th>Assigned (v=color)</th><th>Queue</th><th>color map</th></tr></thead><tbody><tr><td>0</td><td>seed u=0</td><td>—</td><td>[u]</td><td>{u:0}</td></tr><tr><td>1</td><td>pop u</td><td>v=1, w=1</td><td>[v, w]</td><td>{u:0, v:1, w:1}</td></tr><tr><td>2</td><td>pop v</td><td>—</td><td>[w]</td><td>{u:0, v:1, w:1}  ⟵ CONFLICT w==v=1</td></tr></tbody></table>
+  <span class="slide-number">7 / 14</span>
+</section>
+
+<!-- ===================== DIJKSTRA ===================== -->
+<section class="slide">
+  <h2 class="frame-title">5. Dijkstra — cheapest weighted path</h2>
+  <div class="wt-real">a GPS finds the fastest route across a city where each road has a travel time. Dijkstra settles the nearest place first and expands outward.</div>
+  <div class="python-block"><span class="pane-label">Python — Dijkstra with a min-heap</span><span class="pane-code">import heapq
+
+def dijkstra(G, s):
+    dist = {s: 0}
+    pq = [(0, s)]
+    while pq:
+        d, u = heapq.heappop(pq)        # closest unsettled vertex
+        if d > dist.get(u, float("inf")):
+            continue                    # stale heap entry
+        for v, w in G[u].items():
+            nd = d + w
+            if nd < dist.get(v, float("inf")):
+                dist[v] = nd
+                heapq.heappush(pq, (nd, v))
+    return dist</span></div>
+  <p><strong>Trace</strong> from S on a 6-junction city (weights = minutes). Each pop settles a vertex; relaxations update <code>dist</code> and push onto the heap:</p>
+  <table class="trace-table"><caption>Dijkstra from S — a vertex is settled (final) the first time it is popped; the heap always yields the closest unsettled vertex.</caption><thead><tr><th>Step</th><th>Pop (dist,vertex)</th><th>Relaxations (v:old→new)</th><th>dist</th><th>heap after</th></tr></thead><tbody><tr><td>0</td><td>— (init)</td><td>—</td><td>{S:0}</td><td>[(0, 'S')]</td></tr><tr><td>1</td><td>pop (0,S) ✓settled</td><td>A:∞→7, B:∞→2</td><td>{S:0, A:7, B:2}</td><td>[(2, 'B'), (7, 'A')]</td></tr><tr><td>2</td><td>pop (2,B) ✓settled</td><td>A:7→5, C:∞→10, D:∞→7</td><td>{S:0, A:5, B:2, C:10, D:7}</td><td>[(5, 'A'), (7, 'A'), (7, 'D'), (10, 'C')]</td></tr><tr><td>3</td><td>pop (5,A) ✓settled</td><td>C:10→9</td><td>{S:0, A:5, B:2, C:9, D:7}</td><td>[(7, 'A'), (7, 'D'), (9, 'C'), (10, 'C')]</td></tr><tr><td>4</td><td>pop (7,A)</td><td>stale → skip</td><td>{S:0, A:5, B:2, C:9, D:7}</td><td>[(7, 'D'), (9, 'C'), (10, 'C')]</td></tr><tr><td>5</td><td>pop (7,D) ✓settled</td><td>E:∞→10</td><td>{S:0, A:5, B:2, C:9, D:7, E:10}</td><td>[(9, 'C'), (10, 'C'), (10, 'E')]</td></tr><tr><td>6</td><td>pop (9,C) ✓settled</td><td>—</td><td>{S:0, A:5, B:2, C:9, D:7, E:10}</td><td>[(10, 'C'), (10, 'E')]</td></tr><tr><td>7</td><td>pop (10,C)</td><td>stale → skip</td><td>{S:0, A:5, B:2, C:9, D:7, E:10}</td><td>[(10, 'E')]</td></tr><tr><td>8</td><td>pop (10,E) ✓settled</td><td>—</td><td>{S:0, A:5, B:2, C:9, D:7, E:10}</td><td>[]</td></tr></tbody></table>
+  <div class="wt-good">non-negative weights: road/time/distance maps, network latency routing, cheapest itineraries. $O((n+m)\log n)$ with a heap.</div>
+  <div class="wt-bad">any edge has a <strong>negative</strong> weight — the "closest first, settle once" rule breaks, because a later negative edge could still lower an already-settled vertex. Use Bellman–Ford instead.</div>
+  <table class="trace-table"><caption>With a negative edge A→B = −4, the true cost to B is −2, but Dijkstra may settle vertices before a negative edge improves them. Greedy 'closest first' is no longer valid.</caption><thead><tr><th>Step</th><th>Action</th><th>What happens</th><th>dist</th></tr></thead><tbody><tr><td>1</td><td>pop (0,S)</td><td>relax A:0→2, B:0→5</td><td>{S:0, A:2, B:5}</td></tr><tr><td>2</td><td>pop (2,A) ✓settled</td><td>A has edge A→B = -4 → B:5→-2</td><td>{S:0, A:2, B:-2}</td></tr><tr><td>—</td><td>but B was about to be settled at 5…</td><td>Dijkstra already trusts A=2 as final</td><td>wrong if a later negative edge could lower it</td></tr></tbody></table>
+  <span class="slide-number">8 / 14</span>
+</section>
+
+<!-- ===================== BELLMAN-FORD ===================== -->
+<section class="slide">
+  <h2 class="frame-title">6. Bellman–Ford — negative weights &amp; cycle detection</h2>
+  <div class="wt-real">currencies and trades where some "edges" are gains (negative cost). Bellman–Ford handles negatives and flags impossible "free-money" loops (negative cycles).</div>
+  <p><strong>Idea.</strong> Relax <em>every</em> edge, repeated $|V|-1$ times. After that many passes all shortest distances are final; one more improving pass would reveal a negative cycle.</p>
+  <div class="python-block"><span class="pane-label">Python — Bellman–Ford</span><span class="pane-code">def bellman_ford(G, s):
+    dist = {v: float("inf") for v in G}; dist[s] = 0
+    edges = [(u, v, w) for u in G for v, w in G[u].items()]
+    for _ in range(len(G) - 1):          # |V|-1 passes
+        for u, v, w in edges:
+            if dist[u] + w < dist[v]:
+                dist[v] = dist[u] + w
+    for u, v, w in edges:                 # extra pass = cycle test
+        if dist[u] + w < dist[v]:
+            raise ValueError("Negative cycle!")
+    return dist</span></div>
+  <p><strong>Trace</strong> from S with a negative edge A→C = −4 (no negative cycle). Watch <code>dist</code> stabilise pass by pass:</p>
+  <table class="trace-table"><caption>Bellman–Ford from S — every edge is relaxed once per pass; after |V|−1 = 4 passes all distances are final, even with the negative edge A→C = −4.</caption><thead><tr><th>Round</th><th>Relaxations this pass (v:old→new)</th><th>dist after pass</th></tr></thead><tbody><tr><td>0 (init)</td><td>—</td><td>{S:0, A:∞, B:∞, C:∞, D:∞}</td></tr><tr><td>pass 1</td><td>A:∞→6, B:∞→7, C:∞→2, D:∞→11, D:11→4, B:7→4</td><td>{S:0, A:6, B:4, C:2, D:4}</td></tr><tr><td>pass 2</td><td>D:4→1</td><td>{S:0, A:6, B:4, C:2, D:1}</td></tr><tr><td>pass 3</td><td>(no change → stop early possible)</td><td>{S:0, A:6, B:4, C:2, D:1}</td></tr><tr><td>pass 4</td><td>(no change → stop early possible)</td><td>{S:0, A:6, B:4, C:2, D:1}</td></tr></tbody></table>
+  <div class="wt-good">graphs with negative edges, or when you must <em>detect</em> a negative cycle (arbitrage, inconsistent constraints). Simple to implement.</div>
+  <div class="wt-bad">large non-negative graphs: at $O(n\cdot m)$ it is much slower than Dijkstra's $O((n+m)\log n)$. If all weights are $\ge 0$, prefer Dijkstra.</div>
+  <span class="slide-number">9 / 14</span>
+</section>
+
+<!-- ===================== MST ===================== -->
+<section class="slide">
+  <h2 class="frame-title">7. Minimum Spanning Tree — Kruskal</h2>
+  <div class="wt-real">a telecom lays fibre to connect five towns at the least total cost. The cheapest connecting network with no redundant loop is a minimum spanning tree.</div>
+  <p><strong>Idea (Kruskal).</strong> Sort edges cheapest-first; add an edge only if its endpoints are in <em>different</em> components (Union-Find), which avoids creating a cycle.</p>
+  <div class="python-block"><span class="pane-label">Python — Kruskal + Union-Find</span><span class="pane-code">def kruskal(G):
+    parent = {v: v for v in G}
+    def find(x):
+        while parent[x] != x:
+            parent[x] = parent[parent[x]]; x = parent[x]
+        return x
+    def union(x, y):
+        rx, ry = find(x), find(y)
+        if rx == ry: return False        # same component → would loop
+        parent[rx] = ry; return True
+    mst = []
+    for w, u, v in sorted((w,u,v) for u in G for v,w in G[u].items() if u<v):
+        if union(u, v):
+            mst.append((u, v, w))
+    return mst</span></div>
+  <p><strong>Trace</strong> on towns T1–T5. Edges sorted by weight; each is added or skipped based on the components:</p>
+  <table class="trace-table"><caption>Kruskal on the town network — edges sorted cheapest-first; add an edge only when it joins two different components.</caption><thead><tr><th>Step</th><th>Edge (w) u–v</th><th>roots find(u)/find(v)</th><th>Action</th><th>Components (Union-Find)</th><th>MST edges</th></tr></thead><tbody><tr><td>1</td><td>(1) T2–T3</td><td>T3 / T3</td><td>ADD ✓</td><td>{T1}, {T2,T3}, {T4}, {T5}</td><td>T2T3</td></tr><tr><td>2</td><td>(2) T2–T4</td><td>T4 / T4</td><td>ADD ✓</td><td>{T1}, {T2,T3,T4}, {T5}</td><td>T2T3, T2T4</td></tr><tr><td>3</td><td>(3) T1–T3</td><td>T4 / T4</td><td>ADD ✓</td><td>{T1,T2,T3,T4}, {T5}</td><td>T2T3, T2T4, T1T3</td></tr><tr><td>4</td><td>(4) T1–T2</td><td>T4 / T4</td><td>skip (cycle)</td><td>{T1,T2,T3,T4}, {T5}</td><td>T2T3, T2T4, T1T3</td></tr><tr><td>5</td><td>(4) T3–T4</td><td>T4 / T4</td><td>skip (cycle)</td><td>{T1,T2,T3,T4}, {T5}</td><td>T2T3, T2T4, T1T3</td></tr><tr><td>6</td><td>(5) T3–T5</td><td>T5 / T5</td><td>ADD ✓</td><td>{T1,T2,T3,T4,T5}</td><td>T2T3, T2T4, T1T3, T3T5</td></tr><tr><td>7</td><td>(7) T4–T5</td><td>T5 / T5</td><td>skip (cycle)</td><td>{T1,T2,T3,T4,T5}</td><td>T2T3, T2T4, T1T3, T3T5</td></tr></tbody></table>
+  <span class="slide-number">10 / 14</span>
+</section>
+
+<section class="slide">
+  <h2 class="frame-title">7b. Minimum Spanning Tree — Prim</h2>
+  <p><strong>Idea (Prim).</strong> Grow a single tree from a seed town, each step pulling the cheapest edge from the heap that reaches a town not yet in the tree.</p>
+  <div class="python-block"><span class="pane-label">Python — Prim with a heap</span><span class="pane-code">import heapq
+
+def prim(G, start):
+    in_tree = {start}; mst = []
+    heap = [(w, start, v) for v, w in G[start].items()]
+    heapq.heapify(heap)
+    while heap and len(in_tree) < len(G):
+        w, u, v = heapq.heappop(heap)
+        if v in in_tree: continue        # already connected
+        in_tree.add(v); mst.append((u, v, w))
+        for x, wx in G[v].items():
+            if x not in in_tree:
+                heapq.heappush(heap, (wx, v, x))
+    return mst</span></div>
+  <p><strong>Trace</strong> from T1 — the heap holds candidate edges; skipped pops are edges to towns already connected:</p>
+  <table class="trace-table"><caption>Prim from T1 — grows one tree outward, always taking the cheapest edge to a new town. Same total weight as Kruskal, different build order.</caption><thead><tr><th>Step</th><th>Pop (w) u→v</th><th>Action</th><th>In tree</th><th>MST edges</th><th>Heap after</th></tr></thead><tbody><tr><td>0</td><td>seed T1</td><td>—</td><td>[T1]</td><td>—</td><td>[(3, 'T1', 'T3'), (4, 'T1', 'T2')]</td></tr><tr><td>1</td><td>pop (3) T1→T3</td><td>ADD ✓</td><td>[T1, T3]</td><td>T1T3</td><td>[(1, 'T3', 'T2'), (4, 'T1', 'T2'), (4, 'T3', 'T4'), (5, 'T3', 'T5')]</td></tr><tr><td>2</td><td>pop (1) T3→T2</td><td>ADD ✓</td><td>[T1, T2, T3]</td><td>T1T3, T3T2</td><td>[(2, 'T2', 'T4'), (4, 'T1', 'T2'), (4, 'T3', 'T4'), (5, 'T3', 'T5')]</td></tr><tr><td>3</td><td>pop (2) T2→T4</td><td>ADD ✓</td><td>[T1, T2, T3, T4]</td><td>T1T3, T3T2, T2T4</td><td>[(4, 'T1', 'T2'), (4, 'T3', 'T4'), (5, 'T3', 'T5'), (7, 'T4', 'T5')]</td></tr><tr><td>4</td><td>pop (4) T1→T2</td><td>v already in tree → skip</td><td>[T1, T2, T3, T4]</td><td>T1T3, T3T2, T2T4</td><td>[(4, 'T3', 'T4'), (5, 'T3', 'T5'), (7, 'T4', 'T5')]</td></tr><tr><td>5</td><td>pop (4) T3→T4</td><td>v already in tree → skip</td><td>[T1, T2, T3, T4]</td><td>T1T3, T3T2, T2T4</td><td>[(5, 'T3', 'T5'), (7, 'T4', 'T5')]</td></tr><tr><td>6</td><td>pop (5) T3→T5</td><td>ADD ✓</td><td>[T1, T2, T3, T4, T5]</td><td>T1T3, T3T2, T2T4, T3T5</td><td>[(7, 'T4', 'T5')]</td></tr></tbody></table>
+  <div class="wt-good">designing least-cost connected networks: cabling, pipes, power grids, clustering, approximate TSP. Both run in near $O(m\log n)$.</div>
+  <div class="wt-bad">you want the shortest path <em>between two specific nodes</em> — an MST does <strong>not</strong> give shortest paths (a common mistake); use Dijkstra. MST also needs an undirected, connected, weighted graph.</div>
+  <span class="slide-number">11 / 14</span>
+</section>
+
+<!-- ===================== GREEDY COLORING ===================== -->
+<section class="slide">
+  <h2 class="frame-title">8. Greedy colouring — and where greed hurts</h2>
+  <div class="wt-real">schedule exams so that no student has two exams at once: vertices = exams, edges = shared students, colours = time slots. A proper colouring is a clash-free timetable.</div>
+  <p><strong>Idea.</strong> Visit vertices in some order; give each the smallest colour not used by its already-coloured neighbours.</p>
+  <div class="python-block"><span class="pane-label">Python — greedy colouring</span><span class="pane-code">def greedy_coloring(G, order):
+    color = {}
+    for v in order:
+        used = {color[u] for u in G[v] if u in color}
+        c = 0
+        while c in used: c += 1          # smallest free colour
+        color[v] = c
+    return color</span></div>
+  <p>The result <strong>depends on the order</strong>. Take the "crown" conflict graph — it is 2-colourable (two slots suffice). A bad alternating order forces a third slot:</p>
+  <table class="trace-table"><caption>BAD vertex order on the crown graph (which is 2-colorable): greedy is forced into a 3rd colour.</caption><thead><tr><th>Step</th><th>Vertex</th><th>Neighbour colours used</th><th>Chosen</th><th>coloring</th></tr></thead><tbody><tr><td>1</td><td>a1</td><td>[]</td><td>0</td><td>{a1:0}</td></tr><tr><td>2</td><td>b1</td><td>[]</td><td>0</td><td>{a1:0, b1:0}</td></tr><tr><td>3</td><td>a2</td><td>[0]</td><td>1</td><td>{a1:0, b1:0, a2:1}</td></tr><tr><td>4</td><td>b2</td><td>[0]</td><td>1</td><td>{a1:0, b1:0, a2:1, b2:1}</td></tr><tr><td>5</td><td>a3</td><td>[0, 1]</td><td>2</td><td>{a1:0, b1:0, a2:1, b2:1, a3:2}</td></tr><tr><td>6</td><td>b3</td><td>[0, 1]</td><td>2</td><td>{a1:0, b1:0, a2:1, b2:1, a3:2, b3:2}</td></tr></tbody></table>
+  <p>A better order (one whole side first) recovers the optimal two slots:</p>
+  <table class="trace-table"><caption>GOOD order (all of one side first): greedy uses the optimal 2 colours.</caption><thead><tr><th>Step</th><th>Vertex</th><th>Neighbour colours used</th><th>Chosen</th><th>coloring</th></tr></thead><tbody><tr><td>1</td><td>a1</td><td>[]</td><td>0</td><td>{a1:0}</td></tr><tr><td>2</td><td>a2</td><td>[]</td><td>0</td><td>{a1:0, a2:0}</td></tr><tr><td>3</td><td>a3</td><td>[]</td><td>0</td><td>{a1:0, a2:0, a3:0}</td></tr><tr><td>4</td><td>b1</td><td>[0]</td><td>1</td><td>{a1:0, a2:0, a3:0, b1:1}</td></tr><tr><td>5</td><td>b2</td><td>[0]</td><td>1</td><td>{a1:0, a2:0, a3:0, b1:1, b2:1}</td></tr><tr><td>6</td><td>b3</td><td>[0]</td><td>1</td><td>{a1:0, a2:0, a3:0, b1:1, b2:1, b3:1}</td></tr></tbody></table>
+  <div class="wt-good">fast, simple conflict-avoidance with few colours when a good order (e.g. largest-degree-first) is used: timetables, register allocation, frequency assignment.</div>
+  <div class="wt-bad">you need the <em>minimum</em> number of colours guaranteed. Greedy is not optimal — a poor order can use far more colours than necessary (3 instead of 2 above; arbitrarily many on larger crown graphs). Exact colouring is NP-hard.</div>
+  <span class="slide-number">12 / 14</span>
+</section>
+
+<!-- Summary -->
+<section class="slide">
+  <h2 class="frame-title">Summary — what each trace taught us</h2>
+  <table class="ref-table">
+    <thead><tr><th>Algorithm</th><th>State you track</th><th>Best for</th><th>Avoid when</th></tr></thead>
+    <tbody>
+      <tr><td>BFS</td><td>queue, dist</td><td>fewest-hops path</td><td>weighted costs</td></tr>
+      <tr><td>DFS</td><td>stack / call stack, visited</td><td>explore, components, cycles</td><td>shortest path; very deep recursion</td></tr>
+      <tr><td>Topological sort</td><td>in-degree, queue / recursion</td><td>prerequisite ordering</td><td>graph has a cycle</td></tr>
+      <tr><td>Bipartite check</td><td>colour map, queue</td><td>two-group split / matching</td><td>odd cycles present</td></tr>
+      <tr><td>Dijkstra</td><td>dist, heap, settled set</td><td>cheapest path, weights ≥ 0</td><td>negative weights</td></tr>
+      <tr><td>Bellman–Ford</td><td>dist per pass</td><td>negative weights, cycle detection</td><td>large non-negative graphs (slow)</td></tr>
+      <tr><td>MST (Kruskal/Prim)</td><td>Union-Find / heap, tree edges</td><td>cheapest connecting network</td><td>shortest pairwise path</td></tr>
+      <tr><td>Greedy colouring</td><td>neighbour colours, colour map</td><td>fast conflict-free assignment</td><td>need provably minimum colours</td></tr>
+    </tbody>
+  </table>
+  <p style="margin-top:1rem;color:#e67e22;font-style:italic;font-weight:600;">Notes By Pr. El Hadiq Zouhair</p>
+  <span class="slide-number">13 / 14</span>
+</section>
+
+<section class="slide part-slide">
+  <div class="part-label">End</div>
+  <h2>Now trace them yourself</h2>
+  <p>Re-run each example by hand and check your variable states against these tables.</p>
+  <p style="font-style:italic;margin-top:1.5rem;">Notes By Pr. El Hadiq Zouhair</p>
+  <span class="slide-number">14 / 14</span>
+</section>
+
+
+<!-- ── Navigation ─────────────────────────────────────────────────── -->
+<div id="nav">
+  <button id="btn-prev"   title="Previous">&#8592;</button>
+  <button id="btn-scroll" title="Toggle slideshow">Slideshow</button>
+  <button id="btn-next"   title="Next">&#8594;</button>
+</div>
+
+<script>
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  let current = 0, slideshowMode = false;
+
+  function enter(i) {
+    slides[current].classList.remove('active');
+    current = (i + slides.length) % slides.length;
+    slides[current].classList.add('active');
+    slides[current].scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  document.getElementById('btn-prev').addEventListener('click', () => {
+    if (slideshowMode) enter(current - 1);
+  });
+  document.getElementById('btn-next').addEventListener('click', () => {
+    if (slideshowMode) enter(current + 1);
+  });
+  document.getElementById('btn-scroll').addEventListener('click', () => {
+    slideshowMode = !slideshowMode;
+    document.body.classList.toggle('slideshow', slideshowMode);
+    document.getElementById('btn-scroll').textContent = slideshowMode ? 'Scroll' : 'Slideshow';
+    if (slideshowMode) slides[current].classList.add('active');
+    else slides.forEach(s => s.classList.remove('active'));
+  });
+
+  document.addEventListener('keydown', e => {
+    if (!slideshowMode) return;
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') enter(current + 1);
+    if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   enter(current - 1);
+  });
+</script>
+</body>
+</html>

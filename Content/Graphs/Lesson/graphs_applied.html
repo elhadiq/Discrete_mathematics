@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Graph Algorithms in Practice — Applied Track</title>
+<script>
+  MathJax = {
+    tex: { inlineMath: [['$','$']], displayMath: [['$$','$$']], processEscapes: true },
+    options: { skipHtmlTags: ['script','noscript','style','textarea'] }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --orange:    #e67e22;
+  --darkblue:  #2c3e50;
+  --lightbg:   #f4f9fc;
+  --rowred:    #ffe8e8;
+  --rowblue:   #e3eeff;
+  --border:    #dce3ea;
+  --py-fg:     #1f4e7a;
+  --py-bg:     #eaf3fb;
+  --py-border: #2a6fb3;
+  --py-head:   #2a6fb3;
+  --sp-fg:     #1e824c;
+  --sp-bg:     #e8f5ec;
+  --sp-border: #27ae60;
+  --sp-head:   #27ae60;
+  --su-fg:     #4a4aaa;
+  --su-bg:     #eeeeff;
+  --su-border: #6060cc;
+  --su-head:   #6060cc;
+  --out-fg:    #6e4b0a;
+  --out-bg:    #fff7e0;
+  --out-border:#e0b341;
+  --out-head:  #c89324;
+}
+
+body {
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  background: #e8edf2;
+  color: var(--darkblue);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem 1rem 5rem;
+  gap: 2rem;
+}
+
+.slide {
+  background: #fff;
+  width: 100%;
+  max-width: 940px;
+  border-radius: 10px;
+  box-shadow: 0 4px 18px rgba(0,0,0,.10);
+  padding: 2.2rem 2.8rem 1.8rem;
+  position: relative;
+}
+.slide-number {
+  position: absolute;
+  bottom: 0.7rem;
+  right: 1.2rem;
+  font-size: 0.72rem;
+  color: #aaa;
+}
+
+.slide.title-slide {
+  background: linear-gradient(145deg, #f4f9fc 60%, #e0eef7);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 240px;
+  text-align: center;
+  border-top: 6px solid var(--orange);
+}
+.slide.title-slide h1 { font-size: 1.85rem; color: var(--darkblue); margin-bottom: 0.4rem; }
+.slide.title-slide .subtitle { font-size: 1.1rem; color: #555; }
+
+.part-slide {
+  background: linear-gradient(145deg, #fdf3e7 60%, #f9e4cc);
+  text-align: center;
+  border-left: 6px solid var(--orange);
+}
+.part-slide .part-label {
+  font-size: .85rem; letter-spacing: .2em; text-transform: uppercase;
+  color: var(--orange); font-weight: 700;
+}
+.part-slide h2 { color: var(--darkblue); font-size: 1.7rem; margin: 0.5rem 0; }
+.part-slide p  { color: #666; }
+
+h2.frame-title {
+  font-size: 1.45rem;
+  color: var(--orange);
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  padding-bottom: 0.35rem;
+  border-bottom: 2px solid #f9e4cc;
+}
+h3.sub-title {
+  font-size: 1.02rem;
+  color: var(--orange);
+  font-weight: 600;
+  margin: 0.7rem 0 0.3rem;
+}
+
+p { line-height: 1.65; margin: 0.4rem 0; }
+ul, ol { margin: 0.35rem 0 0.35rem 1.4rem; line-height: 1.75; }
+ul li::marker, ol li::marker { color: var(--orange); }
+code { background: #f0f3f7; color: #1f4e7a; padding: 0 .25em; border-radius: 3px; font-family: 'Consolas','Fira Code',monospace; }
+
+.note-box, .def-box, .thm-box, .proof-box, .ex-box, .ce-box, .cor-box, .aside-box {
+  border-radius: 6px;
+  padding: 0.6rem 0.9rem;
+  margin: 0.5rem 0;
+  line-height: 1.65;
+}
+.note-box  { background: #fff5e8; border-left: 4px solid var(--orange); font-style: italic; }
+.def-box   { background: #eaf3fb; border-left: 4px solid var(--py-border); }
+.def-box::before  { content: "Definition. "; font-weight: 700; color: var(--py-border); }
+.thm-box   { background: #fff7e0; border-left: 4px solid var(--out-border); }
+.thm-box::before  { content: "Theorem. "; font-weight: 700; color: var(--out-head); }
+.cor-box   { background: #fff7e0; border-left: 4px solid var(--out-border); }
+.cor-box::before  { content: "Corollary. "; font-weight: 700; color: var(--out-head); }
+.proof-box { background: #f4f9fc; border-left: 4px solid var(--darkblue); }
+.proof-box::before { content: "Proof. "; font-weight: 700; color: var(--darkblue); }
+.ex-box    { background: #e8f5ec; border-left: 4px solid var(--sp-border); }
+.ex-box::before    { content: "Example. "; font-weight: 700; color: var(--sp-border); }
+.ce-box    { background: #ffe8e8; border-left: 4px solid #c0395a; }
+.ce-box::before    { content: "Counter-example. "; font-weight: 700; color: #c0395a; }
+.aside-box { background: #eef1ff; border-left: 4px solid #6060cc; font-size: 0.92rem; }
+.aside-box::before { content: "Note. "; font-weight: 700; color: #6060cc; }
+
+.python-block, .setup-block, .sympy-block, .output-block {
+  border-radius: 6px;
+  overflow: hidden;
+  margin: 0.5rem 0;
+  border: 1px solid;
+}
+.pane-label {
+  display: block;
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 2px 10px;
+  color: #fff;
+}
+.pane-code {
+  font-family: 'Consolas','Fira Code',monospace;
+  font-size: 0.8rem;
+  line-height: 1.55;
+  padding: 0.5rem 0.75rem;
+  white-space: pre;
+  display: block;
+  overflow-x: auto;
+}
+.python-block { border-color: var(--py-border); }
+.python-block .pane-label { background: var(--py-head); }
+.python-block .pane-code  { background: var(--py-bg); color: var(--py-fg); }
+.output-block { border-color: var(--out-border); }
+.output-block .pane-label { background: var(--out-head); }
+.output-block .pane-code  { background: var(--out-bg); color: var(--out-fg); }
+
+.ref-table {
+  border-collapse: collapse;
+  margin: 0.5rem auto;
+  font-size: 0.88rem;
+  width: 100%;
+}
+.ref-table th, .ref-table td {
+  border: 1px solid var(--border);
+  padding: 0.35rem 0.65rem;
+  text-align: left;
+  vertical-align: top;
+}
+.ref-table th { background: var(--lightbg); font-weight: 600; color: var(--darkblue); }
+.center td, .center th { text-align: center; }
+
+/* Graph SVG illustrations */
+svg.graph-svg { display: block; margin: 0.5rem auto; max-width: 100%; }
+.svg-node { fill: #fff; stroke: var(--darkblue); stroke-width: 2; }
+.svg-node-label { font-size: 14px; font-family: 'Segoe UI', sans-serif; fill: var(--darkblue); font-weight: 700; }
+.svg-edge { stroke: var(--orange); stroke-width: 2; fill: none; }
+.svg-arrow { fill: var(--orange); }
+.svg-edge-label { font-size: 11px; fill: #555; }
+
+#nav { position: fixed; bottom: 1.5rem; right: 1.5rem; display: flex; gap: 0.4rem; z-index: 100; }
+#nav button {
+  background: var(--orange); color: #fff; border: none;
+  border-radius: 50%; width: 40px; height: 40px;
+  font-size: 1.1rem; cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,.25); transition: background .2s;
+}
+#nav button:hover { background: #cf6d17; }
+#nav #btn-scroll { border-radius: 20px; width: auto; padding: 0 12px; font-size: 0.8rem; }
+
+body.slideshow .slide        { display: none; }
+body.slideshow .slide.active { display: block; }
+
+.ref-cite { color: #777; font-size: 0.83rem; font-style: italic; }
+</style>
+</head>
+<body>
+
+<!-- Title -->
+<section class="slide title-slide">
+  <h1>Graph Algorithms in Practice</h1>
+  <p class="subtitle">Discrete Mathematics — Applied Track · Algorithms &amp; Real-World Uses (no proofs)</p>
+  <p style="font-size:1rem;color:#e67e22;margin-top:0.8rem;font-style:italic;font-weight:600;letter-spacing:.02em;">Notes By Pr. El Hadiq Zouhair</p>
+  <span class="slide-number">1 / 20</span>
+</section>
+
+<!-- How to read -->
+<section class="slide">
+  <h2 class="frame-title">How to read this course</h2>
+  <p>This is the <strong>applied</strong> companion to the graphs course. No proofs — instead, for each algorithm you get three things:</p>
+  <ul>
+    <li><strong>What it does</strong> — a plain-language description and when to reach for it.</li>
+    <li><strong>Python</strong> — a short, runnable implementation on dict-based graphs.</li>
+    <li><strong>🌍 Real-world use</strong> — where the algorithm actually shows up in industry and daily life.</li>
+  </ul>
+  <h3 class="sub-title">The toolbox at a glance</h3>
+  <table class="ref-table">
+    <thead><tr><th>You want to…</th><th>Use</th></tr></thead>
+    <tbody>
+      <tr><td>Fewest-hops path (unweighted)</td><td>BFS</td></tr>
+      <tr><td>Explore / find clusters / detect cycles</td><td>DFS</td></tr>
+      <tr><td>Order tasks with prerequisites</td><td>Topological sort</td></tr>
+      <tr><td>Two-group split / conflict-free pairing</td><td>Bipartite check</td></tr>
+      <tr><td>Cheapest path (weighted, positive)</td><td>Dijkstra</td></tr>
+      <tr><td>Cheapest path with negative costs</td><td>Bellman–Ford</td></tr>
+      <tr><td>Distance between every pair</td><td>Floyd–Warshall</td></tr>
+      <tr><td>Cheapest network connecting everything</td><td>MST — Kruskal / Prim</td></tr>
+      <tr><td>Conflict-free scheduling / assignment</td><td>Greedy coloring</td></tr>
+      <tr><td>Rank importance in a network</td><td>PageRank</td></tr>
+      <tr><td>Fast guided pathfinding</td><td>A* search</td></tr>
+    </tbody>
+  </table>
+  <span class="slide-number">2 / 20</span>
+</section>
+
+<!-- Setup: representation -->
+<section class="slide">
+  <h2 class="frame-title">Setup — graphs as Python dictionaries</h2>
+  <p>Throughout, a graph is a dictionary mapping each vertex to its neighbors. Two flavors:</p>
+  <div class="python-block">
+    <span class="pane-label">Python — the two representations</span>
+    <span class="pane-code"># Unweighted: vertex -> list/set of neighbors
+roads = {
+    "A": ["B", "C"], "B": ["A", "D"], "C": ["A", "D"],
+    "D": ["B", "C", "E"], "E": ["D"],
+}
+
+# Weighted: vertex -> {neighbor: weight}
+city = {
+    "A": {"B": 7, "C": 9}, "B": {"A": 7, "D": 15},
+    "C": {"A": 9, "D": 11}, "D": {"B": 15, "C": 11, "E": 6}, "E": {"D": 6},
+}
+
+def neighbors(G, v): return G[v]
+def degree(G, v):    return len(G[v])</span>
+  </div>
+  <div style="background:#e8f5ec;border-left:4px solid #27ae60;border-radius:6px;padding:0.6rem 0.9rem;margin:0.5rem 0;line-height:1.65;"><strong style="color:#1e824c;">🌍 Real-world use — </strong>this exact structure models road maps, social-network friend lists, web-page links, computer networks, molecule bonds, and project task dependencies.</div>
+  <span class="slide-number">3 / 20</span>
+</section>
+
+<!-- BFS -->
+<section class="slide">
+  <h2 class="frame-title">1. Breadth-First Search (BFS)</h2>
+  <p><strong>What it does.</strong> Explores a graph layer by layer from a start vertex, so it finds the path with the <em>fewest edges</em> to every reachable vertex. The first time BFS reaches a vertex, it has found a shortest (hop-count) route to it.</p>
+  <div class="python-block">
+    <span class="pane-label">Python — BFS shortest (unweighted) path</span>
+    <span class="pane-code">from collections import deque
+
+def bfs(G, s):
+    """Distances and parents from source s."""
+    dist, parent = {s: 0}, {s: None}
+    q = deque([s])
+    while q:
+        u = q.popleft()
+        for v in G[u]:
+            if v not in dist:                 # first time seen = shortest
+                dist[v] = dist[u] + 1
+                parent[v] = u
+                q.append(v)
+    return dist, parent
+
+def shortest_path(G, s, t):
+    dist, parent = bfs(G, s)
+    if t not in dist:
+        return None                           # unreachable
+    path = []
+    while t is not None:
+        path.append(t); t = parent[t]
+    return path[::-1]</span>
+  </div>
+  <p><strong>Cost.</strong> $O(n + m)$ — linear in vertices + edges.</p>
+  <div style="background:#e8f5ec;border-left:4px solid #27ae60;border-radius:6px;padding:0.6rem 0.9rem;margin:0.5rem 0;line-height:1.65;"><strong style="color:#1e824c;">🌍 Real-world use — </strong>"degrees of separation" between two people on Facebook/LinkedIn; GPS routes with the fewest changes; web crawlers exploring links level by level; broadcasting a message across a network; solving mazes and puzzles like word ladders or a Rubik's cube in the fewest moves.</div>
+  <span class="slide-number">4 / 20</span>
+</section>
+
+<!-- DFS + components -->
+<section class="slide">
+  <h2 class="frame-title">2. Depth-First Search (DFS) &amp; connected components</h2>
+  <p><strong>What it does.</strong> Dives as deep as possible before backtracking. Perfect for fully exploring a region, listing everything reachable, and splitting a graph into its separate clusters (connected components).</p>
+  <div class="python-block">
+    <span class="pane-label">Python — DFS &amp; connected components</span>
+    <span class="pane-code">def dfs(G, s):
+    """Set of all vertices reachable from s (iterative)."""
+    seen, stack = set(), [s]
+    while stack:
+        u = stack.pop()
+        if u not in seen:
+            seen.add(u)
+            stack.extend(v for v in G[u] if v not in seen)
+    return seen
+
+def connected_components(G):
+    """List of clusters; each is a set of vertices."""
+    seen, comps = set(), []
+    for v in G:
+        if v not in seen:
+            cluster = dfs(G, v)
+            comps.append(cluster)
+            seen |= cluster
+    return comps</span>
+  </div>
+  <div style="background:#e8f5ec;border-left:4px solid #27ae60;border-radius:6px;padding:0.6rem 0.9rem;margin:0.5rem 0;line-height:1.65;"><strong style="color:#1e824c;">🌍 Real-world use — </strong>finding friend groups or communities in a social graph; the "flood fill" / paint-bucket tool in image editors; maze generation; garbage collectors marking which objects are still reachable in memory; detecting isolated sub-networks after a failure.</div>
+  <span class="slide-number">5 / 20</span>
+</section>
+
+<!-- Cycle detection -->
+<section class="slide">
+  <h2 class="frame-title">3. Cycle detection</h2>
+  <p><strong>What it does.</strong> Decides whether the graph contains a loop. For an undirected graph, a DFS that meets an already-visited vertex (other than the one it just came from) has found a cycle.</p>
+  <div class="python-block">
+    <span class="pane-label">Python — undirected cycle detection</span>
+    <span class="pane-code">def has_cycle(G):
+    seen = set()
+    def visit(u, parent):
+        seen.add(u)
+        for v in G[u]:
+            if v not in seen:
+                if visit(v, u):
+                    return True
+            elif v != parent:                 # back-edge = cycle
+                return True
+        return False
+    return any(visit(v, None) for v in G if v not in seen)</span>
+  </div>
+  <div style="background:#e8f5ec;border-left:4px solid #27ae60;border-radius:6px;padding:0.6rem 0.9rem;margin:0.5rem 0;line-height:1.65;"><strong style="color:#1e824c;">🌍 Real-world use — </strong>spotting <em>deadlocks</em> in operating systems (processes waiting on each other in a circle); catching circular dependencies in package managers (npm, pip) and build systems; detecting circular references in spreadsheets; finding loops in financial transaction chains.</div>
+  <span class="slide-number">6 / 20</span>
+</section>
+
+<!-- Topological sort -->
+<section class="slide">
+  <h2 class="frame-title">4. Topological sort (ordering with prerequisites)</h2>
+  <p><strong>What it does.</strong> Given a directed acyclic graph of "X must come before Y" constraints, it produces a valid linear order respecting all of them. Kahn's algorithm repeatedly removes a vertex with no remaining prerequisites.</p>
+  <div class="python-block">
+    <span class="pane-label">Python — Kahn's algorithm</span>
+    <span class="pane-code">from collections import deque
+
+def topo_sort(G):
+    """G: vertex -> list of successors. Returns an order, or None if cyclic."""
+    indeg = {u: 0 for u in G}
+    for u in G:
+        for v in G[u]:
+            indeg[v] = indeg.get(v, 0) + 1
+    for u in G:
+        indeg.setdefault(u, 0)
+    q = deque([u for u in indeg if indeg[u] == 0])
+    order = []
+    while q:
+        u = q.popleft()
+        order.append(u)
+        for v in G.get(u, ()):
+            indeg[v] -= 1
+            if indeg[v] == 0:
+                q.append(v)
+    return order if len(order) == len(indeg) else None</span>
+  </div>
+  <div style="background:#e8f5ec;border-left:4px solid #27ae60;border-radius:6px;padding:0.6rem 0.9rem;margin:0.5rem 0;line-height:1.65;"><strong style="color:#1e824c;">🌍 Real-world use — </strong>build systems compiling files in dependency order (Make, Gradle, npm); scheduling tasks/jobs that depend on one another; planning a degree's courses around prerequisites; the order a spreadsheet recalculates cells; resolving install order for software packages.</div>
+  <span class="slide-number">7 / 20</span>
+</section>
+
+<!-- Bipartite -->
+<section class="slide">
+  <h2 class="frame-title">5. Bipartite check (two-coloring)</h2>
+  <p><strong>What it does.</strong> Tests whether the vertices split into two groups so that every edge crosses between groups — i.e. the graph is 2-colorable. BFS alternates colors; a clash means it is impossible.</p>
+  <div class="python-block">
+    <span class="pane-label">Python — 2-coloring / bipartite test</span>
+    <span class="pane-code">from collections import deque
+
+def two_color(G):
+    """Returns {vertex: 0/1} if bipartite, else None."""
+    color = {}
+    for s in G:
+        if s in color:
+            continue
+        color[s] = 0
+        q = deque([s])
+        while q:
+            u = q.popleft()
+            for v in G[u]:
+                if v not in color:
+                    color[v] = 1 - color[u]
+                    q.append(v)
+                elif color[v] == color[u]:
+                    return None               # odd cycle = not bipartite
+    return color</span>
+  </div>
+  <div style="background:#e8f5ec;border-left:4px solid #27ae60;border-radius:6px;padding:0.6rem 0.9rem;margin:0.5rem 0;line-height:1.65;"><strong style="color:#1e824c;">🌍 Real-world use — </strong>matching two kinds of things — job applicants to positions, students to schools, riders to drivers; modeling user–item interactions for recommendations; checking whether a conflict graph can be split into two shifts/rooms with no clashes.</div>
+  <span class="slide-number">8 / 20</span>
+</section>
+
+<!-- Dijkstra -->
+<section class="slide">
+  <h2 class="frame-title">6. Dijkstra — cheapest weighted path</h2>
+  <p><strong>What it does.</strong> Finds the lowest-cost route from a source to all vertices when edge weights are non-negative. A priority queue always expands the closest unsettled vertex next.</p>
+  <div class="python-block">
+    <span class="pane-label">Python — Dijkstra with a heap</span>
+    <span class="pane-code">import heapq
+
+def dijkstra(G, s):
+    """G weighted (G[u] = {v: w}). Returns shortest distances from s."""
+    dist = {s: 0}
+    pq = [(0, s)]
+    while pq:
+        d, u = heapq.heappop(pq)
+        if d > dist.get(u, float("inf")):
+            continue                          # stale entry
+        for v, w in G[u].items():
+            nd = d + w
+            if nd < dist.get(v, float("inf")):
+                dist[v] = nd
+                heapq.heappush(pq, (nd, v))
+    return dist</span>
+  </div>
+  <p><strong>Cost.</strong> $O((n + m)\log n)$ with a binary heap.</p>
+  <div style="background:#e8f5ec;border-left:4px solid #27ae60;border-radius:6px;padding:0.6rem 0.9rem;margin:0.5rem 0;line-height:1.65;"><strong style="color:#1e824c;">🌍 Real-world use — </strong>GPS navigation (Google Maps, Waze) computing fastest/shortest routes; internet packet routing (OSPF protocol); cheapest multi-leg flight or shipping itineraries; least-cost paths in games on weighted terrain.</div>
+  <span class="slide-number">9 / 20</span>
+</section>
+
+<!-- Bellman-Ford -->
+<section class="slide">
+  <h2 class="frame-title">7. Bellman–Ford — paths with negative weights</h2>
+  <p><strong>What it does.</strong> Like Dijkstra, but tolerates negative edge weights and, as a bonus, <em>detects negative cycles</em>. It simply relaxes every edge $n-1$ times.</p>
+  <div class="python-block">
+    <span class="pane-label">Python — Bellman–Ford</span>
+    <span class="pane-code">def bellman_ford(G, s):
+    """G weighted (G[u] = {v: w}). Raises if a negative cycle exists."""
+    dist = {v: float("inf") for v in G}
+    dist[s] = 0
+    edges = [(u, v, w) for u in G for v, w in G[u].items()]
+    for _ in range(len(G) - 1):
+        for u, v, w in edges:
+            if dist[u] + w < dist[v]:
+                dist[v] = dist[u] + w
+    for u, v, w in edges:                      # one more pass = cycle check
+        if dist[u] + w < dist[v]:
+            raise ValueError("Negative cycle detected!")
+    return dist</span>
+  </div>
+  <p><strong>Cost.</strong> $O(n \cdot m)$.</p>
+  <div style="background:#e8f5ec;border-left:4px solid #27ae60;border-radius:6px;padding:0.6rem 0.9rem;margin:0.5rem 0;line-height:1.65;"><strong style="color:#1e824c;">🌍 Real-world use — </strong>detecting <em>currency-exchange arbitrage</em> (a negative cycle means free profit); distance-vector internet routing (the classic RIP protocol); any optimization where edges can represent gains as well as costs.</div>
+  <span class="slide-number">10 / 20</span>
+</section>
+
+<!-- Floyd-Warshall -->
+<section class="slide">
+  <h2 class="frame-title">8. Floyd–Warshall — distance between every pair</h2>
+  <p><strong>What it does.</strong> Computes the shortest distance between <em>all</em> pairs of vertices at once, by asking "is going through vertex $k$ a shortcut?" for every $k$.</p>
+  <div class="python-block">
+    <span class="pane-label">Python — Floyd–Warshall</span>
+    <span class="pane-code">def floyd_warshall(G):
+    nodes = list(G)
+    idx = {v: i for i, v in enumerate(nodes)}
+    n = len(nodes)
+    d = [[float("inf")] * n for _ in range(n)]
+    for i in range(n):
+        d[i][i] = 0
+    for u in G:
+        for v, w in G[u].items():
+            d[idx[u]][idx[v]] = w
+    for k in range(n):                         # try every intermediate vertex
+        for i in range(n):
+            for j in range(n):
+                if d[i][k] + d[k][j] < d[i][j]:
+                    d[i][j] = d[i][k] + d[k][j]
+    return nodes, d</span>
+  </div>
+  <p><strong>Cost.</strong> $O(n^3)$ — best for small, dense graphs.</p>
+  <div style="background:#e8f5ec;border-left:4px solid #27ae60;border-radius:6px;padding:0.6rem 0.9rem;margin:0.5rem 0;line-height:1.65;"><strong style="color:#1e824c;">🌍 Real-world use — </strong>precomputing a full distance table for a small road or transit network; building routing tables; measuring "closeness" of everyone in a social network; computing the transitive closure (who can reach whom).</div>
+  <span class="slide-number">11 / 20</span>
+</section>
+
+<!-- Kruskal -->
+<section class="slide">
+  <h2 class="frame-title">9. Minimum Spanning Tree — Kruskal</h2>
+  <p><strong>What it does.</strong> Connects all vertices with the smallest possible total edge weight. Kruskal sorts edges cheapest-first and adds an edge whenever it joins two still-separate pieces (Union-Find avoids creating a cycle).</p>
+  <div class="python-block">
+    <span class="pane-label">Python — Kruskal with Union-Find</span>
+    <span class="pane-code">def kruskal(G):
+    """G weighted (G[u] = {v: w}). Returns the MST as a list of edges."""
+    parent = {v: v for v in G}
+    def find(x):
+        while parent[x] != x:
+            parent[x] = parent[parent[x]]      # path compression
+            x = parent[x]
+        return x
+    def union(x, y):
+        rx, ry = find(x), find(y)
+        if rx == ry:
+            return False
+        parent[rx] = ry
+        return True
+    edges = sorted((w, u, v) for u in G for v, w in G[u].items() if u < v)
+    mst = []
+    for w, u, v in edges:
+        if union(u, v):
+            mst.append((u, v, w))
+            if len(mst) == len(G) - 1:
+                break
+    return mst</span>
+  </div>
+  <div style="background:#e8f5ec;border-left:4px solid #27ae60;border-radius:6px;padding:0.6rem 0.9rem;margin:0.5rem 0;line-height:1.65;"><strong style="color:#1e824c;">🌍 Real-world use — </strong>laying the cheapest network of fiber, electrical grid, water pipes or roads that still connects every site; clustering data points; image segmentation; approximate solutions to the travelling-salesman problem.</div>
+  <span class="slide-number">12 / 20</span>
+</section>
+
+<!-- Prim -->
+<section class="slide">
+  <h2 class="frame-title">10. Minimum Spanning Tree — Prim</h2>
+  <p><strong>What it does.</strong> Solves the same minimum-cost-network problem, but grows the tree outward from one seed vertex, always grabbing the cheapest edge that reaches a new vertex (via a heap). Often preferred on dense graphs.</p>
+  <div class="python-block">
+    <span class="pane-label">Python — Prim with a heap</span>
+    <span class="pane-code">import heapq
+
+def prim(G, start=None):
+    if start is None:
+        start = next(iter(G))
+    in_tree = {start}
+    mst = []
+    heap = [(w, start, v) for v, w in G[start].items()]
+    heapq.heapify(heap)
+    while heap and len(in_tree) < len(G):
+        w, u, v = heapq.heappop(heap)
+        if v in in_tree:
+            continue
+        in_tree.add(v)
+        mst.append((u, v, w))
+        for x, wx in G[v].items():
+            if x not in in_tree:
+                heapq.heappush(heap, (wx, v, x))
+    return mst</span>
+  </div>
+  <div style="background:#e8f5ec;border-left:4px solid #27ae60;border-radius:6px;padding:0.6rem 0.9rem;margin:0.5rem 0;line-height:1.65;"><strong style="color:#1e824c;">🌍 Real-world use — </strong>same applications as Kruskal — telecom/utility network design, circuit board wiring, cluster analysis — and it is the natural choice when the network is dense or you want to grow it incrementally from a hub.</div>
+  <span class="slide-number">13 / 20</span>
+</section>
+
+<!-- Greedy coloring -->
+<section class="slide">
+  <h2 class="frame-title">11. Greedy coloring — conflict-free assignment</h2>
+  <p><strong>What it does.</strong> Assigns each vertex the smallest "color" (label) not used by its neighbors. Colors stand for time slots, frequencies, rooms, or registers — adjacent vertices (which conflict) always get different ones.</p>
+  <div class="python-block">
+    <span class="pane-label">Python — greedy coloring (largest-degree first)</span>
+    <span class="pane-code">def greedy_coloring(G, order=None):
+    if order is None:                          # Welsh-Powell: high degree first
+        order = sorted(G, key=lambda v: len(G[v]), reverse=True)
+    color = {}
+    for v in order:
+        used = {color[u] for u in G[v] if u in color}
+        c = 0
+        while c in used:
+            c += 1
+        color[v] = c
+    return color                               # max(color.values())+1 = #labels</span>
+  </div>
+  <div style="background:#e8f5ec;border-left:4px solid #27ae60;border-radius:6px;padding:0.6rem 0.9rem;margin:0.5rem 0;line-height:1.65;"><strong style="color:#1e824c;">🌍 Real-world use — </strong>building exam/class timetables so conflicting events never overlap; assigning radio/Wi-Fi frequencies to towers so neighbors don't interfere; register allocation inside a compiler; scheduling sports leagues; Sudoku-style constraint solving.</div>
+  <span class="slide-number">14 / 20</span>
+</section>
+
+<!-- PageRank -->
+<section class="slide">
+  <h2 class="frame-title">12. PageRank — ranking importance</h2>
+  <p><strong>What it does.</strong> Scores how "important" each vertex is, based on the idea that important vertices are pointed to by other important vertices. It simulates a random surfer following links, with a small chance of jumping anywhere.</p>
+  <div class="python-block">
+    <span class="pane-label">Python — iterative PageRank</span>
+    <span class="pane-code">def pagerank(G, damping=0.85, iterations=100):
+    """G directed (G[u] = list of pages u links to)."""
+    N = len(G)
+    pr = {v: 1 / N for v in G}
+    out = {v: len(G[v]) for v in G}
+    for _ in range(iterations):
+        new = {}
+        for v in G:
+            incoming = sum(pr[u] / out[u]
+                           for u in G if v in G[u] and out[u] > 0)
+            new[v] = (1 - damping) / N + damping * incoming
+        pr = new
+    return pr                                  # higher = more important</span>
+  </div>
+  <div style="background:#e8f5ec;border-left:4px solid #27ae60;border-radius:6px;padding:0.6rem 0.9rem;margin:0.5rem 0;line-height:1.65;"><strong style="color:#1e824c;">🌍 Real-world use — </strong>the algorithm that launched Google Search — ranking web pages by link importance; ranking influential papers in citation networks; finding key influencers in social media; recommendation and fraud-detection systems.</div>
+  <span class="slide-number">15 / 20</span>
+</section>
+
+<!-- A* -->
+<section class="slide">
+  <h2 class="frame-title">13. A* search — guided pathfinding</h2>
+  <p><strong>What it does.</strong> A smarter Dijkstra: it adds a <em>heuristic</em> estimate of the remaining distance to the goal, so it heads toward the target instead of expanding in all directions. With an admissible heuristic it still returns the optimal path, usually much faster.</p>
+  <div class="python-block">
+    <span class="pane-label">Python — A* search</span>
+    <span class="pane-code">import heapq
+
+def a_star(G, start, goal, h):
+    """G weighted (G[u] = {v: w}); h(v) estimates distance v -> goal."""
+    open_pq = [(h(start), 0, start)]
+    g = {start: 0}
+    parent = {start: None}
+    while open_pq:
+        _, gu, u = heapq.heappop(open_pq)
+        if u == goal:
+            path = []
+            while u is not None:
+                path.append(u); u = parent[u]
+            return path[::-1], g[goal]
+        if gu > g.get(u, float("inf")):
+            continue
+        for v, w in G[u].items():
+            ng = gu + w
+            if ng < g.get(v, float("inf")):
+                g[v] = ng; parent[v] = u
+                heapq.heappush(open_pq, (ng + h(v), ng, v))
+    return None, float("inf")</span>
+  </div>
+  <div style="background:#e8f5ec;border-left:4px solid #27ae60;border-radius:6px;padding:0.6rem 0.9rem;margin:0.5rem 0;line-height:1.65;"><strong style="color:#1e824c;">🌍 Real-world use — </strong>character and unit pathfinding in video games; robot and drone motion planning; GPS routing with a straight-line distance heuristic to stay fast on huge maps.</div>
+  <span class="slide-number">16 / 20</span>
+</section>
+
+<!-- Real-life map recap -->
+<section class="slide">
+  <h2 class="frame-title">Where each algorithm lives — a field guide</h2>
+  <table class="ref-table">
+    <thead><tr><th>Domain</th><th>Algorithms at work</th></tr></thead>
+    <tbody>
+      <tr><td>Maps &amp; navigation</td><td>BFS, Dijkstra, A*, Floyd–Warshall</td></tr>
+      <tr><td>Social networks</td><td>BFS (degrees of separation), DFS (communities), PageRank (influence)</td></tr>
+      <tr><td>The web &amp; search</td><td>BFS (crawling), PageRank (ranking)</td></tr>
+      <tr><td>Software engineering</td><td>Topological sort (builds), cycle detection (dependencies, deadlocks)</td></tr>
+      <tr><td>Telecom &amp; utilities</td><td>MST — Kruskal / Prim (network design)</td></tr>
+      <tr><td>Scheduling &amp; operations</td><td>Greedy coloring (timetables, frequencies), bipartite matching</td></tr>
+      <tr><td>Finance</td><td>Bellman–Ford (arbitrage detection)</td></tr>
+      <tr><td>Games &amp; robotics</td><td>A* (pathfinding), DFS (maze generation)</td></tr>
+      <tr><td>Compilers &amp; systems</td><td>Greedy coloring (registers), cycle detection, topological sort</td></tr>
+    </tbody>
+  </table>
+  <span class="slide-number">17 / 20</span>
+</section>
+
+<!-- Strategy / complexity table -->
+<section class="slide">
+  <h2 class="frame-title">Picking the right algorithm — cheat sheet</h2>
+  <table class="ref-table">
+    <thead><tr><th>Problem</th><th>Algorithm</th><th>Complexity</th></tr></thead>
+    <tbody>
+      <tr><td>Shortest path, unweighted</td><td>BFS</td><td>$O(n + m)$</td></tr>
+      <tr><td>Shortest path, non-negative weights</td><td>Dijkstra (heap)</td><td>$O((n+m)\log n)$</td></tr>
+      <tr><td>Shortest path, possibly negative</td><td>Bellman–Ford</td><td>$O(nm)$</td></tr>
+      <tr><td>Shortest path with a heuristic</td><td>A*</td><td>$O((n+m)\log n)$, often far less</td></tr>
+      <tr><td>All-pairs shortest paths</td><td>Floyd–Warshall</td><td>$O(n^3)$</td></tr>
+      <tr><td>Connected components / explore</td><td>BFS or DFS</td><td>$O(n + m)$</td></tr>
+      <tr><td>Cycle detection</td><td>DFS</td><td>$O(n + m)$</td></tr>
+      <tr><td>Order with prerequisites</td><td>Topological sort (Kahn)</td><td>$O(n + m)$</td></tr>
+      <tr><td>Two-group split / matching</td><td>Bipartite check</td><td>$O(n + m)$</td></tr>
+      <tr><td>Cheapest connecting network</td><td>Kruskal / Prim</td><td>$O(m \log m)$ / $O((n+m)\log n)$</td></tr>
+      <tr><td>Conflict-free assignment</td><td>Greedy coloring</td><td>$O(n + m)$</td></tr>
+      <tr><td>Rank importance</td><td>PageRank</td><td>$O(\text{iters}\cdot(n+m))$</td></tr>
+    </tbody>
+  </table>
+  <span class="slide-number">18 / 20</span>
+</section>
+
+<!-- Summary -->
+<section class="slide">
+  <h2 class="frame-title">Summary</h2>
+  <ul>
+    <li><strong>Explore &amp; reach:</strong> BFS (fewest hops), DFS (deep exploration, components, cycles).</li>
+    <li><strong>Order &amp; group:</strong> topological sort for prerequisites, bipartite check for two-way matching, greedy coloring for conflict-free scheduling.</li>
+    <li><strong>Cheapest paths:</strong> Dijkstra (positive weights), Bellman–Ford (negatives + arbitrage), Floyd–Warshall (all pairs), A* (guided &amp; fast).</li>
+    <li><strong>Cheapest networks:</strong> Kruskal and Prim build minimum spanning trees.</li>
+    <li><strong>Importance:</strong> PageRank ranks vertices by who points to them.</li>
+  </ul>
+  <p>Every one of these runs on the same humble Python dictionary — and powers maps, search engines, schedules, networks, and games you use every day.</p>
+  <p style="margin-top:1rem;color:#e67e22;font-style:italic;font-weight:600;">Notes By Pr. El Hadiq Zouhair</p>
+  <span class="slide-number">19 / 20</span>
+</section>
+
+<!-- End -->
+<section class="slide part-slide">
+  <div class="part-label">End</div>
+  <h2>Thank you</h2>
+  <p>Apply these algorithms in the Graphs labs that follow.</p>
+  <p style="font-style:italic;margin-top:1.5rem;">Notes By Pr. El Hadiq Zouhair</p>
+  <span class="slide-number">20 / 20</span>
+</section>
+
+
+<!-- ── Navigation ─────────────────────────────────────────────────── -->
+<div id="nav">
+  <button id="btn-prev"   title="Previous">&#8592;</button>
+  <button id="btn-scroll" title="Toggle slideshow">Slideshow</button>
+  <button id="btn-next"   title="Next">&#8594;</button>
+</div>
+
+<script>
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  let current = 0, slideshowMode = false;
+
+  function enter(i) {
+    slides[current].classList.remove('active');
+    current = (i + slides.length) % slides.length;
+    slides[current].classList.add('active');
+    slides[current].scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  document.getElementById('btn-prev').addEventListener('click', () => {
+    if (slideshowMode) enter(current - 1);
+  });
+  document.getElementById('btn-next').addEventListener('click', () => {
+    if (slideshowMode) enter(current + 1);
+  });
+  document.getElementById('btn-scroll').addEventListener('click', () => {
+    slideshowMode = !slideshowMode;
+    document.body.classList.toggle('slideshow', slideshowMode);
+    document.getElementById('btn-scroll').textContent = slideshowMode ? 'Scroll' : 'Slideshow';
+    if (slideshowMode) slides[current].classList.add('active');
+    else slides.forEach(s => s.classList.remove('active'));
+  });
+
+  document.addEventListener('keydown', e => {
+    if (!slideshowMode) return;
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') enter(current + 1);
+    if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   enter(current - 1);
+  });
+</script>
+</body>
+</html>
