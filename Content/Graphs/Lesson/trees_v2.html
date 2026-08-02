@@ -3,838 +3,106 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Trees &amp; Binary Trees — Full Course v2</title>
-<script>
-  MathJax = {
-    tex: { inlineMath: [['$','$']], displayMath: [['$$','$$']], processEscapes: true },
-    options: { skipHtmlTags: ['script','noscript','style','textarea'] }
-  };
-</script>
-<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+<title>Trees — Step by Step</title>
 <style>
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-:root {
-  --orange:    #e67e22;
-  --darkblue:  #2c3e50;
-  --lightbg:   #f4f9fc;
-  --rowred:    #ffe8e8;
-  --rowblue:   #e3eeff;
-  --border:    #dce3ea;
-  --py-fg:     #1f4e7a;
-  --py-bg:     #eaf3fb;
-  --py-border: #2a6fb3;
-  --py-head:   #2a6fb3;
-  --sp-fg:     #1e824c;
-  --sp-bg:     #e8f5ec;
-  --sp-border: #27ae60;
-  --sp-head:   #27ae60;
-  --su-fg:     #4a4aaa;
-  --su-bg:     #eeeeff;
-  --su-border: #6060cc;
-  --su-head:   #6060cc;
-  --out-fg:    #6e4b0a;
-  --out-bg:    #fff7e0;
-  --out-border:#e0b341;
-  --out-head:  #c89324;
-}
-
-body {
-  font-family: 'Segoe UI', system-ui, sans-serif;
-  background: #e8edf2;
-  color: var(--darkblue);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 2rem 1rem 5rem;
-  gap: 2rem;
-}
-
-.slide {
-  background: #fff;
-  width: 100%;
-  max-width: 940px;
-  border-radius: 10px;
-  box-shadow: 0 4px 18px rgba(0,0,0,.10);
-  padding: 2.2rem 2.8rem 1.8rem;
-  position: relative;
-}
-.slide-number {
-  position: absolute;
-  bottom: 0.7rem;
-  right: 1.2rem;
-  font-size: 0.72rem;
-  color: #aaa;
-}
-
-.slide.title-slide {
-  background: linear-gradient(145deg, #f4f9fc 60%, #e0eef7);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 240px;
-  text-align: center;
-  border-top: 6px solid var(--orange);
-}
-.slide.title-slide h1 { font-size: 1.85rem; color: var(--darkblue); margin-bottom: 0.4rem; }
-.slide.title-slide .subtitle { font-size: 1.1rem; color: #555; }
-
-.part-slide {
-  background: linear-gradient(145deg, #fdf3e7 60%, #f9e4cc);
-  text-align: center;
-  border-left: 6px solid var(--orange);
-}
-.part-slide .part-label {
-  font-size: .85rem; letter-spacing: .2em; text-transform: uppercase;
-  color: var(--orange); font-weight: 700;
-}
-.part-slide h2 { color: var(--darkblue); font-size: 1.7rem; margin: 0.5rem 0; }
-.part-slide p  { color: #666; }
-
-h2.frame-title {
-  font-size: 1.45rem;
-  color: var(--orange);
-  font-weight: 700;
-  margin-bottom: 0.5rem;
-  padding-bottom: 0.35rem;
-  border-bottom: 2px solid #f9e4cc;
-}
-h3.sub-title {
-  font-size: 1.02rem;
-  color: var(--orange);
-  font-weight: 600;
-  margin: 0.7rem 0 0.3rem;
-}
-
-p { line-height: 1.65; margin: 0.4rem 0; }
-ul, ol { margin: 0.35rem 0 0.35rem 1.4rem; line-height: 1.75; }
-ul li::marker, ol li::marker { color: var(--orange); }
-code { background: #f0f3f7; color: #1f4e7a; padding: 0 .25em; border-radius: 3px; font-family: 'Consolas','Fira Code',monospace; }
-
-.note-box, .def-box, .thm-box, .proof-box, .ex-box, .ce-box, .cor-box, .aside-box {
-  border-radius: 6px;
-  padding: 0.6rem 0.9rem;
-  margin: 0.5rem 0;
-  line-height: 1.65;
-}
-.note-box  { background: #fff5e8; border-left: 4px solid var(--orange); font-style: italic; }
-.def-box   { background: #eaf3fb; border-left: 4px solid var(--py-border); }
-.def-box::before  { content: "Definition. "; font-weight: 700; color: var(--py-border); }
-.thm-box   { background: #fff7e0; border-left: 4px solid var(--out-border); }
-.thm-box::before  { content: "Theorem. "; font-weight: 700; color: var(--out-head); }
-.cor-box   { background: #fff7e0; border-left: 4px solid var(--out-border); }
-.cor-box::before  { content: "Corollary. "; font-weight: 700; color: var(--out-head); }
-.proof-box { background: #f4f9fc; border-left: 4px solid var(--darkblue); }
-.proof-box::before { content: "Proof. "; font-weight: 700; color: var(--darkblue); }
-.ex-box    { background: #e8f5ec; border-left: 4px solid var(--sp-border); }
-.ex-box::before    { content: "Example. "; font-weight: 700; color: var(--sp-border); }
-.ce-box    { background: #ffe8e8; border-left: 4px solid #c0395a; }
-.ce-box::before    { content: "Counter-example. "; font-weight: 700; color: #c0395a; }
-.aside-box { background: #eef1ff; border-left: 4px solid #6060cc; font-size: 0.92rem; }
-.aside-box::before { content: "Note. "; font-weight: 700; color: #6060cc; }
-
-.python-block, .setup-block, .sympy-block, .output-block {
-  border-radius: 6px;
-  overflow: hidden;
-  margin: 0.5rem 0;
-  border: 1px solid;
-}
-.pane-label {
-  display: block;
-  font-size: 0.62rem;
-  font-weight: 800;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  padding: 2px 10px;
-  color: #fff;
-}
-.pane-code {
-  font-family: 'Consolas','Fira Code',monospace;
-  font-size: 0.8rem;
-  line-height: 1.55;
-  padding: 0.5rem 0.75rem;
-  white-space: pre;
-  display: block;
-  overflow-x: auto;
-}
-.python-block { border-color: var(--py-border); }
-.python-block .pane-label { background: var(--py-head); }
-.python-block .pane-code  { background: var(--py-bg); color: var(--py-fg); }
-.output-block { border-color: var(--out-border); }
-.output-block .pane-label { background: var(--out-head); }
-.output-block .pane-code  { background: var(--out-bg); color: var(--out-fg); }
-
-.ref-table {
-  border-collapse: collapse;
-  margin: 0.5rem auto;
-  font-size: 0.88rem;
-  width: 100%;
-}
-.ref-table th, .ref-table td {
-  border: 1px solid var(--border);
-  padding: 0.35rem 0.65rem;
-  text-align: left;
-  vertical-align: top;
-}
-.ref-table th { background: var(--lightbg); font-weight: 600; color: var(--darkblue); }
-.center td, .center th { text-align: center; }
-
-/* Graph SVG illustrations */
-svg.graph-svg { display: block; margin: 0.5rem auto; max-width: 100%; }
-.svg-node { fill: #fff; stroke: var(--darkblue); stroke-width: 2; }
-.svg-node-label { font-size: 14px; font-family: 'Segoe UI', sans-serif; fill: var(--darkblue); font-weight: 700; }
-.svg-edge { stroke: var(--orange); stroke-width: 2; fill: none; }
-.svg-arrow { fill: var(--orange); }
-.svg-edge-label { font-size: 11px; fill: #555; }
-
-#nav { position: fixed; bottom: 1.5rem; right: 1.5rem; display: flex; gap: 0.4rem; z-index: 100; }
-#nav button {
-  background: var(--orange); color: #fff; border: none;
-  border-radius: 50%; width: 40px; height: 40px;
-  font-size: 1.1rem; cursor: pointer;
-  box-shadow: 0 2px 8px rgba(0,0,0,.25); transition: background .2s;
-}
-#nav button:hover { background: #cf6d17; }
-#nav #btn-scroll { border-radius: 20px; width: auto; padding: 0 12px; font-size: 0.8rem; }
-
-body.slideshow .slide        { display: none; }
-body.slideshow .slide.active { display: block; }
-
-.ref-cite { color: #777; font-size: 0.83rem; font-style: italic; }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{--orange:#e67e22;--dark:#2c3e50;--bg:#e8edf2;--border:#dce3ea;}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--dark);
+  padding:1.2rem 1rem 6rem;display:flex;flex-direction:column;align-items:center;}
+.sbs-head{max-width:980px;width:100%;text-align:center;margin-bottom:.6rem;}
+.sbs-head h1{font-size:1.5rem;}
+.sbs-head .sub{color:#777;font-size:.9rem;margin-top:.2rem;}
+.sbs-bar{max-width:980px;width:100%;display:flex;gap:.5rem;align-items:center;justify-content:center;margin:.4rem 0 .8rem;}
+.sbs-bar select{padding:.4rem .6rem;border:1px solid var(--border);border-radius:6px;font-size:.9rem;background:#fff;color:var(--dark);}
+.sbs-card{background:#fff;max-width:980px;width:100%;border-radius:12px;box-shadow:0 4px 18px rgba(0,0,0,.10);padding:1.1rem 1.4rem 1.4rem;border-top:5px solid var(--orange);}
+.sbs-title{font-size:1.15rem;color:var(--orange);font-weight:700;}
+.sbs-count{font-size:.82rem;color:#999;margin-bottom:.5rem;}
+.sbs-grid{display:grid;grid-template-columns:1.55fr 1fr;gap:1rem;align-items:start;}
+@media(max-width:760px){.sbs-grid{grid-template-columns:1fr;}}
+#stage{width:100%;height:auto;background:#fbfdff;border:1px solid #eef2f6;border-radius:8px;}
+.sbs-panel{background:#f4f9fc;border:1px solid var(--border);border-radius:8px;padding:.6rem .7rem;font-size:.84rem;}
+.prow{display:flex;gap:.4rem;padding:.18rem 0;border-bottom:1px dashed #e3eaf0;}
+.prow:last-child{border-bottom:none;}
+.plab{font-weight:700;color:#2a6fb3;min-width:92px;}
+.pval{font-family:'Consolas','Fira Code',monospace;color:#1f4e7a;word-break:break-word;}
+.sbs-cap{margin-top:.7rem;background:#fff7e0;border-left:4px solid #e0b341;border-radius:6px;padding:.55rem .8rem;font-size:.92rem;color:#6e4b0a;min-height:2.4rem;}
+.sbs-ctrl{position:fixed;bottom:0;left:0;right:0;background:#ffffffee;border-top:1px solid var(--border);backdrop-filter:blur(4px);
+  display:flex;gap:.6rem;align-items:center;justify-content:center;padding:.7rem;z-index:50;}
+.sbs-ctrl button{background:var(--orange);color:#fff;border:none;border-radius:8px;padding:.55rem 1.1rem;font-weight:700;cursor:pointer;}
+.sbs-ctrl button.ghost{background:#fff;color:var(--dark);border:1px solid var(--border);}
+.sbs-ctrl .pos{font-size:.85rem;color:#666;min-width:120px;text-align:center;}
 </style>
 </head>
 <body>
-
-<section class="slide title-slide" id="s1">
-  <h1>Trees &amp; Binary Trees</h1>
-  <p class="subtitle">Discrete Mathematics — Session 5 · Full Course v2 · Parts II–III</p>
-  <p style="font-size:1rem;color:#e67e22;margin-top:0.8rem;font-style:italic;font-weight:600;letter-spacing:.02em;">Notes By Pr. El Hadiq Zouhair</p>
-  <span class="slide-number">1 / 21</span>
-</section>
-
-<section class="slide" id="s2">
-  <h2 class="frame-title">Outline — Trees &amp; Binary Trees</h2>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
-    <div>
-      <h3 class="sub-title">Part II — Trees</h3>
-      <ol style="font-size:.9rem;line-height:1.8;">
-        <li>Tree = acyclic connected graph.</li>
-        <li>Equivalent characterisations (5 conditions).</li>
-        <li>$n$ vertices $\Rightarrow n - 1$ edges (proved).</li>
-        <li>Rooted trees, terminology.</li>
-        <li>Spanning trees.</li>
-      </ol>
-    </div>
-    <div>
-      <h3 class="sub-title">Part III — Binary trees</h3>
-      <ol start="6" style="font-size:.9rem;line-height:1.8;">
-        <li><strong>Python representation</strong> $[]$ &amp; $[a, L, R]$.</li>
-        <li>Recursive functions: size, height, leaves.</li>
-        <li>Traversals: pre/in/post-order, BFS.</li>
-        <li>Binary search tree (BST); search, insert, delete.</li>
-        <li>Binary heap, heapsort.</li>
-        <li>Balanced trees (AVL preview).</li>
-        <li>Expression trees; tree as a special graph.</li>
-      </ol>
-    </div>
-  </div>
-  <p class="ref-cite">References: Rosen 8e §§11.1–11.5; CLRS ch. 6, 12–13.</p>
-  <span class="slide-number">2 / 21</span>
-</section>
-
-<section class="slide part-slide" id="s26">
-  <div class="part-label">Part II</div>
-  <h2>Trees</h2>
-  <p>Tree = acyclic connected graph · five equivalent characterisations · spanning trees.</p>
-  <span class="slide-number">3 / 21</span>
-</section>
-
-<section class="slide" id="s27">
-  <h2 class="frame-title">14. Tree — formal definition</h2>
-
-  <div class="def-box">
-    A <strong>tree</strong> is a connected undirected graph that contains no cycle. A graph with no cycles (possibly disconnected) is a <strong>forest</strong>; a forest is a disjoint union of trees.
-  </div>
-
-  <div class="thm-box">
-    For a graph $T$ on $n$ vertices, the following are equivalent:
-    <ol>
-      <li>$T$ is a tree (connected and acyclic);</li>
-      <li>$T$ is connected and has exactly $n - 1$ edges;</li>
-      <li>$T$ is acyclic and has exactly $n - 1$ edges;</li>
-      <li>Every two vertices are joined by a unique path;</li>
-      <li>$T$ is acyclic, but adding any edge between two existing vertices creates exactly one cycle.</li>
-    </ol>
-  </div>
-
-  <div class="proof-box">
-    (1 ⇒ 2): induction on $n$. Base $n = 1$: $0 = n - 1$ edges. Step: a tree with $n \geq 2$ vertices contains a leaf $\ell$ (vertex of degree $1$); removing $\ell$ gives a tree on $n - 1$ vertices with $n - 2$ edges (by IH), so $T$ has $n - 1$ edges.<br>
-    (2 ⇒ 3): if $T$ had a cycle, removing one edge would keep it connected (contradicting that a connected graph needs $\geq n - 1$ edges).<br>
-    (3 ⇒ 4): connectedness + acyclicity gives uniqueness; if two distinct paths existed, their symmetric difference would contain a cycle.<br>
-    (4 ⇒ 5): adding edge $\{u,v\}$ creates a cycle = existing $u$–$v$ path + new edge.<br>
-    (5 ⇒ 1): all hypotheses of (1) are restated. $\square$
-  </div>
-  <p class="ref-cite">Rosen 8e §11.1; Diestel §1.5.</p>
-  <span class="slide-number">4 / 21</span>
-</section>
-
-<section class="slide" id="s28">
-  <h2 class="frame-title">15. Tree properties — leaves, paths</h2>
-
-  <div class="thm-box">
-    Every tree with $n \geq 2$ vertices has at least <strong>two leaves</strong> (vertices of degree $1$).
-  </div>
-  <div class="proof-box">
-    Suppose at most one leaf. Then $\sum_v \deg(v) \geq 1 \cdot 1 + 2(n - 1) = 2n - 1$. But by the handshake lemma, $\sum_v \deg(v) = 2(n - 1) = 2n - 2$. Contradiction. $\square$
-  </div>
-
-  <div class="def-box">
-    A <strong>rooted tree</strong> is a tree together with a distinguished vertex $r$ — the <em>root</em>. Every other vertex has a unique <em>parent</em> (the next vertex on the unique path to the root); vertices closer to the root are <em>ancestors</em>, further are <em>descendants</em>. Vertices with no children are <em>leaves</em>; the others are <em>internal</em>.
-  </div>
-
-  <table class="ref-table">
-    <thead><tr><th>Term</th><th>Definition</th></tr></thead>
-    <tbody>
-      <tr><td>Depth of $v$</td><td>Length of the path from root to $v$.</td></tr>
-      <tr><td>Height of $v$</td><td>Length of the longest path from $v$ to a leaf below it.</td></tr>
-      <tr><td>Height of tree</td><td>Height of the root = depth of the deepest leaf.</td></tr>
-      <tr><td>Level $k$</td><td>All vertices at depth $k$.</td></tr>
-    </tbody>
-  </table>
-  <p class="ref-cite">Rosen 8e §11.1.</p>
-  <span class="slide-number">5 / 21</span>
-</section>
-
-<section class="slide" id="s29">
-  <h2 class="frame-title">16. Spanning trees</h2>
-
-  <div class="thm-box">
-    Every connected graph contains a spanning tree.
-  </div>
-  <div class="proof-box">
-    Start with $T = G$. While $T$ has a cycle, remove any edge of any cycle — connectivity is preserved (the edge can be replaced by the rest of the cycle). The process terminates with $T$ a tree. $\square$
-  </div>
-
-  <div class="thm-box">
-    <strong>Cayley's formula.</strong> The number of distinct spanning trees of the complete graph $K_n$ is $n^{n-2}$.
-  </div>
-
-  <p>Proof techniques include Prüfer sequences (an explicit bijection between trees on $\{1, \ldots, n\}$ and sequences in $\{1, \ldots, n\}^{n-2}$), the matrix-tree theorem (determinant of the Laplacian), and double-counting (multinomials).</p>
-
-  <div class="ex-box">
-    For $n = 4$, $4^{4-2} = 16$ spanning trees of $K_4$. Direct enumeration confirms this.
-  </div>
-
-  <div class="aside-box">
-    BFS or DFS from any vertex produce a spanning tree of a connected graph as a byproduct — the "BFS-tree" or "DFS-tree" used in many algorithmic problems.
-  </div>
-  <p class="ref-cite">Cayley (1889); Prüfer (1918); Kirchhoff (1847).</p>
-  <span class="slide-number">6 / 21</span>
-</section>
-
-<section class="slide part-slide" id="s30">
-  <div class="part-label">Part III</div>
-  <h2>Binary trees</h2>
-  <p>Python <code>[]</code> and <code>[a, L, R]</code> representation · traversals · BST · heap.</p>
-  <span class="slide-number">7 / 21</span>
-</section>
-
-<section class="slide" id="s31">
-  <h2 class="frame-title">17. Binary tree — inductive definition</h2>
-
-  <div class="def-box">
-    A <strong>binary tree</strong> $T$ is defined recursively:
-    <ul>
-      <li>The <em>empty tree</em>, written $\varnothing$ or <code>[]</code>, is a binary tree.</li>
-      <li>If $a$ is a value and $L, R$ are binary trees, then $\bigl[a,\, L,\, R\bigr]$ is a binary tree with root value $a$, left subtree $L$, and right subtree $R$.</li>
-    </ul>
-  </div>
-
-  <div class="aside-box">
-    <strong>Python convention.</strong> A binary tree is a Python <code>list</code>:
-    <ul>
-      <li><code>[]</code> denotes the empty tree;</li>
-      <li><code>[a, L, R]</code> denotes a non-empty tree with root <code>a</code> and subtrees <code>L</code> and <code>R</code>.</li>
-    </ul>
-    This <em>three-element-list</em> convention matches the inductive definition exactly and supports every recursive operation cleanly.
-  </div>
-
-  <div class="python-block">
-    <span class="pane-label">Python — example tree</span>
-    <span class="pane-code"># The tree
-#         1
-#        / \
-#       2   3
-#      / \   \
-#     4   5   6
-T = [1,
-        [2,
-            [4, [], []],
-            [5, [], []]],
-        [3,
-            [],
-            [6, [], []]]]
-
-def est_vide(T):  return T == []
-def racine(T):    return T[0]
-def gauche(T):    return T[1]
-def droite(T):    return T[2]
-
-print(racine(T), racine(gauche(T)), racine(droite(T)))   # 1 2 3</span>
-  </div>
-  <p class="ref-cite">SICP §2.2; classical nested-list representation of trees.</p>
-  <span class="slide-number">8 / 21</span>
-</section>
-
-<section class="slide" id="s32">
-  <h2 class="frame-title">18. Recursive functions on binary trees</h2>
-
-  <p>Every recursive function on a binary tree follows the same pattern: a base case for $\varnothing$, and a recursive case for $[a, L, R]$ that combines results from $L$ and $R$.</p>
-
-  <div class="python-block">
-    <span class="pane-label">Python — fundamental tree functions</span>
-    <span class="pane-code">def taille(T):
-    """Number of nodes."""
-    if T == []: return 0
-    a, L, R = T
-    return 1 + taille(L) + taille(R)
-
-def hauteur(T):
-    """Height = longest root-to-leaf path. Convention: hauteur([]) == -1, hauteur([a,[],[]]) == 0."""
-    if T == []: return -1
-    a, L, R = T
-    return 1 + max(hauteur(L), hauteur(R))
-
-def feuilles(T):
-    """Number of leaves."""
-    if T == []: return 0
-    a, L, R = T
-    if L == [] and R == []: return 1
-    return feuilles(L) + feuilles(R)
-
-def somme(T):
-    """Sum of all node values (assuming numeric values)."""
-    if T == []: return 0
-    a, L, R = T
-    return a + somme(L) + somme(R)</span>
-  </div>
-
-  <div class="thm-box">
-    A binary tree with $n$ internal nodes has $n + 1$ leaves (in the "full" variant where every internal node has exactly two children).
-  </div>
-  <p class="ref-cite">SICP §2.2.2; Knuth, <em>TAOCP</em>, vol. 1, §2.3.</p>
-  <span class="slide-number">9 / 21</span>
-</section>
-
-<section class="slide" id="s33">
-  <h2 class="frame-title">19. Tree traversals — pre/in/post-order</h2>
-
-  <div class="def-box">
-    Three classical depth-first traversals visit each node exactly once:
-    <ul>
-      <li><strong>Preorder</strong>: <em>root, left, right</em>.</li>
-      <li><strong>Inorder</strong>: <em>left, root, right</em>.</li>
-      <li><strong>Postorder</strong>: <em>left, right, root</em>.</li>
-    </ul>
-  </div>
-
-  <div class="python-block">
-    <span class="pane-label">Python — all three traversals</span>
-    <span class="pane-code">def prefixe(T):
-    if T == []: return []
-    a, L, R = T
-    return [a] + prefixe(L) + prefixe(R)
-
-def infixe(T):
-    if T == []: return []
-    a, L, R = T
-    return infixe(L) + [a] + infixe(R)
-
-def postfixe(T):
-    if T == []: return []
-    a, L, R = T
-    return postfixe(L) + postfixe(R) + [a]
-
-T = [1, [2, [4, [], []], [5, [], []]], [3, [], [6, [], []]]]
-print(prefixe(T))    # [1, 2, 4, 5, 3, 6]
-print(infixe(T))     # [4, 2, 5, 1, 3, 6]
-print(postfixe(T))   # [4, 5, 2, 6, 3, 1]</span>
-  </div>
-
-  <div class="ex-box">
-    <strong>Inorder = sorted</strong> for a <em>binary search tree</em> (next slide). <br>
-    <strong>Postorder</strong> is the order needed to evaluate an arithmetic-expression tree.<br>
-    <strong>Preorder</strong> matches the Polish prefix notation.
-  </div>
-  <p class="ref-cite">Knuth, <em>TAOCP</em>, vol. 1, §2.3.</p>
-  <span class="slide-number">10 / 21</span>
-</section>
-
-<section class="slide" id="s34">
-  <h2 class="frame-title">20. Level-order traversal (BFS)</h2>
-
-  <p>A fourth, breadth-first traversal visits nodes level by level.</p>
-
-  <div class="python-block">
-    <span class="pane-label">Python — level-order (BFS) on a binary tree</span>
-    <span class="pane-code">from collections import deque
-
-def parcours_largeur(T):
-    if T == []: return []
-    resultat = []
-    file = deque([T])
-    while file:
-        N = file.popleft()
-        if N == []: continue
-        a, L, R = N
-        resultat.append(a)
-        file.append(L)
-        file.append(R)
-    return resultat
-
-T = [1, [2, [4, [], []], [5, [], []]], [3, [], [6, [], []]]]
-print(parcours_largeur(T))    # [1, 2, 3, 4, 5, 6]</span>
-  </div>
-
-  <div class="cor-box">
-    A <strong>perfect binary tree</strong> of height $h$ has $2^{h+1} - 1$ nodes, of which $2^h$ are leaves. Its level-order traversal corresponds exactly to the heap-indexing scheme used in arrays.
-  </div>
-
-  <div class="thm-box">
-    For a binary tree with $n$ nodes, the height satisfies $h \geq \lceil \log_2(n+1) \rceil - 1$. Equality is reached by perfectly balanced trees.
-  </div>
-  <p class="ref-cite">Knuth, <em>TAOCP</em>, vol. 1, §2.3.</p>
-  <span class="slide-number">11 / 21</span>
-</section>
-
-<section class="slide" id="s35">
-  <h2 class="frame-title">21. Binary search trees (BST)</h2>
-
-  <div class="def-box">
-    A <strong>binary search tree</strong> (BST) is a binary tree in which, for every node $[a, L, R]$:
-    <ul>
-      <li>every value in $L$ is strictly less than $a$;</li>
-      <li>every value in $R$ is strictly greater than $a$.</li>
-    </ul>
-    Equivalently, the <em>inorder</em> traversal yields a strictly increasing sequence.
-  </div>
-
-  <div class="python-block">
-    <span class="pane-label">Python — BST membership and insertion</span>
-    <span class="pane-code">def appartient(T, x):
-    if T == []: return False
-    a, L, R = T
-    if x == a: return True
-    if x &lt; a:  return appartient(L, x)
-    return appartient(R, x)
-
-def inserer(T, x):
-    if T == []: return [x, [], []]
-    a, L, R = T
-    if x &lt; a:  return [a, inserer(L, x), R]
-    if x &gt; a:  return [a, L, inserer(R, x)]
-    return T                                 # duplicate, ignored
-
-# Build a BST from a list
-import functools
-A = functools.reduce(inserer, [5, 3, 8, 1, 4, 7, 9], [])
-print(infixe(A))     # [1, 3, 4, 5, 7, 8, 9]   ← sorted!</span>
-  </div>
-
-  <div class="thm-box">
-    BST search, insert and delete all run in $O(h)$ time where $h$ is the tree height. For a balanced BST, $h = \Theta(\log n)$ — operations are logarithmic.
-  </div>
-  <p class="ref-cite">Knuth, <em>TAOCP</em>, vol. 3, §6.2.2; CLRS ch. 12.</p>
-  <span class="slide-number">12 / 21</span>
-</section>
-
-<section class="slide" id="s36">
-  <h2 class="frame-title">22. BST deletion — three cases</h2>
-
-  <p>Removing a value $x$ from a BST has three cases, depending on the children of the node containing $x$.</p>
-
-  <ol>
-    <li><strong>Leaf:</strong> replace the node by $\varnothing$.</li>
-    <li><strong>One child:</strong> splice the child into the node's position.</li>
-    <li><strong>Two children:</strong> replace the node's value by the smallest value in $R$ (the inorder successor), then recursively remove that value from $R$.</li>
-  </ol>
-
-  <div class="python-block">
-    <span class="pane-label">Python — BST deletion</span>
-    <span class="pane-code">def minimum(T):
-    a, L, R = T
-    return minimum(L) if L != [] else a
-
-def supprimer(T, x):
-    if T == []: return []
-    a, L, R = T
-    if x &lt; a: return [a, supprimer(L, x), R]
-    if x &gt; a: return [a, L, supprimer(R, x)]
-    # x == a
-    if L == []: return R                # case 1 + 2
-    if R == []: return L                # case 2
-    m = minimum(R)                       # case 3
-    return [m, L, supprimer(R, m)]
-
-A = [5, [3, [1, [], []], [4, [], []]], [8, [7, [], []], [9, [], []]]]
-print(infixe(supprimer(A, 3)))   # [1, 4, 5, 7, 8, 9]</span>
-  </div>
-
-  <div class="note-box">
-    Without balancing (AVL, red-black, splay), repeated insertions of a sorted sequence degenerate the BST into a "vine" of height $n$ — operations slow to $\Theta(n)$. Balanced variants guarantee $\Theta(\log n)$ worst-case.
-  </div>
-  <p class="ref-cite">CLRS ch. 12–13.</p>
-  <span class="slide-number">13 / 21</span>
-</section>
-
-<section class="slide" id="s37">
-  <h2 class="frame-title">23. Binary heap (min-heap)</h2>
-
-  <div class="def-box">
-    A <strong>min-heap</strong> is a complete binary tree in which every parent's value is $\leq$ its children's values (so the minimum sits at the root). A <strong>max-heap</strong> reverses the inequality.
-  </div>
-
-  <p>Stored as an <em>array</em>: the root is at index $1$ (or $0$); for a node at index $i$, the left child is at $2i$ (or $2i+1$) and the right child is at $2i + 1$ (or $2i + 2$). Parent: $i // 2$ (or $(i - 1) // 2$).</p>
-
-  <div class="python-block">
-    <span class="pane-label">Python — using <code>heapq</code></span>
-    <span class="pane-code">import heapq
-tas = []
-for x in [5, 2, 8, 1, 6, 3]:
-    heapq.heappush(tas, x)
-print(tas)                       # [1, 2, 3, 5, 6, 8] — heap-ordered
-while tas:
-    print(heapq.heappop(tas), end=' ')   # 1 2 3 5 6 8 — sorted output</span>
-  </div>
-
-  <div class="thm-box">
-    Insertion (<code>heappush</code>) and extraction (<code>heappop</code>) on a binary heap of $n$ elements run in $O(\log n)$ time. Building a heap from $n$ elements takes $O(n)$ via Floyd's bottom-up heapify.
-  </div>
-
-  <div class="ex-box">
-    <strong>Heapsort.</strong> Build a max-heap of the input ($O(n)$), then repeatedly extract the max ($O(n \log n)$). Total: $O(n \log n)$ in-place sort.
-  </div>
-  <p class="ref-cite">Williams (1964); Floyd (1964); CLRS ch. 6.</p>
-  <span class="slide-number">14 / 21</span>
-</section>
-
-<section class="slide" id="s38">
-  <h2 class="frame-title">24. Balanced trees — AVL, red-black (preview)</h2>
-
-  <div class="def-box">
-    An <strong>AVL tree</strong> is a BST where for every node the heights of the left and right subtrees differ by at most $1$ — the <em>balance factor</em> is in $\{-1, 0, +1\}$.
-  </div>
-
-  <p>An AVL tree of $n$ nodes has height $h = O(\log n)$. Insertions and deletions trigger at most $O(\log n)$ "rotations" to restore the balance invariant.</p>
-
-  <table class="ref-table">
-    <thead><tr><th>Operation</th><th>BST (worst)</th><th>AVL / RB</th></tr></thead>
-    <tbody>
-      <tr><td>Search</td><td>$\Theta(n)$</td><td>$\Theta(\log n)$</td></tr>
-      <tr><td>Insert</td><td>$\Theta(n)$</td><td>$\Theta(\log n)$</td></tr>
-      <tr><td>Delete</td><td>$\Theta(n)$</td><td>$\Theta(\log n)$</td></tr>
-      <tr><td>Inorder traversal</td><td>$\Theta(n)$</td><td>$\Theta(n)$</td></tr>
-    </tbody>
-  </table>
-
-  <div class="aside-box">
-    Self-balancing BSTs are <em>cultural knowledge</em>: students should know they exist and provide $\Theta(\log n)$ guarantees, even if the internal rotation details may be out of scope. C++ <code>std::map</code> and Python's <code>SortedDict</code> are typical industrial implementations (often red-black trees).
-  </div>
-  <p class="ref-cite">Adelson-Velsky &amp; Landis (1962); CLRS ch. 13.</p>
-  <span class="slide-number">15 / 21</span>
-</section>
-
-<section class="slide" id="s39">
-  <h2 class="frame-title">25. Tree as a special graph — bridging Parts I &amp; III</h2>
-
-  <p>Every tree on $n$ vertices <em>is</em> a connected acyclic graph with $n - 1$ edges (Part II §14). A binary tree is the rooted version with at most two ordered children per node (Part III §17).</p>
-
-  <div class="python-block">
-    <span class="pane-label">Python — convert between the two representations</span>
-    <span class="pane-code">def binaire_vers_graphe(T, prefixe=''):
-    """Convert a binary tree (nested list) into a graph (dict)
-       with synthetic vertex IDs to avoid value collisions."""
-    G = {}
-    def parcours(N, vid):
-        if N == []: return None
-        a, L, R = N
-        G[vid] = set()
-        G.setdefault(vid, set())
-        for sous_arbre, suffix in [(L, 'L'), (R, 'R')]:
-            sid = vid + suffix
-            if parcours(sous_arbre, sid) is not None:
-                G[vid].add(sid)
-                G[sid].add(vid)
-        return vid
-    parcours(T, prefixe)
-    return G
-
-T = [1, [2, [4, [], []], [5, [], []]], [3, [], [6, [], []]]]
-G = binaire_vers_graphe(T)
-print(len(G), len(G[''])>0)     # 6 True
-# Apply any graph algorithm of Part I — BFS, DFS, connectivity — to G.</span>
-  </div>
-
-  <div class="cor-box">
-    All graph algorithms of Part I (BFS, DFS, Dijkstra on a positively-weighted tree, etc.) apply directly to the converted representation. In particular, in a tree:
-    <ul>
-      <li>BFS from any vertex gives the unique distance function.</li>
-      <li>The diameter (longest path) can be found by <strong>two consecutive BFS</strong> from any vertex.</li>
-      <li>Dijkstra on a tree degenerates to a single pass — every path is unique.</li>
-    </ul>
-  </div>
-  <p class="ref-cite">Folklore tree-diameter algorithm.</p>
-  <span class="slide-number">16 / 21</span>
-</section>
-
-<section class="slide" id="s40">
-  <h2 class="frame-title">26. Application — expression trees</h2>
-
-  <p>An arithmetic expression like $(3 + 4) \cdot (5 - 2)$ has a natural binary-tree representation: internal nodes are operators, leaves are operands.</p>
-
-  <div class="python-block">
-    <span class="pane-label">Python — evaluate an expression tree</span>
-    <span class="pane-code"># Expression: (3 + 4) * (5 - 2)
-expr = ['*',
-            ['+', [3, [], []], [4, [], []]],
-            ['-', [5, [], []], [2, [], []]]]
-
-def evaluer(T):
-    if T == []:
-        raise ValueError('empty tree')
-    a, L, R = T
-    if L == [] and R == []:
-        return a                              # leaf — operand
-    g, d = evaluer(L), evaluer(R)
-    return {'+': g + d, '-': g - d,
-            '*': g * d, '/': g / d}[a]
-
-print(evaluer(expr))     # 21
-print(prefixe(expr))     # ['*', '+', 3, 4, '-', 5, 2]   ← Polish notation
-print(postfixe(expr))    # [3, 4, '+', 5, 2, '-', '*']   ← Reverse Polish (RPN)</span>
-  </div>
-
-  <p>The same tree, traversed three ways, gives:</p>
-  <ul>
-    <li><strong>Preorder</strong> = Polish prefix notation: <code>* + 3 4 - 5 2</code>.</li>
-    <li><strong>Inorder</strong> (with parens) = the human-readable expression: <code>((3 + 4) * (5 - 2))</code>.</li>
-    <li><strong>Postorder</strong> = Reverse Polish notation (RPN): <code>3 4 + 5 2 - *</code> — exactly the order needed for a stack-based evaluator.</li>
-  </ul>
-  <p class="ref-cite">Knuth, <em>TAOCP</em>, vol. 1, §2.3; SICP §2.3.</p>
-  <span class="slide-number">17 / 21</span>
-</section>
-
-<section class="slide" id="s44">
-  <h2 class="frame-title">30. Summary — Parts II &amp; III (Trees &amp; Binary Trees)</h2>
-  <ul>
-    <li><strong>Trees</strong> = connected acyclic graphs. Five equivalent characterisations proved.</li>
-    <li>Every tree has $n - 1$ edges; at least $2$ leaves (for $n \geq 2$).</li>
-    <li>Rooted-tree terminology: root, parent, child, depth, height, leaves.</li>
-    <li>Spanning trees: every connected graph has at least one; $K_n$ has $n^{n-2}$ (Cayley).</li>
-    <li><strong>Binary trees</strong>: inductive definition; Python <code>[]</code> and <code>[a, L, R]</code> representation.</li>
-    <li>Recursive functions: <code>taille</code>, <code>hauteur</code>, <code>feuilles</code>, <code>somme</code>.</li>
-    <li>Traversals: preorder, inorder, postorder, level-order. Each in $O(n)$.</li>
-    <li>BST: ordering invariant; search / insert / delete in $O(h)$.</li>
-    <li>Binary heap (min/max): complete tree; $O(\log n)$ operations; heapsort in $O(n \log n)$.</li>
-    <li>Balanced BSTs (AVL, red-black) guarantee $O(\log n)$ worst-case.</li>
-    <li>Bridging: convert binary tree → graph dict; reuse BFS/DFS/diameter algorithms.</li>
-  </ul>
-  <span class="slide-number">18 / 21</span>
-</section>
-
-<section class="slide" id="s45">
-  <h2 class="frame-title">31. Python toolbox — quick reference</h2>
-
-  <div class="python-block">
-    <span class="pane-label">Python — what to import for graph &amp; tree work</span>
-    <span class="pane-code">from collections import deque         # BFS queue
-import heapq                            # Dijkstra, Prim, heaps
-import functools                        # reduce, lru_cache
-
-# Adjacency-list graph
-G = {'a': {'b': 3, 'c': 1}, 'b': {'a': 3, 'c': 7}, 'c': {'a': 1, 'b': 7}}
-
-# Binary tree
-T = [1, [2, [4, [], []], [5, [], []]], [3, [], [6, [], []]]]
-
-# Optional: NetworkX for sanity checks (a library, not for the from-scratch exercises)
-# import networkx as nx
-# nx_G = nx.Graph()
-# nx_G.add_weighted_edges_from([(u, v, w) for u in G for v, w in G[u].items() if u &lt; v])
-# nx.shortest_path(nx_G, 'a', 'b', weight='weight')</span>
-  </div>
-
-  <div class="aside-box">
-    In exercises and assessments, <strong>do not rely on NetworkX</strong> — students are expected to implement BFS, DFS, Dijkstra, Kruskal/Prim, and tree operations from scratch using the standard <code>dict</code> and <code>list</code> representations. NetworkX is a convenient sanity check, not a substitute for the explicit implementations.
-  </div>
-  <span class="slide-number">19 / 21</span>
-</section>
-
-<section class="slide" id="s47">
-  <h2 class="frame-title">Bibliography</h2>
-  <ul>
-    <li>K. H. Rosen. <em>Discrete Mathematics and Its Applications</em>, 8th ed., McGraw-Hill, 2019 — §§10.1–10.7 (graphs), §§11.1–11.5 (trees).</li>
-    <li>T. H. Cormen, C. E. Leiserson, R. L. Rivest, C. Stein. <em>Introduction to Algorithms</em>, 4th ed., MIT Press, 2022 — Part VI (graph algorithms), ch. 12–13 (BST, balanced trees), ch. 6 (heaps).</li>
-    <li>D. Beauquier, J. Berstel, P. Chrétienne. <em>Éléments d'algorithmique</em>, Masson, 1992 — standard French-language algorithmics reference.</li>
-    <li>R. Diestel. <em>Graph Theory</em>, 5th ed., Springer, 2017 — standard mathematical reference.</li>
-    <li>D. E. Knuth. <em>The Art of Computer Programming</em>, vol. 1 (Fundamental Algorithms), vol. 3 (Sorting and Searching), Addison-Wesley.</li>
-    <li>H. Abelson &amp; G. J. Sussman. <em>Structure and Interpretation of Computer Programs</em>, 2nd ed., MIT Press, 1996 — §2.2 (tree-like data).</li>
-    <li>L. Euler (1736). <em>Solutio problematis ad geometriam situs pertinentis</em> — origins of graph theory.</li>
-    <li>K. Appel &amp; W. Haken (1976). Four-color theorem.</li>
-    <li>E. W. Dijkstra (1959). <em>A note on two problems in connexion with graphs</em>, Numer. Math. 1.</li>
-    <li>S. S. Skiena. <em>The Algorithm Design Manual</em>, 3rd ed., Springer, 2020 — graphs and trees from the algorithms-engineering perspective.</li>
-  </ul>
-
-  <p style="margin-top:1rem;color:#e67e22;font-style:italic;font-weight:600;">Notes By Pr. El Hadiq Zouhair</p>
-  <span class="slide-number">20 / 21</span>
-</section>
-
-<section class="slide part-slide" id="s48">
-  <div class="part-label">End of course</div>
-  <h2>Thank you</h2>
-  <p>Questions, exercises and lab sessions to follow.</p>
-  <p style="font-style:italic;margin-top:1.5rem;">Notes By Pr. El Hadiq Zouhair</p>
-  <span class="slide-number">21 / 21</span>
-</section>
-
-<!-- ── Navigation ─────────────────────────────────────────────────── -->
-<div id="nav">
-  <button id="btn-prev"   title="Previous">&#8592;</button>
-  <button id="btn-scroll" title="Toggle slideshow">Slideshow</button>
-  <button id="btn-next"   title="Next">&#8594;</button>
+<div class="sbs-head"><h1>Trees — Step by Step</h1><p class="sub">Press <strong>Next ▶</strong> (or →) to advance one step — like Beamer <code>\pause</code>.</p></div>
+<div class="sbs-bar"><label style="font-size:.85rem;color:#555;">Algorithm:</label><select id="algoSel"></select></div>
+<div class="sbs-card">
+  <div class="sbs-title" id="scTitle"></div>
+  <div class="sbs-count" id="scCount"></div>
+  <div class="sbs-grid"><svg id="stage" preserveAspectRatio="xMidYMid meet"></svg><div class="sbs-panel" id="panel"></div></div>
+  <div class="sbs-cap" id="cap"></div>
 </div>
-
+<div class="sbs-ctrl">
+  <button class="ghost" id="bPrevAlgo" title="Previous algorithm">⏮</button>
+  <button class="ghost" id="bPrev">◀ Prev</button>
+  <button id="bNext">Next ▶</button>
+  <button class="ghost" id="bReset">⟲ Reset</button>
+  <button class="ghost" id="bNextAlgo" title="Next algorithm">⏭</button>
+  <span class="pos" id="pos"></span>
+</div>
 <script>
-  const slides = Array.from(document.querySelectorAll('.slide'));
-  let current = 0, slideshowMode = false;
-
-  function enter(i) {
-    slides[current].classList.remove('active');
-    current = (i + slides.length) % slides.length;
-    slides[current].classList.add('active');
-    slides[current].scrollIntoView({ behavior: 'smooth', block: 'center' });
-  }
-
-  document.getElementById('btn-prev').addEventListener('click', () => {
-    if (slideshowMode) enter(current - 1);
-  });
-  document.getElementById('btn-next').addEventListener('click', () => {
-    if (slideshowMode) enter(current + 1);
-  });
-  document.getElementById('btn-scroll').addEventListener('click', () => {
-    slideshowMode = !slideshowMode;
-    document.body.classList.toggle('slideshow', slideshowMode);
-    document.getElementById('btn-scroll').textContent = slideshowMode ? 'Scroll' : 'Slideshow';
-    if (slideshowMode) slides[current].classList.add('active');
-    else slides.forEach(s => s.classList.remove('active'));
-  });
-
-  document.addEventListener('keydown', e => {
-    if (!slideshowMode) return;
-    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') enter(current + 1);
-    if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   enter(current - 1);
-  });
+const SCENES = [{"name": "Is it a tree?", "title": "Is it a tree? — DFS connectivity & cycle check", "W": 440, "H": 290, "directed": false, "pos": {"A": [250, 40], "B": [120, 130], "C": [380, 130], "D": [60, 240], "E": [180, 240], "F": [380, 240]}, "edges": [["A", "B", null], ["A", "C", null], ["B", "D", null], ["B", "E", null], ["C", "F", null]], "steps": [{"c": {}, "r": {}, "e": {}, "p": "<div class=\"prow\"><span class=\"plab\">vertices</span><span class=\"pval\">n = 6</span></div><div class=\"prow\"><span class=\"plab\">edges</span><span class=\"pval\">m = 5</span></div><div class=\"prow\"><span class=\"plab\">rule</span><span class=\"pval\">tree &hArr; connected &and; m = n&minus;1 = 5</span></div><div class=\"prow\"><span class=\"plab\">visited</span><span class=\"pval\">&empty;</span></div>", "cap": "Goal: decide whether this graph is a <b>tree</b>. Here m = 5 and n&minus;1 = 5. Edge count is right &mdash; now run a DFS from A to check it is connected with no cycle."}, {"c": {"A": "#e9c46a"}, "r": {"A": "#e67e22"}, "e": {}, "p": "<div class=\"prow\"><span class=\"plab\">vertices</span><span class=\"pval\">n = 6</span></div><div class=\"prow\"><span class=\"plab\">edges</span><span class=\"pval\">m = 5</span></div><div class=\"prow\"><span class=\"plab\">rule</span><span class=\"pval\">tree &hArr; connected &and; m = n&minus;1 = 5</span></div><div class=\"prow\"><span class=\"plab\">visited</span><span class=\"pval\">A</span></div>", "cap": "Visit <b>A</b> (push). Mark it on the DFS stack."}, {"c": {"A": "#e9c46a"}, "r": {"B": "#e67e22"}, "e": {"A|B": "t"}, "p": "<div class=\"prow\"><span class=\"plab\">vertices</span><span class=\"pval\">n = 6</span></div><div class=\"prow\"><span class=\"plab\">edges</span><span class=\"pval\">m = 5</span></div><div class=\"prow\"><span class=\"plab\">rule</span><span class=\"pval\">tree &hArr; connected &and; m = n&minus;1 = 5</span></div><div class=\"prow\"><span class=\"plab\">visited</span><span class=\"pval\">A</span></div>", "cap": "Tree edge A&ndash;B: descend into B."}, {"c": {"A": "#e9c46a", "B": "#e9c46a"}, "r": {"B": "#e67e22"}, "e": {"A|B": "t"}, "p": "<div class=\"prow\"><span class=\"plab\">vertices</span><span class=\"pval\">n = 6</span></div><div class=\"prow\"><span class=\"plab\">edges</span><span class=\"pval\">m = 5</span></div><div class=\"prow\"><span class=\"plab\">rule</span><span class=\"pval\">tree &hArr; connected &and; m = n&minus;1 = 5</span></div><div class=\"prow\"><span class=\"plab\">visited</span><span class=\"pval\">A, B</span></div>", "cap": "Visit <b>B</b> (push). Mark it on the DFS stack."}, {"c": {"A": "#e9c46a", "B": "#e9c46a"}, "r": {"D": "#e67e22"}, "e": {"A|B": "t", "B|D": "t"}, "p": "<div class=\"prow\"><span class=\"plab\">vertices</span><span class=\"pval\">n = 6</span></div><div class=\"prow\"><span class=\"plab\">edges</span><span class=\"pval\">m = 5</span></div><div class=\"prow\"><span class=\"plab\">rule</span><span class=\"pval\">tree &hArr; connected &and; m = n&minus;1 = 5</span></div><div class=\"prow\"><span class=\"plab\">visited</span><span class=\"pval\">A, B</span></div>", "cap": "Tree edge B&ndash;D: descend into D."}, {"c": {"A": "#e9c46a", "B": "#e9c46a", "D": "#e9c46a"}, "r": {"D": "#e67e22"}, "e": {"A|B": "t", "B|D": "t"}, "p": "<div class=\"prow\"><span class=\"plab\">vertices</span><span class=\"pval\">n = 6</span></div><div class=\"prow\"><span class=\"plab\">edges</span><span class=\"pval\">m = 5</span></div><div class=\"prow\"><span class=\"plab\">rule</span><span class=\"pval\">tree &hArr; connected &and; m = n&minus;1 = 5</span></div><div class=\"prow\"><span class=\"plab\">visited</span><span class=\"pval\">A, B, D</span></div>", "cap": "Visit <b>D</b> (push). Mark it on the DFS stack."}, {"c": {"A": "#e9c46a", "B": "#e9c46a", "D": "#2a9d8f"}, "r": {"D": "#e67e22"}, "e": {"A|B": "t", "B|D": "t"}, "p": "<div class=\"prow\"><span class=\"plab\">vertices</span><span class=\"pval\">n = 6</span></div><div class=\"prow\"><span class=\"plab\">edges</span><span class=\"pval\">m = 5</span></div><div class=\"prow\"><span class=\"plab\">rule</span><span class=\"pval\">tree &hArr; connected &and; m = n&minus;1 = 5</span></div><div class=\"prow\"><span class=\"plab\">visited</span><span class=\"pval\">A, B, D</span></div>", "cap": "Finished D (all neighbours explored) &mdash; colour it done."}, {"c": {"A": "#e9c46a", "B": "#e9c46a", "D": "#2a9d8f"}, "r": {"E": "#e67e22"}, "e": {"A|B": "t", "B|D": "t", "B|E": "t"}, "p": "<div class=\"prow\"><span class=\"plab\">vertices</span><span class=\"pval\">n = 6</span></div><div class=\"prow\"><span class=\"plab\">edges</span><span class=\"pval\">m = 5</span></div><div class=\"prow\"><span class=\"plab\">rule</span><span class=\"pval\">tree &hArr; connected &and; m = n&minus;1 = 5</span></div><div class=\"prow\"><span class=\"plab\">visited</span><span class=\"pval\">A, B, D</span></div>", "cap": "Tree edge B&ndash;E: descend into E."}, {"c": {"A": "#e9c46a", "B": "#e9c46a", "D": "#2a9d8f", "E": "#e9c46a"}, "r": {"E": "#e67e22"}, "e": {"A|B": "t", "B|D": "t", "B|E": "t"}, "p": "<div class=\"prow\"><span class=\"plab\">vertices</span><span class=\"pval\">n = 6</span></div><div class=\"prow\"><span class=\"plab\">edges</span><span class=\"pval\">m = 5</span></div><div class=\"prow\"><span class=\"plab\">rule</span><span class=\"pval\">tree &hArr; connected &and; m = n&minus;1 = 5</span></div><div class=\"prow\"><span class=\"plab\">visited</span><span class=\"pval\">A, B, D, E</span></div>", "cap": "Visit <b>E</b> (push). Mark it on the DFS stack."}, {"c": {"A": "#e9c46a", "B": "#e9c46a", "D": "#2a9d8f", "E": "#2a9d8f"}, "r": {"E": "#e67e22"}, "e": {"A|B": "t", "B|D": "t", "B|E": "t"}, "p": "<div class=\"prow\"><span class=\"plab\">vertices</span><span class=\"pval\">n = 6</span></div><div class=\"prow\"><span class=\"plab\">edges</span><span class=\"pval\">m = 5</span></div><div class=\"prow\"><span class=\"plab\">rule</span><span class=\"pval\">tree &hArr; connected &and; m = n&minus;1 = 5</span></div><div class=\"prow\"><span class=\"plab\">visited</span><span class=\"pval\">A, B, D, E</span></div>", "cap": "Finished E (all neighbours explored) &mdash; colour it done."}, {"c": {"A": "#e9c46a", "B": "#2a9d8f", "D": "#2a9d8f", "E": "#2a9d8f"}, "r": {"B": "#e67e22"}, "e": {"A|B": "t", "B|D": "t", "B|E": "t"}, "p": "<div class=\"prow\"><span class=\"plab\">vertices</span><span class=\"pval\">n = 6</span></div><div class=\"prow\"><span class=\"plab\">edges</span><span class=\"pval\">m = 5</span></div><div class=\"prow\"><span class=\"plab\">rule</span><span class=\"pval\">tree &hArr; connected &and; m = n&minus;1 = 5</span></div><div class=\"prow\"><span class=\"plab\">visited</span><span class=\"pval\">A, B, D, E</span></div>", "cap": "Finished B (all neighbours explored) &mdash; colour it done."}, {"c": {"A": "#e9c46a", "B": "#2a9d8f", "D": "#2a9d8f", "E": "#2a9d8f"}, "r": {"C": "#e67e22"}, "e": {"A|B": "t", "B|D": "t", "B|E": "t", "A|C": "t"}, "p": "<div class=\"prow\"><span class=\"plab\">vertices</span><span class=\"pval\">n = 6</span></div><div class=\"prow\"><span class=\"plab\">edges</span><span class=\"pval\">m = 5</span></div><div class=\"prow\"><span class=\"plab\">rule</span><span class=\"pval\">tree &hArr; connected &and; m = n&minus;1 = 5</span></div><div class=\"prow\"><span class=\"plab\">visited</span><span class=\"pval\">A, B, D, E</span></div>", "cap": "Tree edge A&ndash;C: descend into C."}, {"c": {"A": "#e9c46a", "B": "#2a9d8f", "D": "#2a9d8f", "E": "#2a9d8f", "C": "#e9c46a"}, "r": {"C": "#e67e22"}, "e": {"A|B": "t", "B|D": "t", "B|E": "t", "A|C": "t"}, "p": "<div class=\"prow\"><span class=\"plab\">vertices</span><span class=\"pval\">n = 6</span></div><div class=\"prow\"><span class=\"plab\">edges</span><span class=\"pval\">m = 5</span></div><div class=\"prow\"><span class=\"plab\">rule</span><span class=\"pval\">tree &hArr; connected &and; m = n&minus;1 = 5</span></div><div class=\"prow\"><span class=\"plab\">visited</span><span class=\"pval\">A, B, D, E, C</span></div>", "cap": "Visit <b>C</b> (push). Mark it on the DFS stack."}, {"c": {"A": "#e9c46a", "B": "#2a9d8f", "D": "#2a9d8f", "E": "#2a9d8f", "C": "#e9c46a"}, "r": {"F": "#e67e22"}, "e": {"A|B": "t", "B|D": "t", "B|E": "t", "A|C": "t", "C|F": "t"}, "p": "<div class=\"prow\"><span class=\"plab\">vertices</span><span class=\"pval\">n = 6</span></div><div class=\"prow\"><span class=\"plab\">edges</span><span class=\"pval\">m = 5</span></div><div class=\"prow\"><span class=\"plab\">rule</span><span class=\"pval\">tree &hArr; connected &and; m = n&minus;1 = 5</span></div><div class=\"prow\"><span class=\"plab\">visited</span><span class=\"pval\">A, B, D, E, C</span></div>", "cap": "Tree edge C&ndash;F: descend into F."}, {"c": {"A": "#e9c46a", "B": "#2a9d8f", "D": "#2a9d8f", "E": "#2a9d8f", "C": "#e9c46a", "F": "#e9c46a"}, "r": {"F": "#e67e22"}, "e": {"A|B": "t", "B|D": "t", "B|E": "t", "A|C": "t", "C|F": "t"}, "p": "<div class=\"prow\"><span class=\"plab\">vertices</span><span class=\"pval\">n = 6</span></div><div class=\"prow\"><span class=\"plab\">edges</span><span class=\"pval\">m = 5</span></div><div class=\"prow\"><span class=\"plab\">rule</span><span class=\"pval\">tree &hArr; connected &and; m = n&minus;1 = 5</span></div><div class=\"prow\"><span class=\"plab\">visited</span><span class=\"pval\">A, B, D, E, C, F</span></div>", "cap": "Visit <b>F</b> (push). Mark it on the DFS stack."}, {"c": {"A": "#e9c46a", "B": "#2a9d8f", "D": "#2a9d8f", "E": "#2a9d8f", "C": "#e9c46a", "F": "#2a9d8f"}, "r": {"F": "#e67e22"}, "e": {"A|B": "t", "B|D": "t", "B|E": "t", "A|C": "t", "C|F": "t"}, "p": "<div class=\"prow\"><span class=\"plab\">vertices</span><span class=\"pval\">n = 6</span></div><div class=\"prow\"><span class=\"plab\">edges</span><span class=\"pval\">m = 5</span></div><div class=\"prow\"><span class=\"plab\">rule</span><span class=\"pval\">tree &hArr; connected &and; m = n&minus;1 = 5</span></div><div class=\"prow\"><span class=\"plab\">visited</span><span class=\"pval\">A, B, D, E, C, F</span></div>", "cap": "Finished F (all neighbours explored) &mdash; colour it done."}, {"c": {"A": "#e9c46a", "B": "#2a9d8f", "D": "#2a9d8f", "E": "#2a9d8f", "C": "#2a9d8f", "F": "#2a9d8f"}, "r": {"C": "#e67e22"}, "e": {"A|B": "t", "B|D": "t", "B|E": "t", "A|C": "t", "C|F": "t"}, "p": "<div class=\"prow\"><span class=\"plab\">vertices</span><span class=\"pval\">n = 6</span></div><div class=\"prow\"><span class=\"plab\">edges</span><span class=\"pval\">m = 5</span></div><div class=\"prow\"><span class=\"plab\">rule</span><span class=\"pval\">tree &hArr; connected &and; m = n&minus;1 = 5</span></div><div class=\"prow\"><span class=\"plab\">visited</span><span class=\"pval\">A, B, D, E, C, F</span></div>", "cap": "Finished C (all neighbours explored) &mdash; colour it done."}, {"c": {"A": "#2a9d8f", "B": "#2a9d8f", "D": "#2a9d8f", "E": "#2a9d8f", "C": "#2a9d8f", "F": "#2a9d8f"}, "r": {"A": "#e67e22"}, "e": {"A|B": "t", "B|D": "t", "B|E": "t", "A|C": "t", "C|F": "t"}, "p": "<div class=\"prow\"><span class=\"plab\">vertices</span><span class=\"pval\">n = 6</span></div><div class=\"prow\"><span class=\"plab\">edges</span><span class=\"pval\">m = 5</span></div><div class=\"prow\"><span class=\"plab\">rule</span><span class=\"pval\">tree &hArr; connected &and; m = n&minus;1 = 5</span></div><div class=\"prow\"><span class=\"plab\">visited</span><span class=\"pval\">A, B, D, E, C, F</span></div>", "cap": "Finished A (all neighbours explored) &mdash; colour it done."}, {"c": {"A": "#2a9d8f", "B": "#2a9d8f", "D": "#2a9d8f", "E": "#2a9d8f", "C": "#2a9d8f", "F": "#2a9d8f"}, "r": {}, "e": {"A|B": "t", "B|D": "t", "B|E": "t", "A|C": "t", "C|F": "t"}, "p": "<div class=\"prow\"><span class=\"plab\">vertices</span><span class=\"pval\">n = 6</span></div><div class=\"prow\"><span class=\"plab\">edges</span><span class=\"pval\">m = 5</span></div><div class=\"prow\"><span class=\"plab\">rule</span><span class=\"pval\">tree &hArr; connected &and; m = n&minus;1 = 5</span></div><div class=\"prow\"><span class=\"plab\">visited</span><span class=\"pval\">A, B, D, E, C, F</span></div><div class=\"prow\"><span class=\"plab\">connected</span><span class=\"pval\">yes &check;</span></div><div class=\"prow\"><span class=\"plab\">verdict</span><span class=\"pval\">TREE &check;</span></div>", "cap": "DFS reached all 6 vertices and found no back edge. Connected &and; acyclic &and; m = n&minus;1 &rArr; <b>this graph is a tree.</b> &check;"}]}, {"name": "DFS traversal", "title": "DFS on a rooted tree — pre-order & post-order", "W": 420, "H": 275, "directed": false, "pos": {"A": [230, 40], "B": [110, 130], "C": [230, 130], "D": [350, 130], "E": [60, 225], "F": [160, 225], "G": [350, 225]}, "edges": [["A", "B", null], ["A", "C", null], ["A", "D", null], ["B", "E", null], ["B", "F", null], ["D", "G", null]], "steps": [{"c": {}, "r": {"A": "#e67e22"}, "e": {}, "p": "<div class=\"prow\"><span class=\"plab\">call stack</span><span class=\"pval\">[  ]</span></div><div class=\"prow\"><span class=\"plab\">pre-order</span><span class=\"pval\"></span></div><div class=\"prow\"><span class=\"plab\">post-order</span><span class=\"pval\"></span></div>", "cap": "Depth-first traversal from root A. <b>Pre-order</b> records a node when first visited; <b>post-order</b> records it when we leave it."}, {"c": {"A": "#e9c46a"}, "r": {"A": "#e67e22"}, "e": {}, "p": "<div class=\"prow\"><span class=\"plab\">call stack</span><span class=\"pval\">[ A ]</span></div><div class=\"prow\"><span class=\"plab\">pre-order</span><span class=\"pval\">A</span></div><div class=\"prow\"><span class=\"plab\">post-order</span><span class=\"pval\"></span></div>", "cap": "Enter <b>A</b> &rarr; append to pre-order. Push onto call stack."}, {"c": {"A": "#e9c46a"}, "r": {"B": "#e67e22"}, "e": {"A|B": "t"}, "p": "<div class=\"prow\"><span class=\"plab\">call stack</span><span class=\"pval\">[ A ]</span></div><div class=\"prow\"><span class=\"plab\">pre-order</span><span class=\"pval\">A</span></div><div class=\"prow\"><span class=\"plab\">post-order</span><span class=\"pval\"></span></div>", "cap": "Recurse from A into child B (tree edge)."}, {"c": {"A": "#e9c46a", "B": "#e9c46a"}, "r": {"B": "#e67e22"}, "e": {"A|B": "t"}, "p": "<div class=\"prow\"><span class=\"plab\">call stack</span><span class=\"pval\">[ A, B ]</span></div><div class=\"prow\"><span class=\"plab\">pre-order</span><span class=\"pval\">A B</span></div><div class=\"prow\"><span class=\"plab\">post-order</span><span class=\"pval\"></span></div>", "cap": "Enter <b>B</b> &rarr; append to pre-order. Push onto call stack."}, {"c": {"A": "#e9c46a", "B": "#e9c46a"}, "r": {"E": "#e67e22"}, "e": {"A|B": "t", "B|E": "t"}, "p": "<div class=\"prow\"><span class=\"plab\">call stack</span><span class=\"pval\">[ A, B ]</span></div><div class=\"prow\"><span class=\"plab\">pre-order</span><span class=\"pval\">A B</span></div><div class=\"prow\"><span class=\"plab\">post-order</span><span class=\"pval\"></span></div>", "cap": "Recurse from B into child E (tree edge)."}, {"c": {"A": "#e9c46a", "B": "#e9c46a", "E": "#e9c46a"}, "r": {"E": "#e67e22"}, "e": {"A|B": "t", "B|E": "t"}, "p": "<div class=\"prow\"><span class=\"plab\">call stack</span><span class=\"pval\">[ A, B, E ]</span></div><div class=\"prow\"><span class=\"plab\">pre-order</span><span class=\"pval\">A B E</span></div><div class=\"prow\"><span class=\"plab\">post-order</span><span class=\"pval\"></span></div>", "cap": "Enter <b>E</b> &rarr; append to pre-order. Push onto call stack."}, {"c": {"A": "#e9c46a", "B": "#e9c46a", "E": "#2a9d8f"}, "r": {"E": "#e67e22"}, "e": {"A|B": "t", "B|E": "t"}, "p": "<div class=\"prow\"><span class=\"plab\">call stack</span><span class=\"pval\">[ A, B ]</span></div><div class=\"prow\"><span class=\"plab\">pre-order</span><span class=\"pval\">A B E</span></div><div class=\"prow\"><span class=\"plab\">post-order</span><span class=\"pval\">E</span></div>", "cap": "Leave <b>E</b> (children done) &rarr; append to post-order. Pop the stack."}, {"c": {"A": "#e9c46a", "B": "#e9c46a", "E": "#2a9d8f"}, "r": {"F": "#e67e22"}, "e": {"A|B": "t", "B|E": "t", "B|F": "t"}, "p": "<div class=\"prow\"><span class=\"plab\">call stack</span><span class=\"pval\">[ A, B ]</span></div><div class=\"prow\"><span class=\"plab\">pre-order</span><span class=\"pval\">A B E</span></div><div class=\"prow\"><span class=\"plab\">post-order</span><span class=\"pval\">E</span></div>", "cap": "Recurse from B into child F (tree edge)."}, {"c": {"A": "#e9c46a", "B": "#e9c46a", "E": "#2a9d8f", "F": "#e9c46a"}, "r": {"F": "#e67e22"}, "e": {"A|B": "t", "B|E": "t", "B|F": "t"}, "p": "<div class=\"prow\"><span class=\"plab\">call stack</span><span class=\"pval\">[ A, B, F ]</span></div><div class=\"prow\"><span class=\"plab\">pre-order</span><span class=\"pval\">A B E F</span></div><div class=\"prow\"><span class=\"plab\">post-order</span><span class=\"pval\">E</span></div>", "cap": "Enter <b>F</b> &rarr; append to pre-order. Push onto call stack."}, {"c": {"A": "#e9c46a", "B": "#e9c46a", "E": "#2a9d8f", "F": "#2a9d8f"}, "r": {"F": "#e67e22"}, "e": {"A|B": "t", "B|E": "t", "B|F": "t"}, "p": "<div class=\"prow\"><span class=\"plab\">call stack</span><span class=\"pval\">[ A, B ]</span></div><div class=\"prow\"><span class=\"plab\">pre-order</span><span class=\"pval\">A B E F</span></div><div class=\"prow\"><span class=\"plab\">post-order</span><span class=\"pval\">E F</span></div>", "cap": "Leave <b>F</b> (children done) &rarr; append to post-order. Pop the stack."}, {"c": {"A": "#e9c46a", "B": "#2a9d8f", "E": "#2a9d8f", "F": "#2a9d8f"}, "r": {"B": "#e67e22"}, "e": {"A|B": "t", "B|E": "t", "B|F": "t"}, "p": "<div class=\"prow\"><span class=\"plab\">call stack</span><span class=\"pval\">[ A ]</span></div><div class=\"prow\"><span class=\"plab\">pre-order</span><span class=\"pval\">A B E F</span></div><div class=\"prow\"><span class=\"plab\">post-order</span><span class=\"pval\">E F B</span></div>", "cap": "Leave <b>B</b> (children done) &rarr; append to post-order. Pop the stack."}, {"c": {"A": "#e9c46a", "B": "#2a9d8f", "E": "#2a9d8f", "F": "#2a9d8f"}, "r": {"C": "#e67e22"}, "e": {"A|B": "t", "B|E": "t", "B|F": "t", "A|C": "t"}, "p": "<div class=\"prow\"><span class=\"plab\">call stack</span><span class=\"pval\">[ A ]</span></div><div class=\"prow\"><span class=\"plab\">pre-order</span><span class=\"pval\">A B E F</span></div><div class=\"prow\"><span class=\"plab\">post-order</span><span class=\"pval\">E F B</span></div>", "cap": "Recurse from A into child C (tree edge)."}, {"c": {"A": "#e9c46a", "B": "#2a9d8f", "E": "#2a9d8f", "F": "#2a9d8f", "C": "#e9c46a"}, "r": {"C": "#e67e22"}, "e": {"A|B": "t", "B|E": "t", "B|F": "t", "A|C": "t"}, "p": "<div class=\"prow\"><span class=\"plab\">call stack</span><span class=\"pval\">[ A, C ]</span></div><div class=\"prow\"><span class=\"plab\">pre-order</span><span class=\"pval\">A B E F C</span></div><div class=\"prow\"><span class=\"plab\">post-order</span><span class=\"pval\">E F B</span></div>", "cap": "Enter <b>C</b> &rarr; append to pre-order. Push onto call stack."}, {"c": {"A": "#e9c46a", "B": "#2a9d8f", "E": "#2a9d8f", "F": "#2a9d8f", "C": "#2a9d8f"}, "r": {"C": "#e67e22"}, "e": {"A|B": "t", "B|E": "t", "B|F": "t", "A|C": "t"}, "p": "<div class=\"prow\"><span class=\"plab\">call stack</span><span class=\"pval\">[ A ]</span></div><div class=\"prow\"><span class=\"plab\">pre-order</span><span class=\"pval\">A B E F C</span></div><div class=\"prow\"><span class=\"plab\">post-order</span><span class=\"pval\">E F B C</span></div>", "cap": "Leave <b>C</b> (children done) &rarr; append to post-order. Pop the stack."}, {"c": {"A": "#e9c46a", "B": "#2a9d8f", "E": "#2a9d8f", "F": "#2a9d8f", "C": "#2a9d8f"}, "r": {"D": "#e67e22"}, "e": {"A|B": "t", "B|E": "t", "B|F": "t", "A|C": "t", "A|D": "t"}, "p": "<div class=\"prow\"><span class=\"plab\">call stack</span><span class=\"pval\">[ A ]</span></div><div class=\"prow\"><span class=\"plab\">pre-order</span><span class=\"pval\">A B E F C</span></div><div class=\"prow\"><span class=\"plab\">post-order</span><span class=\"pval\">E F B C</span></div>", "cap": "Recurse from A into child D (tree edge)."}, {"c": {"A": "#e9c46a", "B": "#2a9d8f", "E": "#2a9d8f", "F": "#2a9d8f", "C": "#2a9d8f", "D": "#e9c46a"}, "r": {"D": "#e67e22"}, "e": {"A|B": "t", "B|E": "t", "B|F": "t", "A|C": "t", "A|D": "t"}, "p": "<div class=\"prow\"><span class=\"plab\">call stack</span><span class=\"pval\">[ A, D ]</span></div><div class=\"prow\"><span class=\"plab\">pre-order</span><span class=\"pval\">A B E F C D</span></div><div class=\"prow\"><span class=\"plab\">post-order</span><span class=\"pval\">E F B C</span></div>", "cap": "Enter <b>D</b> &rarr; append to pre-order. Push onto call stack."}, {"c": {"A": "#e9c46a", "B": "#2a9d8f", "E": "#2a9d8f", "F": "#2a9d8f", "C": "#2a9d8f", "D": "#e9c46a"}, "r": {"G": "#e67e22"}, "e": {"A|B": "t", "B|E": "t", "B|F": "t", "A|C": "t", "A|D": "t", "D|G": "t"}, "p": "<div class=\"prow\"><span class=\"plab\">call stack</span><span class=\"pval\">[ A, D ]</span></div><div class=\"prow\"><span class=\"plab\">pre-order</span><span class=\"pval\">A B E F C D</span></div><div class=\"prow\"><span class=\"plab\">post-order</span><span class=\"pval\">E F B C</span></div>", "cap": "Recurse from D into child G (tree edge)."}, {"c": {"A": "#e9c46a", "B": "#2a9d8f", "E": "#2a9d8f", "F": "#2a9d8f", "C": "#2a9d8f", "D": "#e9c46a", "G": "#e9c46a"}, "r": {"G": "#e67e22"}, "e": {"A|B": "t", "B|E": "t", "B|F": "t", "A|C": "t", "A|D": "t", "D|G": "t"}, "p": "<div class=\"prow\"><span class=\"plab\">call stack</span><span class=\"pval\">[ A, D, G ]</span></div><div class=\"prow\"><span class=\"plab\">pre-order</span><span class=\"pval\">A B E F C D G</span></div><div class=\"prow\"><span class=\"plab\">post-order</span><span class=\"pval\">E F B C</span></div>", "cap": "Enter <b>G</b> &rarr; append to pre-order. Push onto call stack."}, {"c": {"A": "#e9c46a", "B": "#2a9d8f", "E": "#2a9d8f", "F": "#2a9d8f", "C": "#2a9d8f", "D": "#e9c46a", "G": "#2a9d8f"}, "r": {"G": "#e67e22"}, "e": {"A|B": "t", "B|E": "t", "B|F": "t", "A|C": "t", "A|D": "t", "D|G": "t"}, "p": "<div class=\"prow\"><span class=\"plab\">call stack</span><span class=\"pval\">[ A, D ]</span></div><div class=\"prow\"><span class=\"plab\">pre-order</span><span class=\"pval\">A B E F C D G</span></div><div class=\"prow\"><span class=\"plab\">post-order</span><span class=\"pval\">E F B C G</span></div>", "cap": "Leave <b>G</b> (children done) &rarr; append to post-order. Pop the stack."}, {"c": {"A": "#e9c46a", "B": "#2a9d8f", "E": "#2a9d8f", "F": "#2a9d8f", "C": "#2a9d8f", "D": "#2a9d8f", "G": "#2a9d8f"}, "r": {"D": "#e67e22"}, "e": {"A|B": "t", "B|E": "t", "B|F": "t", "A|C": "t", "A|D": "t", "D|G": "t"}, "p": "<div class=\"prow\"><span class=\"plab\">call stack</span><span class=\"pval\">[ A ]</span></div><div class=\"prow\"><span class=\"plab\">pre-order</span><span class=\"pval\">A B E F C D G</span></div><div class=\"prow\"><span class=\"plab\">post-order</span><span class=\"pval\">E F B C G D</span></div>", "cap": "Leave <b>D</b> (children done) &rarr; append to post-order. Pop the stack."}, {"c": {"A": "#2a9d8f", "B": "#2a9d8f", "E": "#2a9d8f", "F": "#2a9d8f", "C": "#2a9d8f", "D": "#2a9d8f", "G": "#2a9d8f"}, "r": {"A": "#e67e22"}, "e": {"A|B": "t", "B|E": "t", "B|F": "t", "A|C": "t", "A|D": "t", "D|G": "t"}, "p": "<div class=\"prow\"><span class=\"plab\">call stack</span><span class=\"pval\">[  ]</span></div><div class=\"prow\"><span class=\"plab\">pre-order</span><span class=\"pval\">A B E F C D G</span></div><div class=\"prow\"><span class=\"plab\">post-order</span><span class=\"pval\">E F B C G D A</span></div>", "cap": "Leave <b>A</b> (children done) &rarr; append to post-order. Pop the stack."}, {"c": {"A": "#2a9d8f", "B": "#2a9d8f", "E": "#2a9d8f", "F": "#2a9d8f", "C": "#2a9d8f", "D": "#2a9d8f", "G": "#2a9d8f"}, "r": {}, "e": {"A|B": "t", "B|E": "t", "B|F": "t", "A|C": "t", "A|D": "t", "D|G": "t"}, "p": "<div class=\"prow\"><span class=\"plab\">call stack</span><span class=\"pval\">[  ]</span></div><div class=\"prow\"><span class=\"plab\">pre-order</span><span class=\"pval\">A B E F C D G</span></div><div class=\"prow\"><span class=\"plab\">post-order</span><span class=\"pval\">E F B C G D A</span></div>", "cap": "Done. Pre-order = <b>A B E F C D G</b> &middot; Post-order = <b>E F B C G D A</b>."}]}, {"name": "BFS levels", "title": "BFS on a rooted tree — level order", "W": 420, "H": 275, "directed": false, "pos": {"A": [230, 40], "B": [110, 130], "C": [230, 130], "D": [350, 130], "E": [60, 225], "F": [160, 225], "G": [350, 225]}, "edges": [["A", "B", null], ["A", "C", null], ["A", "D", null], ["B", "E", null], ["B", "F", null], ["D", "G", null]], "steps": [{"c": {"A": "#e63946"}, "r": {"A": "#e67e22"}, "e": {}, "p": "<div class=\"prow\"><span class=\"plab\">queue</span><span class=\"pval\">[ A ]</span></div><div class=\"prow\"><span class=\"plab\">level order</span><span class=\"pval\"></span></div><div class=\"prow\"><span class=\"plab\">depths</span><span class=\"pval\">{'A': 0}</span></div>", "cap": "Breadth-first (level-order) traversal: enqueue the root, then repeatedly dequeue a node and enqueue its children. Colour = depth."}, {"c": {"A": "#e63946", "B": "#2a9d8f", "C": "#2a9d8f", "D": "#2a9d8f"}, "r": {"A": "#e67e22"}, "e": {"A|B": "t", "A|C": "t", "A|D": "t"}, "p": "<div class=\"prow\"><span class=\"plab\">queue</span><span class=\"pval\">[ B, C, D ]</span></div><div class=\"prow\"><span class=\"plab\">level order</span><span class=\"pval\">A</span></div><div class=\"prow\"><span class=\"plab\">depths</span><span class=\"pval\">{'A': 0, 'B': 1, 'C': 1, 'D': 1}</span></div>", "cap": "Dequeue <b>A</b> (level 0). Enqueue children B, C, D."}, {"c": {"A": "#e63946", "B": "#2a9d8f", "C": "#2a9d8f", "D": "#2a9d8f", "E": "#e9c46a", "F": "#e9c46a"}, "r": {"B": "#e67e22"}, "e": {"A|B": "t", "A|C": "t", "A|D": "t", "B|E": "t", "B|F": "t"}, "p": "<div class=\"prow\"><span class=\"plab\">queue</span><span class=\"pval\">[ C, D, E, F ]</span></div><div class=\"prow\"><span class=\"plab\">level order</span><span class=\"pval\">A B</span></div><div class=\"prow\"><span class=\"plab\">depths</span><span class=\"pval\">{'A': 0, 'B': 1, 'C': 1, 'D': 1, 'E': 2, 'F': 2}</span></div>", "cap": "Dequeue <b>B</b> (level 1). Enqueue children E, F."}, {"c": {"A": "#e63946", "B": "#2a9d8f", "C": "#2a9d8f", "D": "#2a9d8f", "E": "#e9c46a", "F": "#e9c46a"}, "r": {"C": "#e67e22"}, "e": {"A|B": "t", "A|C": "t", "A|D": "t", "B|E": "t", "B|F": "t"}, "p": "<div class=\"prow\"><span class=\"plab\">queue</span><span class=\"pval\">[ D, E, F ]</span></div><div class=\"prow\"><span class=\"plab\">level order</span><span class=\"pval\">A B C</span></div><div class=\"prow\"><span class=\"plab\">depths</span><span class=\"pval\">{'A': 0, 'B': 1, 'C': 1, 'D': 1, 'E': 2, 'F': 2}</span></div>", "cap": "Dequeue <b>C</b> (level 1). A leaf &mdash; no children."}, {"c": {"A": "#e63946", "B": "#2a9d8f", "C": "#2a9d8f", "D": "#2a9d8f", "E": "#e9c46a", "F": "#e9c46a", "G": "#e9c46a"}, "r": {"D": "#e67e22"}, "e": {"A|B": "t", "A|C": "t", "A|D": "t", "B|E": "t", "B|F": "t", "D|G": "t"}, "p": "<div class=\"prow\"><span class=\"plab\">queue</span><span class=\"pval\">[ E, F, G ]</span></div><div class=\"prow\"><span class=\"plab\">level order</span><span class=\"pval\">A B C D</span></div><div class=\"prow\"><span class=\"plab\">depths</span><span class=\"pval\">{'A': 0, 'B': 1, 'C': 1, 'D': 1, 'E': 2, 'F': 2, 'G': 2}</span></div>", "cap": "Dequeue <b>D</b> (level 1). Enqueue children G."}, {"c": {"A": "#e63946", "B": "#2a9d8f", "C": "#2a9d8f", "D": "#2a9d8f", "E": "#e9c46a", "F": "#e9c46a", "G": "#e9c46a"}, "r": {"E": "#e67e22"}, "e": {"A|B": "t", "A|C": "t", "A|D": "t", "B|E": "t", "B|F": "t", "D|G": "t"}, "p": "<div class=\"prow\"><span class=\"plab\">queue</span><span class=\"pval\">[ F, G ]</span></div><div class=\"prow\"><span class=\"plab\">level order</span><span class=\"pval\">A B C D E</span></div><div class=\"prow\"><span class=\"plab\">depths</span><span class=\"pval\">{'A': 0, 'B': 1, 'C': 1, 'D': 1, 'E': 2, 'F': 2, 'G': 2}</span></div>", "cap": "Dequeue <b>E</b> (level 2). A leaf &mdash; no children."}, {"c": {"A": "#e63946", "B": "#2a9d8f", "C": "#2a9d8f", "D": "#2a9d8f", "E": "#e9c46a", "F": "#e9c46a", "G": "#e9c46a"}, "r": {"F": "#e67e22"}, "e": {"A|B": "t", "A|C": "t", "A|D": "t", "B|E": "t", "B|F": "t", "D|G": "t"}, "p": "<div class=\"prow\"><span class=\"plab\">queue</span><span class=\"pval\">[ G ]</span></div><div class=\"prow\"><span class=\"plab\">level order</span><span class=\"pval\">A B C D E F</span></div><div class=\"prow\"><span class=\"plab\">depths</span><span class=\"pval\">{'A': 0, 'B': 1, 'C': 1, 'D': 1, 'E': 2, 'F': 2, 'G': 2}</span></div>", "cap": "Dequeue <b>F</b> (level 2). A leaf &mdash; no children."}, {"c": {"A": "#e63946", "B": "#2a9d8f", "C": "#2a9d8f", "D": "#2a9d8f", "E": "#e9c46a", "F": "#e9c46a", "G": "#e9c46a"}, "r": {"G": "#e67e22"}, "e": {"A|B": "t", "A|C": "t", "A|D": "t", "B|E": "t", "B|F": "t", "D|G": "t"}, "p": "<div class=\"prow\"><span class=\"plab\">queue</span><span class=\"pval\">[  ]</span></div><div class=\"prow\"><span class=\"plab\">level order</span><span class=\"pval\">A B C D E F G</span></div><div class=\"prow\"><span class=\"plab\">depths</span><span class=\"pval\">{'A': 0, 'B': 1, 'C': 1, 'D': 1, 'E': 2, 'F': 2, 'G': 2}</span></div>", "cap": "Dequeue <b>G</b> (level 2). A leaf &mdash; no children."}, {"c": {"A": "#e63946", "B": "#2a9d8f", "C": "#2a9d8f", "D": "#2a9d8f", "E": "#e9c46a", "F": "#e9c46a", "G": "#e9c46a"}, "r": {}, "e": {"A|B": "t", "A|C": "t", "A|D": "t", "B|E": "t", "B|F": "t", "D|G": "t"}, "p": "<div class=\"prow\"><span class=\"plab\">queue</span><span class=\"pval\">[  ]</span></div><div class=\"prow\"><span class=\"plab\">level order</span><span class=\"pval\">A B C D E F G</span></div><div class=\"prow\"><span class=\"plab\">depths</span><span class=\"pval\">{'A': 0, 'B': 1, 'C': 1, 'D': 1, 'E': 2, 'F': 2, 'G': 2}</span></div>", "cap": "Queue empty. Level-order = <b>A B C D E F G</b>."}]}, {"name": "Kruskal MST", "title": "Kruskal — minimum spanning tree", "W": 460, "H": 320, "directed": false, "pos": {"A": [230.0, 35.0], "B": [338.25317547305485, 97.5], "C": [338.25317547305485, 222.5], "D": [230.0, 285.0], "E": [121.74682452694516, 222.5], "F": [121.74682452694518, 97.49999999999999]}, "edges": [["A", "B", 4], ["A", "F", 2], ["B", "F", 5], ["B", "C", 6], ["F", "E", 3], ["F", "C", 1], ["C", "D", 3], ["E", "D", 2], ["E", "C", 7]], "steps": [{"c": {}, "r": {}, "e": {}, "p": "<div class=\"prow\"><span class=\"plab\">sorted</span><span class=\"pval\">FC(1), AF(2), ED(2), FE(3), CD(3), AB(4), BF(5), BC(6), EC(7)</span></div><div class=\"prow\"><span class=\"plab\">MST edges</span><span class=\"pval\">&empty;</span></div><div class=\"prow\"><span class=\"plab\">weight</span><span class=\"pval\">0</span></div>", "cap": "Kruskal: sort all edges by weight, then add the lightest edge that does not create a cycle (Union&ndash;Find tracks components)."}, {"c": {"F": "#2a9d8f", "C": "#2a9d8f"}, "r": {}, "e": {"C|F": "t"}, "p": "<div class=\"prow\"><span class=\"plab\">sorted</span><span class=\"pval\">FC(1), AF(2), ED(2), FE(3), CD(3), AB(4), BF(5), BC(6), EC(7)</span></div><div class=\"prow\"><span class=\"plab\">considering</span><span class=\"pval\">FC (w=1)</span></div><div class=\"prow\"><span class=\"plab\">MST edges</span><span class=\"pval\">FC</span></div><div class=\"prow\"><span class=\"plab\">weight</span><span class=\"pval\">1</span></div>", "cap": "Edge <b>FC</b> (w=1): endpoints in different components &rarr; <b>add</b> it. Weight so far 1."}, {"c": {"F": "#2a9d8f", "C": "#2a9d8f", "A": "#2a9d8f"}, "r": {}, "e": {"C|F": "t", "A|F": "t"}, "p": "<div class=\"prow\"><span class=\"plab\">sorted</span><span class=\"pval\">FC(1), AF(2), ED(2), FE(3), CD(3), AB(4), BF(5), BC(6), EC(7)</span></div><div class=\"prow\"><span class=\"plab\">considering</span><span class=\"pval\">AF (w=2)</span></div><div class=\"prow\"><span class=\"plab\">MST edges</span><span class=\"pval\">FC AF</span></div><div class=\"prow\"><span class=\"plab\">weight</span><span class=\"pval\">3</span></div>", "cap": "Edge <b>AF</b> (w=2): endpoints in different components &rarr; <b>add</b> it. Weight so far 3."}, {"c": {"F": "#2a9d8f", "C": "#2a9d8f", "A": "#2a9d8f", "E": "#2a9d8f", "D": "#2a9d8f"}, "r": {}, "e": {"C|F": "t", "A|F": "t", "D|E": "t"}, "p": "<div class=\"prow\"><span class=\"plab\">sorted</span><span class=\"pval\">FC(1), AF(2), ED(2), FE(3), CD(3), AB(4), BF(5), BC(6), EC(7)</span></div><div class=\"prow\"><span class=\"plab\">considering</span><span class=\"pval\">ED (w=2)</span></div><div class=\"prow\"><span class=\"plab\">MST edges</span><span class=\"pval\">FC AF ED</span></div><div class=\"prow\"><span class=\"plab\">weight</span><span class=\"pval\">5</span></div>", "cap": "Edge <b>ED</b> (w=2): endpoints in different components &rarr; <b>add</b> it. Weight so far 5."}, {"c": {"F": "#2a9d8f", "C": "#2a9d8f", "A": "#2a9d8f", "E": "#2a9d8f", "D": "#2a9d8f"}, "r": {}, "e": {"C|F": "t", "A|F": "t", "D|E": "t", "E|F": "t"}, "p": "<div class=\"prow\"><span class=\"plab\">sorted</span><span class=\"pval\">FC(1), AF(2), ED(2), FE(3), CD(3), AB(4), BF(5), BC(6), EC(7)</span></div><div class=\"prow\"><span class=\"plab\">considering</span><span class=\"pval\">FE (w=3)</span></div><div class=\"prow\"><span class=\"plab\">MST edges</span><span class=\"pval\">FC AF ED FE</span></div><div class=\"prow\"><span class=\"plab\">weight</span><span class=\"pval\">8</span></div>", "cap": "Edge <b>FE</b> (w=3): endpoints in different components &rarr; <b>add</b> it. Weight so far 8."}, {"c": {"F": "#2a9d8f", "C": "#2a9d8f", "A": "#2a9d8f", "E": "#2a9d8f", "D": "#2a9d8f"}, "r": {}, "e": {"C|F": "t", "A|F": "t", "D|E": "t", "E|F": "t", "C|D": "r"}, "p": "<div class=\"prow\"><span class=\"plab\">sorted</span><span class=\"pval\">FC(1), AF(2), ED(2), FE(3), CD(3), AB(4), BF(5), BC(6), EC(7)</span></div><div class=\"prow\"><span class=\"plab\">considering</span><span class=\"pval\">CD (w=3)</span></div><div class=\"prow\"><span class=\"plab\">MST edges</span><span class=\"pval\">FC AF ED FE</span></div><div class=\"prow\"><span class=\"plab\">weight</span><span class=\"pval\">8</span></div>", "cap": "Edge CD (w=3): both endpoints already connected &rarr; <span style='color:#c0395a'>skip</span> (would make a cycle)."}, {"c": {"F": "#2a9d8f", "C": "#2a9d8f", "A": "#2a9d8f", "E": "#2a9d8f", "D": "#2a9d8f", "B": "#2a9d8f"}, "r": {}, "e": {"C|F": "t", "A|F": "t", "D|E": "t", "E|F": "t", "C|D": "n", "A|B": "t"}, "p": "<div class=\"prow\"><span class=\"plab\">sorted</span><span class=\"pval\">FC(1), AF(2), ED(2), FE(3), CD(3), AB(4), BF(5), BC(6), EC(7)</span></div><div class=\"prow\"><span class=\"plab\">considering</span><span class=\"pval\">AB (w=4)</span></div><div class=\"prow\"><span class=\"plab\">MST edges</span><span class=\"pval\">FC AF ED FE AB</span></div><div class=\"prow\"><span class=\"plab\">weight</span><span class=\"pval\">12</span></div>", "cap": "Edge <b>AB</b> (w=4): endpoints in different components &rarr; <b>add</b> it. Weight so far 12."}, {"c": {"F": "#2a9d8f", "C": "#2a9d8f", "A": "#2a9d8f", "E": "#2a9d8f", "D": "#2a9d8f", "B": "#2a9d8f"}, "r": {}, "e": {"C|F": "t", "A|F": "t", "D|E": "t", "E|F": "t", "C|D": "n", "A|B": "t", "B|F": "r"}, "p": "<div class=\"prow\"><span class=\"plab\">sorted</span><span class=\"pval\">FC(1), AF(2), ED(2), FE(3), CD(3), AB(4), BF(5), BC(6), EC(7)</span></div><div class=\"prow\"><span class=\"plab\">considering</span><span class=\"pval\">BF (w=5)</span></div><div class=\"prow\"><span class=\"plab\">MST edges</span><span class=\"pval\">FC AF ED FE AB</span></div><div class=\"prow\"><span class=\"plab\">weight</span><span class=\"pval\">12</span></div>", "cap": "Edge BF (w=5): both endpoints already connected &rarr; <span style='color:#c0395a'>skip</span> (would make a cycle)."}, {"c": {"F": "#2a9d8f", "C": "#2a9d8f", "A": "#2a9d8f", "E": "#2a9d8f", "D": "#2a9d8f", "B": "#2a9d8f"}, "r": {}, "e": {"C|F": "t", "A|F": "t", "D|E": "t", "E|F": "t", "C|D": "n", "A|B": "t", "B|F": "n", "B|C": "r"}, "p": "<div class=\"prow\"><span class=\"plab\">sorted</span><span class=\"pval\">FC(1), AF(2), ED(2), FE(3), CD(3), AB(4), BF(5), BC(6), EC(7)</span></div><div class=\"prow\"><span class=\"plab\">considering</span><span class=\"pval\">BC (w=6)</span></div><div class=\"prow\"><span class=\"plab\">MST edges</span><span class=\"pval\">FC AF ED FE AB</span></div><div class=\"prow\"><span class=\"plab\">weight</span><span class=\"pval\">12</span></div>", "cap": "Edge BC (w=6): both endpoints already connected &rarr; <span style='color:#c0395a'>skip</span> (would make a cycle)."}, {"c": {"F": "#2a9d8f", "C": "#2a9d8f", "A": "#2a9d8f", "E": "#2a9d8f", "D": "#2a9d8f", "B": "#2a9d8f"}, "r": {}, "e": {"C|F": "t", "A|F": "t", "D|E": "t", "E|F": "t", "C|D": "n", "A|B": "t", "B|F": "n", "B|C": "n", "C|E": "r"}, "p": "<div class=\"prow\"><span class=\"plab\">sorted</span><span class=\"pval\">FC(1), AF(2), ED(2), FE(3), CD(3), AB(4), BF(5), BC(6), EC(7)</span></div><div class=\"prow\"><span class=\"plab\">considering</span><span class=\"pval\">EC (w=7)</span></div><div class=\"prow\"><span class=\"plab\">MST edges</span><span class=\"pval\">FC AF ED FE AB</span></div><div class=\"prow\"><span class=\"plab\">weight</span><span class=\"pval\">12</span></div>", "cap": "Edge EC (w=7): both endpoints already connected &rarr; <span style='color:#c0395a'>skip</span> (would make a cycle)."}, {"c": {"F": "#2a9d8f", "C": "#2a9d8f", "A": "#2a9d8f", "E": "#2a9d8f", "D": "#2a9d8f", "B": "#2a9d8f"}, "r": {}, "e": {"C|F": "t", "A|F": "t", "D|E": "t", "E|F": "t", "C|D": "n", "A|B": "t", "B|F": "n", "B|C": "n", "C|E": "n"}, "p": "<div class=\"prow\"><span class=\"plab\">sorted</span><span class=\"pval\">FC(1), AF(2), ED(2), FE(3), CD(3), AB(4), BF(5), BC(6), EC(7)</span></div><div class=\"prow\"><span class=\"plab\">MST edges</span><span class=\"pval\">FC AF ED FE AB</span></div><div class=\"prow\"><span class=\"plab\">weight</span><span class=\"pval\">12</span></div>", "cap": "All vertices joined with 5 = n&minus;1 edges. <b>Minimum spanning tree weight = 12.</b>"}]}, {"name": "Prim MST", "title": "Prim — minimum spanning tree (grow from A)", "W": 460, "H": 320, "directed": false, "pos": {"A": [230.0, 35.0], "B": [338.25317547305485, 97.5], "C": [338.25317547305485, 222.5], "D": [230.0, 285.0], "E": [121.74682452694516, 222.5], "F": [121.74682452694518, 97.49999999999999]}, "edges": [["A", "B", 4], ["A", "F", 2], ["B", "F", 5], ["B", "C", 6], ["F", "E", 3], ["F", "C", 1], ["C", "D", 3], ["E", "D", 2], ["E", "C", 7]], "steps": [{"c": {"A": "#457b9d"}, "r": {}, "e": {}, "p": "<div class=\"prow\"><span class=\"plab\">in tree</span><span class=\"pval\">{ A }</span></div><div class=\"prow\"><span class=\"plab\">frontier</span><span class=\"pval\">AF(2), AB(4)</span></div><div class=\"prow\"><span class=\"plab\">MST edges</span><span class=\"pval\">&empty;</span></div><div class=\"prow\"><span class=\"plab\">weight</span><span class=\"pval\">0</span></div>", "cap": "Prim: grow one tree from A. Each step picks the cheapest edge crossing from the tree to a vertex outside it."}, {"c": {"A": "#457b9d"}, "r": {"F": "#e67e22"}, "e": {"A|F": "cur", "A|B": "cur"}, "p": "<div class=\"prow\"><span class=\"plab\">in tree</span><span class=\"pval\">{ A }</span></div><div class=\"prow\"><span class=\"plab\">frontier</span><span class=\"pval\">AF(2), AB(4)</span></div><div class=\"prow\"><span class=\"plab\">MST edges</span><span class=\"pval\">&empty;</span></div><div class=\"prow\"><span class=\"plab\">weight</span><span class=\"pval\">0</span></div>", "cap": "Cheapest crossing edge is <b>AF</b> (w=2). Candidate edges shown orange."}, {"c": {"A": "#457b9d", "F": "#457b9d"}, "r": {"F": "#e67e22"}, "e": {"A|F": "t", "A|B": "n"}, "p": "<div class=\"prow\"><span class=\"plab\">in tree</span><span class=\"pval\">{ A, F }</span></div><div class=\"prow\"><span class=\"plab\">frontier</span><span class=\"pval\">FC(1), FE(3), AB(4), FB(5)</span></div><div class=\"prow\"><span class=\"plab\">MST edges</span><span class=\"pval\">AF</span></div><div class=\"prow\"><span class=\"plab\">weight</span><span class=\"pval\">2</span></div>", "cap": "Add F via edge <b>AF</b>. Tree weight now 2."}, {"c": {"A": "#457b9d", "F": "#457b9d"}, "r": {"C": "#e67e22"}, "e": {"A|F": "t", "A|B": "cur", "C|F": "cur", "E|F": "cur", "B|F": "cur"}, "p": "<div class=\"prow\"><span class=\"plab\">in tree</span><span class=\"pval\">{ A, F }</span></div><div class=\"prow\"><span class=\"plab\">frontier</span><span class=\"pval\">FC(1), FE(3), AB(4), FB(5)</span></div><div class=\"prow\"><span class=\"plab\">MST edges</span><span class=\"pval\">AF</span></div><div class=\"prow\"><span class=\"plab\">weight</span><span class=\"pval\">2</span></div>", "cap": "Cheapest crossing edge is <b>FC</b> (w=1). Candidate edges shown orange."}, {"c": {"A": "#457b9d", "F": "#457b9d", "C": "#457b9d"}, "r": {"C": "#e67e22"}, "e": {"A|F": "t", "A|B": "n", "C|F": "t", "E|F": "n", "B|F": "n"}, "p": "<div class=\"prow\"><span class=\"plab\">in tree</span><span class=\"pval\">{ A, C, F }</span></div><div class=\"prow\"><span class=\"plab\">frontier</span><span class=\"pval\">CD(3), FE(3), AB(4), FB(5), CB(6), CE(7)</span></div><div class=\"prow\"><span class=\"plab\">MST edges</span><span class=\"pval\">AF FC</span></div><div class=\"prow\"><span class=\"plab\">weight</span><span class=\"pval\">3</span></div>", "cap": "Add C via edge <b>FC</b>. Tree weight now 3."}, {"c": {"A": "#457b9d", "F": "#457b9d", "C": "#457b9d"}, "r": {"D": "#e67e22"}, "e": {"A|F": "t", "A|B": "cur", "C|F": "t", "E|F": "cur", "B|F": "cur", "C|D": "cur", "B|C": "cur", "C|E": "cur"}, "p": "<div class=\"prow\"><span class=\"plab\">in tree</span><span class=\"pval\">{ A, C, F }</span></div><div class=\"prow\"><span class=\"plab\">frontier</span><span class=\"pval\">CD(3), FE(3), AB(4), FB(5), CB(6), CE(7)</span></div><div class=\"prow\"><span class=\"plab\">MST edges</span><span class=\"pval\">AF FC</span></div><div class=\"prow\"><span class=\"plab\">weight</span><span class=\"pval\">3</span></div>", "cap": "Cheapest crossing edge is <b>CD</b> (w=3). Candidate edges shown orange."}, {"c": {"A": "#457b9d", "F": "#457b9d", "C": "#457b9d", "D": "#457b9d"}, "r": {"D": "#e67e22"}, "e": {"A|F": "t", "A|B": "n", "C|F": "t", "E|F": "n", "B|F": "n", "C|D": "t", "B|C": "n", "C|E": "n"}, "p": "<div class=\"prow\"><span class=\"plab\">in tree</span><span class=\"pval\">{ A, C, D, F }</span></div><div class=\"prow\"><span class=\"plab\">frontier</span><span class=\"pval\">DE(2), FE(3), AB(4), FB(5), CB(6), CE(7)</span></div><div class=\"prow\"><span class=\"plab\">MST edges</span><span class=\"pval\">AF FC CD</span></div><div class=\"prow\"><span class=\"plab\">weight</span><span class=\"pval\">6</span></div>", "cap": "Add D via edge <b>CD</b>. Tree weight now 6."}, {"c": {"A": "#457b9d", "F": "#457b9d", "C": "#457b9d", "D": "#457b9d"}, "r": {"E": "#e67e22"}, "e": {"A|F": "t", "A|B": "cur", "C|F": "t", "E|F": "cur", "B|F": "cur", "C|D": "t", "B|C": "cur", "C|E": "cur", "D|E": "cur"}, "p": "<div class=\"prow\"><span class=\"plab\">in tree</span><span class=\"pval\">{ A, C, D, F }</span></div><div class=\"prow\"><span class=\"plab\">frontier</span><span class=\"pval\">DE(2), FE(3), AB(4), FB(5), CB(6), CE(7)</span></div><div class=\"prow\"><span class=\"plab\">MST edges</span><span class=\"pval\">AF FC CD</span></div><div class=\"prow\"><span class=\"plab\">weight</span><span class=\"pval\">6</span></div>", "cap": "Cheapest crossing edge is <b>DE</b> (w=2). Candidate edges shown orange."}, {"c": {"A": "#457b9d", "F": "#457b9d", "C": "#457b9d", "D": "#457b9d", "E": "#457b9d"}, "r": {"E": "#e67e22"}, "e": {"A|F": "t", "A|B": "n", "C|F": "t", "E|F": "n", "B|F": "n", "C|D": "t", "B|C": "n", "C|E": "n", "D|E": "t"}, "p": "<div class=\"prow\"><span class=\"plab\">in tree</span><span class=\"pval\">{ A, C, D, E, F }</span></div><div class=\"prow\"><span class=\"plab\">frontier</span><span class=\"pval\">AB(4), FB(5), CB(6)</span></div><div class=\"prow\"><span class=\"plab\">MST edges</span><span class=\"pval\">AF FC CD DE</span></div><div class=\"prow\"><span class=\"plab\">weight</span><span class=\"pval\">8</span></div>", "cap": "Add E via edge <b>DE</b>. Tree weight now 8."}, {"c": {"A": "#457b9d", "F": "#457b9d", "C": "#457b9d", "D": "#457b9d", "E": "#457b9d"}, "r": {"B": "#e67e22"}, "e": {"A|F": "t", "A|B": "cur", "C|F": "t", "E|F": "n", "B|F": "cur", "C|D": "t", "B|C": "cur", "C|E": "n", "D|E": "t"}, "p": "<div class=\"prow\"><span class=\"plab\">in tree</span><span class=\"pval\">{ A, C, D, E, F }</span></div><div class=\"prow\"><span class=\"plab\">frontier</span><span class=\"pval\">AB(4), FB(5), CB(6)</span></div><div class=\"prow\"><span class=\"plab\">MST edges</span><span class=\"pval\">AF FC CD DE</span></div><div class=\"prow\"><span class=\"plab\">weight</span><span class=\"pval\">8</span></div>", "cap": "Cheapest crossing edge is <b>AB</b> (w=4). Candidate edges shown orange."}, {"c": {"A": "#457b9d", "F": "#457b9d", "C": "#457b9d", "D": "#457b9d", "E": "#457b9d", "B": "#457b9d"}, "r": {"B": "#e67e22"}, "e": {"A|F": "t", "A|B": "t", "C|F": "t", "E|F": "n", "B|F": "n", "C|D": "t", "B|C": "n", "C|E": "n", "D|E": "t"}, "p": "<div class=\"prow\"><span class=\"plab\">in tree</span><span class=\"pval\">{ A, B, C, D, E, F }</span></div><div class=\"prow\"><span class=\"plab\">frontier</span><span class=\"pval\">&empty;</span></div><div class=\"prow\"><span class=\"plab\">MST edges</span><span class=\"pval\">AF FC CD DE AB</span></div><div class=\"prow\"><span class=\"plab\">weight</span><span class=\"pval\">12</span></div>", "cap": "Add B via edge <b>AB</b>. Tree weight now 12."}, {"c": {"A": "#457b9d", "F": "#457b9d", "C": "#457b9d", "D": "#457b9d", "E": "#457b9d", "B": "#457b9d"}, "r": {}, "e": {"A|F": "t", "A|B": "t", "C|F": "t", "E|F": "n", "B|F": "n", "C|D": "t", "B|C": "n", "C|E": "n", "D|E": "t"}, "p": "<div class=\"prow\"><span class=\"plab\">in tree</span><span class=\"pval\">{ A, B, C, D, E, F }</span></div><div class=\"prow\"><span class=\"plab\">frontier</span><span class=\"pval\">&empty;</span></div><div class=\"prow\"><span class=\"plab\">MST edges</span><span class=\"pval\">AF FC CD DE AB</span></div><div class=\"prow\"><span class=\"plab\">weight</span><span class=\"pval\">12</span></div>", "cap": "Every vertex absorbed. <b>Minimum spanning tree weight = 12</b> (same as Kruskal &mdash; the MST is unique here)."}]}];
+const DEFAULT="#cfe3ee", LIGHT=new Set(["#e9c46a","#f4a261","#cfe3ee","#8d99ae"]);
+const NS="http://www.w3.org/2000/svg";
+let flat=[]; SCENES.forEach((s,si)=>s.steps.forEach((_,ti)=>flat.push([si,ti])));
+let sceneStart={}; flat.forEach(([si],gi)=>{if(sceneStart[si]===undefined)sceneStart[si]=gi;});
+let gi=0,curScene=-1; const stage=document.getElementById('stage');
+function ekey(sc,u,v){return sc.directed?(u+'>'+v):[String(u),String(v)].sort().join('|');}
+function buildScene(sc){
+  stage.setAttribute('viewBox',`0 0 ${sc.W} ${sc.H}`); stage.innerHTML='';
+  if(sc.directed){const d=document.createElementNS(NS,'defs');
+    d.innerHTML='<marker id="ar" markerWidth="9" markerHeight="9" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 z" fill="#7a8794"/></marker>';stage.appendChild(d);}
+  sc._e={};
+  sc.edges.forEach(([u,v,w])=>{const [x1,y1]=sc.pos[u],[x2,y2]=sc.pos[v];
+    const ln=document.createElementNS(NS,'line');let X=x2,Y=y2;
+    if(sc.directed){const dx=x2-x1,dy=y2-y1,d=Math.hypot(dx,dy)||1;X=x2-dx/d*20;Y=y2-dy/d*20;ln.setAttribute('marker-end','url(#ar)');}
+    ln.setAttribute('x1',x1);ln.setAttribute('y1',y1);ln.setAttribute('x2',X);ln.setAttribute('y2',Y);
+    ln.setAttribute('stroke','#9aa6b2');ln.setAttribute('stroke-width','2');stage.appendChild(ln);sc._e[ekey(sc,u,v)]=ln;
+    if(w!==null&&w!==undefined){const mx=(x1+x2)/2,my=(y1+y2)/2;
+      const r=document.createElementNS(NS,'rect');r.setAttribute('x',mx-10);r.setAttribute('y',my-9);r.setAttribute('width',20);r.setAttribute('height',15);r.setAttribute('rx',3);r.setAttribute('fill','#fff');r.setAttribute('opacity','.9');r.setAttribute('stroke','#dce3ea');stage.appendChild(r);
+      const t=document.createElementNS(NS,'text');t.setAttribute('x',mx);t.setAttribute('y',my+2);t.setAttribute('text-anchor','middle');t.setAttribute('font-size','11');t.setAttribute('fill','#444');t.textContent=w;stage.appendChild(t);}});
+  sc._n={};sc._t={};
+  for(const v in sc.pos){const [x,y]=sc.pos[v];
+    const c=document.createElementNS(NS,'circle');c.setAttribute('cx',x);c.setAttribute('cy',y);c.setAttribute('r',20);c.setAttribute('fill',DEFAULT);c.setAttribute('stroke','#2c3e50');c.setAttribute('stroke-width','2');stage.appendChild(c);sc._n[v]=c;
+    const t=document.createElementNS(NS,'text');t.setAttribute('x',x);t.setAttribute('y',y+4);t.setAttribute('text-anchor','middle');t.setAttribute('font-size','11');t.setAttribute('font-weight','700');t.textContent=v;stage.appendChild(t);sc._t[v]=t;}
+}
+function applyStep(sc,st){
+  for(const v in sc._n){const col=(st.c&&st.c[v])||DEFAULT;sc._n[v].setAttribute('fill',col);
+    sc._n[v].setAttribute('stroke',(st.r&&st.r[v])||'#2c3e50');sc._n[v].setAttribute('stroke-width',(st.r&&st.r[v])?'4':'2');
+    sc._t[v].setAttribute('fill',LIGHT.has(col)?'#2c3e50':'#fff');}
+  for(const k in sc._e){const s=(st.e&&st.e[k])||'n',ln=sc._e[k];
+    if(s==='t'){ln.setAttribute('stroke','#27ae60');ln.setAttribute('stroke-width','4.5');}
+    else if(s==='cur'){ln.setAttribute('stroke','#e67e22');ln.setAttribute('stroke-width','4.5');}
+    else if(s==='r'){ln.setAttribute('stroke','#c0395a');ln.setAttribute('stroke-width','3.5');}
+    else{ln.setAttribute('stroke','#9aa6b2');ln.setAttribute('stroke-width','2');}}
+  document.getElementById('panel').innerHTML=st.p; document.getElementById('cap').innerHTML=st.cap;
+}
+function render(){const [si,ti]=flat[gi],sc=SCENES[si];
+  if(si!==curScene){curScene=si;buildScene(sc);document.getElementById('algoSel').value=si;}
+  applyStep(sc,sc.steps[ti]);
+  document.getElementById('scTitle').textContent=sc.title;
+  document.getElementById('scCount').textContent=`Algorithm ${si+1} / ${SCENES.length} · step ${ti+1} / ${sc.steps.length}`;
+  document.getElementById('pos').textContent=`overall ${gi+1} / ${flat.length}`;}
+function next(){if(gi<flat.length-1){gi++;render();}}
+function prev(){if(gi>0){gi--;render();}}
+function reset(){gi=sceneStart[curScene];render();}
+function gotoScene(si){gi=sceneStart[si];render();}
+document.getElementById('bNext').onclick=next;document.getElementById('bPrev').onclick=prev;document.getElementById('bReset').onclick=reset;
+document.getElementById('bNextAlgo').onclick=()=>gotoScene(Math.min(SCENES.length-1,curScene+1));
+document.getElementById('bPrevAlgo').onclick=()=>gotoScene(Math.max(0,curScene-1));
+const sel=document.getElementById('algoSel');SCENES.forEach((s,i)=>{const o=document.createElement('option');o.value=i;o.textContent=`${i+1}. ${s.name}`;sel.appendChild(o);});sel.onchange=e=>gotoScene(+e.target.value);
+document.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key===' '){e.preventDefault();next();}else if(e.key==='ArrowLeft'){e.preventDefault();prev();}else if(e.key==='r'||e.key==='R'){reset();}});
+render();
 </script>
 </body>
 </html>

@@ -1,0 +1,590 @@
+<style>
+  .gc-btn {
+    padding: 6px 12px;
+    margin: 2px;
+    border: 1px solid #026573;
+    border-radius: 4px;
+    background: #eeeeee;
+    color: #000000;
+    cursor: pointer;
+    font-size: 13px;
+  }
+  .gc-btn.active {
+    background: #026573;
+    color: #ffffff;
+  }
+  .gc-swatch {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    margin: 2px;
+    padding: 0;
+    cursor: pointer;
+    border: 2px solid #cccccc;
+    vertical-align: middle;
+  }
+  .gc-swatch.active {
+    border: 3px solid #000000;
+  }
+</style>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jsxgraph@1.9.2/distrib/jsxgraph.css">
+<script src="https://cdn.jsdelivr.net/npm/jsxgraph@1.9.2/distrib/jsxgraphcore.js"></script>
+
+<h3 style="text-align:center;">Mini créateur de graphe</h3>
+<div style="text-align:center; margin-bottom:6px;">
+  <button type="button" id="btn-vertex" class="gc-btn">+ Sommet</button>
+  <button type="button" id="btn-edge" class="gc-btn">— Arête</button>
+  <button type="button" id="btn-arc" class="gc-btn">→ Arc</button>
+  <button type="button" id="btn-move" class="gc-btn">✋ Déplacer</button>
+  <button type="button" id="btn-select" class="gc-btn">⬚ Sélection</button>
+  <button type="button" id="btn-select-all" class="gc-btn">☑ Tout</button>
+  <button type="button" id="btn-color" class="gc-btn">🎨 Couleur</button>
+  <button type="button" id="btn-rename" class="gc-btn">✏ Renommer</button>
+  <button type="button" id="btn-delete" class="gc-btn">🗑 Supprimer</button>
+  <button type="button" id="btn-clear" class="gc-btn">Effacer tout</button>
+  <button type="button" id="btn-svg" class="gc-btn">💾 SVG</button>
+</div>
+<div style="text-align:center; margin-bottom:6px; font-size:13px;">
+  <label>Poids : <input type="text" id="edge-weight" size="4" style="padding:2px 4px;"></label>
+  <span style="color:#888;">(optionnel)</span>
+  &nbsp;|&nbsp; Couleur : <span id="color-palette"></span>
+</div>
+<div style="text-align:center; margin-bottom:6px; font-weight:bold;" id="mode-label"></div>
+<div id="graphbox" class="jxgbox" style="width:600px; height:500px; margin:0 auto; border:1px solid #ccc;"></div>
+<p style="text-align:center; color:#666; font-size:13px; max-width:600px; margin:8px auto;">
+  <strong>Sommet</strong> : cliquez sur une zone vide (la couleur choisie est appliquée).
+  <strong>Arête / Arc</strong> : cliquez sur un premier sommet puis sur un second ;
+  remplissez le champ <em>Poids</em> avant pour une pondération (affichée sur le trait), sinon laissez-le vide.
+  <strong>Déplacer</strong> : dans ce mode, faites glisser les sommets.
+  <strong>Sélection</strong> : cliquez sur des sommets ou tracez un rectangle pour les sélectionner,
+  puis faites glisser un sommet sélectionné pour déplacer tout le groupe (<strong>☑ Tout</strong> sélectionne tout le graphe).
+  <strong>Couleur</strong> : choisissez une pastille puis cliquez sur des sommets.
+  <strong>Renommer</strong> : cliquez sur un sommet ou sur une arête/arc pour changer son nom ou son poids.
+  <strong>Supprimer</strong> : cliquez sur un sommet, une arête ou un poids.
+  <strong>💾 SVG</strong> : télécharge le graphe en image vectorielle.
+</p>
+
+<script>
+(function () {
+  if (typeof JXG === 'undefined') {
+    document.getElementById('graphbox').innerHTML =
+      '<p style="color:red;text-align:center;">JSXGraph n\'a pas pu se charger.</p>';
+    return;
+  }
+
+  var brd = JXG.JSXGraph.initBoard('graphbox', {
+    boundingbox: [-7.2, 6, 7.2, -6],
+    axis: false,
+    grid: true,
+    showCopyright: false,
+    showNavigation: false
+  });
+
+  var SELECT_COLOR = '#e07b00';
+  var EDGE_COLOR = '#333333';
+  var ARC_COLOR = '#c0392b';
+  var VERTEX_SIZE = 10;
+  var PALETTE = ['#026573', '#e07b00', '#c0392b', '#27ae60', '#2e6db4', '#8e44ad', '#f1c40f', '#333333'];
+
+  var mode = 'vertex';
+  var currentColor = PALETTE[0];
+  var vertices = [];   // { point, color }
+  var edges = [];      // { type, from, to, line, label, mid, weight }
+  var selected = null; // entrée de vertices
+  var labelIndex = 0;
+  var downInfo = null;
+  var multiSel = [];    // sommets sélectionnés (mode sélection)
+  var groupDrag = null; // déplacement de groupe en cours
+  var band = null;      // rectangle élastique en cours
+  var bandPts = null, bandPoly = null;
+
+  var modeNames = {
+    vertex: 'Ajouter un sommet',
+    edge: 'Ajouter une arête (non orientée)',
+    arc: 'Ajouter un arc (orienté)',
+    move: 'Déplacer un sommet',
+    select: 'Sélectionner / déplacer un groupe',
+    color: 'Colorier un sommet',
+    rename: 'Renommer un sommet ou un poids',
+    'delete': 'Supprimer un élément'
+  };
+
+  var btnVertex = document.getElementById('btn-vertex');
+  var btnEdge = document.getElementById('btn-edge');
+  var btnArc = document.getElementById('btn-arc');
+  var btnMove = document.getElementById('btn-move');
+  var btnSelect = document.getElementById('btn-select');
+  var btnSelectAll = document.getElementById('btn-select-all');
+  var btnColor = document.getElementById('btn-color');
+  var btnRename = document.getElementById('btn-rename');
+  var btnDelete = document.getElementById('btn-delete');
+  var btnClear = document.getElementById('btn-clear');
+  var btnSvg = document.getElementById('btn-svg');
+  var modeLabel = document.getElementById('mode-label');
+  var weightInput = document.getElementById('edge-weight');
+  var paletteBox = document.getElementById('color-palette');
+  var modeButtons = { vertex: btnVertex, edge: btnEdge, arc: btnArc, move: btnMove, select: btnSelect, color: btnColor, rename: btnRename, 'delete': btnDelete };
+
+  // --- Palette de couleurs (construite en JS : survit aux filtres Moodle) ---
+  PALETTE.forEach(function (c) {
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'gc-swatch';
+    b.style.backgroundColor = c;
+    b.title = c;
+    b.addEventListener('click', function () {
+      currentColor = c;
+      updateSwatches();
+    });
+    paletteBox.appendChild(b);
+  });
+
+  function updateSwatches() {
+    var kids = paletteBox.children;
+    for (var i = 0; i < kids.length; i++) {
+      kids[i].className = 'gc-swatch' + (PALETTE[i] === currentColor ? ' active' : '');
+    }
+  }
+  updateSwatches();
+
+  function nextLabel() {
+    var letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    var round = Math.floor(labelIndex / 26);
+    var letter = letters[labelIndex % 26];
+    labelIndex++;
+    return round === 0 ? letter : letter + round;
+  }
+
+  // Noir sur couleurs claires, blanc sur couleurs foncées
+  function textColorFor(hex) {
+    var r = parseInt(hex.substr(1, 2), 16);
+    var g = parseInt(hex.substr(3, 2), 16);
+    var b = parseInt(hex.substr(5, 2), 16);
+    return (0.299 * r + 0.587 * g + 0.114 * b) > 160 ? '#000000' : '#ffffff';
+  }
+
+  // Applique une couleur au disque ET aux couleurs de survol (sinon le hover
+  // masque la couleur choisie), plus la couleur du texte de l'étiquette.
+  function paintVertex(v, color) {
+    v.point.setAttribute({
+      fillColor: color,
+      strokeColor: color,
+      highlightFillColor: color,
+      highlightStrokeColor: color
+    });
+    if (v.point.label) {
+      var tc = textColorFor(color);
+      v.point.label.setAttribute({ strokeColor: tc, highlightStrokeColor: tc });
+    }
+  }
+
+  function clearSelection() {
+    if (selected) {
+      paintVertex(selected, selected.color);
+      selected = null;
+    }
+  }
+
+  function selectVertex(v) {
+    selected = v;
+    paintVertex(v, SELECT_COLOR);
+  }
+
+  // --- Sélection multiple (mode Sélection) ---
+  function addToMultiSel(v) {
+    if (multiSel.indexOf(v) > -1) { return; }
+    multiSel.push(v);
+    v.point.setAttribute({ strokeColor: SELECT_COLOR, highlightStrokeColor: SELECT_COLOR, strokeWidth: 4, fixed: false });
+  }
+
+  function removeFromMultiSel(v) {
+    var i = multiSel.indexOf(v);
+    if (i === -1) { return; }
+    multiSel.splice(i, 1);
+    v.point.setAttribute({ strokeColor: v.color, highlightStrokeColor: v.color, strokeWidth: 2, fixed: true });
+  }
+
+  function toggleMultiSelect(v) {
+    if (multiSel.indexOf(v) > -1) { removeFromMultiSel(v); } else { addToMultiSel(v); }
+  }
+
+  function clearMultiSelection() {
+    multiSel.slice().forEach(removeFromMultiSel);
+  }
+
+  function selectInRect(x0, y0, x1, y1) {
+    var xmin = Math.min(x0, x1), xmax = Math.max(x0, x1);
+    var ymin = Math.min(y0, y1), ymax = Math.max(y0, y1);
+    clearMultiSelection();
+    vertices.forEach(function (v) {
+      var x = v.point.X(), y = v.point.Y();
+      if (x >= xmin && x <= xmax && y >= ymin && y <= ymax) { addToMultiSel(v); }
+    });
+  }
+
+  // --- Rectangle élastique ---
+  function ensureBand() {
+    if (bandPoly) { return; }
+    var opts = { visible: false, fixed: true, withLabel: false, showInfobox: false, size: 0 };
+    bandPts = [
+      brd.create('point', [0, 0], opts),
+      brd.create('point', [0, 0], opts),
+      brd.create('point', [0, 0], opts),
+      brd.create('point', [0, 0], opts)
+    ];
+    bandPoly = brd.create('polygon', bandPts, {
+      fillColor: SELECT_COLOR,
+      fillOpacity: 0.08,
+      highlight: false,
+      hasInnerPoints: false,
+      visible: false,
+      vertices: { visible: false },
+      borders: { strokeColor: SELECT_COLOR, strokeWidth: 1, dash: 2, highlight: false, fixed: true }
+    });
+  }
+
+  function positionBand(x0, y0, x1, y1) {
+    bandPts[0].setPosition(JXG.COORDS_BY_USER, [x0, y0]);
+    bandPts[1].setPosition(JXG.COORDS_BY_USER, [x1, y0]);
+    bandPts[2].setPosition(JXG.COORDS_BY_USER, [x1, y1]);
+    bandPts[3].setPosition(JXG.COORDS_BY_USER, [x0, y1]);
+  }
+
+  function showBand(on) {
+    if (!bandPoly) { return; }
+    bandPoly.setAttribute({ visible: on });
+    bandPoly.borders.forEach(function (bd) { bd.setAttribute({ visible: on }); });
+    brd.update();
+  }
+
+  function setMode(m) {
+    mode = m;
+    clearSelection();
+    clearMultiSelection();
+    groupDrag = null;
+    if (band) { band = null; showBand(false); }
+    var movable = (m === 'move');
+    vertices.forEach(function (v) { v.point.setAttribute({ fixed: !movable }); });
+    Object.keys(modeButtons).forEach(function (k) {
+      modeButtons[k].className = 'gc-btn' + (k === m ? ' active' : '');
+    });
+    modeLabel.textContent = 'Mode : ' + modeNames[m];
+  }
+
+  function addVertex(x, y) {
+    var tc = textColorFor(currentColor);
+    var p = brd.create('point', [x, y], {
+      name: nextLabel(),
+      size: VERTEX_SIZE,
+      fixed: (mode !== 'move'),
+      fillColor: currentColor,
+      strokeColor: currentColor,
+      highlightFillColor: currentColor,
+      highlightStrokeColor: currentColor,
+      showInfobox: false,
+      label: {
+        display: 'internal',
+        fontSize: 13,
+        offset: [0, 0],
+        anchorX: 'middle',
+        anchorY: 'middle',
+        strokeColor: tc,
+        highlightStrokeColor: tc,
+        cssStyle: 'font-weight:bold; pointer-events:none;'
+      }
+    });
+    vertices.push({ point: p, color: currentColor });
+  }
+
+  function removeEdgeObj(e) {
+    if (e.label) { brd.removeObject(e.label); }
+    if (e.mid) { brd.removeObject(e.mid); }
+    brd.removeObject(e.line);
+    var idx = edges.indexOf(e);
+    if (idx > -1) { edges.splice(idx, 1); }
+  }
+
+  function addConnection(v1, v2, type) {
+    var w = weightInput.value.replace(/^\s+|\s+$/g, '');
+    var p1 = v1.point, p2 = v2.point;
+    var lineObj;
+    if (type === 'arc') {
+      lineObj = brd.create('arrow', [p1, p2], {
+        strokeColor: ARC_COLOR, strokeWidth: 2, fixed: true,
+        touchFirstPoint: true, touchLastPoint: true
+      });
+    } else {
+      lineObj = brd.create('segment', [p1, p2], { strokeColor: EDGE_COLOR, strokeWidth: 2, fixed: true });
+    }
+
+    var e = { type: type, from: p1, to: p2, line: lineObj, label: null, mid: null, weight: '' };
+    edges.push(e);
+    if (w !== '') { setEdgeWeight(e, w); }
+  }
+
+  // Crée / met à jour / retire l'étiquette de poids d'une arête ou d'un arc.
+  function setEdgeWeight(e, w) {
+    e.weight = w;
+    if (w === '') {
+      if (e.label) { brd.removeObject(e.label); e.label = null; }
+      if (e.mid) { brd.removeObject(e.mid); e.mid = null; }
+      return;
+    }
+    var disp = w.replace(/</g, '&lt;');
+    if (e.label) {
+      e.label.setText(disp);
+      brd.update();
+      return;
+    }
+    var mid = brd.create('midpoint', [e.from, e.to], { visible: false, withLabel: false });
+    e.mid = mid;
+    // Le texte est un PARENT du texte JSXGraph (3e élément), pas un attribut.
+    // display 'internal' : le texte fait partie du SVG (nécessaire pour l'export).
+    e.label = brd.create('text', [
+      function () { return mid.X(); },
+      function () { return mid.Y(); },
+      disp
+    ], {
+      display: 'internal',
+      parse: false,
+      fontSize: 13,
+      strokeColor: '#000000',
+      highlightStrokeColor: '#000000',
+      anchorX: 'middle',
+      anchorY: 'middle',
+      cssStyle: 'font-weight:bold; paint-order:stroke; stroke:#ffffff; stroke-width:3px;',
+      fixed: true
+    });
+  }
+
+  function deleteVertex(v) {
+    var p = v.point;
+    var incident = edges.filter(function (e) { return e.from.id === p.id || e.to.id === p.id; });
+    incident.forEach(removeEdgeObj);
+    brd.removeObject(p);
+    var idx = vertices.indexOf(v);
+    if (idx > -1) { vertices.splice(idx, 1); }
+  }
+
+  function clearAll() {
+    multiSel = [];
+    groupDrag = null;
+    if (band) { band = null; showBand(false); }
+    edges.slice().forEach(removeEdgeObj);
+    vertices.slice().forEach(function (v) { brd.removeObject(v.point); });
+    vertices = [];
+    edges = [];
+    labelIndex = 0;
+    selected = null;
+  }
+
+  // Retrouve le sommet cliqué (le disque OU son étiquette A, B, ...)
+  function findVertex(underMouse) {
+    for (var i = 0; i < underMouse.length; i++) {
+      var obj = underMouse[i];
+      for (var j = 0; j < vertices.length; j++) {
+        var p = vertices[j].point;
+        if (p.id === obj.id) { return vertices[j]; }
+        if (p.label && p.label.id === obj.id) { return vertices[j]; }
+      }
+    }
+    return null;
+  }
+
+  // Retrouve l'arête/arc cliqué (le trait, le poids ou son point milieu invisible)
+  function findEdge(underMouse) {
+    for (var i = 0; i < underMouse.length; i++) {
+      var obj = underMouse[i];
+      for (var j = 0; j < edges.length; j++) {
+        var e = edges[j];
+        if (e.line.id === obj.id) { return e; }
+        if (e.label && e.label.id === obj.id) { return e; }
+        if (e.mid && e.mid.id === obj.id) { return e; }
+      }
+    }
+    return null;
+  }
+
+  function getScreenXY(evt) {
+    if (evt.changedTouches && evt.changedTouches.length > 0) {
+      return [evt.changedTouches[0].clientX, evt.changedTouches[0].clientY];
+    }
+    if (evt.touches && evt.touches.length > 0) {
+      return [evt.touches[0].clientX, evt.touches[0].clientY];
+    }
+    return [evt.clientX, evt.clientY];
+  }
+
+  // On mémorise ce qui est sous la souris au 'down', mais on n'agit qu'au 'up' :
+  // aucune boîte de dialogue ni suppression pendant un drag en cours,
+  // donc plus de sommet « collé » au curseur ni d'état bloqué.
+  brd.on('down', function (evt) {
+    var um = brd.getAllObjectsUnderMouse(evt);
+    downInfo = {
+      vertex: findVertex(um),
+      edge: findEdge(um),
+      usr: brd.getUsrCoordsOfMouse(evt),
+      screen: getScreenXY(evt)
+    };
+    if (mode === 'select') {
+      if (downInfo.vertex && multiSel.indexOf(downInfo.vertex) > -1) {
+        // Départ d'un déplacement de groupe
+        groupDrag = {
+          anchor: downInfo.vertex,
+          start: downInfo.usr.slice(),
+          origins: multiSel.map(function (v) { return { v: v, x: v.point.X(), y: v.point.Y() }; })
+        };
+      } else if (!downInfo.vertex) {
+        // Départ d'un rectangle élastique
+        band = { x0: downInfo.usr[0], y0: downInfo.usr[1] };
+        ensureBand();
+        positionBand(band.x0, band.y0, band.x0, band.y0);
+        showBand(true);
+      }
+    }
+  });
+
+  brd.on('move', function (evt) {
+    if (mode !== 'select') { return; }
+    if (groupDrag) {
+      var cur = brd.getUsrCoordsOfMouse(evt);
+      var dx = cur[0] - groupDrag.start[0];
+      var dy = cur[1] - groupDrag.start[1];
+      groupDrag.origins.forEach(function (o) {
+        if (o.v === groupDrag.anchor) { return; } // l'ancre suit déjà la souris
+        o.v.point.setPosition(JXG.COORDS_BY_USER, [o.x + dx, o.y + dy]);
+      });
+      brd.update();
+    } else if (band) {
+      var c = brd.getUsrCoordsOfMouse(evt);
+      positionBand(band.x0, band.y0, c[0], c[1]);
+      brd.update();
+    }
+  });
+
+  brd.on('up', function (evt) {
+    if (!downInfo) { return; }
+    var info = downInfo;
+    downInfo = null;
+
+    // Si la souris a bougé, c'était un déplacement, pas un clic.
+    var xy = getScreenXY(evt);
+    var dx = xy[0] - info.screen[0];
+    var dy = xy[1] - info.screen[1];
+    var dragged = (dx * dx + dy * dy > 36);
+
+    if (mode === 'select') {
+      if (groupDrag) {
+        var anchor = groupDrag.anchor;
+        groupDrag = null;
+        if (!dragged) { toggleMultiSelect(anchor); } // simple clic : (dé)sélection
+        return;
+      }
+      if (band) {
+        var b = band;
+        band = null;
+        showBand(false);
+        if (dragged) {
+          var cur = brd.getUsrCoordsOfMouse(evt);
+          selectInRect(b.x0, b.y0, cur[0], cur[1]);
+        } else {
+          clearMultiSelection(); // clic dans le vide : tout désélectionner
+        }
+        return;
+      }
+      if (!dragged && info.vertex) { toggleMultiSelect(info.vertex); }
+      return;
+    }
+
+    if (dragged) { return; }
+
+    if (mode === 'vertex') {
+      if (!info.vertex) { addVertex(info.usr[0], info.usr[1]); }
+      return;
+    }
+
+    if (mode === 'edge' || mode === 'arc') {
+      if (!info.vertex) { return; }
+      if (!selected) {
+        selectVertex(info.vertex);
+      } else if (selected === info.vertex) {
+        clearSelection();
+      } else {
+        var v1 = selected;
+        clearSelection();
+        addConnection(v1, info.vertex, mode);
+      }
+      return;
+    }
+
+    if (mode === 'color') {
+      if (info.vertex) {
+        info.vertex.color = currentColor;
+        paintVertex(info.vertex, currentColor);
+      }
+      return;
+    }
+
+    if (mode === 'rename') {
+      // Le prompt est sûr ici : le cycle down/up de la souris est terminé.
+      if (info.vertex) {
+        var n = window.prompt('Nouveau nom du sommet :', info.vertex.point.name);
+        if (n !== null) {
+          n = n.replace(/^\s+|\s+$/g, '');
+          if (n !== '') { info.vertex.point.setAttribute({ name: n.replace(/</g, '&lt;') }); }
+        }
+      } else if (info.edge) {
+        var nw = window.prompt('Nouveau poids (laissez vide pour retirer) :', info.edge.weight);
+        if (nw !== null) { setEdgeWeight(info.edge, nw.replace(/^\s+|\s+$/g, '')); }
+      }
+      return;
+    }
+
+    if (mode === 'delete') {
+      if (info.vertex) {
+        if (selected === info.vertex) { selected = null; }
+        deleteVertex(info.vertex);
+      } else if (info.edge) {
+        removeEdgeObj(info.edge);
+      }
+      return;
+    }
+    // mode 'move' : rien au clic, les sommets se déplacent par glisser-déposer
+  });
+
+  function saveSVG() {
+    var svg = brd.renderer.svgRoot.cloneNode(true);
+    svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+    svg.setAttribute('xmlns:xlink', 'http://www.w3.org/1999/xlink');
+    var src = new XMLSerializer().serializeToString(svg);
+    var blob = new Blob([src], { type: 'image/svg+xml;charset=utf-8' });
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'graphe.svg';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(function () { URL.revokeObjectURL(a.href); }, 1000);
+  }
+
+  btnVertex.addEventListener('click', function () { setMode('vertex'); });
+  btnEdge.addEventListener('click', function () { setMode('edge'); });
+  btnArc.addEventListener('click', function () { setMode('arc'); });
+  btnMove.addEventListener('click', function () { setMode('move'); });
+  btnSelect.addEventListener('click', function () { setMode('select'); });
+  btnSelectAll.addEventListener('click', function () {
+    setMode('select');
+    vertices.forEach(function (v) { addToMultiSel(v); });
+  });
+  btnColor.addEventListener('click', function () { setMode('color'); });
+  btnRename.addEventListener('click', function () { setMode('rename'); });
+  btnDelete.addEventListener('click', function () { setMode('delete'); });
+  btnSvg.addEventListener('click', saveSVG);
+  btnClear.addEventListener('click', function () {
+    if (window.confirm('Effacer tout le graphe ?')) { clearAll(); }
+  });
+
+  setMode('vertex');
+})();
+</script>

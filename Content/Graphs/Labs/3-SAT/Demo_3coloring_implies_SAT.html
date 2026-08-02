@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Why 3-colorable ⟹ satisfiable</title>
+<script>
+  MathJax = { tex: { inlineMath: [['$','$']], displayMath: [['$$','$$']], processEscapes: true } };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{--orange:#e67e22;--darkblue:#2c3e50;--border:#dce3ea;--T:#2a9d8f;--F:#e63946;--B:#457b9d;}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#fff;color:var(--darkblue);max-width:880px;margin:0 auto;padding:0 1.4rem 4rem;line-height:1.65;}
+.head{background:linear-gradient(145deg,#fdf3e7 60%,#f9e4cc);text-align:center;border-top:6px solid var(--orange);border-radius:0 0 10px 10px;padding:2rem 1.4rem 1.6rem;margin:0 -1.4rem 1rem;}
+.head h1{font-size:1.7rem;}
+.head .sub{color:#555;margin-top:.3rem;}
+.head .author{color:var(--orange);font-style:italic;font-weight:600;margin-top:.6rem;}
+h2{font-size:1.3rem;color:var(--orange);font-weight:700;margin:1.6rem 0 .5rem;padding-bottom:.3rem;border-bottom:2px solid #f9e4cc;}
+h3{font-size:1.05rem;color:var(--orange);font-weight:600;margin:1rem 0 .3rem;}
+p{margin:.5rem 0;}
+ul,ol{margin:.4rem 0 .4rem 1.5rem;line-height:1.8;}
+ul li::marker,ol li::marker{color:var(--orange);}
+code{background:#f0f3f7;color:#1f4e7a;padding:0 .25em;border-radius:3px;font-family:'Consolas','Fira Code',monospace;}
+.claim{background:#fff7e0;border:1px solid #e0b341;border-left:5px solid #e0b341;border-radius:6px;padding:.8rem 1rem;margin:.8rem 0;}
+.claim::before{content:"Claim. ";font-weight:800;color:#c89324;}
+.lemma{background:#eaf3fb;border-left:4px solid #2a6fb3;border-radius:6px;padding:.7rem .9rem;margin:.7rem 0;}
+.lemma::before{content:"Lemma (OR gadget). ";font-weight:700;color:#2a6fb3;}
+.def{background:#eaf3fb;border-left:4px solid #2a6fb3;border-radius:6px;padding:.6rem .9rem;margin:.6rem 0;}
+.note{background:#fff5e8;border-left:4px solid var(--orange);border-radius:6px;padding:.6rem .9rem;margin:.6rem 0;font-style:italic;}
+.qed{background:#e8f5ec;border-left:4px solid #27ae60;border-radius:6px;padding:.6rem .9rem;margin:.8rem 0;}
+.qed::before{content:"Conclusion. ";font-weight:700;color:#1e824c;}
+.step{background:#fdeee2;border-left:4px solid var(--orange);border-radius:6px;padding:.2rem .9rem;margin:1.1rem 0 .2rem;font-weight:700;color:#cf6d17;}
+svg.fig{display:block;margin:.6rem auto;max-width:100%;}
+.cap{font-size:.85rem;color:#777;text-align:center;margin-top:-.3rem;}
+.legend{font-size:.9rem;text-align:center;margin:.2rem 0;}
+.legend span{display:inline-flex;align-items:center;gap:.35rem;margin:0 .6rem;}
+.dot{width:14px;height:14px;border-radius:50%;border:2px solid #2c3e50aa;display:inline-block;}
+</style>
+</head>
+<body>
+
+<div class="head">
+  <h1>Why a 3-coloring gives a satisfying assignment</h1>
+  <p class="sub">3-SAT as Graph-Coloring — the direction <em>$G_\varphi$ is 3-colorable $\Rightarrow$ $\varphi$ is satisfiable</em></p>
+  <p class="author">Notes By Pr. El Hadiq Zouhair</p>
+</div>
+
+<p>This page shows that whenever the graph $G_\varphi$ admits a proper 3-coloring, the formula $\varphi$ really is satisfiable — and moreover the coloring itself <em>tells us</em> a satisfying assignment.</p>
+
+<div class="claim">Fix any proper 3-coloring of $G_\varphi$. Decode it by setting each variable <code>x</code> to <strong>True</strong> iff its vertex has the same color as the vertex <code>T</code>. Then this assignment makes <strong>every clause</strong> of $\varphi$ true — so $\varphi$ is satisfiable.</div>
+
+<p>We are <em>given</em> a coloring and must <em>produce</em> a satisfying assignment. The proof is four short steps; the only real work is one small lemma about the OR gadget.</p>
+
+<div class="legend">
+  <span><span class="dot" style="background:var(--T)"></span> T color = True</span>
+  <span><span class="dot" style="background:var(--F)"></span> F color = False</span>
+  <span><span class="dot" style="background:var(--B)"></span> B color = Base</span>
+</div>
+
+<h2>Step 1 — The three colors get fixed meanings</h2>
+<p>The graph contains a <strong>base triangle</strong> on the vertices <code>T</code>, <code>F</code>, <code>B</code>. Because all three are mutually adjacent, a proper coloring must give them <strong>three different</strong> colors. We name those colors after the vertices that carry them: the <em>T-color</em>, the <em>F-color</em>, the <em>B-color</em>. From now on "color of a vertex" can be compared to these three anchors.</p>
+<svg class="fig" viewBox="0 0 300 215" xmlns="http://www.w3.org/2000/svg">
+  <line x1="150" y1="48" x2="68" y2="172" stroke="#9aa6b2" stroke-width="2"/>
+  <line x1="150" y1="48" x2="232" y2="172" stroke="#9aa6b2" stroke-width="2"/>
+  <line x1="68" y1="172" x2="232" y2="172" stroke="#9aa6b2" stroke-width="2"/>
+  <circle cx="150" cy="48" r="22" fill="#2a9d8f" stroke="#2c3e50" stroke-width="2"/><text x="150" y="53" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">T</text>
+  <circle cx="68" cy="172" r="22" fill="#e63946" stroke="#2c3e50" stroke-width="2"/><text x="68" y="177" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">F</text>
+  <circle cx="232" cy="172" r="22" fill="#457b9d" stroke="#2c3e50" stroke-width="2"/><text x="232" y="177" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">B</text>
+</svg>
+<p class="cap">The base triangle forces three distinct colors — the T, F, B anchors.</p>
+
+<h2>Step 2 — Every literal is a consistent True / False</h2>
+<p>For each variable, $G_\varphi$ has a <strong>variable triangle</strong> <code>x – ~x – B</code>. Both literal vertices are joined to <code>B</code>, so neither can be the B-color: each is either the T-color or the F-color. And since <code>x</code> and <code>~x</code> are joined to <em>each other</em>, they have <strong>different</strong> colors — one is the T-color, the other the F-color.</p>
+<svg class="fig" viewBox="0 0 340 230" xmlns="http://www.w3.org/2000/svg">
+  <line x1="90" y1="55" x2="90" y2="175" stroke="#9aa6b2" stroke-width="2"/>
+  <line x1="90" y1="55" x2="260" y2="115" stroke="#9aa6b2" stroke-width="2"/>
+  <line x1="90" y1="175" x2="260" y2="115" stroke="#9aa6b2" stroke-width="2"/>
+  <circle cx="90" cy="55" r="24" fill="#2a9d8f" stroke="#2c3e50" stroke-width="2"/><text x="90" y="60" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">x</text>
+  <text x="90" y="22" text-anchor="middle" font-size="12" font-weight="700" fill="#2a9d8f">= T (true)</text>
+  <circle cx="90" cy="175" r="24" fill="#e63946" stroke="#2c3e50" stroke-width="2"/><text x="90" y="180" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">~x</text>
+  <text x="90" y="213" text-anchor="middle" font-size="12" font-weight="700" fill="#e63946">= F (false)</text>
+  <circle cx="260" cy="115" r="24" fill="#457b9d" stroke="#2c3e50" stroke-width="2"/><text x="260" y="120" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">B</text>
+</svg>
+<p class="cap">A variable gadget: <code>x</code> and <code>~x</code> avoid B and land on opposite truth values.</p>
+<div class="def">Consequence: the decoded assignment is <strong>well defined and consistent</strong> — every variable gets exactly one of True / False, and <code>x</code>, <code>~x</code> are never both true. So we really do have a genuine truth assignment to test.</div>
+
+<h2>Step 3 — The OR-gadget lemma</h2>
+<p>This is the only computation we need. Recall an OR gadget on inputs <code>u</code>, <code>v</code>: a triangle <code>a – b – out</code> with wires <code>a – u</code> and <code>b – v</code>.</p>
+<div class="lemma">In any proper coloring, <strong>if both inputs <code>u</code> and <code>v</code> have the F-color, then <code>out</code> must have the F-color.</strong></div>
+<p><strong>Why.</strong> The wire <code>a – u</code> forbids <code>a</code> the F-color (since <code>u</code> is F), so <code>a</code> is the T-color or the B-color. Likewise <code>b</code> is the T-color or the B-color. But <code>a</code> and <code>b</code> are adjacent, so they are <em>different</em> — together they use exactly the T-color and the B-color. The triangle's third vertex <code>out</code> must take the one remaining color: the <strong>F-color</strong>.</p>
+<div class="note"><strong>Why only this case?</strong> The lemma deliberately treats <em>only</em> "both inputs F". For <em>this</em> direction we never ask what <code>out</code> can be when an input is T — Step 4 needs nothing more than "both inputs F ⟹ <code>out</code> is F" (applied twice along the chain). The other three input cases (at least one input T, where <code>out</code> is then <em>free</em> to be T, F, or even B) are exactly what the <a href="Demo_SAT_implies_3coloring.html" style="color:#2a6fb3;">converse direction</a> uses to <em>build</em> a colouring, and they are handled there. So nothing is missing here: one implication is all this proof requires.</div>
+<svg class="fig" viewBox="0 0 460 250" xmlns="http://www.w3.org/2000/svg">
+  <line x1="70" y1="60" x2="190" y2="60" stroke="#9aa6b2" stroke-width="2"/>
+  <line x1="70" y1="170" x2="190" y2="170" stroke="#9aa6b2" stroke-width="2"/>
+  <line x1="190" y1="60" x2="190" y2="170" stroke="#9aa6b2" stroke-width="2"/>
+  <line x1="190" y1="60" x2="320" y2="115" stroke="#9aa6b2" stroke-width="2"/>
+  <line x1="190" y1="170" x2="320" y2="115" stroke="#9aa6b2" stroke-width="2"/>
+  <circle cx="70" cy="60" r="22" fill="#e63946" stroke="#2c3e50" stroke-width="2"/><text x="70" y="65" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">u</text><text x="70" y="100" text-anchor="middle" font-size="12" font-weight="700" fill="#e63946">F</text>
+  <circle cx="70" cy="170" r="22" fill="#e63946" stroke="#2c3e50" stroke-width="2"/><text x="70" y="175" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">v</text><text x="70" y="210" text-anchor="middle" font-size="12" font-weight="700" fill="#e63946">F</text>
+  <circle cx="190" cy="60" r="22" fill="#2a9d8f" stroke="#2c3e50" stroke-width="2"/><text x="190" y="65" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">a</text><text x="190" y="28" text-anchor="middle" font-size="12" font-weight="700" fill="#2a9d8f">T</text>
+  <circle cx="190" cy="170" r="22" fill="#457b9d" stroke="#2c3e50" stroke-width="2"/><text x="190" y="175" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">b</text><text x="190" y="210" text-anchor="middle" font-size="12" font-weight="700" fill="#457b9d">B</text>
+  <circle cx="320" cy="115" r="24" fill="#e63946" stroke="#2c3e50" stroke-width="2"/><text x="320" y="120" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">out</text><text x="320" y="155" text-anchor="middle" font-size="12" font-weight="700" fill="#e63946">F</text>
+</svg>
+<p class="cap">Both inputs F ⟹ <code>a</code>, <code>b</code> use T and B ⟹ <code>out</code> is forced to F.</p>
+
+<h2>Step 4 — Every clause contains a true literal</h2>
+<p>Take any clause $(\ell_1 \lor \ell_2 \lor \ell_3)$. Its gadget builds $o_1 = \mathrm{OR}(\ell_1,\ell_2)$ and $o_2 = \mathrm{OR}(o_1,\ell_3)$, and joins the final output $o_2$ to both <code>F</code> and <code>B</code>.</p>
+<ul>
+  <li>Because $o_2$ is joined to <code>F</code> and <code>B</code>, it can be neither the F-color nor the B-color. So <strong>$o_2$ has the T-color.</strong></li>
+  <li>Now suppose, for contradiction, that <strong>all three</strong> literals $\ell_1, \ell_2, \ell_3$ had the F-color. Then:
+    <ul>
+      <li>$o_1 = \mathrm{OR}(\ell_1, \ell_2)$ has both inputs F-colored, so by the Lemma $o_1$ has the <strong>F-color</strong>.</li>
+      <li>$o_2 = \mathrm{OR}(o_1, \ell_3)$ then has both inputs F-colored ($o_1$ and $\ell_3$), so by the Lemma $o_2$ has the <strong>F-color</strong>.</li>
+    </ul>
+    But we just showed $o_2$ has the T-color — a contradiction.</li>
+  <li>Therefore not all three literals are F-colored: <strong>at least one literal has the T-color</strong>. By our decoding, that literal is <strong>True</strong>, so the clause is satisfied.</li>
+</ul>
+<svg class="fig" viewBox="0 0 780 420" xmlns="http://www.w3.org/2000/svg"><line x1="60" y1="60" x2="190" y2="60" stroke="#9aa6b2" stroke-width="2"/><line x1="60" y1="170" x2="190" y2="170" stroke="#9aa6b2" stroke-width="2"/><line x1="190" y1="60" x2="190" y2="170" stroke="#9aa6b2" stroke-width="2"/><line x1="190" y1="60" x2="300" y2="115" stroke="#9aa6b2" stroke-width="2"/><line x1="190" y1="170" x2="300" y2="115" stroke="#9aa6b2" stroke-width="2"/><line x1="300" y1="115" x2="430" y2="115" stroke="#9aa6b2" stroke-width="2"/><line x1="60" y1="330" x2="430" y2="300" stroke="#9aa6b2" stroke-width="2"/><line x1="430" y1="115" x2="430" y2="300" stroke="#9aa6b2" stroke-width="2"/><line x1="430" y1="115" x2="560" y2="210" stroke="#9aa6b2" stroke-width="2"/><line x1="430" y1="300" x2="560" y2="210" stroke="#9aa6b2" stroke-width="2"/><line x1="560" y1="210" x2="700" y2="150" stroke="#9aa6b2" stroke-width="2"/><line x1="560" y1="210" x2="700" y2="300" stroke="#9aa6b2" stroke-width="2"/><text x="250" y="30" text-anchor="middle" font-size="13" font-style="italic" fill="#888">o₁ = OR(ℓ₁, ℓ₂)</text><text x="500" y="95" text-anchor="middle" font-size="13" font-style="italic" fill="#888">o₂ = OR(o₁, ℓ₃)</text><text x="560" y="360" text-anchor="middle" font-size="13" font-style="italic" fill="#888">o₂ joined to F and B ⟹ o₂ is the T-color</text><circle cx="60" cy="60" r="22" fill="#9b5de5" stroke="#2c3e50" stroke-width="2"/><text x="60" y="64" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">ℓ₁</text><circle cx="60" cy="170" r="22" fill="#9b5de5" stroke="#2c3e50" stroke-width="2"/><text x="60" y="174" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">ℓ₂</text><circle cx="60" cy="330" r="22" fill="#9b5de5" stroke="#2c3e50" stroke-width="2"/><text x="60" y="334" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">ℓ₃</text><circle cx="190" cy="60" r="22" fill="#f4a261" stroke="#2c3e50" stroke-width="2"/><text x="190" y="64" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">a₁</text><circle cx="190" cy="170" r="22" fill="#f4a261" stroke="#2c3e50" stroke-width="2"/><text x="190" y="174" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">b₁</text><circle cx="300" cy="115" r="22" fill="#2a9d8f" stroke="#2c3e50" stroke-width="2"/><text x="300" y="119" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">o₁</text><circle cx="430" cy="115" r="22" fill="#f4a261" stroke="#2c3e50" stroke-width="2"/><text x="430" y="119" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">a₂</text><circle cx="430" cy="300" r="22" fill="#f4a261" stroke="#2c3e50" stroke-width="2"/><text x="430" y="304" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">b₂</text><circle cx="560" cy="210" r="22" fill="#2a9d8f" stroke="#2c3e50" stroke-width="2"/><text x="560" y="214" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">o₂</text><circle cx="700" cy="150" r="22" fill="#e63946" stroke="#2c3e50" stroke-width="2"/><text x="700" y="154" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">F</text><circle cx="700" cy="300" r="22" fill="#457b9d" stroke="#2c3e50" stroke-width="2"/><text x="700" y="304" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">B</text></svg>
+<p class="cap">The forced T-color at <code>o₂</code> cannot survive if all three literals are F — so one literal must be T (true).</p>
+
+<div class="qed">Step 4 holds for <em>every</em> clause, so the decoded assignment makes every clause true — i.e. it satisfies $\varphi$. Therefore: <strong>if $G_\varphi$ is 3-colorable, then $\varphi$ is satisfiable.</strong> $\blacksquare$</div>
+
+<h2>A concrete example</h2>
+<p>Here is $G_\varphi$ for the one-clause formula $\varphi = (x \lor y \lor z)$, in an actual proper 3-coloring. Reading the rule "True iff colored like <code>T</code>" off the picture gives <strong>$x = y = z = $ True</strong>, and indeed $(x \lor y \lor z)$ is true — the coloring handed us a satisfying assignment, exactly as the proof promises.</p>
+<svg class="fig" viewBox="0 0 720 460" xmlns="http://www.w3.org/2000/svg"><line x1="86.1" y1="99.8" x2="256.3" y2="110.5" stroke="#9aa6b2" stroke-width="2"/><line x1="86.1" y1="99.8" x2="257.8" y2="183.7" stroke="#9aa6b2" stroke-width="2"/><line x1="256.3" y1="110.5" x2="257.8" y2="183.7" stroke="#9aa6b2" stroke-width="2"/><line x1="256.3" y1="110.5" x2="483.0" y2="158.6" stroke="#9aa6b2" stroke-width="2"/><line x1="257.8" y1="183.7" x2="361.7" y2="309.8" stroke="#9aa6b2" stroke-width="2"/><line x1="257.8" y1="183.7" x2="222.0" y2="263.3" stroke="#9aa6b2" stroke-width="2"/><line x1="257.8" y1="183.7" x2="184.5" y2="325.2" stroke="#9aa6b2" stroke-width="2"/><line x1="257.8" y1="183.7" x2="46.0" y2="257.4" stroke="#9aa6b2" stroke-width="2"/><line x1="257.8" y1="183.7" x2="446.5" y2="80.8" stroke="#9aa6b2" stroke-width="2"/><line x1="257.8" y1="183.7" x2="299.5" y2="46.0" stroke="#9aa6b2" stroke-width="2"/><line x1="257.8" y1="183.7" x2="483.0" y2="158.6" stroke="#9aa6b2" stroke-width="2"/><line x1="361.7" y1="309.8" x2="222.0" y2="263.3" stroke="#9aa6b2" stroke-width="2"/><line x1="361.7" y1="309.8" x2="509.7" y2="414.0" stroke="#9aa6b2" stroke-width="2"/><line x1="184.5" y1="325.2" x2="46.0" y2="257.4" stroke="#9aa6b2" stroke-width="2"/><line x1="184.5" y1="325.2" x2="390.2" y2="411.9" stroke="#9aa6b2" stroke-width="2"/><line x1="446.5" y1="80.8" x2="299.5" y2="46.0" stroke="#9aa6b2" stroke-width="2"/><line x1="446.5" y1="80.8" x2="648.0" y2="124.1" stroke="#9aa6b2" stroke-width="2"/><line x1="509.7" y1="414.0" x2="390.2" y2="411.9" stroke="#9aa6b2" stroke-width="2"/><line x1="509.7" y1="414.0" x2="622.0" y2="363.6" stroke="#9aa6b2" stroke-width="2"/><line x1="390.2" y1="411.9" x2="622.0" y2="363.6" stroke="#9aa6b2" stroke-width="2"/><line x1="622.0" y1="363.6" x2="674.0" y2="230.4" stroke="#9aa6b2" stroke-width="2"/><line x1="674.0" y1="230.4" x2="648.0" y2="124.1" stroke="#9aa6b2" stroke-width="2"/><line x1="674.0" y1="230.4" x2="483.0" y2="158.6" stroke="#9aa6b2" stroke-width="2"/><line x1="648.0" y1="124.1" x2="483.0" y2="158.6" stroke="#9aa6b2" stroke-width="2"/><circle cx="86.1" cy="99.8" r="19" fill="#2a9d8f" stroke="#2c3e50" stroke-width="2"/><text x="86.1" y="103.8" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">T</text><circle cx="256.3" cy="110.5" r="19" fill="#e63946" stroke="#2c3e50" stroke-width="2"/><text x="256.3" y="114.5" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">F</text><circle cx="257.8" cy="183.7" r="19" fill="#457b9d" stroke="#2c3e50" stroke-width="2"/><text x="257.8" y="187.7" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">B</text><circle cx="361.7" cy="309.8" r="19" fill="#2a9d8f" stroke="#2c3e50" stroke-width="2"/><text x="361.7" y="313.8" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">x</text><circle cx="222.0" cy="263.3" r="19" fill="#e63946" stroke="#2c3e50" stroke-width="2"/><text x="222.0" y="267.3" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">~x</text><circle cx="184.5" cy="325.2" r="19" fill="#2a9d8f" stroke="#2c3e50" stroke-width="2"/><text x="184.5" y="329.2" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">y</text><circle cx="46.0" cy="257.4" r="19" fill="#e63946" stroke="#2c3e50" stroke-width="2"/><text x="46.0" y="261.4" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">~y</text><circle cx="446.5" cy="80.8" r="19" fill="#2a9d8f" stroke="#2c3e50" stroke-width="2"/><text x="446.5" y="84.8" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">z</text><circle cx="299.5" cy="46.0" r="19" fill="#e63946" stroke="#2c3e50" stroke-width="2"/><text x="299.5" y="50.0" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">~z</text><circle cx="509.7" cy="414.0" r="19" fill="#457b9d" stroke="#2c3e50" stroke-width="2"/><text x="509.7" y="418.0" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">a₁</text><circle cx="390.2" cy="411.9" r="19" fill="#e63946" stroke="#2c3e50" stroke-width="2"/><text x="390.2" y="415.9" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">b₁</text><circle cx="622.0" cy="363.6" r="19" fill="#2a9d8f" stroke="#2c3e50" stroke-width="2"/><text x="622.0" y="367.6" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">o₁</text><circle cx="674.0" cy="230.4" r="19" fill="#457b9d" stroke="#2c3e50" stroke-width="2"/><text x="674.0" y="234.4" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">a₂</text><circle cx="648.0" cy="124.1" r="19" fill="#e63946" stroke="#2c3e50" stroke-width="2"/><text x="648.0" y="128.1" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">b₂</text><circle cx="483.0" cy="158.6" r="19" fill="#2a9d8f" stroke="#2c3e50" stroke-width="2"/><text x="483.0" y="162.6" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">o₂</text></svg>
+<p class="cap">Green = T-color. Here <code>x</code>, <code>y</code>, <code>z</code> are all green, so the coloring says $x=y=z=$ True.</p>
+
+<h2>The other direction</h2>
+<p><a href="Demo_SAT_implies_3coloring.html" style="color:#2a6fb3;text-decoration:none;font-weight:600;">→ companion page: the converse (satisfiable ⟹ 3-colorable)</a></p>
+<div class="note">We have proved $G_\varphi$ 3-colorable $\Rightarrow \varphi$ satisfiable. The converse ($\varphi$ satisfiable $\Rightarrow G_\varphi$ 3-colorable) is shown on the companion page: starting from a satisfying assignment, color each literal by T or F to match its truth value, color the base triangle, and check that every gadget can then be completed. Together the two directions give the full equivalence $$G_\varphi \text{ is 3-colorable} \iff \varphi \text{ is satisfiable},$$ which is exactly why solving graph 3-coloring would solve 3-SAT.</div>
+
+<p style="margin-top:1.5rem;color:var(--orange);font-style:italic;font-weight:600;">Notes By Pr. El Hadiq Zouhair</p>
+
+</body>
+</html>

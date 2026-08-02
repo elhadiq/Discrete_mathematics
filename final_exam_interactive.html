@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Final Exam (Interactive) — Discrete Mathematics</title>
+<script>
+  MathJax={tex:{inlineMath:[['$','$']],displayMath:[['$$','$$']]},
+  options:{skipHtmlTags:['script','noscript','style','textarea']}};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{--orange:#e67e22;--darkblue:#2c3e50;--lightbg:#f4f9fc;--border:#dce3ea;
+--green:#27ae60;--gbg:#e8f5ec;--red:#c0395a;--rbg:#fdecef;}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#e8edf2;color:var(--darkblue);
+display:flex;flex-direction:column;align-items:center;padding:2rem 1rem 7rem;gap:1.4rem;}
+.slide{background:#fff;width:100%;max-width:860px;border-radius:10px;
+box-shadow:0 4px 18px rgba(0,0,0,.10);padding:1.8rem 2.2rem;position:relative;}
+.title-slide{background:linear-gradient(145deg,#f4f9fc 60%,#e0eef7);text-align:center;
+border-top:6px solid var(--orange);}
+.title-slide h1{font-size:1.9rem;margin-bottom:.3rem;}
+.title-slide .subtitle{font-size:1.1rem;color:#555;}
+.sig{font-size:1rem;color:#e67e22;margin-top:.7rem;font-style:italic;font-weight:600;}
+.cat-head{font-size:.72rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;
+color:#fff;background:var(--darkblue);padding:.35em .9em;border-radius:5px;display:inline-block;margin:.4rem 0;}
+.qcard{border:1px solid var(--border);border-left:4px solid var(--orange);border-radius:8px;
+padding:1rem 1.2rem;margin:.8rem 0;}
+.qnum{font-weight:800;color:var(--orange);margin-right:.4rem;}
+.qtype{float:right;font-size:.65rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+color:#888;background:var(--lightbg);padding:.2em .6em;border-radius:4px;}
+.qtext{margin:.3rem 0 .7rem;line-height:1.6;}
+.opt{display:block;padding:.45rem .7rem;margin:.3rem 0;border:1px solid var(--border);
+border-radius:6px;cursor:pointer;transition:background .15s;}
+.opt:hover{background:var(--lightbg);}
+.opt input{margin-right:.6rem;}
+.opt.right{background:var(--gbg);border-color:var(--green);}
+.opt.wrong{background:var(--rbg);border-color:var(--red);}
+input.txt{padding:.5rem .7rem;border:1px solid var(--border);border-radius:6px;font-size:1rem;
+width:220px;font-family:inherit;}
+.fb{margin-top:.6rem;padding:.55rem .9rem;border-radius:6px;font-size:.92rem;display:none;}
+.fb.ok{background:var(--gbg);border-left:4px solid var(--green);}
+.fb.no{background:var(--rbg);border-left:4px solid var(--red);}
+.fb b{font-style:normal;}
+#bar{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--border);
+box-shadow:0 -2px 12px rgba(0,0,0,.08);display:flex;align-items:center;justify-content:center;
+gap:1rem;padding:.8rem;z-index:50;}
+#bar button{background:var(--orange);color:#fff;border:none;border-radius:22px;padding:.6rem 1.4rem;
+font-size:.95rem;font-weight:700;cursor:pointer;}
+#bar button.sec{background:#fff;color:var(--darkblue);border:1px solid var(--border);}
+#bar button:hover{filter:brightness(.95);}
+#score{font-weight:800;font-size:1.05rem;}
+#score .pct{color:var(--orange);}
+.progress{height:8px;background:var(--lightbg);border-radius:5px;overflow:hidden;width:180px;}
+.progress > div{height:100%;width:0;background:var(--green);transition:width .4s;}
+</style>
+</head>
+<body>
+<section class="slide title-slide">
+  <h1>Final Exam — Interactive</h1>
+  <p class="subtitle">Discrete Mathematics (ACSP)</p>
+  <p style="margin-top:.5rem;color:#555;">Induction &amp; Recursion &bull; Counting &bull; Graphs — 18 questions</p>
+  <p class="sig">Notes By Pr. El Hadiq Zouhair</p>
+</section>
+<div id="quiz"></div>
+<div id="bar">
+  <button id="btn-reset" class="sec">Reset</button>
+  <div class="progress"><div></div></div>
+  <span id="score">Score: <span class="pct">— / 18</span></span>
+  <button id="btn-check">Check answers</button>
+</div>
+<script>
+const DATA = [{"cat": "Induction and Recursion", "name": "FE-IND-01 Sum of odd numbers", "type": "multichoice", "qtext": "<p>For every integer <em>n</em> &ge; 1, the sum of the first <em>n</em> odd numbers</p>\n      <p style=\"text-align:center\">1 + 3 + 5 + &hellip; + (2<em>n</em> &minus; 1)</p>\n      <p>is equal to:</p>", "opts": [{"t": "(2n &minus; 1)<sup>2</sup>", "c": false, "fb": "Incorrect."}, {"t": "2<sup>n</sup> &minus; 1", "c": false, "fb": "Incorrect."}, {"t": "n(n+1)/2", "c": false, "fb": "That is the sum 1+2+...+n."}, {"t": "n<sup>2</sup>", "c": true, "fb": "Correct. Proved by induction."}], "correct": "n<sup>2</sup>"}, {"cat": "Induction and Recursion", "name": "FE-IND-02 Principle of induction", "type": "truefalse", "qtext": "<p>To prove a statement <em>P</em>(<em>n</em>) for all integers <em>n</em> &ge; 1 by mathematical induction, it is sufficient to show that <em>P</em>(1) is true and that <em>P</em>(<em>k</em>) &rArr; <em>P</em>(<em>k</em>+1) for every <em>k</em> &ge; 1.</p>", "opts": [{"t": "True", "c": true, "fb": "Correct: base case plus inductive step."}, {"t": "False", "c": false, "fb": "These two steps form the principle of induction."}], "correct": "True"}, {"cat": "Induction and Recursion", "name": "FE-IND-03 Arithmetic recurrence", "type": "numerical", "qtext": "<p>A sequence is defined by <em>a</em><sub>1</sub> = 2 and <em>a</em><sub>n</sub> = <em>a</em><sub>n&minus;1</sub> + 3 for <em>n</em> &ge; 2.</p>\n      <p>Compute <em>a</em><sub>5</sub>.</p>", "num": 14.0, "tol": 0.0, "fb": "Correct: 2, 5, 8, 11, 14.", "correct": "14"}, {"cat": "Induction and Recursion", "name": "FE-IND-04 Closed form of geometric recurrence", "type": "shortanswer", "qtext": "<p>A sequence satisfies <em>a</em><sub>0</sub> = 1 and <em>a</em><sub>n</sub> = 2 <em>a</em><sub>n&minus;1</sub> for <em>n</em> &ge; 1.</p>\n      <p>Give the closed-form expression for <em>a</em><sub>n</sub> (write it as 2^n).</p>", "acc": ["2^n", "2**n"], "fb": "Correct.", "correct": "2^n"}, {"cat": "Induction and Recursion", "name": "FE-IND-05 Sum of cubes", "type": "multichoice", "qtext": "<p>For <em>n</em> &ge; 1, the sum 1<sup>3</sup> + 2<sup>3</sup> + &hellip; + <em>n</em><sup>3</sup> equals:</p>", "opts": [{"t": "( n(n+1)/2 )<sup>2</sup>", "c": true, "fb": "Correct: it is the square of 1+2+...+n."}, {"t": "n<sup>2</sup>(n+1)", "c": false, "fb": "Incorrect."}, {"t": "n(n+1)/2", "c": false, "fb": "Incorrect."}, {"t": "n(n+1)(2n+1)/6", "c": false, "fb": "That is the sum of squares."}], "correct": "( n(n+1)/2 )<sup>2</sup>"}, {"cat": "Induction and Recursion", "name": "FE-IND-06 Fibonacci", "type": "numerical", "qtext": "<p>The Fibonacci sequence is defined by <em>F</em><sub>1</sub> = 1, <em>F</em><sub>2</sub> = 1 and <em>F</em><sub>n</sub> = <em>F</em><sub>n&minus;1</sub> + <em>F</em><sub>n&minus;2</sub>.</p>\n      <p>Compute <em>F</em><sub>7</sub>.</p>", "num": 13.0, "tol": 0.0, "fb": "Correct: 1, 1, 2, 3, 5, 8, 13.", "correct": "13"}, {"cat": "Counting", "name": "FE-CNT-01 Permutations", "type": "numerical", "qtext": "<p>In how many different orders can 5 distinct books be placed on a shelf?</p>", "num": 120.0, "tol": 0.0, "fb": "Correct: 5! = 120.", "correct": "120"}, {"cat": "Counting", "name": "FE-CNT-02 Binomial coefficient", "type": "multichoice", "qtext": "<p>The value of the binomial coefficient C(6, 2) is:</p>", "opts": [{"t": "12", "c": false, "fb": "Incorrect."}, {"t": "30", "c": false, "fb": "That is P(6,2)."}, {"t": "15", "c": true, "fb": "Correct: 6!/(2!4!) = 15."}, {"t": "36", "c": false, "fb": "Incorrect."}], "correct": "15"}, {"cat": "Counting", "name": "FE-CNT-03 Bit strings", "type": "numerical", "qtext": "<p>How many bit strings (strings of 0s and 1s) of length 8 are there?</p>", "num": 256.0, "tol": 0.0, "fb": "Correct: 2<sup>8</sup> = 256.", "correct": "256"}, {"cat": "Counting", "name": "FE-CNT-04 Number of subsets", "type": "truefalse", "qtext": "<p>A set with <em>n</em> elements has exactly 2<sup>n</sup> subsets.</p>", "opts": [{"t": "True", "c": true, "fb": "Correct: each element is in or out."}, {"t": "False", "c": false, "fb": "The power set has 2^n elements."}], "correct": "True"}, {"cat": "Counting", "name": "FE-CNT-05 Pigeonhole principle", "type": "shortanswer", "qtext": "<p>By the pigeonhole principle, what is the minimum number of people needed to guarantee that at least two of them were born in the same month? (Enter a number.)</p>", "acc": ["13"], "fb": "Correct: 12 months + 1.", "correct": "13"}, {"cat": "Counting", "name": "FE-CNT-06 Permutations with repetition", "type": "numerical", "qtext": "<p>How many distinct arrangements can be made from the letters of the word <strong>LEVEL</strong>?</p>", "num": 30.0, "tol": 0.0, "fb": "Correct: 5!/(2!&middot;2!) = 30.", "correct": "30"}, {"cat": "Graphs", "name": "FE-GRP-01 Handshaking lemma", "type": "multichoice", "qtext": "<p>In an undirected graph with 10 edges, the sum of the degrees of all vertices is:</p>", "opts": [{"t": "100", "c": false, "fb": "Incorrect."}, {"t": "20", "c": true, "fb": "Correct: handshaking lemma, sum of degrees = 2 &times; (number of edges)."}, {"t": "10", "c": false, "fb": "That is the number of edges, not the degree sum."}, {"t": "5", "c": false, "fb": "Incorrect."}], "correct": "20"}, {"cat": "Graphs", "name": "FE-GRP-02 Edges of a tree", "type": "truefalse", "qtext": "<p>A tree with <em>n</em> vertices has exactly <em>n</em> &minus; 1 edges.</p>", "opts": [{"t": "True", "c": true, "fb": "Correct."}, {"t": "False", "c": false, "fb": "A tree on n vertices always has n-1 edges."}], "correct": "True"}, {"cat": "Graphs", "name": "FE-GRP-03 Edges of a complete graph", "type": "numerical", "qtext": "<p>How many edges does the complete graph <em>K</em><sub>6</sub> have?</p>", "num": 15.0, "tol": 0.0, "fb": "Correct: C(6,2) = 15.", "correct": "15"}, {"cat": "Graphs", "name": "FE-GRP-04 Euler circuit condition", "type": "multichoice", "qtext": "<p>A connected undirected graph has an Euler circuit if and only if:</p>", "opts": [{"t": "it has no cycles", "c": false, "fb": "Incorrect."}, {"t": "exactly two vertices have odd degree", "c": false, "fb": "That is the condition for an Euler path, not a circuit."}, {"t": "every vertex has odd degree", "c": false, "fb": "Incorrect."}, {"t": "every vertex has even degree", "c": true, "fb": "Correct."}], "correct": "every vertex has even degree"}, {"cat": "Graphs", "name": "FE-GRP-05 Planar graph", "type": "shortanswer", "qtext": "<p>A graph that can be drawn in the plane with no two edges crossing is called a ______ graph. (One word.)</p>", "acc": ["planar"], "fb": "Correct.", "correct": "planar"}, {"cat": "Graphs", "name": "FE-GRP-06 Maximum edges in a simple graph", "type": "numerical", "qtext": "<p>What is the maximum number of edges in a simple undirected graph with 7 vertices?</p>", "num": 21.0, "tol": 0.0, "fb": "Correct: C(7,2) = 21.", "correct": "21"}];
+function esc(s){return s;}
+function render(){
+ const root=document.getElementById('quiz');let html='';let lastCat=null;
+ DATA.forEach((q,i)=>{
+  if(q.cat!==lastCat){html+=`<div class="slide"><span class="cat-head">${q.cat}</span></div>`;lastCat=q.cat;}
+  html+=`<div class="slide qcard" data-i="${i}">`;
+  html+=`<span class="qtype">${q.type}</span>`;
+  html+=`<div class="qtext"><span class="qnum">Q${i+1}.</span>${q.qtext}</div>`;
+  if(q.type==='multichoice'||q.type==='truefalse'){
+   q.opts.forEach((o,j)=>{
+    html+=`<label class="opt" data-i="${i}" data-j="${j}"><input type="radio" name="q${i}" value="${j}">${o.t}</label>`;
+   });
+  }else if(q.type==='numerical'){
+   html+=`<input class="txt" type="text" inputmode="decimal" name="q${i}" placeholder="Your answer">`;
+  }else{
+   html+=`<input class="txt" type="text" name="q${i}" placeholder="Your answer">`;
+  }
+  html+=`<div class="fb" id="fb${i}"></div></div>`;
+ });
+ root.innerHTML=html;
+ if(window.MathJax&&MathJax.typesetPromise)MathJax.typesetPromise();
+}
+function check(){
+ let correct=0;
+ DATA.forEach((q,i)=>{
+  const fb=document.getElementById('fb'+i);let ok=false,given='';
+  document.querySelectorAll(`.opt[data-i="${i}"]`).forEach(l=>l.classList.remove('right','wrong'));
+  if(q.type==='multichoice'||q.type==='truefalse'){
+   const sel=document.querySelector(`input[name="q${i}"]:checked`);
+   q.opts.forEach((o,j)=>{const lab=document.querySelector(`.opt[data-i="${i}"][data-j="${j}"]`);
+     if(o.c)lab.classList.add('right');});
+   if(sel){const j=+sel.value;given=q.opts[j].t;ok=q.opts[j].c;
+     if(!ok)document.querySelector(`.opt[data-i="${i}"][data-j="${j}"]`).classList.add('wrong');}
+  }else if(q.type==='numerical'){
+   const v=document.querySelector(`input[name="q${i}"]`).value.trim();given=v;
+   if(v!==''){const x=parseFloat(v.replace(',','.'));ok=!isNaN(x)&&Math.abs(x-q.num)<=(q.tol||0)+1e-9;}
+  }else{
+   const v=document.querySelector(`input[name="q${i}"]`).value.trim().toLowerCase();given=v;
+   ok=q.acc.some(a=>a.trim().toLowerCase()===v)&&v!=='';
+  }
+  if(ok)correct++;
+  let exp=q.fb||'';
+  if(q.type==='multichoice'||q.type==='truefalse'){
+   const co=q.opts.find(o=>o.c);exp=co?co.fb:'';
+  }
+  fb.style.display='block';
+  fb.className='fb '+(ok?'ok':'no');
+  fb.innerHTML=(ok?'<b>✓ Correct.</b> ':`<b>✗ Incorrect.</b> Correct answer: <b>${q.correct}</b>. `)+(exp||'');
+ });
+ const pct=Math.round(100*correct/DATA.length);
+ document.getElementById('score').innerHTML=`Score: <span class="pct">${correct} / ${DATA.length}</span> (${pct}%)`;
+ document.querySelector('.progress>div').style.width=pct+'%';
+ if(window.MathJax&&MathJax.typesetPromise)MathJax.typesetPromise();
+ window.scrollTo({top:0,behavior:'smooth'});
+}
+function reset(){
+ DATA.forEach((q,i)=>{const fb=document.getElementById('fb'+i);fb.style.display='none';fb.innerHTML='';
+  document.querySelectorAll(`.opt[data-i="${i}"]`).forEach(l=>l.classList.remove('right','wrong'));});
+ document.querySelectorAll('#quiz input').forEach(el=>{if(el.type==='radio')el.checked=false;else el.value='';});
+ document.getElementById('score').innerHTML='Score: <span class="pct">— / '+DATA.length+'</span>';
+ document.querySelector('.progress>div').style.width='0';
+ window.scrollTo({top:0,behavior:'smooth'});
+}
+document.addEventListener('DOMContentLoaded',()=>{render();
+ document.getElementById('btn-check').onclick=check;
+ document.getElementById('btn-reset').onclick=reset;});
+</script>
+</body>
+</html>

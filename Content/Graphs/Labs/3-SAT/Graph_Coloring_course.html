@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>What is a coloring of a graph?</title>
+<script>MathJax={tex:{inlineMath:[['$','$']],displayMath:[['$$','$$']]}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{--orange:#e67e22;--darkblue:#2c3e50;--border:#dce3ea;}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#fff;color:var(--darkblue);max-width:880px;margin:0 auto;padding:0 1.4rem 4rem;line-height:1.65;}
+.head{background:linear-gradient(145deg,#fdf3e7 60%,#f9e4cc);text-align:center;border-top:6px solid var(--orange);border-radius:0 0 10px 10px;padding:2rem 1.4rem 1.6rem;margin:0 -1.4rem 1rem;}
+.head h1{font-size:1.7rem;}
+.head .sub{color:#555;margin-top:.3rem;}
+.head .author{color:var(--orange);font-style:italic;font-weight:600;margin-top:.6rem;}
+h2{font-size:1.3rem;color:var(--orange);font-weight:700;margin:1.6rem 0 .5rem;padding-bottom:.3rem;border-bottom:2px solid #f9e4cc;}
+h3{font-size:1.05rem;color:var(--orange);font-weight:600;margin:1rem 0 .3rem;}
+p{margin:.5rem 0;}
+ul,ol{margin:.4rem 0 .4rem 1.5rem;line-height:1.8;}
+ul li::marker,ol li::marker{color:var(--orange);}
+code{background:#f0f3f7;color:#1f4e7a;padding:0 .25em;border-radius:3px;font-family:'Consolas','Fira Code',monospace;}
+.def{background:#eaf3fb;border-left:4px solid #2a6fb3;border-radius:6px;padding:.7rem .9rem;margin:.7rem 0;}
+.def::before{content:"Definition. ";font-weight:700;color:#2a6fb3;}
+.key{background:#fff7e0;border-left:4px solid #e0b341;border-radius:6px;padding:.7rem .9rem;margin:.7rem 0;}
+.key::before{content:"Key fact. ";font-weight:700;color:#c89324;}
+.note{background:#fff5e8;border-left:4px solid var(--orange);border-radius:6px;padding:.6rem .9rem;margin:.6rem 0;font-style:italic;}
+.app{background:#e8f5ec;border-left:4px solid #27ae60;border-radius:6px;padding:.6rem .9rem;margin:.6rem 0;}
+.app::before{content:"In practice. ";font-weight:700;color:#1e824c;}
+svg.fig{display:block;margin:.4rem auto;max-width:100%;}
+.cap{font-size:.85rem;color:#777;text-align:center;margin-top:-.2rem;margin-bottom:.6rem;}
+.row{display:flex;flex-wrap:wrap;gap:1rem;justify-content:center;align-items:flex-start;}
+.row figure{flex:1;min-width:230px;max-width:320px;text-align:center;}
+.xlink{color:#2a6fb3;text-decoration:none;font-weight:600;}
+.xlink:hover{text-decoration:underline;}
+</style>
+</head>
+<body>
+
+<div class="head">
+  <h1>What is a coloring of a graph?</h1>
+  <p class="sub">Discrete Mathematics — background for the 3-SAT project</p>
+  <p class="author">Notes By Pr. El Hadiq Zouhair</p>
+</div>
+
+<p>Graph coloring is one of the most useful ideas in all of discrete mathematics. The question it answers sounds like a children's puzzle — "paint the dots so neighbours never match" — yet it powers timetables, maps, compilers, radio networks, and the famous 3-SAT reduction in this folder.</p>
+
+<h2>The definition</h2>
+<div class="def">A <strong>proper coloring</strong> of a graph $G$ assigns a color to every vertex so that <strong>no edge joins two vertices of the same color</strong>. A <strong>$k$-coloring</strong> is a proper coloring that uses at most $k$ colors. If one exists, $G$ is said to be <strong>$k$-colorable</strong>.</div>
+<p>The colors themselves carry no meaning — only the pattern of "same / different" matters. The single rule is: <strong>the two endpoints of every edge must get different colors.</strong></p>
+<svg class="fig" viewBox="0 0 350 300" xmlns="http://www.w3.org/2000/svg"><line x1="175" y1="40" x2="270" y2="95" stroke="#9aa6b2" stroke-width="2"/><line x1="175" y1="40" x2="270" y2="205" stroke="#9aa6b2" stroke-width="2"/><line x1="270" y1="95" x2="270" y2="205" stroke="#9aa6b2" stroke-width="2"/><line x1="270" y1="95" x2="175" y2="260" stroke="#9aa6b2" stroke-width="2"/><line x1="270" y1="205" x2="80" y2="205" stroke="#9aa6b2" stroke-width="2"/><line x1="175" y1="260" x2="80" y2="205" stroke="#9aa6b2" stroke-width="2"/><line x1="175" y1="260" x2="80" y2="95" stroke="#9aa6b2" stroke-width="2"/><line x1="80" y1="205" x2="80" y2="95" stroke="#9aa6b2" stroke-width="2"/><circle cx="175" cy="40" r="20" fill="#457b9d" stroke="#2c3e50" stroke-width="2"/><text x="175" y="44" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">A</text><circle cx="270" cy="95" r="20" fill="#2a9d8f" stroke="#2c3e50" stroke-width="2"/><text x="270" y="99" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">B</text><circle cx="270" cy="205" r="20" fill="#e63946" stroke="#2c3e50" stroke-width="2"/><text x="270" y="209" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">C</text><circle cx="175" cy="260" r="20" fill="#e63946" stroke="#2c3e50" stroke-width="2"/><text x="175" y="264" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">D</text><circle cx="80" cy="205" r="20" fill="#2a9d8f" stroke="#2c3e50" stroke-width="2"/><text x="80" y="209" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">E</text><circle cx="80" cy="95" r="20" fill="#457b9d" stroke="#2c3e50" stroke-width="2"/><text x="80" y="99" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">F</text></svg>
+<p class="cap">A proper 3-coloring: check any edge — its two ends always have different colors.</p>
+<p>If even one edge had matching ends, the coloring would be <em>improper</em> (illegal). The whole game is to satisfy every edge at once.</p>
+
+<h2>The chromatic number</h2>
+<div class="def">The <strong>chromatic number</strong> $\chi(G)$ is the <em>smallest</em> number of colors needed for a proper coloring of $G$.</div>
+<p>So "$G$ is $k$-colorable" means $\chi(G) \le k$. Computing $\chi(G)$ is asking: how few colors can we get away with? Some small cases tell the whole story.</p>
+
+<div class="row">
+  <figure>
+    <svg class="fig" viewBox="0 0 260 230" xmlns="http://www.w3.org/2000/svg"><line x1="130" y1="40" x2="199" y2="160" stroke="#9aa6b2" stroke-width="2"/><line x1="199" y1="160" x2="61" y2="160" stroke="#9aa6b2" stroke-width="2"/><line x1="130" y1="40" x2="61" y2="160" stroke="#9aa6b2" stroke-width="2"/><circle cx="130" cy="40" r="20" fill="#2a9d8f" stroke="#2c3e50" stroke-width="2"/><text x="130" y="44" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">a</text><circle cx="199" cy="160" r="20" fill="#e63946" stroke="#2c3e50" stroke-width="2"/><text x="199" y="164" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">b</text><circle cx="61" cy="160" r="20" fill="#457b9d" stroke="#2c3e50" stroke-width="2"/><text x="61" y="164" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">c</text></svg>
+    <figcaption class="cap"><strong>Triangle:</strong> $\chi = 3$ — all three mutually joined, so all differ.</figcaption>
+  </figure>
+  <figure>
+    <svg class="fig" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg"><line x1="70" y1="70" x2="230" y2="70" stroke="#9aa6b2" stroke-width="2"/><line x1="230" y1="70" x2="230" y2="230" stroke="#9aa6b2" stroke-width="2"/><line x1="230" y1="230" x2="70" y2="230" stroke="#9aa6b2" stroke-width="2"/><line x1="70" y1="70" x2="70" y2="230" stroke="#9aa6b2" stroke-width="2"/><circle cx="70" cy="70" r="20" fill="#2a9d8f" stroke="#2c3e50" stroke-width="2"/><text x="70" y="74" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">1</text><circle cx="230" cy="70" r="20" fill="#e63946" stroke="#2c3e50" stroke-width="2"/><text x="230" y="74" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">2</text><circle cx="230" cy="230" r="20" fill="#2a9d8f" stroke="#2c3e50" stroke-width="2"/><text x="230" y="234" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">3</text><circle cx="70" cy="230" r="20" fill="#e63946" stroke="#2c3e50" stroke-width="2"/><text x="70" y="234" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">4</text></svg>
+    <figcaption class="cap"><strong>Square (4-cycle):</strong> $\chi = 2$ — two colors alternate.</figcaption>
+  </figure>
+</div>
+<div class="row">
+  <figure>
+    <svg class="fig" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg"><line x1="150" y1="40" x2="255" y2="116" stroke="#9aa6b2" stroke-width="2"/><line x1="255" y1="116" x2="215" y2="239" stroke="#9aa6b2" stroke-width="2"/><line x1="215" y1="239" x2="85" y2="239" stroke="#9aa6b2" stroke-width="2"/><line x1="85" y1="239" x2="45" y2="116" stroke="#9aa6b2" stroke-width="2"/><line x1="45" y1="116" x2="150" y2="40" stroke="#9aa6b2" stroke-width="2"/><circle cx="150" cy="40" r="20" fill="#2a9d8f" stroke="#2c3e50" stroke-width="2"/><text x="150" y="44" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">0</text><circle cx="255" cy="116" r="20" fill="#e63946" stroke="#2c3e50" stroke-width="2"/><text x="255" y="120" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">1</text><circle cx="215" cy="239" r="20" fill="#2a9d8f" stroke="#2c3e50" stroke-width="2"/><text x="215" y="243" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">2</text><circle cx="85" cy="239" r="20" fill="#e63946" stroke="#2c3e50" stroke-width="2"/><text x="85" y="243" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">3</text><circle cx="45" cy="116" r="20" fill="#457b9d" stroke="#2c3e50" stroke-width="2"/><text x="45" y="120" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">4</text></svg>
+    <figcaption class="cap"><strong>Pentagon (5-cycle):</strong> $\chi = 3$ — an odd loop forces a third color.</figcaption>
+  </figure>
+  <figure>
+    <svg class="fig" viewBox="0 0 340 300" xmlns="http://www.w3.org/2000/svg"><line x1="80" y1="60" x2="260" y2="60" stroke="#9aa6b2" stroke-width="2"/><line x1="80" y1="60" x2="260" y2="240" stroke="#9aa6b2" stroke-width="2"/><line x1="80" y1="60" x2="80" y2="240" stroke="#9aa6b2" stroke-width="2"/><line x1="260" y1="60" x2="260" y2="240" stroke="#9aa6b2" stroke-width="2"/><line x1="260" y1="60" x2="80" y2="240" stroke="#9aa6b2" stroke-width="2"/><line x1="260" y1="240" x2="80" y2="240" stroke="#9aa6b2" stroke-width="2"/><circle cx="80" cy="60" r="20" fill="#2a9d8f" stroke="#2c3e50" stroke-width="2"/><text x="80" y="64" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">a</text><circle cx="260" cy="60" r="20" fill="#e63946" stroke="#2c3e50" stroke-width="2"/><text x="260" y="64" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">b</text><circle cx="260" cy="240" r="20" fill="#457b9d" stroke="#2c3e50" stroke-width="2"/><text x="260" y="244" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">c</text><circle cx="80" cy="240" r="20" fill="#f4a261" stroke="#2c3e50" stroke-width="2"/><text x="80" y="244" text-anchor="middle" font-size="12" font-weight="700" fill="#2c3e50">d</text></svg>
+    <figcaption class="cap"><strong>$K_4$ (all 4 joined):</strong> $\chi = 4$ — every pair adjacent, so all colors differ.</figcaption>
+  </figure>
+</div>
+<div class="note">A clique of $n$ mutually-adjacent vertices always needs $n$ colors, so $\chi(G)$ is at least the size of the largest clique. The triangle and $K_4$ above are the cases $n=3$ and $n=4$.</div>
+
+<h2>The special case of two colors</h2>
+<div class="key">A graph is <strong>2-colorable</strong> if and only if it is <strong>bipartite</strong> — its vertices split into two groups with every edge crossing between them — which happens if and only if it has <strong>no odd-length cycle</strong>.</div>
+<p>That is why the square ($\chi=2$) and the pentagon ($\chi=3$) differ: the even loop alternates two colors perfectly, but the odd loop comes back to itself and clashes, demanding a third. Checking 2-colorability is easy and fast (color along a breadth-first search, alternating two colors).</p>
+
+<h2>How do we find a coloring?</h2>
+<ul>
+  <li><strong>Greedy.</strong> Go through the vertices in some order; give each the smallest color not used by its already-colored neighbours. Fast, but the number of colors depends on the order — it is not guaranteed to be minimal.</li>
+  <li><strong>Backtracking.</strong> Try colors for one vertex, recurse to the next, and undo a choice when it leads to a dead end. This is exact (it finds a $k$-coloring whenever one exists, or proves none does) but can be slow.</li>
+</ul>
+<p>For $k = 2$ there is a fast exact method (the bipartite test). For $k \ge 3$ no fast method is known in general — see the last section.</p>
+
+<h2>Why coloring matters</h2>
+<div class="app">Many real problems are "assign labels so that conflicting things differ" — exactly graph coloring:
+  <ul style="margin-top:.4rem;">
+    <li><strong>Timetabling.</strong> Vertices = exams, edges = shared students, colors = time slots. A proper coloring is a clash-free schedule; $\chi(G)$ is the fewest slots needed.</li>
+    <li><strong>Map coloring.</strong> Vertices = regions, edges = shared borders. The <em>Four-Color Theorem</em> says every planar map needs at most 4 colors.</li>
+    <li><strong>Register allocation.</strong> Compilers color an "interference graph" of program variables; colors = CPU registers.</li>
+    <li><strong>Frequency assignment.</strong> Vertices = transmitters, edges = "too close", colors = radio frequencies that must not interfere.</li>
+  </ul>
+</div>
+
+<h2>How hard is it? — and the link to 3-SAT</h2>
+<p>Coloring splits sharply by the number of colors:</p>
+<ul>
+  <li><strong>2 colors:</strong> easy — decidable in linear time (bipartite test).</li>
+  <li><strong>3 or more colors:</strong> deciding whether a graph is 3-colorable is <strong>NP-complete</strong> — believed to have no fast algorithm in general.</li>
+</ul>
+<div class="key">Deciding 3-colorability is exactly as hard as Boolean satisfiability. That is the whole point of the <strong>3-SAT project</strong> in this folder: it turns any formula $\varphi$ into a graph $G_\varphi$ that is 3-colorable <em>if and only if</em> $\varphi$ is satisfiable — so a 3-coloring algorithm would solve 3-SAT, and vice versa.</div>
+<p>So this little "paint the dots" puzzle sits right at the frontier of what computers can do efficiently — and the project shows you exactly why.</p>
+
+<p style="margin-top:1.2rem;"><a class="xlink" href="Project_3SAT_Coloring_student.html">→ Go to the 3-SAT as Graph-Coloring project</a></p>
+<p style="margin-top:1rem;color:var(--orange);font-style:italic;font-weight:600;">Notes By Pr. El Hadiq Zouhair</p>
+
+</body>
+</html>

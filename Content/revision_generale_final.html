@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Révision Générale — Final Exam — Discrete Mathematics</title>
+<script>
+  MathJax = {
+    tex: { inlineMath: [['$','$']], displayMath: [['$$','$$']] },
+    options: { skipHtmlTags: ['script','noscript','style','textarea'] }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --orange:    #e67e22;
+  --darkblue:  #2c3e50;
+  --lightbg:   #f4f9fc;
+  --rowred:    #ffe8e8;
+  --rowblue:   #e3eeff;
+  --border:    #dce3ea;
+  --py-fg: #1f4e7a;  --py-bg: #eaf3fb;  --py-border: #2a6fb3;  --py-head: #2a6fb3;
+  --sp-fg: #1e824c;  --sp-bg: #e8f5ec;  --sp-border: #27ae60;  --sp-head: #27ae60;
+}
+
+body {
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  background: #e8edf2;
+  color: var(--darkblue);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem 1rem 5rem;
+  gap: 2rem;
+}
+
+/* ── Slide card ── */
+.slide {
+  background: #fff;
+  width: 100%;
+  max-width: 940px;
+  border-radius: 10px;
+  box-shadow: 0 4px 18px rgba(0,0,0,.10);
+  padding: 2.2rem 2.8rem 2rem;
+  position: relative;
+}
+.slide-number {
+  position: absolute;
+  bottom: 0.7rem;
+  right: 1.2rem;
+  font-size: 0.72rem;
+  color: #aaa;
+}
+
+/* ── Title slide ── */
+.slide.title-slide {
+  background: linear-gradient(145deg, #f4f9fc 60%, #e0eef7);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 250px;
+  text-align: center;
+  border-top: 6px solid var(--orange);
+}
+.slide.title-slide h1 { font-size: 2rem; color: var(--darkblue); margin-bottom: 0.4rem; }
+.slide.title-slide .subtitle { font-size: 1.2rem; color: #555; }
+
+/* ── Frame title ── */
+h2.frame-title {
+  font-size: 1.6rem;
+  color: var(--orange);
+  font-weight: 700;
+  margin-bottom: 0.6rem;
+  padding-bottom: 0.35rem;
+  border-bottom: 2px solid #f9e4cc;
+}
+h3.sub-title {
+  font-size: 1.12rem;
+  color: var(--orange);
+  font-weight: 700;
+  margin: 0.9rem 0 0.3rem;
+}
+
+/* ── Chapter badge ── */
+.chapter-tag {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #fff;
+  background: var(--darkblue);
+  padding: 0.2em 0.7em;
+  border-radius: 4px;
+  margin-bottom: 0.5rem;
+}
+.chapter-tag.c-ind { background: #8e44ad; }
+.chapter-tag.c-cnt { background: #16809a; }
+.chapter-tag.c-grp { background: #2a6fb3; }
+
+/* ── Body ── */
+p { line-height: 1.7; margin: 0.45rem 0; }
+ul { margin: 0.4rem 0 0.4rem 1.4rem; line-height: 1.85; }
+ul li::marker { color: var(--orange); }
+
+/* ── Formula tables ── */
+.f-table {
+  border-collapse: collapse;
+  margin: 0.6rem auto;
+  width: 100%;
+  font-size: 0.95rem;
+}
+.f-table th, .f-table td {
+  border: 1px solid var(--border);
+  padding: 0.45rem 0.9rem;
+  text-align: left;
+}
+.f-table th { background: var(--lightbg); font-weight: 700; color: var(--darkblue); }
+.f-table td.formula { text-align: center; font-size: 1.02rem; }
+
+/* ── Key formula highlight box ── */
+.formula-box {
+  background: var(--lightbg);
+  border: 2px solid #f9e4cc;
+  border-radius: 8px;
+  text-align: center;
+  padding: 0.7rem 1rem;
+  font-size: 1.15rem;
+  margin: 0.7rem 0;
+}
+
+/* ── Note (remember) box ── */
+.note-box {
+  background: #fff8f0;
+  border-left: 4px solid var(--orange);
+  border-radius: 4px;
+  padding: 0.6rem 1rem;
+  margin: 0.7rem 0;
+  font-style: italic;
+}
+
+/* ── Exam-tip box ── */
+.exam-box {
+  background: #eef7f1;
+  border: 1px solid #bfe3cd;
+  border-left: 4px solid #27ae60;
+  border-radius: 6px;
+  padding: 0.7rem 1.1rem;
+  margin: 0.7rem 0;
+}
+.exam-box .exam-head {
+  display: block;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  color: #1e824c;
+  margin-bottom: 0.3rem;
+  font-style: normal;
+}
+.warn { color: #c0395a; font-weight: 700; }
+
+/* ── Python helper block ── */
+.py-block {
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1px solid var(--py-border);
+  margin: 0.7rem 0;
+}
+.py-label {
+  display: block;
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  background: var(--py-head);
+  color: #fff;
+}
+.py-block .pane-code {
+  background: var(--py-bg);
+  color: var(--py-fg);
+  font-family: 'Consolas', 'Fira Code', monospace;
+  font-size: 0.82rem;
+  line-height: 1.6;
+  padding: 0.5rem 0.75rem;
+  white-space: pre;
+  display: block;
+}
+
+/* ── Two columns ── */
+.cols { display: flex; gap: 1.5rem; align-items: flex-start; }
+.cols > div { flex: 1; }
+
+/* ── Slide-show nav ── */
+#nav { position: fixed; bottom: 1.5rem; right: 1.5rem; display: flex; gap: 0.4rem; z-index: 100; }
+#nav button {
+  background: var(--orange); color: #fff; border: none;
+  border-radius: 50%; width: 40px; height: 40px;
+  font-size: 1.1rem; cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,.25); transition: background .2s;
+}
+#nav button:hover { background: #cf6d17; }
+#nav #btn-scroll { border-radius: 20px; width: auto; padding: 0 12px; font-size: 0.8rem; }
+
+body.slideshow .slide         { display: none; }
+body.slideshow .slide.active  { display: block; }
+</style>
+</head>
+<body>
+
+<!-- ══ Slide 1: Title ══ -->
+<section class="slide title-slide" id="s1">
+  <h1>Révision Générale</h1>
+  <p class="subtitle">Discrete Mathematics — Final Exam (ACSP)</p>
+  <p style="margin-top:0.6rem;color:#555;">Induction &amp; Recursion &bull; Counting &bull; Graphs</p>
+  <p style="font-size:1rem;color:#e67e22;margin-top:0.8rem;font-style:italic;font-weight:600;letter-spacing:.02em;">Notes By Pr. El Hadiq Zouhair</p>
+  <span class="slide-number">1 / 15</span>
+</section>
+
+<!-- ══ Slide 2: Scope ══ -->
+<section class="slide" id="s2">
+  <h2 class="frame-title">What the Final Exam Covers</h2>
+  <p>The final exam focuses on <strong>three chapters only</strong>:</p>
+  <ul>
+    <li><strong>Mathematical Induction &amp; Recursive Definitions</strong></li>
+    <li><strong>Counting</strong> (permutations, combinations, pigeonhole)</li>
+    <li><strong>Graphs</strong> (degrees, trees, Euler/Hamilton, planarity, coloring)</li>
+  </ul>
+  <div class="note-box">
+    The <strong>Foundations of Logic</strong> chapter was already assessed in the <strong>mid-term exam</strong>,
+    so it is <em>not</em> the focus here — but its proof techniques (direct, contrapositive, contradiction)
+    are still the tools you use to write induction proofs.
+  </div>
+  <p style="margin-top:0.5rem;"><strong>Question types to expect:</strong> multiple choice, true/false,
+  short answer, and numerical — exactly the format of the practice <em>final_exam</em> / <em>examen blanc</em>.</p>
+  <span class="slide-number">2 / 15</span>
+</section>
+
+<!-- ══ Slide 3: Induction method ══ -->
+<section class="slide" id="s3">
+  <span class="chapter-tag c-ind">Induction &amp; Recursion</span>
+  <h2 class="frame-title">Mathematical Induction — The Method</h2>
+  <p>To prove a statement $P(n)$ is true for all integers $n \ge n_0$:</p>
+  <ul>
+    <li><strong>Base case:</strong> show $P(n_0)$ is true (usually $n_0 = 0$ or $1$).</li>
+    <li><strong>Inductive step:</strong> assume $P(k)$ is true (the <em>induction hypothesis</em>),
+        then prove $P(k+1)$.</li>
+  </ul>
+  <div class="formula-box">
+    $\big[\,P(n_0)\ \wedge\ \forall k\,(P(k)\Rightarrow P(k+1))\,\big]\ \Rightarrow\ \forall n \ge n_0,\ P(n)$
+  </div>
+  <h3 class="sub-title">Strong (complete) induction</h3>
+  <p>Assume $P(n_0), P(n_0+1), \ldots, P(k)$ are <em>all</em> true to prove $P(k+1)$.
+     Use it when $P(k+1)$ depends on several earlier cases (e.g. Fibonacci, prime factorization).</p>
+  <span class="slide-number">3 / 15</span>
+</section>
+
+<!-- ══ Slide 4: Sums to remember ══ -->
+<section class="slide" id="s4">
+  <span class="chapter-tag c-ind">Induction &amp; Recursion</span>
+  <h2 class="frame-title">Essential Closed-Form Sums</h2>
+  <p>These are the identities you are most likely to prove by induction or use directly:</p>
+  <table class="f-table">
+    <thead><tr><th>Sum</th><th>Closed form</th></tr></thead>
+    <tbody>
+      <tr><td>$1 + 2 + 3 + \cdots + n$</td><td class="formula">$\dfrac{n(n+1)}{2}$</td></tr>
+      <tr><td>$1 + 3 + 5 + \cdots + (2n-1)$ (odd numbers)</td><td class="formula">$n^2$</td></tr>
+      <tr><td>$1^2 + 2^2 + \cdots + n^2$</td><td class="formula">$\dfrac{n(n+1)(2n+1)}{6}$</td></tr>
+      <tr><td>$1^3 + 2^3 + \cdots + n^3$</td><td class="formula">$\left(\dfrac{n(n+1)}{2}\right)^{2}$</td></tr>
+      <tr><td>$1 + r + r^2 + \cdots + r^n$ (geometric, $r \ne 1$)</td><td class="formula">$\dfrac{r^{\,n+1}-1}{r-1}$</td></tr>
+      <tr><td>$2^0 + 2^1 + \cdots + 2^n$</td><td class="formula">$2^{\,n+1}-1$</td></tr>
+    </tbody>
+  </table>
+  <div class="note-box">Memorize the first two — the sum of cubes is the <em>square</em> of $1+2+\cdots+n$, a classic trap.</div>
+  <span class="slide-number">4 / 15</span>
+</section>
+
+<!-- ══ Slide 5: Recursive definitions ══ -->
+<section class="slide" id="s5">
+  <span class="chapter-tag c-ind">Induction &amp; Recursion</span>
+  <h2 class="frame-title">Recursive Definitions</h2>
+  <p>A recursive definition has a <strong>base case</strong> and a <strong>recursive rule</strong>.</p>
+  <table class="f-table">
+    <thead><tr><th>Sequence</th><th>Recurrence</th><th>Closed form</th></tr></thead>
+    <tbody>
+      <tr><td>Arithmetic</td><td class="formula">$a_n = a_{n-1} + d$</td><td class="formula">$a_n = a_0 + nd$</td></tr>
+      <tr><td>Geometric</td><td class="formula">$a_n = r\,a_{n-1}$</td><td class="formula">$a_n = a_0\, r^{\,n}$</td></tr>
+      <tr><td>Factorial</td><td class="formula">$n! = n\cdot(n-1)!,\ 0!=1$</td><td class="formula">$n!$</td></tr>
+      <tr><td>Fibonacci</td><td class="formula">$F_n = F_{n-1}+F_{n-2}$</td><td class="formula">$F_1=F_2=1$</td></tr>
+    </tbody>
+  </table>
+  <div class="cols">
+    <div>
+      <h3 class="sub-title">Find a closed form</h3>
+      <p>Compute the first terms, guess the pattern, then <strong>prove it by induction</strong>.</p>
+    </div>
+    <div class="py-block">
+      <span class="py-label">Python — unrolling a recurrence</span>
+      <span class="pane-code">def a(n):
+    if n == 0: return 1     # base case
+    return 2 * a(n-1)       # rule: a_n = 2 a_(n-1)
+[a(n) for n in range(5)]    # [1, 2, 4, 8, 16] = 2**n</span>
+    </div>
+  </div>
+  <span class="slide-number">5 / 15</span>
+</section>
+
+<!-- ══ Slide 6: Induction exam tips ══ -->
+<section class="slide" id="s6">
+  <span class="chapter-tag c-ind">Induction &amp; Recursion</span>
+  <h2 class="frame-title">On the Final Exam</h2>
+  <div class="exam-box">
+    <span class="exam-head">★ What to expect</span>
+    <ul style="margin-top:0.2rem;">
+      <li>Identify which sum/closed form a series equals (multiple choice).</li>
+      <li>Compute a term of a recurrence, e.g. $a_1=2,\ a_n=a_{n-1}+3 \Rightarrow a_5 = 14$.</li>
+      <li>Give the closed form of a simple recurrence (short answer).</li>
+      <li>State what the base case / inductive step requires (true/false).</li>
+    </ul>
+  </div>
+  <div class="note-box">
+    <span class="warn">Common mistakes:</span> forgetting the base case;
+    confusing $\sum k$ with $\sum k^2$ or $\sum k^3$; off-by-one when unrolling
+    ($a_5$ needs four steps from $a_1$, not five).
+  </div>
+  <span class="slide-number">6 / 15</span>
+</section>
+
+<!-- ══ Slide 7: Counting principles ══ -->
+<section class="slide" id="s7">
+  <span class="chapter-tag c-cnt">Counting</span>
+  <h2 class="frame-title">Fundamental Counting Principles</h2>
+  <ul>
+    <li><strong>Product rule:</strong> if a task is a sequence of independent choices with
+        $n_1, n_2, \ldots, n_k$ options, the total is $n_1 \cdot n_2 \cdots n_k$.</li>
+    <li><strong>Sum rule:</strong> if a task can be done in one of several <em>disjoint</em> ways
+        with $n_1, \ldots, n_k$ options, the total is $n_1 + n_2 + \cdots + n_k$.</li>
+  </ul>
+  <div class="formula-box">
+    Number of bit strings of length $n$ = $2^n$ &emsp;&bull;&emsp;
+    Number of subsets of an $n$-set = $2^n$
+  </div>
+  <div class="note-box">
+    "<strong>and / each step</strong>" &rarr; multiply &emsp;|&emsp;
+    "<strong>or / one of</strong>" &rarr; add.
+  </div>
+  <span class="slide-number">7 / 15</span>
+</section>
+
+<!-- ══ Slide 8: Permutations & combinations ══ -->
+<section class="slide" id="s8">
+  <span class="chapter-tag c-cnt">Counting</span>
+  <h2 class="frame-title">Permutations &amp; Combinations</h2>
+  <table class="f-table">
+    <thead><tr><th>Concept</th><th>Formula</th><th>Order matters?</th></tr></thead>
+    <tbody>
+      <tr><td>Permutations of $n$ objects</td><td class="formula">$n!$</td><td>yes</td></tr>
+      <tr><td>$r$-permutations $P(n,r)$</td><td class="formula">$\dfrac{n!}{(n-r)!}$</td><td>yes</td></tr>
+      <tr><td>Combinations $C(n,r)=\binom{n}{r}$</td><td class="formula">$\dfrac{n!}{r!\,(n-r)!}$</td><td>no</td></tr>
+      <tr><td>Perms with repetition</td><td class="formula">$\dfrac{n!}{n_1!\,n_2!\cdots n_k!}$</td><td>yes</td></tr>
+      <tr><td>Combinations with repetition</td><td class="formula">$\binom{n+r-1}{r}$</td><td>no</td></tr>
+    </tbody>
+  </table>
+  <div class="cols">
+    <div>
+      <h3 class="sub-title">Identities</h3>
+      <p>$\binom{n}{k}=\binom{n}{n-k}$ (symmetry)<br>
+         $\binom{n}{k}=\binom{n-1}{k-1}+\binom{n-1}{k}$ (Pascal)</p>
+      <p>Binomial theorem:<br>$(x+y)^n=\sum\limits_{k=0}^{n}\binom{n}{k}x^{n-k}y^{k}$</p>
+    </div>
+    <div class="py-block">
+      <span class="py-label">Python — math module</span>
+      <span class="pane-code">from math import perm, comb, factorial
+factorial(5)   # 120
+perm(7, 2)     # 42  = P(7,2)
+comb(6, 2)     # 15  = C(6,2)</span>
+    </div>
+  </div>
+  <span class="slide-number">8 / 15</span>
+</section>
+
+<!-- ══ Slide 9: Pigeonhole ══ -->
+<section class="slide" id="s9">
+  <span class="chapter-tag c-cnt">Counting</span>
+  <h2 class="frame-title">Pigeonhole Principle &amp; Special Cases</h2>
+  <p>If $n$ objects are placed into $k$ boxes, then at least one box contains
+     at least $\left\lceil \dfrac{n}{k} \right\rceil$ objects.</p>
+  <div class="formula-box">
+    To <strong>guarantee</strong> two items share a category with $k$ categories,
+    you need $k+1$ items.
+  </div>
+  <ul>
+    <li>13 people &rarr; two share a birth month (12 months).</li>
+    <li>Arrangements of a word with repeats: divide by the factorials of repeats,
+        e.g. <strong>LEVEL</strong> = $\dfrac{5!}{2!\,2!} = 30$.</li>
+    <li>Diagonals of a convex $n$-gon: $\binom{n}{2} - n$.</li>
+  </ul>
+  <span class="slide-number">9 / 15</span>
+</section>
+
+<!-- ══ Slide 10: Counting exam tips ══ -->
+<section class="slide" id="s10">
+  <span class="chapter-tag c-cnt">Counting</span>
+  <h2 class="frame-title">On the Final Exam</h2>
+  <div class="exam-box">
+    <span class="exam-head">★ What to expect</span>
+    <ul style="margin-top:0.2rem;">
+      <li>Evaluate $P(n,r)$, $C(n,r)$, $n!$ (numerical).</li>
+      <li>Count subsets / bit strings: powers of $2$ (multiple choice).</li>
+      <li>Apply pigeonhole to find the guaranteed minimum (short answer).</li>
+      <li>Arrangements with repeated letters (numerical).</li>
+    </ul>
+  </div>
+  <div class="note-box">
+    <span class="warn">Decide first:</span> does order matter? Yes &rarr; permutation;
+    No &rarr; combination. Watch the "<em>different</em> president and vice-president" wording:
+    order matters, so $P(10,2)=90$, not $C(10,2)=45$.
+  </div>
+  <span class="slide-number">10 / 15</span>
+</section>
+
+<!-- ══ Slide 11: Graph basics ══ -->
+<section class="slide" id="s11">
+  <span class="chapter-tag c-grp">Graphs</span>
+  <h2 class="frame-title">Graph Basics &amp; Handshaking</h2>
+  <ul>
+    <li>The <strong>degree</strong> $\deg(v)$ is the number of edges at vertex $v$.</li>
+    <li><strong>Handshaking lemma:</strong> $\displaystyle\sum_{v}\deg(v) = 2|E|$.</li>
+    <li>Therefore the number of <strong>odd-degree vertices is always even</strong>.</li>
+  </ul>
+  <div class="formula-box">
+    Complete graph $K_n$ has $\dbinom{n}{2}=\dfrac{n(n-1)}{2}$ edges &mdash; also the max edges of a simple graph on $n$ vertices.
+  </div>
+  <div class="note-box">
+    From handshaking: a graph with $6$ vertices each of degree $3$ has $\dfrac{6\cdot 3}{2}=9$ edges.
+  </div>
+  <span class="slide-number">11 / 15</span>
+</section>
+
+<!-- ══ Slide 12: Trees, Euler, Hamilton ══ -->
+<section class="slide" id="s12">
+  <span class="chapter-tag c-grp">Graphs</span>
+  <h2 class="frame-title">Trees, Euler &amp; Hamilton</h2>
+  <h3 class="sub-title">Trees</h3>
+  <p>A <strong>tree</strong> is a connected acyclic graph. A tree with $n$ vertices has exactly $n-1$ edges.</p>
+  <h3 class="sub-title">Euler (edges)</h3>
+  <ul>
+    <li><strong>Euler circuit</strong> (every edge once, returns to start) $\Leftrightarrow$ connected and <em>every vertex has even degree</em>.</li>
+    <li><strong>Euler path</strong> $\Leftrightarrow$ connected and <em>exactly 0 or 2 vertices have odd degree</em>.</li>
+  </ul>
+  <h3 class="sub-title">Hamilton (vertices)</h3>
+  <p>A <strong>Hamiltonian path</strong> visits every <em>vertex</em> exactly once;
+     a Hamiltonian circuit returns to the start. (No simple degree test — be careful not to confuse with Euler.)</p>
+  <span class="slide-number">12 / 15</span>
+</section>
+
+<!-- ══ Slide 13: Planarity & coloring ══ -->
+<section class="slide" id="s13">
+  <span class="chapter-tag c-grp">Graphs</span>
+  <h2 class="frame-title">Planarity &amp; Coloring</h2>
+  <h3 class="sub-title">Planar graphs</h3>
+  <ul>
+    <li>A graph is <strong>planar</strong> if it can be drawn with no crossing edges.</li>
+    <li><strong>Euler's formula:</strong> for a connected planar graph, $v - e + f = 2$.</li>
+    <li>Consequence: $e \le 3v - 6$. So $K_5$ and $K_{3,3}$ are <em>not</em> planar (Kuratowski).</li>
+  </ul>
+  <h3 class="sub-title">Coloring</h3>
+  <ul>
+    <li>The <strong>chromatic number</strong> $\chi(G)$ is the fewest colors so adjacent vertices differ.</li>
+    <li>A graph is <strong>bipartite</strong> $\Leftrightarrow$ it has no odd cycle $\Leftrightarrow$ it is 2-colorable.
+        So a bipartite graph with an edge has $\chi = 2$.</li>
+  </ul>
+  <span class="slide-number">13 / 15</span>
+</section>
+
+<!-- ══ Slide 14: Graph exam tips ══ -->
+<section class="slide" id="s14">
+  <span class="chapter-tag c-grp">Graphs</span>
+  <h2 class="frame-title">On the Final Exam</h2>
+  <div class="exam-box">
+    <span class="exam-head">★ What to expect</span>
+    <ul style="margin-top:0.2rem;">
+      <li>Degree sum / edge count via handshaking (numerical &amp; multiple choice).</li>
+      <li>Edges of $K_n$ and max edges of a simple graph ($\binom{n}{2}$).</li>
+      <li>Tree edge count $n-1$ and "what is this graph called" (true/false, MC).</li>
+      <li>Euler-circuit condition; planarity of $K_n$; chromatic number of bipartite graphs.</li>
+    </ul>
+  </div>
+  <div class="note-box">
+    <span class="warn">Don't mix up:</span> Euler = <em>edges</em> (even degrees),
+    Hamilton = <em>vertices</em>; "even degree" is the <em>circuit</em> condition,
+    "two odd vertices" is the <em>path</em> condition.
+  </div>
+  <span class="slide-number">14 / 15</span>
+</section>
+
+<!-- ══ Slide 15: Formula sheet ══ -->
+<section class="slide" id="s15">
+  <h2 class="frame-title">One-Page Formula Sheet</h2>
+  <div class="cols">
+    <div>
+      <h3 class="sub-title">Induction &amp; Recursion</h3>
+      <p>$\sum_{1}^{n} k=\frac{n(n+1)}{2}$ &emsp; $\sum (2k-1)=n^2$<br>
+         $\sum k^2=\frac{n(n+1)(2n+1)}{6}$<br>
+         $\sum k^3=\big(\frac{n(n+1)}{2}\big)^2$<br>
+         geom. $\sum_0^{n} r^k=\frac{r^{n+1}-1}{r-1}$</p>
+      <h3 class="sub-title">Counting</h3>
+      <p>$P(n,r)=\frac{n!}{(n-r)!}$ &emsp; $C(n,r)=\frac{n!}{r!(n-r)!}$<br>
+         subsets $=2^n$ &emsp; perms w/ repeats $=\frac{n!}{n_1!\cdots}$<br>
+         pigeonhole: need $k+1$ for a guaranteed pair</p>
+    </div>
+    <div>
+      <h3 class="sub-title">Graphs</h3>
+      <p>$\sum \deg(v)=2|E|$ &emsp; $|E(K_n)|=\binom{n}{2}$<br>
+         tree: $|E|=n-1$<br>
+         Euler circuit: all degrees even<br>
+         Euler path: 0 or 2 odd vertices<br>
+         planar: $v-e+f=2,\ e\le 3v-6$<br>
+         bipartite $\Leftrightarrow$ 2-colorable (no odd cycle)</p>
+      <div class="exam-box" style="margin-top:0.6rem;">
+        <span class="exam-head">★ Exam-day checklist</span>
+        Read every word (order? guarantee? circuit vs path) &bull;
+        check base cases &bull; verify with small $n$ &bull; mind off-by-one.
+      </div>
+    </div>
+  </div>
+  <p style="font-size:0.95rem;color:#e67e22;margin-top:0.9rem;font-style:italic;font-weight:600;text-align:center;">Good luck — Notes By Pr. El Hadiq Zouhair</p>
+  <span class="slide-number">15 / 15</span>
+</section>
+
+<!-- ── Navigation ── -->
+<div id="nav">
+  <button id="btn-prev" title="Previous">&#8592;</button>
+  <button id="btn-scroll" title="Toggle slideshow">Slideshow</button>
+  <button id="btn-next"  title="Next">&#8594;</button>
+</div>
+
+<script>
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  let current = 0, slideshowMode = false;
+
+  function enter(i) {
+    slides[current].classList.remove('active');
+    current = (i + slides.length) % slides.length;
+    slides[current].classList.add('active');
+    slides[current].scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+  document.getElementById('btn-prev').addEventListener('click', () => { if (slideshowMode) enter(current - 1); });
+  document.getElementById('btn-next').addEventListener('click', () => { if (slideshowMode) enter(current + 1); });
+  document.getElementById('btn-scroll').addEventListener('click', () => {
+    slideshowMode = !slideshowMode;
+    document.body.classList.toggle('slideshow', slideshowMode);
+    document.getElementById('btn-scroll').textContent = slideshowMode ? 'Scroll' : 'Slideshow';
+    if (slideshowMode) slides[current].classList.add('active');
+    else slides.forEach(s => s.classList.remove('active'));
+  });
+  document.addEventListener('keydown', e => {
+    if (!slideshowMode) return;
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') enter(current + 1);
+    if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   enter(current - 1);
+  });
+</script>
+</body>
+</html>

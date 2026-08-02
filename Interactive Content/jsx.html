@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Triangle Geometry - JSXGraph</title>
+    <!-- JSXGraph CSS -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/jsxgraph@1.9.2/distrib/jsxgraph.css" />
+    <!-- JSXGraph JavaScript -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/jsxgraph@1.9.2/distrib/jsxgraphcore.js"></script>
+    <style>
+        html, body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #f8f9fa;
+        }
+        .wrap {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 16px;
+            box-sizing: border-box;
+        }
+        h1 { color: #212529; font-size: 1.4rem; margin: 0 0 12px; }
+        .jxgbox {
+            border: 2px solid #495057;
+            border-radius: 8px;
+            background: #fff;
+            margin: 16px 0;
+            width: 100%;
+            max-width: 600px;
+            aspect-ratio: 6 / 5;
+        }
+        .info {
+            background: #e7f5ff;
+            border-left: 4px solid #228be6;
+            padding: 12px 15px;
+            margin: 16px 0;
+            border-radius: 4px;
+            font-size: 0.95rem;
+        }
+        .error {
+            display: none;
+            background: #fff5f5;
+            border-left: 4px solid #e03131;
+            padding: 12px 15px;
+            margin: 16px 0;
+            border-radius: 4px;
+            font-size: 0.95rem;
+            color: #862e2e;
+        }
+    </style>
+</head>
+<body>
+    <div class="wrap">
+        <h1>Triangle Geometry — Interactive Exploration</h1>
+
+        <div class="info">
+            <strong>Drag the colored points (A, B, C)</strong> to see the triangle, its medians,
+            centroid, circumcircle, incircle, and angle update in real time.
+        </div>
+
+        <div id="jsx-error" class="error">
+            The interactive graph could not load (the JSXGraph library was blocked or unavailable).
+            If you are viewing this inside Moodle, make sure this file is opened as an embedded
+            File resource rather than pasted into a Label/Page editor.
+        </div>
+
+        <!-- The graph container -->
+        <div id="jxgbox" class="jxgbox"></div>
+    </div>
+
+    <script type="text/javascript">
+        (function () {
+            if (typeof JXG === 'undefined') {
+                document.getElementById('jsx-error').style.display = 'block';
+                return;
+            }
+
+            var brd = JXG.JSXGraph.initBoard('jxgbox', {
+                boundingbox: [-5, 5, 5, -5],
+                axis: true,
+                showCopyright: true,
+                showNavigation: true,
+                keepaspectratio: true
+            });
+
+            var A = brd.create('point', [-2, 1], {
+                name: 'A', size: 4, face: 'o', fillColor: '#FF6B6B', strokeColor: '#C92A2A'
+            });
+            var B = brd.create('point', [2, -1], {
+                name: 'B', size: 4, face: 'o', fillColor: '#4ECDC4', strokeColor: '#087F5B'
+            });
+            var C = brd.create('point', [0, 3], {
+                name: 'C', size: 4, face: 'o', fillColor: '#FFE66D', strokeColor: '#F59F00'
+            });
+
+            var triangle = brd.create('polygon', [A, B, C], {
+                borders: { strokeWidth: 2, strokeColor: '#495057' },
+                fillColor: '#E9ECEF', fillOpacity: 0.3
+            });
+
+            var midAB = brd.create('midpoint', [A, B], { name: 'M_{AB}', size: 3, face: '+', color: '#845EF7' });
+            var midBC = brd.create('midpoint', [B, C], { name: 'M_{BC}', size: 3, face: '+', color: '#845EF7' });
+            var midAC = brd.create('midpoint', [A, C], { name: 'M_{AC}', size: 3, face: '+', color: '#845EF7' });
+
+            var medianA = brd.create('segment', [A, midBC], { dash: 2, strokeColor: '#FA5252', strokeWidth: 1.5 });
+            var medianB = brd.create('segment', [B, midAC], { dash: 2, strokeColor: '#FA5252', strokeWidth: 1.5 });
+            var medianC = brd.create('segment', [C, midAB], { dash: 2, strokeColor: '#FA5252', strokeWidth: 1.5 });
+
+            var centroid = brd.create('intersection', [medianA, medianB, 0], {
+                name: 'G', size: 5, face: 'x', color: '#E03131', fixed: true
+            });
+
+            var circumCircle = brd.create('circumcircle', [A, B, C], {
+                strokeColor: '#228BE6', strokeWidth: 2, dash: 3,
+                center: { name: 'O', size: 3, color: '#228BE6', face: '[]' }
+            });
+
+            var incircle = brd.create('incircle', [A, B, C], {
+                strokeColor: '#40C057', strokeWidth: 2,
+                center: { name: 'I', size: 3, color: '#40C057', face: '<>' }
+            });
+
+            var angleA = brd.create('angle', [B, A, C], {
+                radius: 0.5, fillColor: '#FF8787', fillOpacity: 0.3, strokeColor: '#C92A2A'
+            });
+
+            brd.create('text', [2.5, -4, function () {
+                return 'Centroid G: (' + centroid.X().toFixed(2) + ', ' + centroid.Y().toFixed(2) + ')';
+            }], { fontSize: 14, color: '#495057', anchorX: 'right' });
+
+            brd.create('text', [-4.8, 4.5, 'Drag points A, B, or C to explore!'], {
+                fontSize: 13, color: '#868E96', fixed: true
+            });
+        })();
+    </script>
+</body>
+</html>

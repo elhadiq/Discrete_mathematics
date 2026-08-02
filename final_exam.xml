@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Discrete Mathematics (ACSP) - Final Exam -->
+<!-- Notes By Pr. El Hadiq Zouhair -->
+<quiz>
+
+  <!-- ================= CATEGORY ================= -->
+  <question type="category">
+    <category>
+      <text>$course$/top/Final Exam/Induction and Recursion</text>
+    </category>
+    <info format="html">
+      <text><![CDATA[Mathematical Induction and Recursive Definitions.]]></text>
+    </info>
+  </question>
+
+  <!-- Q1 multichoice -->
+  <question type="multichoice">
+    <name><text>FE-IND-01 Sum of odd numbers</text></name>
+    <questiontext format="html">
+      <text><![CDATA[<p>For every integer <em>n</em> &ge; 1, the sum of the first <em>n</em> odd numbers</p>
+      <p style="text-align:center">1 + 3 + 5 + &hellip; + (2<em>n</em> &minus; 1)</p>
+      <p>is equal to:</p>]]></text>
+    </questiontext>
+    <defaultgrade>1</defaultgrade>
+    <single>true</single>
+    <shuffleanswers>true</shuffleanswers>
+    <answernumbering>abc</answernumbering>
+    <answer fraction="0"><text><![CDATA[n(n+1)/2]]></text><feedback format="html"><text><![CDATA[That is the sum 1+2+...+n.]]></text></feedback></answer>
+    <answer fraction="0"><text><![CDATA[2<sup>n</sup> &minus; 1]]></text><feedback format="html"><text><![CDATA[Incorrect.]]></text></feedback></answer>
+    <answer fraction="100"><text><![CDATA[n<sup>2</sup>]]></text><feedback format="html"><text><![CDATA[Correct. Proved by induction.]]></text></feedback></answer>
+    <answer fraction="0"><text><![CDATA[(2n &minus; 1)<sup>2</sup>]]></text><feedback format="html"><text><![CDATA[Incorrect.]]></text></feedback></answer>
+  </question>
+
+  <!-- Q2 truefalse -->
+  <question type="truefalse">
+    <name><text>FE-IND-02 Principle of induction</text></name>
+    <questiontext format="html">
+      <text><![CDATA[<p>To prove a statement <em>P</em>(<em>n</em>) for all integers <em>n</em> &ge; 1 by mathematical induction, it is sufficient to show that <em>P</em>(1) is true and that <em>P</em>(<em>k</em>) &rArr; <em>P</em>(<em>k</em>+1) for every <em>k</em> &ge; 1.</p>]]></text>
+    </questiontext>
+    <defaultgrade>1</defaultgrade>
+    <answer fraction="100"><text>true</text><feedback format="html"><text><![CDATA[Correct: base case plus inductive step.]]></text></feedback></answer>
+    <answer fraction="0"><text>false</text><feedback format="html"><text><![CDATA[These two steps form the principle of induction.]]></text></feedback></answer>
+  </question>
+
+  <!-- Q3 numerical -->
+  <question type="numerical">
+    <name><text>FE-IND-03 Arithmetic recurrence</text></name>
+    <questiontext format="html">
+      <text><![CDATA[<p>A sequence is defined by <em>a</em><sub>1</sub> = 2 and <em>a</em><sub>n</sub> = <em>a</em><sub>n&minus;1</sub> + 3 for <em>n</em> &ge; 2.</p>
+      <p>Compute <em>a</em><sub>5</sub>.</p>]]></text>
+    </questiontext>
+    <defaultgrade>1</defaultgrade>
+    <answer fraction="100"><text>14</text><tolerance>0</tolerance><feedback format="html"><text><![CDATA[Correct: 2, 5, 8, 11, 14.]]></text></feedback></answer>
+  </question>
+
+  <!-- Q4 shortanswer -->
+  <question type="shortanswer">
+    <name><text>FE-IND-04 Closed form of geometric recurrence</text></name>
+    <questiontext format="html">
+      <text><![CDATA[<p>A sequence satisfies <em>a</em><sub>0</sub> = 1 and <em>a</em><sub>n</sub> = 2 <em>a</em><sub>n&minus;1</sub> for <em>n</em> &ge; 1.</p>
+      <p>Give the closed-form expression for <em>a</em><sub>n</sub> (write it as 2^n).</p>]]></text>
+    </questiontext>
+    <defaultgrade>1</defaultgrade>
+    <usecase>0</usecase>
+    <answer fraction="100"><text>2^n</text><feedback format="html"><text><![CDATA[Correct.]]></text></feedback></answer>
+    <answer fraction="100"><text>2**n</text><feedback format="html"><text><![CDATA[Correct.]]></text></feedback></answer>
+    <answer fraction="0"><text>*</text><feedback format="html"><text><![CDATA[The solution is 2^n.]]></text></feedback></answer>
+  </question>
+
+  <!-- Q5 multichoice -->
+  <question type="multichoice">
+    <name><text>FE-IND-05 Sum of cubes</text></name>
+    <questiontext format="html">
+      <text><![CDATA[<p>For <em>n</em> &ge; 1, the sum 1<sup>3</sup> + 2<sup>3</sup> + &hellip; + <em>n</em><sup>3</sup> equals:</p>]]></text>
+    </questiontext>
+    <defaultgrade>1</defaultgrade>
+    <single>true</single>
+    <shuffleanswers>true</shuffleanswers>
+    <answernumbering>abc</answernumbering>
+    <answer fraction="0"><text><![CDATA[n(n+1)(2n+1)/6]]></text><feedback format="html"><text><![CDATA[That is the sum of squares.]]></text></feedback></answer>
+    <answer fraction="100"><text><![CDATA[( n(n+1)/2 )<sup>2</sup>]]></text><feedback format="html"><text><![CDATA[Correct: it is the square of 1+2+...+n.]]></text></feedback></answer>
+    <answer fraction="0"><text><![CDATA[n<sup>2</sup>(n+1)]]></text><feedback format="html"><text><![CDATA[Incorrect.]]></text></feedback></answer>
+    <answer fraction="0"><text><![CDATA[n(n+1)/2]]></text><feedback format="html"><text><![CDATA[Incorrect.]]></text></feedback></answer>
+  </question>
+
+  <!-- Q6 numerical -->
+  <question type="numerical">
+    <name><text>FE-IND-06 Fibonacci</text></name>
+    <questiontext format="html">
+      <text><![CDATA[<p>The Fibonacci sequence is defined by <em>F</em><sub>1</sub> = 1, <em>F</em><sub>2</sub> = 1 and <em>F</em><sub>n</sub> = <em>F</em><sub>n&minus;1</sub> + <em>F</em><sub>n&minus;2</sub>.</p>
+      <p>Compute <em>F</em><sub>7</sub>.</p>]]></text>
+    </questiontext>
+    <defaultgrade>1</defaultgrade>
+    <answer fraction="100"><text>13</text><tolerance>0</tolerance><feedback format="html"><text><![CDATA[Correct: 1, 1, 2, 3, 5, 8, 13.]]></text></feedback></answer>
+  </question>
+
+  <!-- ================= CATEGORY ================= -->
+  <question type="category">
+    <category>
+      <text>$course$/top/Final Exam/Counting</text>
+    </category>
+    <info format="html">
+      <text><![CDATA[Counting: permutations, combinations, pigeonhole.]]></text>
+    </info>
+  </question>
+
+  <!-- Q7 numerical -->
+  <question type="numerical">
+    <name><text>FE-CNT-01 Permutations</text></name>
+    <questiontext format="html">
+      <text><![CDATA[<p>In how many different orders can 5 distinct books be placed on a shelf?</p>]]></text>
+    </questiontext>
+    <defaultgrade>1</defaultgrade>
+    <answer fraction="100"><text>120</text><tolerance>0</tolerance><feedback format="html"><text><![CDATA[Correct: 5! = 120.]]></text></feedback></answer>
+  </question>
+
+  <!-- Q8 multichoice -->
+  <question type="multichoice">
+    <name><text>FE-CNT-02 Binomial coefficient</text></name>
+    <questiontext format="html">
+      <text><![CDATA[<p>The value of the binomial coefficient C(6, 2) is:</p>]]></text>
+    </questiontext>
+    <defaultgrade>1</defaultgrade>
+    <single>true</single>
+    <shuffleanswers>true</shuffleanswers>
+    <answernumbering>abc</answernumbering>
+    <answer fraction="0"><text>30</text><feedback format="html"><text><![CDATA[That is P(6,2).]]></text></feedback></answer>
+    <answer fraction="0"><text>12</text><feedback format="html"><text><![CDATA[Incorrect.]]></text></feedback></answer>
+    <answer fraction="0"><text>36</text><feedback format="html"><text><![CDATA[Incorrect.]]></text></feedback></answer>
+    <answer fraction="100"><text>15</text><feedback format="html"><text><![CDATA[Correct: 6!/(2!4!) = 15.]]></text></feedback></answer>
+  </question>
+
+  <!-- Q9 numerical -->
+  <question type="numerical">
+    <name><text>FE-CNT-03 Bit strings</text></name>
+    <questiontext format="html">
+      <text><![CDATA[<p>How many bit strings (strings of 0s and 1s) of length 8 are there?</p>]]></text>
+    </questiontext>
+    <defaultgrade>1</defaultgrade>
+    <answer fraction="100"><text>256</text><tolerance>0</tolerance><feedback format="html"><text><![CDATA[Correct: 2<sup>8</sup> = 256.]]></text></feedback></answer>
+  </question>
+
+  <!-- Q10 truefalse -->
+  <question type="truefalse">
+    <name><text>FE-CNT-04 Number of subsets</text></name>
+    <questiontext format="html">
+      <text><![CDATA[<p>A set with <em>n</em> elements has exactly 2<sup>n</sup> subsets.</p>]]></text>
+    </questiontext>
+    <defaultgrade>1</defaultgrade>
+    <answer fraction="100"><text>true</text><feedback format="html"><text><![CDATA[Correct: each element is in or out.]]></text></feedback></answer>
+    <answer fraction="0"><text>false</text><feedback format="html"><text><![CDATA[The power set has 2^n elements.]]></text></feedback></answer>
+  </question>
+
+  <!-- Q11 shortanswer -->
+  <question type="shortanswer">
+    <name><text>FE-CNT-05 Pigeonhole principle</text></name>
+    <questiontext format="html">
+      <text><![CDATA[<p>By the pigeonhole principle, what is the minimum number of people needed to guarantee that at least two of them were born in the same month? (Enter a number.)</p>]]></text>
+    </questiontext>
+    <defaultgrade>1</defaultgrade>
+    <usecase>0</usecase>
+    <answer fraction="100"><text>13</text><feedback format="html"><text><![CDATA[Correct: 12 months + 1.]]></text></feedback></answer>
+    <answer fraction="0"><text>*</text><feedback format="html"><text><![CDATA[The answer is 13.]]></text></feedback></answer>
+  </question>
+
+  <!-- Q12 numerical -->
+  <question type="numerical">
+    <name><text>FE-CNT-06 Permutations with repetition</text></name>
+    <questiontext format="html">
+      <text><![CDATA[<p>How many distinct arrangements can be made from the letters of the word <strong>LEVEL</strong>?</p>]]></text>
+    </questiontext>
+    <defaultgrade>1</defaultgrade>
+    <answer fraction="100"><text>30</text><tolerance>0</tolerance><feedback format="html"><text><![CDATA[Correct: 5!/(2!&middot;2!) = 30.]]></text></feedback></answer>
+  </question>
+
+  <!-- ================= CATEGORY ================= -->
+  <question type="category">
+    <category>
+      <text>$course$/top/Final Exam/Graphs</text>
+    </category>
+    <info format="html">
+      <text><![CDATA[Graph theory: degrees, trees, Euler, planarity.]]></text>
+    </info>
+  </question>
+
+  <!-- Q13 multichoice -->
+  <question type="multichoice">
+    <name><text>FE-GRP-01 Handshaking lemma</text></name>
+    <questiontext format="html">
+      <text><![CDATA[<p>In an undirected graph with 10 edges, the sum of the degrees of all vertices is:</p>]]></text>
+    </questiontext>
+    <defaultgrade>1</defaultgrade>
+    <single>true</single>
+    <shuffleanswers>true</shuffleanswers>
+    <answernumbering>abc</answernumbering>
+    <answer fraction="0"><text>10</text><feedback format="html"><text><![CDATA[That is the number of edges, not the degree sum.]]></text></feedback></answer>
+    <answer fraction="0"><text>5</text><feedback format="html"><text><![CDATA[Incorrect.]]></text></feedback></answer>
+    <answer fraction="100"><text>20</text><feedback format="html"><text><![CDATA[Correct: handshaking lemma, sum of degrees = 2 &times; (number of edges).]]></text></feedback></answer>
+    <answer fraction="0"><text>100</text><feedback format="html"><text><![CDATA[Incorrect.]]></text></feedback></answer>
+  </question>
+
+  <!-- Q14 truefalse -->
+  <question type="truefalse">
+    <name><text>FE-GRP-02 Edges of a tree</text></name>
+    <questiontext format="html">
+      <text><![CDATA[<p>A tree with <em>n</em> vertices has exactly <em>n</em> &minus; 1 edges.</p>]]></text>
+    </questiontext>
+    <defaultgrade>1</defaultgrade>
+    <answer fraction="100"><text>true</text><feedback format="html"><text><![CDATA[Correct.]]></text></feedback></answer>
+    <answer fraction="0"><text>false</text><feedback format="html"><text><![CDATA[A tree on n vertices always has n-1 edges.]]></text></feedback></answer>
+  </question>
+
+  <!-- Q15 numerical -->
+  <question type="numerical">
+    <name><text>FE-GRP-03 Edges of a complete graph</text></name>
+    <questiontext format="html">
+      <text><![CDATA[<p>How many edges does the complete graph <em>K</em><sub>6</sub> have?</p>]]></text>
+    </questiontext>
+    <defaultgrade>1</defaultgrade>
+    <answer fraction="100"><text>15</text><tolerance>0</tolerance><feedback format="html"><text><![CDATA[Correct: C(6,2) = 15.]]></text></feedback></answer>
+  </question>
+
+  <!-- Q16 multichoice -->
+  <question type="multichoice">
+    <name><text>FE-GRP-04 Euler circuit condition</text></name>
+    <questiontext format="html">
+      <text><![CDATA[<p>A connected undirected graph has an Euler circuit if and only if:</p>]]></text>
+    </questiontext>
+    <defaultgrade>1</defaultgrade>
+    <single>true</single>
+    <shuffleanswers>true</shuffleanswers>
+    <answernumbering>abc</answernumbering>
+    <answer fraction="0"><text><![CDATA[exactly two vertices have odd degree]]></text><feedback format="html"><text><![CDATA[That is the condition for an Euler path, not a circuit.]]></text></feedback></answer>
+    <answer fraction="0"><text><![CDATA[every vertex has odd degree]]></text><feedback format="html"><text><![CDATA[Incorrect.]]></text></feedback></answer>
+    <answer fraction="0"><text><![CDATA[it has no cycles]]></text><feedback format="html"><text><![CDATA[Incorrect.]]></text></feedback></answer>
+    <answer fraction="100"><text><![CDATA[every vertex has even degree]]></text><feedback format="html"><text><![CDATA[Correct.]]></text></feedback></answer>
+  </question>
+
+  <!-- Q17 shortanswer -->
+  <question type="shortanswer">
+    <name><text>FE-GRP-05 Planar graph</text></name>
+    <questiontext format="html">
+      <text><![CDATA[<p>A graph that can be drawn in the plane with no two edges crossing is called a ______ graph. (One word.)</p>]]></text>
+    </questiontext>
+    <defaultgrade>1</defaultgrade>
+    <usecase>0</usecase>
+    <answer fraction="100"><text>planar</text><feedback format="html"><text><![CDATA[Correct.]]></text></feedback></answer>
+    <answer fraction="0"><text>*</text><feedback format="html"><text><![CDATA[The term is "planar".]]></text></feedback></answer>
+  </question>
+
+  <!-- Q18 numerical -->
+  <question type="numerical">
+    <name><text>FE-GRP-06 Maximum edges in a simple graph</text></name>
+    <questiontext format="html">
+      <text><![CDATA[<p>What is the maximum number of edges in a simple undirected graph with 7 vertices?</p>]]></text>
+    </questiontext>
+    <defaultgrade>1</defaultgrade>
+    <answer fraction="100"><text>21</text><tolerance>0</tolerance><feedback format="html"><text><![CDATA[Correct: C(7,2) = 21.]]></text></feedback></answer>
+  </question>
+
+</quiz>

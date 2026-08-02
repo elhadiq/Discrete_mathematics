@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Examen Blanc (Interactive) — Discrete Mathematics</title>
+<script>
+  MathJax={tex:{inlineMath:[['$','$']],displayMath:[['$$','$$']]},
+  options:{skipHtmlTags:['script','noscript','style','textarea']}};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{--orange:#e67e22;--darkblue:#2c3e50;--lightbg:#f4f9fc;--border:#dce3ea;
+--green:#27ae60;--gbg:#e8f5ec;--red:#c0395a;--rbg:#fdecef;}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#e8edf2;color:var(--darkblue);
+display:flex;flex-direction:column;align-items:center;padding:2rem 1rem 7rem;gap:1.4rem;}
+.slide{background:#fff;width:100%;max-width:860px;border-radius:10px;
+box-shadow:0 4px 18px rgba(0,0,0,.10);padding:1.8rem 2.2rem;position:relative;}
+.title-slide{background:linear-gradient(145deg,#f4f9fc 60%,#e0eef7);text-align:center;
+border-top:6px solid var(--orange);}
+.title-slide h1{font-size:1.9rem;margin-bottom:.3rem;}
+.title-slide .subtitle{font-size:1.1rem;color:#555;}
+.sig{font-size:1rem;color:#e67e22;margin-top:.7rem;font-style:italic;font-weight:600;}
+.cat-head{font-size:.72rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;
+color:#fff;background:var(--darkblue);padding:.35em .9em;border-radius:5px;display:inline-block;margin:.4rem 0;}
+.qcard{border:1px solid var(--border);border-left:4px solid var(--orange);border-radius:8px;
+padding:1rem 1.2rem;margin:.8rem 0;}
+.qnum{font-weight:800;color:var(--orange);margin-right:.4rem;}
+.qtype{float:right;font-size:.65rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+color:#888;background:var(--lightbg);padding:.2em .6em;border-radius:4px;}
+.qtext{margin:.3rem 0 .7rem;line-height:1.6;}
+.opt{display:block;padding:.45rem .7rem;margin:.3rem 0;border:1px solid var(--border);
+border-radius:6px;cursor:pointer;transition:background .15s;}
+.opt:hover{background:var(--lightbg);}
+.opt input{margin-right:.6rem;}
+.opt.right{background:var(--gbg);border-color:var(--green);}
+.opt.wrong{background:var(--rbg);border-color:var(--red);}
+input.txt{padding:.5rem .7rem;border:1px solid var(--border);border-radius:6px;font-size:1rem;
+width:220px;font-family:inherit;}
+.fb{margin-top:.6rem;padding:.55rem .9rem;border-radius:6px;font-size:.92rem;display:none;}
+.fb.ok{background:var(--gbg);border-left:4px solid var(--green);}
+.fb.no{background:var(--rbg);border-left:4px solid var(--red);}
+.fb b{font-style:normal;}
+#bar{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--border);
+box-shadow:0 -2px 12px rgba(0,0,0,.08);display:flex;align-items:center;justify-content:center;
+gap:1rem;padding:.8rem;z-index:50;}
+#bar button{background:var(--orange);color:#fff;border:none;border-radius:22px;padding:.6rem 1.4rem;
+font-size:.95rem;font-weight:700;cursor:pointer;}
+#bar button.sec{background:#fff;color:var(--darkblue);border:1px solid var(--border);}
+#bar button:hover{filter:brightness(.95);}
+#score{font-weight:800;font-size:1.05rem;}
+#score .pct{color:var(--orange);}
+.progress{height:8px;background:var(--lightbg);border-radius:5px;overflow:hidden;width:180px;}
+.progress > div{height:100%;width:0;background:var(--green);transition:width .4s;}
+</style>
+</head>
+<body>
+<section class="slide title-slide">
+  <h1>Examen Blanc — Interactive</h1>
+  <p class="subtitle">Discrete Mathematics (ACSP)</p>
+  <p style="margin-top:.5rem;color:#555;">Induction &amp; Recursion &bull; Counting &bull; Graphs — 56 questions</p>
+  <p class="sig">Notes By Pr. El Hadiq Zouhair</p>
+</section>
+<div id="quiz"></div>
+<div id="bar">
+  <button id="btn-reset" class="sec">Reset</button>
+  <div class="progress"><div></div></div>
+  <span id="score">Score: <span class="pct">— / 56</span></span>
+  <button id="btn-check">Check answers</button>
+</div>
+<script>
+const DATA = [{"cat": "Induction and Recursion", "name": "FB-IND-01 Gauss sum", "type": "multichoice", "qtext": "<p>For every integer <em>n</em> &ge; 1, the sum 1 + 2 + 3 + &hellip; + <em>n</em> equals:</p>", "opts": [{"t": "(n+1)/2", "c": false, "fb": "Incorrect."}, {"t": "n(n+1)", "c": false, "fb": "Off by a factor of 2."}, {"t": "n<sup>2</sup>", "c": false, "fb": "That is the sum of the first n odd numbers."}, {"t": "n(n+1)/2", "c": true, "fb": "Correct."}], "correct": "n(n+1)/2"}, {"cat": "Induction and Recursion", "name": "FB-IND-06 Recursive definition of factorial", "type": "multichoice", "qtext": "<p>In the recursive definition <em>n</em>! = <em>n</em> &middot; (<em>n</em>&minus;1)!, what is the correct base case?</p>", "opts": [{"t": "0! = 1", "c": true, "fb": "Correct."}, {"t": "1! = 0", "c": false, "fb": "Incorrect."}, {"t": "0! = undefined", "c": false, "fb": "Incorrect."}, {"t": "0! = 0", "c": false, "fb": "Incorrect: 0! = 1 by definition."}], "correct": "0! = 1"}, {"cat": "Induction and Recursion", "name": "FB-IND-08 Sum of squares formula", "type": "multichoice", "qtext": "<p>For <em>n</em> &ge; 1, the sum 1<sup>2</sup> + 2<sup>2</sup> + &hellip; + <em>n</em><sup>2</sup> equals:</p>", "opts": [{"t": "( n(n+1)/2 )<sup>2</sup>", "c": false, "fb": "That is the sum of cubes."}, {"t": "n<sup>2</sup>(n+1)", "c": false, "fb": "Incorrect."}, {"t": "n(n+1)(2n+1)/6", "c": true, "fb": "Correct."}, {"t": "n(n+1)/2", "c": false, "fb": "That is the sum of integers."}], "correct": "n(n+1)(2n+1)/6"}, {"cat": "Induction and Recursion", "name": "FB-IND-13 Base case", "type": "multichoice", "qtext": "<p>To prove <em>P</em>(<em>n</em>) for all <em>n</em> &ge; 1 by induction, the base case to verify is:</p>", "opts": [{"t": "P(k+1)", "c": false, "fb": "That is the inductive step."}, {"t": "P(0)", "c": false, "fb": "The statement starts at n = 1."}, {"t": "P(k)", "c": false, "fb": "That is the induction hypothesis."}, {"t": "P(1)", "c": true, "fb": "Correct."}], "correct": "P(1)"}, {"cat": "Induction and Recursion", "name": "FB-IND-17 Sum of even numbers", "type": "multichoice", "qtext": "<p>For <em>n</em> &ge; 1, 2 + 4 + 6 + &hellip; + 2<em>n</em> equals:</p>", "opts": [{"t": "n(n+1)/2", "c": false, "fb": "Incorrect."}, {"t": "2n", "c": false, "fb": "That is only the last term."}, {"t": "n<sup>2</sup>", "c": false, "fb": "Incorrect."}, {"t": "n(n+1)", "c": true, "fb": "Correct: 2(1+2+...+n) = n(n+1)."}], "correct": "n(n+1)"}, {"cat": "Induction and Recursion", "name": "FB-IND-21 Sum of cubes", "type": "multichoice", "qtext": "<p>For <em>n</em> &ge; 1, 1<sup>3</sup> + 2<sup>3</sup> + &hellip; + <em>n</em><sup>3</sup> equals:</p>", "opts": [{"t": "( n(n+1)/2 )<sup>2</sup>", "c": true, "fb": "Correct."}, {"t": "n<sup>4</sup>", "c": false, "fb": "Incorrect."}, {"t": "n(n+1)/2", "c": false, "fb": "That is the sum of integers."}, {"t": "n(n+1)(2n+1)/6", "c": false, "fb": "That is the sum of squares."}], "correct": "( n(n+1)/2 )<sup>2</sup>"}, {"cat": "Induction and Recursion", "name": "FB-IND-02 Linear recurrence", "type": "numerical", "qtext": "<p>A sequence is defined by <em>a</em><sub>1</sub> = 3 and <em>a</em><sub>n</sub> = 2 <em>a</em><sub>n&minus;1</sub> + 1 for <em>n</em> &ge; 2.</p>\n      <p>Compute <em>a</em><sub>4</sub>.</p>", "num": 31.0, "tol": 0.0, "fb": "Correct: 3, 7, 15, 31.", "correct": "31"}, {"cat": "Induction and Recursion", "name": "FB-IND-05 Sum of even numbers", "type": "numerical", "qtext": "<p>Compute the sum 2 + 4 + 6 + &hellip; + 20.</p>", "num": 110.0, "tol": 0.0, "fb": "Correct: 2(1+2+...+10) = 2&middot;55 = 110.", "correct": "110"}, {"cat": "Induction and Recursion", "name": "FB-IND-07 Gauss sum to 100", "type": "numerical", "qtext": "<p>Compute 1 + 2 + 3 + &hellip; + 100.</p>", "num": 5050.0, "tol": 0.0, "fb": "Correct: 100&middot;101/2 = 5050.", "correct": "5050"}, {"cat": "Induction and Recursion", "name": "FB-IND-09 Arithmetic term", "type": "numerical", "qtext": "<p>Let <em>a</em><sub>1</sub> = 5 and <em>a</em><sub>n</sub> = <em>a</em><sub>n&minus;1</sub> + 4. Find <em>a</em><sub>6</sub>.</p>", "num": 25.0, "tol": 0.0, "fb": "Correct: 5, 9, 13, 17, 21, 25.", "correct": "25"}, {"cat": "Induction and Recursion", "name": "FB-IND-11 Geometric term", "type": "numerical", "qtext": "<p>Let <em>a</em><sub>0</sub> = 1 and <em>a</em><sub>n</sub> = 3 <em>a</em><sub>n&minus;1</sub>. Find <em>a</em><sub>4</sub>.</p>", "num": 81.0, "tol": 0.0, "fb": "Correct: 3<sup>4</sup> = 81.", "correct": "81"}, {"cat": "Induction and Recursion", "name": "FB-IND-14 Fibonacci F8", "type": "numerical", "qtext": "<p>With <em>F</em><sub>1</sub> = <em>F</em><sub>2</sub> = 1, compute <em>F</em><sub>8</sub>.</p>", "num": 21.0, "tol": 0.0, "fb": "Correct: 1,1,2,3,5,8,13,21.", "correct": "21"}, {"cat": "Induction and Recursion", "name": "FB-IND-18 Doubling term", "type": "numerical", "qtext": "<p><em>a</em><sub>1</sub> = 1 and <em>a</em><sub>n</sub> = 2 <em>a</em><sub>n&minus;1</sub>. Find <em>a</em><sub>6</sub>.</p>", "num": 32.0, "tol": 0.0, "fb": "Correct: 1,2,4,8,16,32.", "correct": "32"}, {"cat": "Induction and Recursion", "name": "FB-IND-23 Recurrence with index", "type": "numerical", "qtext": "<p><em>a</em><sub>1</sub> = 2 and <em>a</em><sub>n</sub> = <em>a</em><sub>n&minus;1</sub> + <em>n</em> for <em>n</em> &ge; 2. Find <em>a</em><sub>4</sub>.</p>", "num": 11.0, "tol": 0.0, "fb": "Correct: 2, 4, 7, 11.", "correct": "11"}, {"cat": "Induction and Recursion", "name": "FB-IND-04 Closed form", "type": "shortanswer", "qtext": "<p>A sequence satisfies <em>a</em><sub>0</sub> = 0 and <em>a</em><sub>n</sub> = <em>a</em><sub>n&minus;1</sub> + 2<em>n</em> for <em>n</em> &ge; 1.</p>\n      <p>Its closed form is <em>a</em><sub>n</sub> = ______. (Write it as n^2+n.)</p>", "acc": ["n^2+n", "n(n+1)", "n*(n+1)"], "fb": "Correct.", "correct": "n^2+n"}, {"cat": "Induction and Recursion", "name": "FB-IND-12 Closed form (arithmetic)", "type": "shortanswer", "qtext": "<p><em>a</em><sub>0</sub> = 1 and <em>a</em><sub>n</sub> = <em>a</em><sub>n&minus;1</sub> + 2. Give the closed form (write as 2n+1).</p>", "acc": ["2n+1", "2*n+1"], "fb": "Correct.", "correct": "2n+1"}, {"cat": "Induction and Recursion", "name": "FB-IND-03 Strong induction", "type": "truefalse", "qtext": "<p>In strong (complete) induction, one assumes that <em>P</em>(1), <em>P</em>(2), &hellip;, <em>P</em>(<em>k</em>) are all true in order to prove <em>P</em>(<em>k</em>+1).</p>", "opts": [{"t": "True", "c": true, "fb": "Correct: that is the strong induction hypothesis."}, {"t": "False", "c": false, "fb": "This is exactly the strong induction hypothesis."}], "correct": "True"}, {"cat": "Induction and Recursion", "name": "FB-IND-10 Odd numbers sum", "type": "truefalse", "qtext": "<p>For all <em>n</em> &ge; 1, 1 + 3 + 5 + &hellip; + (2<em>n</em>&minus;1) = <em>n</em><sup>2</sup>.</p>", "opts": [{"t": "True", "c": true, "fb": "Correct."}, {"t": "False", "c": false, "fb": "It is exactly n squared."}], "correct": "True"}, {"cat": "Induction and Recursion", "name": "FB-IND-16 Strong vs ordinary induction", "type": "truefalse", "qtext": "<p>Strong induction and ordinary induction are equivalent in proving power.</p>", "opts": [{"t": "True", "c": true, "fb": "Correct: anything provable by one is provable by the other."}, {"t": "False", "c": false, "fb": "They are equivalent in power."}], "correct": "True"}, {"cat": "Induction and Recursion", "name": "FB-IND-22 Inductive step", "type": "truefalse", "qtext": "<p>In the inductive step we prove <em>P</em>(<em>k</em>+1) assuming <em>P</em>(<em>k</em>).</p>", "opts": [{"t": "True", "c": true, "fb": "Correct."}, {"t": "False", "c": false, "fb": "That is exactly the inductive step."}], "correct": "True"}, {"cat": "Counting", "name": "FB-CNT-02 Power set size", "type": "multichoice", "qtext": "<p>How many subsets does the set {a, b, c, d} have?</p>", "opts": [{"t": "4", "c": false, "fb": "Incorrect."}, {"t": "8", "c": false, "fb": "That would be 2^3."}, {"t": "16", "c": true, "fb": "Correct: 2<sup>4</sup> = 16."}, {"t": "24", "c": false, "fb": "That is 4!."}], "correct": "16"}, {"cat": "Counting", "name": "FB-CNT-06 Officers selection", "type": "multichoice", "qtext": "<p>From a club of 10 members, in how many ways can a president and a (different) vice-president be chosen, where order matters?</p>", "opts": [{"t": "20", "c": false, "fb": "Incorrect."}, {"t": "100", "c": false, "fb": "Incorrect: the two roles must go to different people."}, {"t": "45", "c": false, "fb": "That is C(10,2), but order matters here."}, {"t": "90", "c": true, "fb": "Correct: 10&times;9 = 90."}], "correct": "90"}, {"cat": "Counting", "name": "FB-CNT-12 Subsets of a 5-set", "type": "multichoice", "qtext": "<p>How many subsets does a set with 5 elements have?</p>", "opts": [{"t": "120", "c": false, "fb": "That is 5!."}, {"t": "32", "c": true, "fb": "Correct: 2<sup>5</sup> = 32."}, {"t": "10", "c": false, "fb": "Incorrect."}, {"t": "25", "c": false, "fb": "Incorrect."}], "correct": "32"}, {"cat": "Counting", "name": "FB-CNT-16 Value of C(n,0)", "type": "multichoice", "qtext": "<p>For any integer <em>n</em> &ge; 0, the value of C(<em>n</em>, 0) is:</p>", "opts": [{"t": "n!", "c": false, "fb": "Incorrect."}, {"t": "1", "c": true, "fb": "Correct: there is one empty subset."}, {"t": "0", "c": false, "fb": "Incorrect."}, {"t": "n", "c": false, "fb": "That is C(n,1)."}], "correct": "1"}, {"cat": "Counting", "name": "FB-CNT-01 Ordered selection", "type": "numerical", "qtext": "<p>Compute the number of ordered arrangements P(7, 2) = 7!/(7&minus;2)!.</p>", "num": 42.0, "tol": 0.0, "fb": "Correct: 7&times;6 = 42.", "correct": "42"}, {"cat": "Counting", "name": "FB-CNT-03 Combination", "type": "numerical", "qtext": "<p>Compute the binomial coefficient C(8, 3).</p>", "num": 56.0, "tol": 0.0, "fb": "Correct: 8!/(3!5!) = 56.", "correct": "56"}, {"cat": "Counting", "name": "FB-CNT-05 Diagonals of a hexagon", "type": "numerical", "qtext": "<p>How many diagonals does a convex hexagon (6 vertices) have?</p>", "num": 9.0, "tol": 0.0, "fb": "Correct: C(6,2) &minus; 6 = 15 &minus; 6 = 9.", "correct": "9"}, {"cat": "Counting", "name": "FB-CNT-07 Factorial", "type": "numerical", "qtext": "<p>Compute 6!.</p>", "num": 720.0, "tol": 0.0, "fb": "Correct: 720.", "correct": "720"}, {"cat": "Counting", "name": "FB-CNT-11 Arrangements of MISSISSIPPI", "type": "numerical", "qtext": "<p>How many distinct arrangements of the letters of <strong>MISSISSIPPI</strong> are there? (M:1, I:4, S:4, P:2)</p>", "num": 34650.0, "tol": 0.0, "fb": "Correct: 11!/(4!&middot;4!&middot;2!) = 34650.", "correct": "34650"}, {"cat": "Counting", "name": "FB-CNT-17 Number of 4-digit PINs", "type": "numerical", "qtext": "<p>How many 4-digit PIN codes are there (each digit 0&ndash;9, repetition allowed)?</p>", "num": 10000.0, "tol": 0.0, "fb": "Correct: 10<sup>4</sup> = 10000.", "correct": "10000"}, {"cat": "Counting", "name": "FB-CNT-19 Arrange 7 books", "type": "numerical", "qtext": "<p>In how many ways can 7 distinct books be arranged on a shelf?</p>", "num": 5040.0, "tol": 0.0, "fb": "Correct: 7! = 5040.", "correct": "5040"}, {"cat": "Counting", "name": "FB-CNT-21 C(12,12)", "type": "numerical", "qtext": "<p>Compute C(12, 12).</p>", "num": 1.0, "tol": 0.0, "fb": "Correct: choosing all of them, only 1 way.", "correct": "1"}, {"cat": "Counting", "name": "FB-CNT-23 Committee of 4 from 10", "type": "numerical", "qtext": "<p>In how many ways can a committee of 4 be chosen from 10 people?</p>", "num": 210.0, "tol": 0.0, "fb": "Correct: C(10,4) = 210.", "correct": "210"}, {"cat": "Counting", "name": "FB-CNT-22 Name of n!", "type": "shortanswer", "qtext": "<p>The product <em>n</em> &middot; (<em>n</em>&minus;1) &middot; &hellip; &middot; 2 &middot; 1, written <em>n</em>!, is called the ______ of <em>n</em>. (One word.)</p>", "acc": ["factorial"], "fb": "Correct.", "correct": "factorial"}, {"cat": "Counting", "name": "FB-CNT-04 Symmetry of binomials", "type": "truefalse", "qtext": "<p>For all integers 0 &le; <em>k</em> &le; <em>n</em>, the identity C(<em>n</em>, <em>k</em>) = C(<em>n</em>, <em>n</em>&minus;<em>k</em>) holds.</p>", "opts": [{"t": "True", "c": true, "fb": "Correct: choosing k to include equals choosing n-k to exclude."}, {"t": "False", "c": false, "fb": "This symmetry identity is always true."}], "correct": "True"}, {"cat": "Counting", "name": "FB-CNT-10 Bit strings length 10", "type": "truefalse", "qtext": "<p>There are 1024 bit strings of length 10.</p>", "opts": [{"t": "True", "c": true, "fb": "Correct: 2<sup>10</sup> = 1024."}, {"t": "False", "c": false, "fb": "2^10 = 1024."}], "correct": "True"}, {"cat": "Counting", "name": "FB-CNT-18 P(n,n)", "type": "truefalse", "qtext": "<p>The number of permutations of all <em>n</em> objects is P(<em>n</em>, <em>n</em>) = <em>n</em>!.</p>", "opts": [{"t": "True", "c": true, "fb": "Correct."}, {"t": "False", "c": false, "fb": "P(n,n) = n!/0! = n!."}], "correct": "True"}, {"cat": "Graphs", "name": "FB-GRP-02 Characterising a tree", "type": "multichoice", "qtext": "<p>A connected undirected graph with <em>n</em> vertices and exactly <em>n</em> &minus; 1 edges is called a:</p>", "opts": [{"t": "tree", "c": true, "fb": "Correct."}, {"t": "complete graph", "c": false, "fb": "Incorrect."}, {"t": "cycle", "c": false, "fb": "A cycle on n vertices has n edges."}, {"t": "bipartite graph", "c": false, "fb": "Not necessarily."}], "correct": "tree"}, {"cat": "Graphs", "name": "FB-GRP-06 Chromatic number", "type": "multichoice", "qtext": "<p>What is the chromatic number of a bipartite graph that contains at least one edge?</p>", "opts": [{"t": "2", "c": true, "fb": "Correct: bipartite graphs are exactly the 2-colorable graphs (with an edge)."}, {"t": "4", "c": false, "fb": "Incorrect."}, {"t": "1", "c": false, "fb": "A graph with an edge needs at least 2 colors."}, {"t": "3", "c": false, "fb": "Incorrect."}], "correct": "2"}, {"cat": "Graphs", "name": "FB-GRP-08 Degree sum, 8 edges", "type": "multichoice", "qtext": "<p>In a graph with 8 edges, the sum of all vertex degrees is:</p>", "opts": [{"t": "4", "c": false, "fb": "Incorrect."}, {"t": "64", "c": false, "fb": "Incorrect."}, {"t": "16", "c": true, "fb": "Correct: 2 &times; 8 = 16."}, {"t": "8", "c": false, "fb": "That is the number of edges."}], "correct": "16"}, {"cat": "Graphs", "name": "FB-GRP-16 Chromatic number of K4", "type": "multichoice", "qtext": "<p>What is the chromatic number of the complete graph <em>K</em><sub>4</sub>?</p>", "opts": [{"t": "2", "c": false, "fb": "Every two vertices are adjacent, so 2 is not enough."}, {"t": "4", "c": true, "fb": "Correct: chi(K_n) = n."}, {"t": "3", "c": false, "fb": "Incorrect for K4."}, {"t": "1", "c": false, "fb": "Incorrect."}], "correct": "4"}, {"cat": "Graphs", "name": "FB-GRP-21 Degree in a cycle graph", "type": "multichoice", "qtext": "<p>In the cycle graph <em>C</em><sub>n</sub> (<em>n</em> &ge; 3), every vertex has degree:</p>", "opts": [{"t": "3", "c": false, "fb": "Incorrect."}, {"t": "1", "c": false, "fb": "Incorrect."}, {"t": "n", "c": false, "fb": "That would be a complete graph."}, {"t": "2", "c": true, "fb": "Correct: each vertex has two neighbours."}], "correct": "2"}, {"cat": "Graphs", "name": "FB-GRP-01 Edges of K5", "type": "numerical", "qtext": "<p>How many edges does the complete graph <em>K</em><sub>5</sub> have?</p>", "num": 10.0, "tol": 0.0, "fb": "Correct: C(5,2) = 10.", "correct": "10"}, {"cat": "Graphs", "name": "FB-GRP-05 Edges from degree sequence", "type": "numerical", "qtext": "<p>A graph has 6 vertices, each of degree 3. How many edges does it have?</p>", "num": 9.0, "tol": 0.0, "fb": "Correct: (6&times;3)/2 = 9 by the handshaking lemma.", "correct": "9"}, {"cat": "Graphs", "name": "FB-GRP-07 Edges of K7", "type": "numerical", "qtext": "<p>How many edges does the complete graph <em>K</em><sub>7</sub> have?</p>", "num": 21.0, "tol": 0.0, "fb": "Correct: C(7,2) = 21.", "correct": "21"}, {"cat": "Graphs", "name": "FB-GRP-10 Edges of a tree", "type": "numerical", "qtext": "<p>How many edges does a tree with 12 vertices have?</p>", "num": 11.0, "tol": 0.0, "fb": "Correct: n &minus; 1 = 11.", "correct": "11"}, {"cat": "Graphs", "name": "FB-GRP-12 Edges from regular degrees", "type": "numerical", "qtext": "<p>A graph has 5 vertices, each of degree 4. How many edges does it have?</p>", "num": 10.0, "tol": 0.0, "fb": "Correct: (5&times;4)/2 = 10.", "correct": "10"}, {"cat": "Graphs", "name": "FB-GRP-17 Max edges, 8 vertices", "type": "numerical", "qtext": "<p>What is the maximum number of edges in a simple undirected graph with 8 vertices?</p>", "num": 28.0, "tol": 0.0, "fb": "Correct: C(8,2) = 28.", "correct": "28"}, {"cat": "Graphs", "name": "FB-GRP-20 Euler's formula (faces)", "type": "numerical", "qtext": "<p>A connected planar graph has 6 vertices and 9 edges. By Euler's formula <em>v</em> &minus; <em>e</em> + <em>f</em> = 2, how many faces <em>f</em> does it have?</p>", "num": 5.0, "tol": 0.0, "fb": "Correct: f = 2 &minus; 6 + 9 = 5.", "correct": "5"}, {"cat": "Graphs", "name": "FB-GRP-22 Edges of C6", "type": "numerical", "qtext": "<p>How many edges does the cycle graph <em>C</em><sub>6</sub> have?</p>", "num": 6.0, "tol": 0.0, "fb": "Correct: a cycle on n vertices has n edges.", "correct": "6"}, {"cat": "Graphs", "name": "FB-GRP-04 Hamiltonian path", "type": "shortanswer", "qtext": "<p>A path that visits every vertex of a graph exactly once is called a ______ path. (One word.)</p>", "acc": ["Hamiltonian", "Hamilton"], "fb": "Correct.", "correct": "Hamiltonian"}, {"cat": "Graphs", "name": "FB-GRP-13 Euler circuit", "type": "shortanswer", "qtext": "<p>A closed walk that uses every edge of a graph exactly once and returns to its start is called an Euler ______. (One word.)</p>", "acc": ["circuit", "cycle"], "fb": "Correct.", "correct": "circuit"}, {"cat": "Graphs", "name": "FB-GRP-19 Planar graph", "type": "shortanswer", "qtext": "<p>A graph that can be drawn in the plane with no edges crossing is called a ______ graph. (One word.)</p>", "acc": ["planar"], "fb": "Correct.", "correct": "planar"}, {"cat": "Graphs", "name": "FB-GRP-03 Planarity of complete graphs", "type": "truefalse", "qtext": "<p>Every complete graph <em>K</em><sub>n</sub> is planar for all <em>n</em>.</p>", "opts": [{"t": "False", "c": true, "fb": "Correct: K5 is not planar."}, {"t": "True", "c": false, "fb": "Incorrect: K5 (and larger) is not planar."}], "correct": "False"}, {"cat": "Graphs", "name": "FB-GRP-09 Odd-degree vertices", "type": "truefalse", "qtext": "<p>In any undirected graph, the number of vertices of odd degree is even.</p>", "opts": [{"t": "True", "c": true, "fb": "Correct: a corollary of the handshaking lemma."}, {"t": "False", "c": false, "fb": "It is always even."}], "correct": "True"}, {"cat": "Graphs", "name": "FB-GRP-14 Definition of a tree", "type": "truefalse", "qtext": "<p>A tree is a connected graph that contains no cycles.</p>", "opts": [{"t": "True", "c": true, "fb": "Correct."}, {"t": "False", "c": false, "fb": "That is the definition of a tree."}], "correct": "True"}];
+function esc(s){return s;}
+function render(){
+ const root=document.getElementById('quiz');let html='';let lastCat=null;
+ DATA.forEach((q,i)=>{
+  if(q.cat!==lastCat){html+=`<div class="slide"><span class="cat-head">${q.cat}</span></div>`;lastCat=q.cat;}
+  html+=`<div class="slide qcard" data-i="${i}">`;
+  html+=`<span class="qtype">${q.type}</span>`;
+  html+=`<div class="qtext"><span class="qnum">Q${i+1}.</span>${q.qtext}</div>`;
+  if(q.type==='multichoice'||q.type==='truefalse'){
+   q.opts.forEach((o,j)=>{
+    html+=`<label class="opt" data-i="${i}" data-j="${j}"><input type="radio" name="q${i}" value="${j}">${o.t}</label>`;
+   });
+  }else if(q.type==='numerical'){
+   html+=`<input class="txt" type="text" inputmode="decimal" name="q${i}" placeholder="Your answer">`;
+  }else{
+   html+=`<input class="txt" type="text" name="q${i}" placeholder="Your answer">`;
+  }
+  html+=`<div class="fb" id="fb${i}"></div></div>`;
+ });
+ root.innerHTML=html;
+ if(window.MathJax&&MathJax.typesetPromise)MathJax.typesetPromise();
+}
+function check(){
+ let correct=0;
+ DATA.forEach((q,i)=>{
+  const fb=document.getElementById('fb'+i);let ok=false,given='';
+  document.querySelectorAll(`.opt[data-i="${i}"]`).forEach(l=>l.classList.remove('right','wrong'));
+  if(q.type==='multichoice'||q.type==='truefalse'){
+   const sel=document.querySelector(`input[name="q${i}"]:checked`);
+   q.opts.forEach((o,j)=>{const lab=document.querySelector(`.opt[data-i="${i}"][data-j="${j}"]`);
+     if(o.c)lab.classList.add('right');});
+   if(sel){const j=+sel.value;given=q.opts[j].t;ok=q.opts[j].c;
+     if(!ok)document.querySelector(`.opt[data-i="${i}"][data-j="${j}"]`).classList.add('wrong');}
+  }else if(q.type==='numerical'){
+   const v=document.querySelector(`input[name="q${i}"]`).value.trim();given=v;
+   if(v!==''){const x=parseFloat(v.replace(',','.'));ok=!isNaN(x)&&Math.abs(x-q.num)<=(q.tol||0)+1e-9;}
+  }else{
+   const v=document.querySelector(`input[name="q${i}"]`).value.trim().toLowerCase();given=v;
+   ok=q.acc.some(a=>a.trim().toLowerCase()===v)&&v!=='';
+  }
+  if(ok)correct++;
+  let exp=q.fb||'';
+  if(q.type==='multichoice'||q.type==='truefalse'){
+   const co=q.opts.find(o=>o.c);exp=co?co.fb:'';
+  }
+  fb.style.display='block';
+  fb.className='fb '+(ok?'ok':'no');
+  fb.innerHTML=(ok?'<b>✓ Correct.</b> ':`<b>✗ Incorrect.</b> Correct answer: <b>${q.correct}</b>. `)+(exp||'');
+ });
+ const pct=Math.round(100*correct/DATA.length);
+ document.getElementById('score').innerHTML=`Score: <span class="pct">${correct} / ${DATA.length}</span> (${pct}%)`;
+ document.querySelector('.progress>div').style.width=pct+'%';
+ if(window.MathJax&&MathJax.typesetPromise)MathJax.typesetPromise();
+ window.scrollTo({top:0,behavior:'smooth'});
+}
+function reset(){
+ DATA.forEach((q,i)=>{const fb=document.getElementById('fb'+i);fb.style.display='none';fb.innerHTML='';
+  document.querySelectorAll(`.opt[data-i="${i}"]`).forEach(l=>l.classList.remove('right','wrong'));});
+ document.querySelectorAll('#quiz input').forEach(el=>{if(el.type==='radio')el.checked=false;else el.value='';});
+ document.getElementById('score').innerHTML='Score: <span class="pct">— / '+DATA.length+'</span>';
+ document.querySelector('.progress>div').style.width='0';
+ window.scrollTo({top:0,behavior:'smooth'});
+}
+document.addEventListener('DOMContentLoaded',()=>{render();
+ document.getElementById('btn-check').onclick=check;
+ document.getElementById('btn-reset').onclick=reset;});
+</script>
+</body>
+</html>

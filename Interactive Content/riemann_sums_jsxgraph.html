@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Riemann Sums - JSXGraph</title>
+    <!-- JSXGraph CSS -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/jsxgraph@1.9.2/distrib/jsxgraph.css" />
+    <!-- JSXGraph JavaScript -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/jsxgraph@1.9.2/distrib/jsxgraphcore.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 20px;
+            background: #f8f9fa;
+        }
+        h1 {
+            color: #212529;
+            text-align: center;
+        }
+        .description {
+            background: #e7f5ff;
+            border-left: 4px solid #228be6;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+            line-height: 1.6;
+        }
+        .controls {
+            background: #fff;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin: 20px 0;
+        }
+        .controls label {
+            font-weight: 600;
+            color: #495057;
+            margin-right: 10px;
+        }
+        .controls select {
+            padding: 6px 12px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            font-size: 14px;
+            background: #fff;
+            cursor: pointer;
+        }
+        .jxgbox {
+            border: 2px solid #495057;
+            border-radius: 8px;
+            background: #fff;
+            margin: 20px auto;
+        }
+        .exact-value {
+            text-align: center;
+            font-size: 16px;
+            color: #495057;
+            margin-top: 10px;
+        }
+        .exact-value math {
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Riemann Sums</h1>
+
+    <div class="description">
+        Approximate the integral of the sine function over a configurable interval controlled by sliders 
+        for the start and end points. A Riemann sum with a selectable number of subdivisions and sum type 
+        is drawn under the curve, and its computed value is displayed dynamically.
+    </div>
+
+    <div class="exact-value">
+        For the given interval the exact value is 
+        <span style="font-style: italic;">&int;<sub>-2&pi;</sub><sup>&pi;</sup> sin(x) dx = 2</span>
+    </div>
+
+    <div class="controls">
+        <label for="sumtype">Riemann sum type:</label>
+        <select id="sumtype" onChange="board.update();">
+            <option value="lower">lower</option>
+            <option value="upper">upper</option>
+            <option value="left" selected>left</option>
+            <option value="right">right</option>
+            <option value="middle">middle</option>
+            <option value="trapezoidal">trapezoidal</option>
+            <option value="simpson">simpson</option>
+        </select>
+    </div>
+
+    <!-- The graph container -->
+    <div id="jxgbox" class="jxgbox" style="width:700px; height:500px;"></div>
+
+    <script type="text/javascript">
+        var board = JXG.JSXGraph.initBoard('jxgbox', { 
+            axis: true, 
+            boundingbox: [-8, 4, 8, -4] 
+        });
+
+        // Slider for number of subdivisions (n)
+        var s = board.create('slider', [[1, 3], [5, 3], [1, 10, 50]], { 
+            name: 'n', 
+            snapWidth: 1 
+        });
+
+        // Slider for interval start
+        var a = board.create('slider', [[1, 2.5], [5, 2.5], [-10, -2 * Math.PI, 0]], { 
+            name: 'start' 
+        });
+
+        // Slider for interval end
+        var b = board.create('slider', [[1, 2], [5, 2], [0, Math.PI, 10]], { 
+            name: 'end' 
+        });
+
+        // The function: f(x) = sin(x)
+        var f = function(x) { return Math.sin(x); };
+
+        // Plot the function graph
+        var plot = board.create('functiongraph', [f, function() { return a.Value(); }, function() { return b.Value(); }]);
+
+        // Riemann sum visualization
+        var os = board.create('riemannsum', [
+            f,
+            function() { return s.Value(); },
+            function() { return document.getElementById('sumtype').value; },
+            function() { return a.Value(); },
+            function() { return b.Value(); }
+        ], { 
+            fillColor: '#ffff00', 
+            fillOpacity: 0.3 
+        });
+
+        // Display the computed Riemann sum value
+        board.create('text', [-6, -3, function() {
+            return 'Riemann sum = ' + (JXG.Math.Numerics.riemannsum(
+                f, 
+                s.Value(), 
+                document.getElementById('sumtype').value, 
+                a.Value(), 
+                b.Value()
+            )).toFixed(4);
+        }]);
+    </script>
+
+</body>
+</html>

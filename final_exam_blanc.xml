@@ -1,0 +1,742 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Discrete Mathematics (ACSP) - Mock Final Exam (Examen Blanc) -->
+<!-- Notes By Pr. El Hadiq Zouhair -->
+<quiz>
+
+  <!-- ================= CATEGORY ================= -->
+  <question type="category">
+    <category>
+      <text>$course$/top/Final Exam Blanc/Induction and Recursion</text>
+    </category>
+    <info format="html">
+      <text><![CDATA[Mathematical Induction and Recursive Definitions.]]></text>
+    </info>
+  </question>
+
+  <!-- Q1 multichoice -->
+  <question type="multichoice">
+    <name><text>FB-IND-01 Gauss sum</text></name>
+    <questiontext format="html">
+      <text><![CDATA[<p>For every integer <em>n</em> &ge; 1, the sum 1 + 2 + 3 + &hellip; + <em>n</em> equals:</p>]]></text>
+    </questiontext>
+    <defaultgrade>1</defaultgrade>
+    <single>true</single>
+    <shuffleanswers>true</shuffleanswers>
+    <answernumbering>abc</answernumbering>
+    <answer fraction="0"><text><![CDATA[n<sup>2</sup>]]></text><feedback format="html"><text><![CDATA[That is the sum of the first n odd numbers.]]></text></feedback></answer>
+    <answer fraction="0"><text>n(n+1)</text><feedback format="html"><text><![CDATA[Off by a factor of 2.]]></text></feedback></answer>
+    <answer fraction="100"><text>n(n+1)/2</text><feedback format="html"><text><![CDATA[Correct.]]></text></feedback></answer>
+    <answer fraction="0"><text>(n+1)/2</text><feedback format="html"><text><![CDATA[Incorrect.]]></text></feedback></answer>
+  </question>
+
+  <!-- Q2 numerical -->
+  <question type="numerical">
+    <name><text>FB-IND-02 Linear recurrence</text></name>
+    <questiontext format="html">
+      <text><![CDATA[<p>A sequence is defined by <em>a</em><sub>1</sub> = 3 and <em>a</em><sub>n</sub> = 2 <em>a</em><sub>n&minus;1</sub> + 1 for <em>n</em> &ge; 2.</p>
+      <p>Compute <em>a</em><sub>4</sub>.</p>]]></text>
+    </questiontext>
+    <defaultgrade>1</defaultgrade>
+    <answer fraction="100"><text>31</text><tolerance>0</tolerance><feedback format="html"><text><![CDATA[Correct: 3, 7, 15, 31.]]></text></feedback></answer>
+  </question>
+
+  <!-- Q3 truefalse -->
+  <question type="truefalse">
+    <name><text>FB-IND-03 Strong induction</text></name>
+    <questiontext format="html">
+      <text><![CDATA[<p>In strong (complete) induction, one assumes that <em>P</em>(1), <em>P</em>(2), &hellip;, <em>P</em>(<em>k</em>) are all true in order to prove <em>P</em>(<em>k</em>+1).</p>]]></text>
+    </questiontext>
+    <defaultgrade>1</defaultgrade>
+    <answer fraction="100"><text>true</text><feedback format="html"><text><![CDATA[Correct: that is the strong induction hypothesis.]]></text></feedback></answer>
+    <answer fraction="0"><text>false</text><feedback format="html"><text><![CDATA[This is exactly the strong induction hypothesis.]]></text></feedback></answer>
+  </question>
+
+  <!-- Q4 shortanswer -->
+  <question type="shortanswer">
+    <name><text>FB-IND-04 Closed form</text></name>
+    <questiontext format="html">
+      <text><![CDATA[<p>A sequence satisfies <em>a</em><sub>0</sub> = 0 and <em>a</em><sub>n</sub> = <em>a</em><sub>n&minus;1</sub> + 2<em>n</em> for <em>n</em> &ge; 1.</p>
+      <p>Its closed form is <em>a</em><sub>n</sub> = ______. (Write it as n^2+n.)</p>]]></text>
+    </questiontext>
+    <defaultgrade>1</defaultgrade>
+    <usecase>0</usecase>
+    <answer fraction="100"><text>n^2+n</text><feedback format="html"><text><![CDATA[Correct.]]></text></feedback></answer>
+    <answer fraction="100"><text>n(n+1)</text><feedback format="html"><text><![CDATA[Correct (equivalent form).]]></text></feedback></answer>
+    <answer fraction="100"><text>n*(n+1)</text><feedback format="html"><text><![CDATA[Correct.]]></text></feedback></answer>
+    <answer fraction="0"><text>*</text><feedback format="html"><text><![CDATA[The closed form is n^2 + n = n(n+1).]]></text></feedback></answer>
+  </question>
+
+  <!-- Q5 numerical -->
+  <question type="numerical">
+    <name><text>FB-IND-05 Sum of even numbers</text></name>
+    <questiontext format="html">
+      <text><![CDATA[<p>Compute the sum 2 + 4 + 6 + &hellip; + 20.</p>]]></text>
+    </questiontext>
+    <defaultgrade>1</defaultgrade>
+    <answer fraction="100"><text>110</text><tolerance>0</tolerance><feedback format="html"><text><![CDATA[Correct: 2(1+2+...+10) = 2&middot;55 = 110.]]></text></feedback></answer>
+  </question>
+
+  <!-- Q6 multichoice -->
+  <question type="multichoice">
+    <name><text>FB-IND-06 Recursive definition of factorial</text></name>
+    <questiontext format="html">
+      <text><![CDATA[<p>In the recursive definition <em>n</em>! = <em>n</em> &middot; (<em>n</em>&minus;1)!, what is the correct base case?</p>]]></text>
+    </questiontext>
+    <defaultgrade>1</defaultgrade>
+    <single>true</single>
+    <shuffleanswers>true</shuffleanswers>
+    <answernumbering>abc</answernumbering>
+    <answer fraction="0"><text>0! = 0</text><feedback format="html"><text><![CDATA[Incorrect: 0! = 1 by definition.]]></text></feedback></answer>
+    <answer fraction="100"><text>0! = 1</text><feedback format="html"><text><![CDATA[Correct.]]></text></feedback></answer>
+    <answer fraction="0"><text>1! = 0</text><feedback format="html"><text><![CDATA[Incorrect.]]></text></feedback></answer>
+    <answer fraction="0"><text>0! = undefined</text><feedback format="html"><text><![CDATA[Incorrect.]]></text></feedback></answer>
+  </question>
+
+  <!-- ================= CATEGORY ================= -->
+  <question type="category">
+    <category>
+      <text>$course$/top/Final Exam Blanc/Counting</text>
+    </category>
+    <info format="html">
+      <text><![CDATA[Counting: permutations, combinations, pigeonhole.]]></text>
+    </info>
+  </question>
+
+  <!-- Q7 numerical -->
+  <question type="numerical">
+    <name><text>FB-CNT-01 Ordered selection</text></name>
+    <questiontext format="html">
+      <text><![CDATA[<p>Compute the number of ordered arrangements P(7, 2) = 7!/(7&minus;2)!.</p>]]></text>
+    </questiontext>
+    <defaultgrade>1</defaultgrade>
+    <answer fraction="100"><text>42</text><tolerance>0</tolerance><feedback format="html"><text><![CDATA[Correct: 7&times;6 = 42.]]></text></feedback></answer>
+  </question>
+
+  <!-- Q8 multichoice -->
+  <question type="multichoice">
+    <name><text>FB-CNT-02 Power set size</text></name>
+    <questiontext format="html">
+      <text><![CDATA[<p>How many subsets does the set {a, b, c, d} have?</p>]]></text>
+    </questiontext>
+    <defaultgrade>1</defaultgrade>
+    <single>true</single>
+    <shuffleanswers>true</shuffleanswers>
+    <answernumbering>abc</answernumbering>
+    <answer fraction="0"><text>8</text><feedback format="html"><text><![CDATA[That would be 2^3.]]></text></feedback></answer>
+    <answer fraction="0"><text>4</text><feedback format="html"><text><![CDATA[Incorrect.]]></text></feedback></answer>
+    <answer fraction="0"><text>24</text><feedback format="html"><text><![CDATA[That is 4!.]]></text></feedback></answer>
+    <answer fraction="100"><text>16</text><feedback format="html"><text><![CDATA[Correct: 2<sup>4</sup> = 16.]]></text></feedback></answer>
+  </question>
+
+  <!-- Q9 numerical -->
+  <question type="numerical">
+    <name><text>FB-CNT-03 Combination</text></name>
+    <questiontext format="html">
+      <text><![CDATA[<p>Compute the binomial coefficient C(8, 3).</p>]]></text>
+    </questiontext>
+    <defaultgrade>1</defaultgrade>
+    <answer fraction="100"><text>56</text><tolerance>0</tolerance><feedback format="html"><text><![CDATA[Correct: 8!/(3!5!) = 56.]]></text></feedback></answer>
+  </question>
+
+  <!-- Q10 truefalse -->
+  <question type="truefalse">
+    <name><text>FB-CNT-04 Symmetry of binomials</text></name>
+    <questiontext format="html">
+      <text><![CDATA[<p>For all integers 0 &le; <em>k</em> &le; <em>n</em>, the identity C(<em>n</em>, <em>k</em>) = C(<em>n</em>, <em>n</em>&minus;<em>k</em>) holds.</p>]]></text>
+    </questiontext>
+    <defaultgrade>1</defaultgrade>
+    <answer fraction="100"><text>true</text><feedback format="html"><text><![CDATA[Correct: choosing k to include equals choosing n-k to exclude.]]></text></feedback></answer>
+    <answer fraction="0"><text>false</text><feedback format="html"><text><![CDATA[This symmetry identity is always true.]]></text></feedback></answer>
+  </question>
+
+  <!-- Q11 numerical -->
+  <question type="numerical">
+    <name><text>FB-CNT-05 Diagonals of a hexagon</text></name>
+    <questiontext format="html">
+      <text><![CDATA[<p>How many diagonals does a convex hexagon (6 vertices) have?</p>]]></text>
+    </questiontext>
+    <defaultgrade>1</defaultgrade>
+    <answer fraction="100"><text>9</text><tolerance>0</tolerance><feedback format="html"><text><![CDATA[Correct: C(6,2) &minus; 6 = 15 &minus; 6 = 9.]]></text></feedback></answer>
+  </question>
+
+  <!-- Q12 multichoice -->
+  <question type="multichoice">
+    <name><text>FB-CNT-06 Officers selection</text></name>
+    <questiontext format="html">
+      <text><![CDATA[<p>From a club of 10 members, in how many ways can a president and a (different) vice-president be chosen, where order matters?</p>]]></text>
+    </questiontext>
+    <defaultgrade>1</defaultgrade>
+    <single>true</single>
+    <shuffleanswers>true</shuffleanswers>
+    <answernumbering>abc</answernumbering>
+    <answer fraction="0"><text>45</text><feedback format="html"><text><![CDATA[That is C(10,2), but order matters here.]]></text></feedback></answer>
+    <answer fraction="100"><text>90</text><feedback format="html"><text><![CDATA[Correct: 10&times;9 = 90.]]></text></feedback></answer>
+    <answer fraction="0"><text>100</text><feedback format="html"><text><![CDATA[Incorrect: the two roles must go to different people.]]></text></feedback></answer>
+    <answer fraction="0"><text>20</text><feedback format="html"><text><![CDATA[Incorrect.]]></text></feedback></answer>
+  </question>
+
+  <!-- ================= CATEGORY ================= -->
+  <question type="category">
+    <category>
+      <text>$course$/top/Final Exam Blanc/Graphs</text>
+    </category>
+    <info format="html">
+      <text><![CDATA[Graph theory: degrees, trees, Euler, coloring.]]></text>
+    </info>
+  </question>
+
+  <!-- Q13 numerical -->
+  <question type="numerical">
+    <name><text>FB-GRP-01 Edges of K5</text></name>
+    <questiontext format="html">
+      <text><![CDATA[<p>How many edges does the complete graph <em>K</em><sub>5</sub> have?</p>]]></text>
+    </questiontext>
+    <defaultgrade>1</defaultgrade>
+    <answer fraction="100"><text>10</text><tolerance>0</tolerance><feedback format="html"><text><![CDATA[Correct: C(5,2) = 10.]]></text></feedback></answer>
+  </question>
+
+  <!-- Q14 multichoice -->
+  <question type="multichoice">
+    <name><text>FB-GRP-02 Characterising a tree</text></name>
+    <questiontext format="html">
+      <text><![CDATA[<p>A connected undirected graph with <em>n</em> vertices and exactly <em>n</em> &minus; 1 edges is called a:</p>]]></text>
+    </questiontext>
+    <defaultgrade>1</defaultgrade>
+    <single>true</single>
+    <shuffleanswers>true</shuffleanswers>
+    <answernumbering>abc</answernumbering>
+    <answer fraction="0"><text>complete graph</text><feedback format="html"><text><![CDATA[Incorrect.]]></text></feedback></answer>
+    <answer fraction="0"><text>cycle</text><feedback format="html"><text><![CDATA[A cycle on n vertices has n edges.]]></text></feedback></answer>
+    <answer fraction="100"><text>tree</text><feedback format="html"><text><![CDATA[Correct.]]></text></feedback></answer>
+    <answer fraction="0"><text>bipartite graph</text><feedback format="html"><text><![CDATA[Not necessarily.]]></text></feedback></answer>
+  </question>
+
+  <!-- Q15 truefalse -->
+  <question type="truefalse">
+    <name><text>FB-GRP-03 Planarity of complete graphs</text></name>
+    <questiontext format="html">
+      <text><![CDATA[<p>Every complete graph <em>K</em><sub>n</sub> is planar for all <em>n</em>.</p>]]></text>
+    </questiontext>
+    <defaultgrade>1</defaultgrade>
+    <answer fraction="100"><text>false</text><feedback format="html"><text><![CDATA[Correct: K5 is not planar.]]></text></feedback></answer>
+    <answer fraction="0"><text>true</text><feedback format="html"><text><![CDATA[Incorrect: K5 (and larger) is not planar.]]></text></feedback></answer>
+  </question>
+
+  <!-- Q16 shortanswer -->
+  <question type="shortanswer">
+    <name><text>FB-GRP-04 Hamiltonian path</text></name>
+    <questiontext format="html">
+      <text><![CDATA[<p>A path that visits every vertex of a graph exactly once is called a ______ path. (One word.)</p>]]></text>
+    </questiontext>
+    <defaultgrade>1</defaultgrade>
+    <usecase>0</usecase>
+    <answer fraction="100"><text>Hamiltonian</text><feedback format="html"><text><![CDATA[Correct.]]></text></feedback></answer>
+    <answer fraction="100"><text>Hamilton</text><feedback format="html"><text><![CDATA[Correct.]]></text></feedback></answer>
+    <answer fraction="0"><text>*</text><feedback format="html"><text><![CDATA[The term is "Hamiltonian".]]></text></feedback></answer>
+  </question>
+
+  <!-- Q17 numerical -->
+  <question type="numerical">
+    <name><text>FB-GRP-05 Edges from degree sequence</text></name>
+    <questiontext format="html">
+      <text><![CDATA[<p>A graph has 6 vertices, each of degree 3. How many edges does it have?</p>]]></text>
+    </questiontext>
+    <defaultgrade>1</defaultgrade>
+    <answer fraction="100"><text>9</text><tolerance>0</tolerance><feedback format="html"><text><![CDATA[Correct: (6&times;3)/2 = 9 by the handshaking lemma.]]></text></feedback></answer>
+  </question>
+
+  <!-- Q18 multichoice -->
+  <question type="multichoice">
+    <name><text>FB-GRP-06 Chromatic number</text></name>
+    <questiontext format="html">
+      <text><![CDATA[<p>What is the chromatic number of a bipartite graph that contains at least one edge?</p>]]></text>
+    </questiontext>
+    <defaultgrade>1</defaultgrade>
+    <single>true</single>
+    <shuffleanswers>true</shuffleanswers>
+    <answernumbering>abc</answernumbering>
+    <answer fraction="0"><text>1</text><feedback format="html"><text><![CDATA[A graph with an edge needs at least 2 colors.]]></text></feedback></answer>
+    <answer fraction="0"><text>3</text><feedback format="html"><text><![CDATA[Incorrect.]]></text></feedback></answer>
+    <answer fraction="100"><text>2</text><feedback format="html"><text><![CDATA[Correct: bipartite graphs are exactly the 2-colorable graphs (with an edge).]]></text></feedback></answer>
+    <answer fraction="0"><text>4</text><feedback format="html"><text><![CDATA[Incorrect.]]></text></feedback></answer>
+  </question>
+
+  <!-- ============================================================= -->
+  <!-- ===============  ADDITIONAL PRACTICE BANK (50)  ============== -->
+  <!-- ============================================================= -->
+
+  <!-- ================= CATEGORY ================= -->
+  <question type="category">
+    <category>
+      <text>$course$/top/Final Exam Blanc/Induction and Recursion</text>
+    </category>
+  </question>
+
+  <!-- IND-07 numerical -->
+  <question type="numerical">
+    <name><text>FB-IND-07 Gauss sum to 100</text></name>
+    <questiontext format="html"><text><![CDATA[<p>Compute 1 + 2 + 3 + &hellip; + 100.</p>]]></text></questiontext>
+    <defaultgrade>1</defaultgrade>
+    <answer fraction="100"><text>5050</text><tolerance>0</tolerance><feedback format="html"><text><![CDATA[Correct: 100&middot;101/2 = 5050.]]></text></feedback></answer>
+  </question>
+
+  <!-- IND-08 multichoice (correct pos 3) -->
+  <question type="multichoice">
+    <name><text>FB-IND-08 Sum of squares formula</text></name>
+    <questiontext format="html"><text><![CDATA[<p>For <em>n</em> &ge; 1, the sum 1<sup>2</sup> + 2<sup>2</sup> + &hellip; + <em>n</em><sup>2</sup> equals:</p>]]></text></questiontext>
+    <defaultgrade>1</defaultgrade><single>true</single><shuffleanswers>true</shuffleanswers><answernumbering>abc</answernumbering>
+    <answer fraction="0"><text>n(n+1)/2</text><feedback format="html"><text><![CDATA[That is the sum of integers.]]></text></feedback></answer>
+    <answer fraction="0"><text><![CDATA[( n(n+1)/2 )<sup>2</sup>]]></text><feedback format="html"><text><![CDATA[That is the sum of cubes.]]></text></feedback></answer>
+    <answer fraction="100"><text>n(n+1)(2n+1)/6</text><feedback format="html"><text><![CDATA[Correct.]]></text></feedback></answer>
+    <answer fraction="0"><text><![CDATA[n<sup>2</sup>(n+1)]]></text><feedback format="html"><text><![CDATA[Incorrect.]]></text></feedback></answer>
+  </question>
+
+  <!-- IND-09 numerical -->
+  <question type="numerical">
+    <name><text>FB-IND-09 Arithmetic term</text></name>
+    <questiontext format="html"><text><![CDATA[<p>Let <em>a</em><sub>1</sub> = 5 and <em>a</em><sub>n</sub> = <em>a</em><sub>n&minus;1</sub> + 4. Find <em>a</em><sub>6</sub>.</p>]]></text></questiontext>
+    <defaultgrade>1</defaultgrade>
+    <answer fraction="100"><text>25</text><tolerance>0</tolerance><feedback format="html"><text><![CDATA[Correct: 5, 9, 13, 17, 21, 25.]]></text></feedback></answer>
+  </question>
+
+  <!-- IND-10 truefalse -->
+  <question type="truefalse">
+    <name><text>FB-IND-10 Odd numbers sum</text></name>
+    <questiontext format="html"><text><![CDATA[<p>For all <em>n</em> &ge; 1, 1 + 3 + 5 + &hellip; + (2<em>n</em>&minus;1) = <em>n</em><sup>2</sup>.</p>]]></text></questiontext>
+    <defaultgrade>1</defaultgrade>
+    <answer fraction="100"><text>true</text><feedback format="html"><text><![CDATA[Correct.]]></text></feedback></answer>
+    <answer fraction="0"><text>false</text><feedback format="html"><text><![CDATA[It is exactly n squared.]]></text></feedback></answer>
+  </question>
+
+  <!-- IND-11 numerical -->
+  <question type="numerical">
+    <name><text>FB-IND-11 Geometric term</text></name>
+    <questiontext format="html"><text><![CDATA[<p>Let <em>a</em><sub>0</sub> = 1 and <em>a</em><sub>n</sub> = 3 <em>a</em><sub>n&minus;1</sub>. Find <em>a</em><sub>4</sub>.</p>]]></text></questiontext>
+    <defaultgrade>1</defaultgrade>
+    <answer fraction="100"><text>81</text><tolerance>0</tolerance><feedback format="html"><text><![CDATA[Correct: 3<sup>4</sup> = 81.]]></text></feedback></answer>
+  </question>
+
+  <!-- IND-12 shortanswer -->
+  <question type="shortanswer">
+    <name><text>FB-IND-12 Closed form (arithmetic)</text></name>
+    <questiontext format="html"><text><![CDATA[<p><em>a</em><sub>0</sub> = 1 and <em>a</em><sub>n</sub> = <em>a</em><sub>n&minus;1</sub> + 2. Give the closed form (write as 2n+1).</p>]]></text></questiontext>
+    <defaultgrade>1</defaultgrade><usecase>0</usecase>
+    <answer fraction="100"><text>2n+1</text><feedback format="html"><text><![CDATA[Correct.]]></text></feedback></answer>
+    <answer fraction="100"><text>2*n+1</text><feedback format="html"><text><![CDATA[Correct.]]></text></feedback></answer>
+    <answer fraction="0"><text>*</text><feedback format="html"><text><![CDATA[The closed form is 2n+1.]]></text></feedback></answer>
+  </question>
+
+  <!-- IND-13 multichoice (correct pos 2) -->
+  <question type="multichoice">
+    <name><text>FB-IND-13 Base case</text></name>
+    <questiontext format="html"><text><![CDATA[<p>To prove <em>P</em>(<em>n</em>) for all <em>n</em> &ge; 1 by induction, the base case to verify is:</p>]]></text></questiontext>
+    <defaultgrade>1</defaultgrade><single>true</single><shuffleanswers>true</shuffleanswers><answernumbering>abc</answernumbering>
+    <answer fraction="0"><text>P(0)</text><feedback format="html"><text><![CDATA[The statement starts at n = 1.]]></text></feedback></answer>
+    <answer fraction="100"><text>P(1)</text><feedback format="html"><text><![CDATA[Correct.]]></text></feedback></answer>
+    <answer fraction="0"><text>P(k)</text><feedback format="html"><text><![CDATA[That is the induction hypothesis.]]></text></feedback></answer>
+    <answer fraction="0"><text>P(k+1)</text><feedback format="html"><text><![CDATA[That is the inductive step.]]></text></feedback></answer>
+  </question>
+
+  <!-- IND-14 numerical -->
+  <question type="numerical">
+    <name><text>FB-IND-14 Fibonacci F8</text></name>
+    <questiontext format="html"><text><![CDATA[<p>With <em>F</em><sub>1</sub> = <em>F</em><sub>2</sub> = 1, compute <em>F</em><sub>8</sub>.</p>]]></text></questiontext>
+    <defaultgrade>1</defaultgrade>
+    <answer fraction="100"><text>21</text><tolerance>0</tolerance><feedback format="html"><text><![CDATA[Correct: 1,1,2,3,5,8,13,21.]]></text></feedback></answer>
+  </question>
+
+  <!-- IND-15 numerical -->
+  <question type="numerical">
+    <name><text>FB-IND-15 Sum to 50</text></name>
+    <questiontext format="html"><text><![CDATA[<p>Compute 1 + 2 + &hellip; + 50.</p>]]></text></questiontext>
+    <defaultgrade>1</defaultgrade>
+    <answer fraction="100"><text>1275</text><tolerance>0</tolerance><feedback format="html"><text><![CDATA[Correct: 50&middot;51/2 = 1275.]]></text></feedback></answer>
+  </question>
+
+  <!-- IND-16 truefalse -->
+  <question type="truefalse">
+    <name><text>FB-IND-16 Strong vs ordinary induction</text></name>
+    <questiontext format="html"><text><![CDATA[<p>Strong induction and ordinary induction are equivalent in proving power.</p>]]></text></questiontext>
+    <defaultgrade>1</defaultgrade>
+    <answer fraction="100"><text>true</text><feedback format="html"><text><![CDATA[Correct: anything provable by one is provable by the other.]]></text></feedback></answer>
+    <answer fraction="0"><text>false</text><feedback format="html"><text><![CDATA[They are equivalent in power.]]></text></feedback></answer>
+  </question>
+
+  <!-- IND-17 multichoice (correct pos 4) -->
+  <question type="multichoice">
+    <name><text>FB-IND-17 Sum of even numbers</text></name>
+    <questiontext format="html"><text><![CDATA[<p>For <em>n</em> &ge; 1, 2 + 4 + 6 + &hellip; + 2<em>n</em> equals:</p>]]></text></questiontext>
+    <defaultgrade>1</defaultgrade><single>true</single><shuffleanswers>true</shuffleanswers><answernumbering>abc</answernumbering>
+    <answer fraction="0"><text><![CDATA[n<sup>2</sup>]]></text><feedback format="html"><text><![CDATA[Incorrect.]]></text></feedback></answer>
+    <answer fraction="0"><text>n(n+1)/2</text><feedback format="html"><text><![CDATA[Incorrect.]]></text></feedback></answer>
+    <answer fraction="0"><text>2n</text><feedback format="html"><text><![CDATA[That is only the last term.]]></text></feedback></answer>
+    <answer fraction="100"><text>n(n+1)</text><feedback format="html"><text><![CDATA[Correct: 2(1+2+...+n) = n(n+1).]]></text></feedback></answer>
+  </question>
+
+  <!-- IND-18 numerical -->
+  <question type="numerical">
+    <name><text>FB-IND-18 Doubling term</text></name>
+    <questiontext format="html"><text><![CDATA[<p><em>a</em><sub>1</sub> = 1 and <em>a</em><sub>n</sub> = 2 <em>a</em><sub>n&minus;1</sub>. Find <em>a</em><sub>6</sub>.</p>]]></text></questiontext>
+    <defaultgrade>1</defaultgrade>
+    <answer fraction="100"><text>32</text><tolerance>0</tolerance><feedback format="html"><text><![CDATA[Correct: 1,2,4,8,16,32.]]></text></feedback></answer>
+  </question>
+
+  <!-- IND-19 shortanswer -->
+  <question type="shortanswer">
+    <name><text>FB-IND-19 Tower of Hanoi</text></name>
+    <questiontext format="html"><text><![CDATA[<p>The minimum number of moves to solve the Tower of Hanoi with <em>n</em> disks is given by the closed form ______. (Write as 2^n-1.)</p>]]></text></questiontext>
+    <defaultgrade>1</defaultgrade><usecase>0</usecase>
+    <answer fraction="100"><text>2^n-1</text><feedback format="html"><text><![CDATA[Correct.]]></text></feedback></answer>
+    <answer fraction="100"><text>2**n-1</text><feedback format="html"><text><![CDATA[Correct.]]></text></feedback></answer>
+    <answer fraction="0"><text>*</text><feedback format="html"><text><![CDATA[The answer is 2^n - 1.]]></text></feedback></answer>
+  </question>
+
+  <!-- IND-20 numerical -->
+  <question type="numerical">
+    <name><text>FB-IND-20 Sum of first 10 squares</text></name>
+    <questiontext format="html"><text><![CDATA[<p>Compute 1<sup>2</sup> + 2<sup>2</sup> + &hellip; + 10<sup>2</sup>.</p>]]></text></questiontext>
+    <defaultgrade>1</defaultgrade>
+    <answer fraction="100"><text>385</text><tolerance>0</tolerance><feedback format="html"><text><![CDATA[Correct: 10&middot;11&middot;21/6 = 385.]]></text></feedback></answer>
+  </question>
+
+  <!-- IND-21 multichoice (correct pos 2) -->
+  <question type="multichoice">
+    <name><text>FB-IND-21 Sum of cubes</text></name>
+    <questiontext format="html"><text><![CDATA[<p>For <em>n</em> &ge; 1, 1<sup>3</sup> + 2<sup>3</sup> + &hellip; + <em>n</em><sup>3</sup> equals:</p>]]></text></questiontext>
+    <defaultgrade>1</defaultgrade><single>true</single><shuffleanswers>true</shuffleanswers><answernumbering>abc</answernumbering>
+    <answer fraction="0"><text>n(n+1)(2n+1)/6</text><feedback format="html"><text><![CDATA[That is the sum of squares.]]></text></feedback></answer>
+    <answer fraction="100"><text><![CDATA[( n(n+1)/2 )<sup>2</sup>]]></text><feedback format="html"><text><![CDATA[Correct.]]></text></feedback></answer>
+    <answer fraction="0"><text>n(n+1)/2</text><feedback format="html"><text><![CDATA[That is the sum of integers.]]></text></feedback></answer>
+    <answer fraction="0"><text><![CDATA[n<sup>4</sup>]]></text><feedback format="html"><text><![CDATA[Incorrect.]]></text></feedback></answer>
+  </question>
+
+  <!-- IND-22 truefalse -->
+  <question type="truefalse">
+    <name><text>FB-IND-22 Inductive step</text></name>
+    <questiontext format="html"><text><![CDATA[<p>In the inductive step we prove <em>P</em>(<em>k</em>+1) assuming <em>P</em>(<em>k</em>).</p>]]></text></questiontext>
+    <defaultgrade>1</defaultgrade>
+    <answer fraction="100"><text>true</text><feedback format="html"><text><![CDATA[Correct.]]></text></feedback></answer>
+    <answer fraction="0"><text>false</text><feedback format="html"><text><![CDATA[That is exactly the inductive step.]]></text></feedback></answer>
+  </question>
+
+  <!-- IND-23 numerical -->
+  <question type="numerical">
+    <name><text>FB-IND-23 Recurrence with index</text></name>
+    <questiontext format="html"><text><![CDATA[<p><em>a</em><sub>1</sub> = 2 and <em>a</em><sub>n</sub> = <em>a</em><sub>n&minus;1</sub> + <em>n</em> for <em>n</em> &ge; 2. Find <em>a</em><sub>4</sub>.</p>]]></text></questiontext>
+    <defaultgrade>1</defaultgrade>
+    <answer fraction="100"><text>11</text><tolerance>0</tolerance><feedback format="html"><text><![CDATA[Correct: 2, 4, 7, 11.]]></text></feedback></answer>
+  </question>
+
+  <!-- ================= CATEGORY ================= -->
+  <question type="category">
+    <category>
+      <text>$course$/top/Final Exam Blanc/Counting</text>
+    </category>
+  </question>
+
+  <!-- CNT-07 numerical -->
+  <question type="numerical">
+    <name><text>FB-CNT-07 Factorial</text></name>
+    <questiontext format="html"><text><![CDATA[<p>Compute 6!.</p>]]></text></questiontext>
+    <defaultgrade>1</defaultgrade>
+    <answer fraction="100"><text>720</text><tolerance>0</tolerance><feedback format="html"><text><![CDATA[Correct: 720.]]></text></feedback></answer>
+  </question>
+
+  <!-- CNT-08 multichoice (correct pos 4) -->
+  <question type="multichoice">
+    <name><text>FB-CNT-08 Combination C(7,3)</text></name>
+    <questiontext format="html"><text><![CDATA[<p>The value of C(7, 3) is:</p>]]></text></questiontext>
+    <defaultgrade>1</defaultgrade><single>true</single><shuffleanswers>true</shuffleanswers><answernumbering>abc</answernumbering>
+    <answer fraction="0"><text>21</text><feedback format="html"><text><![CDATA[That is C(7,2).]]></text></feedback></answer>
+    <answer fraction="0"><text>210</text><feedback format="html"><text><![CDATA[That is P(7,3).]]></text></feedback></answer>
+    <answer fraction="0"><text>42</text><feedback format="html"><text><![CDATA[Incorrect.]]></text></feedback></answer>
+    <answer fraction="100"><text>35</text><feedback format="html"><text><![CDATA[Correct: 7!/(3!4!) = 35.]]></text></feedback></answer>
+  </question>
+
+  <!-- CNT-09 numerical -->
+  <question type="numerical">
+    <name><text>FB-CNT-09 Permutation P(5,3)</text></name>
+    <questiontext format="html"><text><![CDATA[<p>Compute P(5, 3) = 5!/(5&minus;3)!.</p>]]></text></questiontext>
+    <defaultgrade>1</defaultgrade>
+    <answer fraction="100"><text>60</text><tolerance>0</tolerance><feedback format="html"><text><![CDATA[Correct: 5&middot;4&middot;3 = 60.]]></text></feedback></answer>
+  </question>
+
+  <!-- CNT-10 truefalse -->
+  <question type="truefalse">
+    <name><text>FB-CNT-10 Bit strings length 10</text></name>
+    <questiontext format="html"><text><![CDATA[<p>There are 1024 bit strings of length 10.</p>]]></text></questiontext>
+    <defaultgrade>1</defaultgrade>
+    <answer fraction="100"><text>true</text><feedback format="html"><text><![CDATA[Correct: 2<sup>10</sup> = 1024.]]></text></feedback></answer>
+    <answer fraction="0"><text>false</text><feedback format="html"><text><![CDATA[2^10 = 1024.]]></text></feedback></answer>
+  </question>
+
+  <!-- CNT-11 numerical -->
+  <question type="numerical">
+    <name><text>FB-CNT-11 Arrangements of MISSISSIPPI</text></name>
+    <questiontext format="html"><text><![CDATA[<p>How many distinct arrangements of the letters of <strong>MISSISSIPPI</strong> are there? (M:1, I:4, S:4, P:2)</p>]]></text></questiontext>
+    <defaultgrade>1</defaultgrade>
+    <answer fraction="100"><text>34650</text><tolerance>0</tolerance><feedback format="html"><text><![CDATA[Correct: 11!/(4!&middot;4!&middot;2!) = 34650.]]></text></feedback></answer>
+  </question>
+
+  <!-- CNT-12 multichoice (correct pos 2) -->
+  <question type="multichoice">
+    <name><text>FB-CNT-12 Subsets of a 5-set</text></name>
+    <questiontext format="html"><text><![CDATA[<p>How many subsets does a set with 5 elements have?</p>]]></text></questiontext>
+    <defaultgrade>1</defaultgrade><single>true</single><shuffleanswers>true</shuffleanswers><answernumbering>abc</answernumbering>
+    <answer fraction="0"><text>25</text><feedback format="html"><text><![CDATA[Incorrect.]]></text></feedback></answer>
+    <answer fraction="100"><text>32</text><feedback format="html"><text><![CDATA[Correct: 2<sup>5</sup> = 32.]]></text></feedback></answer>
+    <answer fraction="0"><text>10</text><feedback format="html"><text><![CDATA[Incorrect.]]></text></feedback></answer>
+    <answer fraction="0"><text>120</text><feedback format="html"><text><![CDATA[That is 5!.]]></text></feedback></answer>
+  </question>
+
+  <!-- CNT-13 numerical -->
+  <question type="numerical">
+    <name><text>FB-CNT-13 Combination C(10,2)</text></name>
+    <questiontext format="html"><text><![CDATA[<p>Compute C(10, 2).</p>]]></text></questiontext>
+    <defaultgrade>1</defaultgrade>
+    <answer fraction="100"><text>45</text><tolerance>0</tolerance><feedback format="html"><text><![CDATA[Correct: 10&middot;9/2 = 45.]]></text></feedback></answer>
+  </question>
+
+  <!-- CNT-14 shortanswer -->
+  <question type="shortanswer">
+    <name><text>FB-CNT-14 Pigeonhole (days of week)</text></name>
+    <questiontext format="html"><text><![CDATA[<p>Minimum number of people needed to guarantee that two were born on the same day of the week? (Enter a number.)</p>]]></text></questiontext>
+    <defaultgrade>1</defaultgrade><usecase>0</usecase>
+    <answer fraction="100"><text>8</text><feedback format="html"><text><![CDATA[Correct: 7 days + 1.]]></text></feedback></answer>
+    <answer fraction="0"><text>*</text><feedback format="html"><text><![CDATA[The answer is 8.]]></text></feedback></answer>
+  </question>
+
+  <!-- CNT-15 numerical -->
+  <question type="numerical">
+    <name><text>FB-CNT-15 Combination C(9,4)</text></name>
+    <questiontext format="html"><text><![CDATA[<p>Compute C(9, 4).</p>]]></text></questiontext>
+    <defaultgrade>1</defaultgrade>
+    <answer fraction="100"><text>126</text><tolerance>0</tolerance><feedback format="html"><text><![CDATA[Correct: 9!/(4!5!) = 126.]]></text></feedback></answer>
+  </question>
+
+  <!-- CNT-16 multichoice (correct pos 3) -->
+  <question type="multichoice">
+    <name><text>FB-CNT-16 Value of C(n,0)</text></name>
+    <questiontext format="html"><text><![CDATA[<p>For any integer <em>n</em> &ge; 0, the value of C(<em>n</em>, 0) is:</p>]]></text></questiontext>
+    <defaultgrade>1</defaultgrade><single>true</single><shuffleanswers>true</shuffleanswers><answernumbering>abc</answernumbering>
+    <answer fraction="0"><text>0</text><feedback format="html"><text><![CDATA[Incorrect.]]></text></feedback></answer>
+    <answer fraction="0"><text>n</text><feedback format="html"><text><![CDATA[That is C(n,1).]]></text></feedback></answer>
+    <answer fraction="100"><text>1</text><feedback format="html"><text><![CDATA[Correct: there is one empty subset.]]></text></feedback></answer>
+    <answer fraction="0"><text>n!</text><feedback format="html"><text><![CDATA[Incorrect.]]></text></feedback></answer>
+  </question>
+
+  <!-- CNT-17 numerical -->
+  <question type="numerical">
+    <name><text>FB-CNT-17 Number of 4-digit PINs</text></name>
+    <questiontext format="html"><text><![CDATA[<p>How many 4-digit PIN codes are there (each digit 0&ndash;9, repetition allowed)?</p>]]></text></questiontext>
+    <defaultgrade>1</defaultgrade>
+    <answer fraction="100"><text>10000</text><tolerance>0</tolerance><feedback format="html"><text><![CDATA[Correct: 10<sup>4</sup> = 10000.]]></text></feedback></answer>
+  </question>
+
+  <!-- CNT-18 truefalse -->
+  <question type="truefalse">
+    <name><text>FB-CNT-18 P(n,n)</text></name>
+    <questiontext format="html"><text><![CDATA[<p>The number of permutations of all <em>n</em> objects is P(<em>n</em>, <em>n</em>) = <em>n</em>!.</p>]]></text></questiontext>
+    <defaultgrade>1</defaultgrade>
+    <answer fraction="100"><text>true</text><feedback format="html"><text><![CDATA[Correct.]]></text></feedback></answer>
+    <answer fraction="0"><text>false</text><feedback format="html"><text><![CDATA[P(n,n) = n!/0! = n!.]]></text></feedback></answer>
+  </question>
+
+  <!-- CNT-19 numerical -->
+  <question type="numerical">
+    <name><text>FB-CNT-19 Arrange 7 books</text></name>
+    <questiontext format="html"><text><![CDATA[<p>In how many ways can 7 distinct books be arranged on a shelf?</p>]]></text></questiontext>
+    <defaultgrade>1</defaultgrade>
+    <answer fraction="100"><text>5040</text><tolerance>0</tolerance><feedback format="html"><text><![CDATA[Correct: 7! = 5040.]]></text></feedback></answer>
+  </question>
+
+  <!-- CNT-20 multichoice (correct pos 2) -->
+  <question type="multichoice">
+    <name><text>FB-CNT-20 Diagonals of a pentagon</text></name>
+    <questiontext format="html"><text><![CDATA[<p>How many diagonals does a convex pentagon (5 vertices) have?</p>]]></text></questiontext>
+    <defaultgrade>1</defaultgrade><single>true</single><shuffleanswers>true</shuffleanswers><answernumbering>abc</answernumbering>
+    <answer fraction="0"><text>10</text><feedback format="html"><text><![CDATA[That is C(5,2), before removing the 5 sides.]]></text></feedback></answer>
+    <answer fraction="100"><text>5</text><feedback format="html"><text><![CDATA[Correct: C(5,2) &minus; 5 = 5.]]></text></feedback></answer>
+    <answer fraction="0"><text>7</text><feedback format="html"><text><![CDATA[Incorrect.]]></text></feedback></answer>
+    <answer fraction="0"><text>15</text><feedback format="html"><text><![CDATA[Incorrect.]]></text></feedback></answer>
+  </question>
+
+  <!-- CNT-21 numerical -->
+  <question type="numerical">
+    <name><text>FB-CNT-21 C(12,12)</text></name>
+    <questiontext format="html"><text><![CDATA[<p>Compute C(12, 12).</p>]]></text></questiontext>
+    <defaultgrade>1</defaultgrade>
+    <answer fraction="100"><text>1</text><tolerance>0</tolerance><feedback format="html"><text><![CDATA[Correct: choosing all of them, only 1 way.]]></text></feedback></answer>
+  </question>
+
+  <!-- CNT-22 shortanswer -->
+  <question type="shortanswer">
+    <name><text>FB-CNT-22 Name of n!</text></name>
+    <questiontext format="html"><text><![CDATA[<p>The product <em>n</em> &middot; (<em>n</em>&minus;1) &middot; &hellip; &middot; 2 &middot; 1, written <em>n</em>!, is called the ______ of <em>n</em>. (One word.)</p>]]></text></questiontext>
+    <defaultgrade>1</defaultgrade><usecase>0</usecase>
+    <answer fraction="100"><text>factorial</text><feedback format="html"><text><![CDATA[Correct.]]></text></feedback></answer>
+    <answer fraction="0"><text>*</text><feedback format="html"><text><![CDATA[The term is "factorial".]]></text></feedback></answer>
+  </question>
+
+  <!-- CNT-23 numerical -->
+  <question type="numerical">
+    <name><text>FB-CNT-23 Committee of 4 from 10</text></name>
+    <questiontext format="html"><text><![CDATA[<p>In how many ways can a committee of 4 be chosen from 10 people?</p>]]></text></questiontext>
+    <defaultgrade>1</defaultgrade>
+    <answer fraction="100"><text>210</text><tolerance>0</tolerance><feedback format="html"><text><![CDATA[Correct: C(10,4) = 210.]]></text></feedback></answer>
+  </question>
+
+  <!-- ================= CATEGORY ================= -->
+  <question type="category">
+    <category>
+      <text>$course$/top/Final Exam Blanc/Graphs</text>
+    </category>
+  </question>
+
+  <!-- GRP-07 numerical -->
+  <question type="numerical">
+    <name><text>FB-GRP-07 Edges of K7</text></name>
+    <questiontext format="html"><text><![CDATA[<p>How many edges does the complete graph <em>K</em><sub>7</sub> have?</p>]]></text></questiontext>
+    <defaultgrade>1</defaultgrade>
+    <answer fraction="100"><text>21</text><tolerance>0</tolerance><feedback format="html"><text><![CDATA[Correct: C(7,2) = 21.]]></text></feedback></answer>
+  </question>
+
+  <!-- GRP-08 multichoice (correct pos 3) -->
+  <question type="multichoice">
+    <name><text>FB-GRP-08 Degree sum, 8 edges</text></name>
+    <questiontext format="html"><text><![CDATA[<p>In a graph with 8 edges, the sum of all vertex degrees is:</p>]]></text></questiontext>
+    <defaultgrade>1</defaultgrade><single>true</single><shuffleanswers>true</shuffleanswers><answernumbering>abc</answernumbering>
+    <answer fraction="0"><text>8</text><feedback format="html"><text><![CDATA[That is the number of edges.]]></text></feedback></answer>
+    <answer fraction="0"><text>4</text><feedback format="html"><text><![CDATA[Incorrect.]]></text></feedback></answer>
+    <answer fraction="100"><text>16</text><feedback format="html"><text><![CDATA[Correct: 2 &times; 8 = 16.]]></text></feedback></answer>
+    <answer fraction="0"><text>64</text><feedback format="html"><text><![CDATA[Incorrect.]]></text></feedback></answer>
+  </question>
+
+  <!-- GRP-09 truefalse -->
+  <question type="truefalse">
+    <name><text>FB-GRP-09 Odd-degree vertices</text></name>
+    <questiontext format="html"><text><![CDATA[<p>In any undirected graph, the number of vertices of odd degree is even.</p>]]></text></questiontext>
+    <defaultgrade>1</defaultgrade>
+    <answer fraction="100"><text>true</text><feedback format="html"><text><![CDATA[Correct: a corollary of the handshaking lemma.]]></text></feedback></answer>
+    <answer fraction="0"><text>false</text><feedback format="html"><text><![CDATA[It is always even.]]></text></feedback></answer>
+  </question>
+
+  <!-- GRP-10 numerical -->
+  <question type="numerical">
+    <name><text>FB-GRP-10 Edges of a tree</text></name>
+    <questiontext format="html"><text><![CDATA[<p>How many edges does a tree with 12 vertices have?</p>]]></text></questiontext>
+    <defaultgrade>1</defaultgrade>
+    <answer fraction="100"><text>11</text><tolerance>0</tolerance><feedback format="html"><text><![CDATA[Correct: n &minus; 1 = 11.]]></text></feedback></answer>
+  </question>
+
+  <!-- GRP-11 multichoice (correct pos 2) -->
+  <question type="multichoice">
+    <name><text>FB-GRP-11 Planarity of K3,3</text></name>
+    <questiontext format="html"><text><![CDATA[<p>The complete bipartite graph <em>K</em><sub>3,3</sub> is:</p>]]></text></questiontext>
+    <defaultgrade>1</defaultgrade><single>true</single><shuffleanswers>true</shuffleanswers><answernumbering>abc</answernumbering>
+    <answer fraction="0"><text>planar</text><feedback format="html"><text><![CDATA[K3,3 is one of the two Kuratowski non-planar graphs.]]></text></feedback></answer>
+    <answer fraction="100"><text>not planar</text><feedback format="html"><text><![CDATA[Correct: K3,3 is not planar.]]></text></feedback></answer>
+    <answer fraction="0"><text>a tree</text><feedback format="html"><text><![CDATA[It has cycles.]]></text></feedback></answer>
+    <answer fraction="0"><text>disconnected</text><feedback format="html"><text><![CDATA[It is connected.]]></text></feedback></answer>
+  </question>
+
+  <!-- GRP-12 numerical -->
+  <question type="numerical">
+    <name><text>FB-GRP-12 Edges from regular degrees</text></name>
+    <questiontext format="html"><text><![CDATA[<p>A graph has 5 vertices, each of degree 4. How many edges does it have?</p>]]></text></questiontext>
+    <defaultgrade>1</defaultgrade>
+    <answer fraction="100"><text>10</text><tolerance>0</tolerance><feedback format="html"><text><![CDATA[Correct: (5&times;4)/2 = 10.]]></text></feedback></answer>
+  </question>
+
+  <!-- GRP-13 shortanswer -->
+  <question type="shortanswer">
+    <name><text>FB-GRP-13 Euler circuit</text></name>
+    <questiontext format="html"><text><![CDATA[<p>A closed walk that uses every edge of a graph exactly once and returns to its start is called an Euler ______. (One word.)</p>]]></text></questiontext>
+    <defaultgrade>1</defaultgrade><usecase>0</usecase>
+    <answer fraction="100"><text>circuit</text><feedback format="html"><text><![CDATA[Correct.]]></text></feedback></answer>
+    <answer fraction="100"><text>cycle</text><feedback format="html"><text><![CDATA[Accepted.]]></text></feedback></answer>
+    <answer fraction="0"><text>*</text><feedback format="html"><text><![CDATA[The term is "Euler circuit".]]></text></feedback></answer>
+  </question>
+
+  <!-- GRP-14 truefalse -->
+  <question type="truefalse">
+    <name><text>FB-GRP-14 Definition of a tree</text></name>
+    <questiontext format="html"><text><![CDATA[<p>A tree is a connected graph that contains no cycles.</p>]]></text></questiontext>
+    <defaultgrade>1</defaultgrade>
+    <answer fraction="100"><text>true</text><feedback format="html"><text><![CDATA[Correct.]]></text></feedback></answer>
+    <answer fraction="0"><text>false</text><feedback format="html"><text><![CDATA[That is the definition of a tree.]]></text></feedback></answer>
+  </question>
+
+  <!-- GRP-15 numerical -->
+  <question type="numerical">
+    <name><text>FB-GRP-15 Edges of K2,3</text></name>
+    <questiontext format="html"><text><![CDATA[<p>How many edges does the complete bipartite graph <em>K</em><sub>2,3</sub> have?</p>]]></text></questiontext>
+    <defaultgrade>1</defaultgrade>
+    <answer fraction="100"><text>6</text><tolerance>0</tolerance><feedback format="html"><text><![CDATA[Correct: 2 &times; 3 = 6.]]></text></feedback></answer>
+  </question>
+
+  <!-- GRP-16 multichoice (correct pos 4) -->
+  <question type="multichoice">
+    <name><text>FB-GRP-16 Chromatic number of K4</text></name>
+    <questiontext format="html"><text><![CDATA[<p>What is the chromatic number of the complete graph <em>K</em><sub>4</sub>?</p>]]></text></questiontext>
+    <defaultgrade>1</defaultgrade><single>true</single><shuffleanswers>true</shuffleanswers><answernumbering>abc</answernumbering>
+    <answer fraction="0"><text>2</text><feedback format="html"><text><![CDATA[Every two vertices are adjacent, so 2 is not enough.]]></text></feedback></answer>
+    <answer fraction="0"><text>3</text><feedback format="html"><text><![CDATA[Incorrect for K4.]]></text></feedback></answer>
+    <answer fraction="0"><text>1</text><feedback format="html"><text><![CDATA[Incorrect.]]></text></feedback></answer>
+    <answer fraction="100"><text>4</text><feedback format="html"><text><![CDATA[Correct: chi(K_n) = n.]]></text></feedback></answer>
+  </question>
+
+  <!-- GRP-17 numerical -->
+  <question type="numerical">
+    <name><text>FB-GRP-17 Max edges, 8 vertices</text></name>
+    <questiontext format="html"><text><![CDATA[<p>What is the maximum number of edges in a simple undirected graph with 8 vertices?</p>]]></text></questiontext>
+    <defaultgrade>1</defaultgrade>
+    <answer fraction="100"><text>28</text><tolerance>0</tolerance><feedback format="html"><text><![CDATA[Correct: C(8,2) = 28.]]></text></feedback></answer>
+  </question>
+
+  <!-- GRP-18 truefalse -->
+  <question type="truefalse">
+    <name><text>FB-GRP-18 Euler circuit degrees</text></name>
+    <questiontext format="html"><text><![CDATA[<p>If a connected graph has an Euler circuit, then every vertex has even degree.</p>]]></text></questiontext>
+    <defaultgrade>1</defaultgrade>
+    <answer fraction="100"><text>true</text><feedback format="html"><text><![CDATA[Correct.]]></text></feedback></answer>
+    <answer fraction="0"><text>false</text><feedback format="html"><text><![CDATA[Even degree everywhere is required for an Euler circuit.]]></text></feedback></answer>
+  </question>
+
+  <!-- GRP-19 shortanswer -->
+  <question type="shortanswer">
+    <name><text>FB-GRP-19 Planar graph</text></name>
+    <questiontext format="html"><text><![CDATA[<p>A graph that can be drawn in the plane with no edges crossing is called a ______ graph. (One word.)</p>]]></text></questiontext>
+    <defaultgrade>1</defaultgrade><usecase>0</usecase>
+    <answer fraction="100"><text>planar</text><feedback format="html"><text><![CDATA[Correct.]]></text></feedback></answer>
+    <answer fraction="0"><text>*</text><feedback format="html"><text><![CDATA[The term is "planar".]]></text></feedback></answer>
+  </question>
+
+  <!-- GRP-20 numerical -->
+  <question type="numerical">
+    <name><text>FB-GRP-20 Euler's formula (faces)</text></name>
+    <questiontext format="html"><text><![CDATA[<p>A connected planar graph has 6 vertices and 9 edges. By Euler's formula <em>v</em> &minus; <em>e</em> + <em>f</em> = 2, how many faces <em>f</em> does it have?</p>]]></text></questiontext>
+    <defaultgrade>1</defaultgrade>
+    <answer fraction="100"><text>5</text><tolerance>0</tolerance><feedback format="html"><text><![CDATA[Correct: f = 2 &minus; 6 + 9 = 5.]]></text></feedback></answer>
+  </question>
+
+  <!-- GRP-21 multichoice (correct pos 3) -->
+  <question type="multichoice">
+    <name><text>FB-GRP-21 Degree in a cycle graph</text></name>
+    <questiontext format="html"><text><![CDATA[<p>In the cycle graph <em>C</em><sub>n</sub> (<em>n</em> &ge; 3), every vertex has degree:</p>]]></text></questiontext>
+    <defaultgrade>1</defaultgrade><single>true</single><shuffleanswers>true</shuffleanswers><answernumbering>abc</answernumbering>
+    <answer fraction="0"><text>1</text><feedback format="html"><text><![CDATA[Incorrect.]]></text></feedback></answer>
+    <answer fraction="0"><text>n</text><feedback format="html"><text><![CDATA[That would be a complete graph.]]></text></feedback></answer>
+    <answer fraction="100"><text>2</text><feedback format="html"><text><![CDATA[Correct: each vertex has two neighbours.]]></text></feedback></answer>
+    <answer fraction="0"><text>3</text><feedback format="html"><text><![CDATA[Incorrect.]]></text></feedback></answer>
+  </question>
+
+  <!-- GRP-22 numerical -->
+  <question type="numerical">
+    <name><text>FB-GRP-22 Edges of C6</text></name>
+    <questiontext format="html"><text><![CDATA[<p>How many edges does the cycle graph <em>C</em><sub>6</sub> have?</p>]]></text></questiontext>
+    <defaultgrade>1</defaultgrade>
+    <answer fraction="100"><text>6</text><tolerance>0</tolerance><feedback format="html"><text><![CDATA[Correct: a cycle on n vertices has n edges.]]></text></feedback></answer>
+  </question>
+
+</quiz>
