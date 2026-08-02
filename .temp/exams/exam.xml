@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Midterm Exam - Discrete Mathematics (ACSP) - Pr. El Hadiq Zouhair & Pr. Ismail Bouishak -->
+<quiz>
+
+  <question type="category">
+    <category>
+      <text>$course$/top/Midterm Discrete Math ACSP/Exam</text>
+    </category>
+    <info format="html">
+      <text><![CDATA[<p>Midterm Discrete Mathematics exam (ACSP). 12 questions: Logic &amp; predicates &amp; inference (4), Discrete Structures (6), Proofs (2).</p>]]></text>
+    </info>
+  </question>
+
+  <!-- ============ PART I — LOGIC, PREDICATES & INFERENCE (Q1-Q4) ============ -->
+
+  <question type="multichoice">
+    <name><text>Q1 - Logical equivalence of a negated implication</text></name>
+    <questiontext format="html">
+      <text><![CDATA[<p><strong>[Logic]</strong> Which proposition is logically equivalent to \( \neg(p \rightarrow q) \)?</p>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text><![CDATA[<p>Since \( p \rightarrow q \equiv \neg p \lor q \), we get \( \neg(p \rightarrow q) \equiv \neg(\neg p \lor q) \equiv p \land \neg q \) by De Morgan.</p>]]></text>
+    </generalfeedback>
+    <defaultgrade>1</defaultgrade>
+    <penalty>0.3333333</penalty>
+    <hidden>0</hidden>
+    <single>true</single>
+    <shuffleanswers>true</shuffleanswers>
+    <answernumbering>abc</answernumbering>
+    <correctfeedback format="html"><text>Correct.</text></correctfeedback>
+    <partiallycorrectfeedback format="html"><text>Partially correct.</text></partiallycorrectfeedback>
+    <incorrectfeedback format="html"><text>Incorrect.</text></incorrectfeedback>
+    <answer fraction="100" format="html"><text><![CDATA[\( p \land \neg q \)]]></text><feedback format="html"><text>Correct — a true antecedent with a false consequent.</text></feedback></answer>
+    <answer fraction="0" format="html"><text><![CDATA[\( \neg p \lor q \)]]></text><feedback format="html"><text>This is \(p \rightarrow q\) itself, not its negation.</text></feedback></answer>
+    <answer fraction="0" format="html"><text><![CDATA[\( \neg p \land q \)]]></text><feedback format="html"><text>No.</text></feedback></answer>
+    <answer fraction="0" format="html"><text><![CDATA[\( p \rightarrow \neg q \)]]></text><feedback format="html"><text>No.</text></feedback></answer>
+  </question>
+
+  <question type="truefalse">
+    <name><text>Q2 - Tautology check (Modus Ponens)</text></name>
+    <questiontext format="html">
+      <text><![CDATA[<p><strong>[Logic]</strong> The proposition \( \big(p \land (p \rightarrow q)\big) \rightarrow q \) is a tautology.</p>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text><![CDATA[<p>True. This is exactly the Modus Ponens form; its truth table is true in every row.</p>]]></text>
+    </generalfeedback>
+    <defaultgrade>1</defaultgrade>
+    <penalty>1</penalty>
+    <hidden>0</hidden>
+    <answer fraction="100" format="moodle_auto_format"><text>true</text><feedback format="html"><text>Correct — it is valid (Modus Ponens).</text></feedback></answer>
+    <answer fraction="0" format="moodle_auto_format"><text>false</text><feedback format="html"><text>Build the truth table: the implication holds in every case.</text></feedback></answer>
+  </question>
+
+  <question type="matching">
+    <name><text>Q3 - Match each rule of inference to its form</text></name>
+    <questiontext format="html">
+      <text><![CDATA[<p><strong>[Inference]</strong> Match each rule of inference with its symbolic form (premises \( \vdash \) conclusion).</p>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text><![CDATA[<p>Modus Ponens: \(p,\; p\to q \vdash q\). Modus Tollens: \(\neg q,\; p\to q \vdash \neg p\). Hypothetical Syllogism: \(p\to q,\; q\to r \vdash p\to r\). Disjunctive Syllogism: \(p\lor q,\; \neg p \vdash q\).</p>]]></text>
+    </generalfeedback>
+    <defaultgrade>4</defaultgrade>
+    <penalty>0.3333333</penalty>
+    <hidden>0</hidden>
+    <shuffleanswers>true</shuffleanswers>
+    <correctfeedback format="html"><text>All matches correct.</text></correctfeedback>
+    <partiallycorrectfeedback format="html"><text>Some matches are correct.</text></partiallycorrectfeedback>
+    <incorrectfeedback format="html"><text>None correct — review the inference rules.</text></incorrectfeedback>
+    <subquestion format="html"><text><![CDATA[Modus Ponens]]></text><answer><text><![CDATA[p, p→q ⊢ q]]></text></answer></subquestion>
+    <subquestion format="html"><text><![CDATA[Modus Tollens]]></text><answer><text><![CDATA[¬q, p→q ⊢ ¬p]]></text></answer></subquestion>
+    <subquestion format="html"><text><![CDATA[Hypothetical Syllogism]]></text><answer><text><![CDATA[p→q, q→r ⊢ p→r]]></text></answer></subquestion>
+    <subquestion format="html"><text><![CDATA[Disjunctive Syllogism]]></text><answer><text><![CDATA[p∨q, ¬p ⊢ q]]></text></answer></subquestion>
+  </question>
+
+  <question type="multichoice">
+    <name><text>Q4 - Negation of a universally quantified implication</text></name>
+    <questiontext format="html">
+      <text><![CDATA[<p><strong>[Predicates]</strong> What is the negation of \( \forall x\, \big(P(x) \rightarrow Q(x)\big) \)?</p>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text><![CDATA[<p>\( \neg \forall x\,(P(x)\to Q(x)) \equiv \exists x\, \neg(P(x)\to Q(x)) \equiv \exists x\,(P(x) \land \neg Q(x)) \).</p>]]></text>
+    </generalfeedback>
+    <defaultgrade>1</defaultgrade>
+    <penalty>0.3333333</penalty>
+    <hidden>0</hidden>
+    <single>true</single>
+    <shuffleanswers>true</shuffleanswers>
+    <answernumbering>abc</answernumbering>
+    <correctfeedback format="html"><text>Correct.</text></correctfeedback>
+    <partiallycorrectfeedback format="html"><text>Partially correct.</text></partiallycorrectfeedback>
+    <incorrectfeedback format="html"><text>Incorrect.</text></incorrectfeedback>
+    <answer fraction="100" format="html"><text><![CDATA[\( \exists x\, (P(x) \land \neg Q(x)) \)]]></text><feedback format="html"><text>Correct.</text></feedback></answer>
+    <answer fraction="0" format="html"><text><![CDATA[\( \exists x\, (P(x) \rightarrow \neg Q(x)) \)]]></text><feedback format="html"><text>No — negate the implication first.</text></feedback></answer>
+    <answer fraction="0" format="html"><text><![CDATA[\( \forall x\, (P(x) \land \neg Q(x)) \)]]></text><feedback format="html"><text>The quantifier must flip to \(\exists\).</text></feedback></answer>
+    <answer fraction="0" format="html"><text><![CDATA[\( \exists x\, (\neg P(x) \land Q(x)) \)]]></text><feedback format="html"><text>No.</text></feedback></answer>
+  </question>
+
+  <!-- ============ PART II — DISCRETE STRUCTURES (Q5-Q10) ============ -->
+
+  <question type="numerical">
+    <name><text>Q5 - Sets: inclusion-exclusion</text></name>
+    <questiontext format="html">
+      <text><![CDATA[<p><strong>[Sets]</strong> Let \(A\) and \(B\) be finite sets with \(|A| = 12\), \(|B| = 18\) and \(|A \cap B| = 5\). Compute \(|A \cup B|\).</p>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text><![CDATA[<p>\( |A \cup B| = |A| + |B| - |A \cap B| = 12 + 18 - 5 = 25. \)</p>]]></text>
+    </generalfeedback>
+    <defaultgrade>1</defaultgrade>
+    <penalty>0.3333333</penalty>
+    <hidden>0</hidden>
+    <answer fraction="100" format="moodle_auto_format"><text>25</text><feedback format="html"><text>Correct.</text></feedback><tolerance>0</tolerance></answer>
+    <unitgradingtype>0</unitgradingtype>
+    <unitpenalty>0.1000000</unitpenalty>
+    <showunits>3</showunits>
+    <unitsleft>0</unitsleft>
+  </question>
+
+  <question type="multianswer">
+    <name><text>Q6 - Set operations: De Morgan &amp; cardinality (Cloze)</text></name>
+    <questiontext format="html">
+      <text><![CDATA[<p><strong>[Operations on Sets]</strong> Work in a universe \(U\) with \(|U| = 30\).</p>
+<p>(a) By De Morgan's law, the complement of \(A \cup B\) equals {1:MULTICHOICE:=Aᶜ ∩ Bᶜ~Aᶜ ∪ Bᶜ~A ∩ B~Aᶜ ∩ B}&nbsp; (here Xᶜ denotes the complement of X).</p>
+<p>(b) If \(|A| = 8\), then \( |\overline{A}| = \) {2:NUMERICAL:=22:0}.</p>
+<p>(c) The number of subsets of a set with 4 elements is {1:NUMERICAL:=16:0}.</p>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text><![CDATA[<p>(a) De Morgan: \( \overline{A \cup B} = \overline{A} \cap \overline{B} \). (b) \( |\overline{A}| = 30 - 8 = 22 \). (c) \( 2^4 = 16 \).</p>]]></text>
+    </generalfeedback>
+    <penalty>0.3333333</penalty>
+    <hidden>0</hidden>
+  </question>
+
+  <question type="multichoice">
+    <name><text>Q7 - Relations: properties of an equivalence relation</text></name>
+    <questiontext format="html">
+      <text><![CDATA[<p><strong>[Relations]</strong> Define a relation \(R\) on \( \mathbb{Z} \) by \( a\,R\,b \iff a - b \text{ is even} \). Select <em>all</em> properties that \(R\) satisfies.</p>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text><![CDATA[<p>\(a-a=0\) is even (reflexive); if \(a-b\) is even so is \(b-a\) (symmetric); if \(a-b\) and \(b-c\) are even, then \(a-c\) is even (transitive). So \(R\) is an equivalence relation — not antisymmetric (e.g. \(2R4\) and \(4R2\) with \(2\neq 4\)).</p>]]></text>
+    </generalfeedback>
+    <defaultgrade>2</defaultgrade>
+    <penalty>0.3333333</penalty>
+    <hidden>0</hidden>
+    <single>false</single>
+    <shuffleanswers>true</shuffleanswers>
+    <answernumbering>abc</answernumbering>
+    <correctfeedback format="html"><text>Correct.</text></correctfeedback>
+    <partiallycorrectfeedback format="html"><text>Partially correct.</text></partiallycorrectfeedback>
+    <incorrectfeedback format="html"><text>Incorrect.</text></incorrectfeedback>
+    <answer fraction="33.33333" format="html"><text>Reflexive</text><feedback format="html"><text>Yes.</text></feedback></answer>
+    <answer fraction="33.33333" format="html"><text>Symmetric</text><feedback format="html"><text>Yes.</text></feedback></answer>
+    <answer fraction="33.33333" format="html"><text>Transitive</text><feedback format="html"><text>Yes.</text></feedback></answer>
+    <answer fraction="-100" format="html"><text>Antisymmetric</text><feedback format="html"><text>No — distinct congruent integers relate both ways.</text></feedback></answer>
+  </question>
+
+  <question type="shortanswer">
+    <name><text>Q8 - Functions: classify f(x)=2x+3</text></name>
+    <questiontext format="html">
+      <text><![CDATA[<p><strong>[Functions]</strong> Consider \( f:\mathbb{R}\to\mathbb{R},\ f(x)=2x+3 \). In one word, what kind of function is it (injective, surjective, or bijective — give the strongest correct term)?</p>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text><![CDATA[<p>It is a non-constant affine map on \(\mathbb{R}\): one-to-one and onto, hence <strong>bijective</strong>. Its inverse is \( f^{-1}(y) = (y-3)/2 \).</p>]]></text>
+    </generalfeedback>
+    <defaultgrade>1</defaultgrade>
+    <penalty>0.3333333</penalty>
+    <hidden>0</hidden>
+    <usecase>0</usecase>
+    <answer fraction="100" format="moodle_auto_format"><text>bijective</text><feedback format="html"><text>Correct.</text></feedback></answer>
+    <answer fraction="100" format="moodle_auto_format"><text>bijection</text><feedback format="html"><text>Correct.</text></feedback></answer>
+    <answer fraction="100" format="moodle_auto_format"><text>bijective function</text><feedback format="html"><text>Correct.</text></feedback></answer>
+  </question>
+
+  <question type="numerical">
+    <name><text>Q9 - Sequences: term of a recurrence</text></name>
+    <questiontext format="html">
+      <text><![CDATA[<p><strong>[Sequences]</strong> A sequence is defined by \( u_0 = 2 \) and \( u_{n+1} = 3u_n - 1 \) for \( n \ge 0 \). Compute \( u_3 \).</p>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text><![CDATA[<p>\( u_1 = 3(2)-1 = 5,\ u_2 = 3(5)-1 = 14,\ u_3 = 3(14)-1 = 41. \)</p>]]></text>
+    </generalfeedback>
+    <defaultgrade>1</defaultgrade>
+    <penalty>0.3333333</penalty>
+    <hidden>0</hidden>
+    <answer fraction="100" format="moodle_auto_format"><text>41</text><feedback format="html"><text>Correct.</text></feedback><tolerance>0</tolerance></answer>
+    <unitgradingtype>0</unitgradingtype>
+    <unitpenalty>0.1000000</unitpenalty>
+    <showunits>3</showunits>
+    <unitsleft>0</unitsleft>
+  </question>
+
+  <question type="numerical">
+    <name><text>Q10 - Series: sum of an infinite geometric series</text></name>
+    <questiontext format="html">
+      <text><![CDATA[<p><strong>[Series]</strong> Compute \( \displaystyle\sum_{k=0}^{\infty} \left(\frac{1}{3}\right)^{k} \). Give the answer as a decimal.</p>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text><![CDATA[<p>Geometric series with ratio \( r = 1/3 \) (\(|r|<1\)): sum \( = \dfrac{1}{1-1/3} = \dfrac{3}{2} = 1.5. \)</p>]]></text>
+    </generalfeedback>
+    <defaultgrade>1</defaultgrade>
+    <penalty>0.3333333</penalty>
+    <hidden>0</hidden>
+    <answer fraction="100" format="moodle_auto_format"><text>1.5</text><feedback format="html"><text>Correct.</text></feedback><tolerance>0.01</tolerance></answer>
+    <unitgradingtype>0</unitgradingtype>
+    <unitpenalty>0.1000000</unitpenalty>
+    <showunits>3</showunits>
+    <unitsleft>0</unitsleft>
+  </question>
+
+  <!-- ============ PART III — PROOFS (Q11-Q12) ============ -->
+
+  <question type="essay">
+    <name><text>Q11 - Proof by contradiction: irrationality of sqrt(2)</text></name>
+    <questiontext format="html">
+      <text><![CDATA[<p><strong>[Proof — Contradiction]</strong> Prove that \( \sqrt{2} \) is irrational using a proof by contradiction. State your assumption clearly, derive a contradiction, and conclude.</p>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text><![CDATA[<p><strong>Model proof.</strong> Assume, for contradiction, that \( \sqrt{2} \) is rational, so \( \sqrt{2} = \dfrac{a}{b} \) with \(a,b\in\mathbb{Z}\), \(b\neq 0\), and \( \gcd(a,b)=1 \). Then \( a^2 = 2b^2 \), so \(a^2\) is even, hence \(a\) is even: \(a = 2k\). Substituting, \(4k^2 = 2b^2 \Rightarrow b^2 = 2k^2\), so \(b\) is even too. Then \(2 \mid a\) and \(2 \mid b\), contradicting \( \gcd(a,b)=1 \). Therefore \( \sqrt{2} \) is irrational. \( \blacksquare \)</p>]]></text>
+    </generalfeedback>
+    <defaultgrade>3</defaultgrade>
+    <penalty>0</penalty>
+    <hidden>0</hidden>
+    <responseformat>editor</responseformat>
+    <responserequired>1</responserequired>
+    <responsefieldlines>15</responsefieldlines>
+    <minwordlimit></minwordlimit>
+    <maxwordlimit></maxwordlimit>
+    <attachments>0</attachments>
+    <attachmentsrequired>0</attachmentsrequired>
+    <graderinfo format="html"><text><![CDATA[<p>Award credit for: (1) stating the assumption \( \sqrt 2 = a/b \) in lowest terms; (2) deriving \(a\) even, then \(b\) even; (3) identifying the contradiction with \(\gcd(a,b)=1\); (4) correct conclusion.</p>]]></text></graderinfo>
+    <responsetemplate format="html"><text></text></responsetemplate>
+  </question>
+
+  <question type="essay">
+    <name><text>Q12 - Proof by contraposition: n^2 even implies n even</text></name>
+    <questiontext format="html">
+      <text><![CDATA[<p><strong>[Proof — Contraposition]</strong> Let \( n \in \mathbb{Z} \). Prove that <em>if \( n^2 \) is even then \( n \) is even</em>, using a proof by contraposition. State the contrapositive you will prove, then prove it.</p>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text><![CDATA[<p><strong>Model proof.</strong> The contrapositive is: "if \(n\) is odd then \(n^2\) is odd." Assume \(n\) is odd, so \(n = 2k+1\) for some \(k\in\mathbb{Z}\). Then \( n^2 = (2k+1)^2 = 4k^2 + 4k + 1 = 2(2k^2+2k) + 1 \), which is odd. Hence the contrapositive holds, and therefore the original statement "\(n^2\) even \(\Rightarrow n\) even" is true. \( \blacksquare \)</p>]]></text>
+    </generalfeedback>
+    <defaultgrade>3</defaultgrade>
+    <penalty>0</penalty>
+    <hidden>0</hidden>
+    <responseformat>editor</responseformat>
+    <responserequired>1</responserequired>
+    <responsefieldlines>15</responsefieldlines>
+    <minwordlimit></minwordlimit>
+    <maxwordlimit></maxwordlimit>
+    <attachments>0</attachments>
+    <attachmentsrequired>0</attachmentsrequired>
+    <graderinfo format="html"><text><![CDATA[<p>Award credit for: (1) correctly stating the contrapositive; (2) writing an odd \(n=2k+1\); (3) algebra showing \(n^2=2m+1\); (4) concluding the original implication.</p>]]></text></graderinfo>
+    <responsetemplate format="html"><text></text></responsetemplate>
+  </question>
+
+</quiz>

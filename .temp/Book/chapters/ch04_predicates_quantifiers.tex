@@ -1,0 +1,312 @@
+\chapter{Predicates and Quantifiers}
+\signature
+
+\section{Overview}
+
+Propositional logic cannot look inside a statement: from ``all men are mortal''
+and ``Socrates is a man'' it cannot extract ``Socrates is mortal''. Predicate
+logic repairs this by introducing \emph{variables}, \emph{predicates} and
+\emph{quantifiers}, turning logic into a language rich enough for all of
+mathematics.
+
+\section{Predicates}
+
+\begin{definition}[Predicate]
+A \emph{predicate} is a statement $P(x_1,\dots,x_n)$ containing variables,
+which becomes a proposition once each variable is given a value from its
+\emph{domain} (universe of discourse) $U$. A one-variable predicate is called a
+\emph{propositional function} $P : U \to \B$.
+\end{definition}
+
+\begin{example}
+Over $U = \Z$, let $P(x)$: ``$x^2 \leq 9$''. Then $P(2)$ is true, $P(5)$ is
+false; $P(x)$ alone is neither --- it is a function awaiting an argument.
+\end{example}
+
+\begin{example}[Pythagorean triples]
+Let $T(a,b,c)$: ``$a^2 + b^2 = c^2$'' over positive integers. Then
+$T(3,4,5)$ and $T(5,12,13)$ are true while $T(2,3,4)$ is false. The predicate
+packages infinitely many propositions into a single formula.
+\end{example}
+
+There are two ways to convert a predicate into a proposition: substitute
+concrete values, or \emph{quantify} the variables.
+
+\section{The universal quantifier}
+
+\begin{definition}
+The \emph{universal quantification} $\forall x\, P(x)$ (``for all $x$,
+$P(x)$'') is true exactly when $P(a)$ is true for \emph{every} element $a$ of
+the domain. An element $a$ with $P(a)$ false is a \emph{counterexample} and
+makes $\forall x\, P(x)$ false.
+\end{definition}
+
+\begin{example}
+Over $U = \R$: $\forall x\, (x^2 \geq 0)$ is true. Over $U = \Z$:
+$\forall x\, (x^2 > 0)$ is false --- the single counterexample $x = 0$
+suffices.
+\end{example}
+
+\begin{notebox}
+When the domain is finite, $U = \{a_1, \dots, a_n\}$, the universal
+quantifier is a big conjunction:
+$\forall x\,P(x) \equiv P(a_1) \wedge \cdots \wedge P(a_n)$.
+\end{notebox}
+
+\section{The existential quantifier}
+
+\begin{definition}
+The \emph{existential quantification} $\exists x\, P(x)$ (``there exists an
+$x$ such that $P(x)$'') is true exactly when $P(a)$ is true for \emph{at least
+one} element $a$ of the domain; a single \emph{witness} suffices.
+\end{definition}
+
+\begin{example}
+Over $U = \Z$: $\exists x\,(x^2 = 4)$ is true (witness $x = 2$, or $-2$);
+$\exists x\,(x^2 = 3)$ is false.
+\end{example}
+
+Over a finite domain the existential quantifier is a big disjunction:
+$\exists x\,P(x) \equiv P(a_1) \vee \cdots \vee P(a_n)$. The uniqueness
+variant $\exists!\,x\,P(x)$ asserts that exactly one witness exists.
+
+\begin{notebox}
+The truth of a quantified statement depends on the domain. ``$\exists x\,
+(2x = 1)$'' is false over $\Z$ but true over $\Q$. Always state the universe.
+\end{notebox}
+
+\section{Quantifier equivalences}
+
+\begin{theorem}[De Morgan laws for quantifiers]\label{thm:qdm}
+\[
+\neg\,\forall x\, P(x) \;\equiv\; \exists x\, \neg P(x),
+\qquad
+\neg\,\exists x\, P(x) \;\equiv\; \forall x\, \neg P(x).
+\]
+\end{theorem}
+
+Negation flips each quantifier as it moves inward. To negate a quantified
+statement: change every $\forall$ to $\exists$ and vice versa, then negate the
+matrix.
+
+\begin{theorem}[Distribution laws]
+$\forall$ distributes over $\wedge$, and $\exists$ over $\vee$:
+\[
+\forall x\,\bigl(P(x) \wedge Q(x)\bigr) \equiv \forall x P(x) \wedge \forall x Q(x),
+\qquad
+\exists x\,\bigl(P(x) \vee Q(x)\bigr) \equiv \exists x P(x) \vee \exists x Q(x).
+\]
+Neither distributes over the other connective: $\forall x\,(P(x) \vee Q(x))$
+is \emph{not} equivalent to $\forall x P(x) \vee \forall x Q(x)$, and dually.
+\end{theorem}
+
+\begin{example}
+Over $\Z$, with $P(x)$: ``$x$ is even'' and $Q(x)$: ``$x$ is odd'':
+$\forall x (P(x) \vee Q(x))$ is true, but
+$\forall x P(x) \vee \forall x Q(x)$ is false.
+\end{example}
+
+Restricted quantification abbreviates implication and conjunction:
+\[
+\forall x \in S,\ P(x) \;\text{ means }\; \forall x\,(x \in S \to P(x)),
+\qquad
+\exists x \in S,\ P(x) \;\text{ means }\; \exists x\,(x \in S \wedge P(x)).
+\]
+
+\section{Nested quantifiers}
+
+Quantifiers may be stacked; \textbf{order matters} when the quantifiers
+differ.
+
+\begin{example}
+Over $\R$:
+\[
+\forall x\, \exists y\, (x + y = 0)
+\]
+is true ($y = -x$ depends on $x$), while
+\[
+\exists y\, \forall x\, (x + y = 0)
+\]
+is false (no single $y$ works for all $x$). Same-type quantifiers commute:
+$\forall x \forall y \equiv \forall y \forall x$.
+\end{example}
+
+\begin{example}[The limit definition]
+``The sequence $(a_n)$ converges to $L$'' is the triply-quantified statement
+\[
+\forall \varepsilon > 0\ \exists N \in \N\ \forall n \geq N,\quad
+|a_n - L| < \varepsilon,
+\]
+whose negation, by repeated use of Theorem~\ref{thm:qdm}, is
+$\exists \varepsilon > 0\ \forall N\ \exists n \geq N,\ |a_n - L| \geq
+\varepsilon$. Fluency with nested quantifiers is exactly what analysis
+requires (Chapter~9).
+\end{example}
+
+\section{Translating statements}
+
+\begin{example}
+Domain: all people. $S(x)$: ``$x$ is a student''; $C(x)$: ``$x$ has a
+computer''; $F(x,y)$: ``$x$ and $y$ are friends''.
+\begin{itemize}
+\item ``Every student has a computer'':
+  $\forall x\,(S(x) \to C(x))$.
+\item ``Some student has no computer'':
+  $\exists x\,(S(x) \wedge \neg C(x))$.
+\item ``Everybody has a friend'': $\forall x\, \exists y\, F(x,y)$.
+\item ``There is someone who is friends with everyone'':
+  $\exists x\, \forall y\, F(x,y)$.
+\item ``No two distinct people have exactly the same friends'':
+  $\forall x \forall y\,\bigl(x \neq y \to \exists z\,(F(x,z) \oplus
+  F(y,z))\bigr)$.
+\end{itemize}
+\end{example}
+
+\begin{notebox}
+Pattern to memorise: \emph{universal} statements pair with $\to$
+(``all $S$ are $C$'': $\forall x (S(x) \to C(x))$), while \emph{existential}
+statements pair with $\wedge$ (``some $S$ is $C$'':
+$\exists x (S(x) \wedge C(x))$). Mixing these up is the most common
+translation error.
+\end{notebox}
+
+\section{Summary}
+
+Predicates are truth-valued functions of variables; quantifiers $\forall$ and
+$\exists$ bind those variables to produce propositions. Negation exchanges the
+two quantifiers (De Morgan); $\forall$ distributes over $\wedge$, $\exists$
+over $\vee$; the order of unlike nested quantifiers changes meaning. Universal
+claims are refuted by one counterexample; existential claims are proved by one
+witness.
+
+\section*{Exercises}
+\addcontentsline{toc}{section}{Exercises}
+
+\begin{exercise}{\easy}
+Let $P(x)$: ``$x^2 = x$'' over the domain $\Z$. Determine the truth values of
+$P(0)$, $P(1)$, $P(2)$, $\exists x\,P(x)$ and $\forall x\,P(x)$.
+\end{exercise}
+
+\begin{exercise}{\easy}
+Write the negation of each statement, with quantifiers pushed inward:
+(a) $\forall x\, (x^2 > x)$;\quad
+(b) $\exists x\, (x^2 = 2)$.
+\end{exercise}
+
+\begin{exercise}{\easy}
+Over the domain of all animals, with $C(x)$: ``$x$ is a cat'' and $M(x)$:
+``$x$ chases mice'', translate: (a) ``every cat chases mice'';
+(b) ``some cat does not chase mice''. Then negate (a) symbolically and in
+English.
+\end{exercise}
+
+\begin{exercise}{\medium}
+Determine, with justification, the truth value over $\Z$ of:
+(a) $\forall n\, \exists m\, (m > n)$;\quad
+(b) $\exists m\, \forall n\, (m > n)$;\quad
+(c) $\forall n\, \exists m\, (n + m = 0)$;\quad
+(d) $\exists m\, \forall n\, (nm = n)$.
+\end{exercise}
+
+\begin{exercise}{\medium}
+Show by a concrete domain and predicates that
+$\forall x\,(P(x) \vee Q(x))$ is not equivalent to
+$\forall x\,P(x) \vee \forall x\,Q(x)$, and that
+$\exists x\,(P(x) \wedge Q(x))$ is not equivalent to
+$\exists x\,P(x) \wedge \exists x\,Q(x)$.
+\end{exercise}
+
+\begin{exercise}{\medium}
+Express using quantifiers over $\Z$: (a) ``$n$ is even''; (b) ``$n$ is a
+perfect square''; (c) ``$n$ is prime'' (you may use $\mid$ for divisibility);
+(d) ``there is no largest integer''.
+\end{exercise}
+
+\begin{exercise}{\medium}
+Write the negation of the convergence statement
+$\forall \varepsilon > 0\ \exists N\ \forall n \geq N,\ |a_n - L| <
+\varepsilon$, justifying each quantifier flip.
+\end{exercise}
+
+\begin{exercise}{\hard}
+Let $F(x,y)$: ``$x$ trusts $y$'' over a set of people. Express:
+(a) ``everyone trusts somebody, but nobody trusts everybody'';
+(b) ``there are two distinct people who trust each other'';
+(c) ``trust is never mutual''. Can (b) and (c) both be true? Explain.
+\end{exercise}
+
+\begin{exercise}{\hard}
+Prove that $\exists x\,\forall y\,P(x,y) \;\models\;
+\forall y\,\exists x\,P(x,y)$, and give a counterexample showing the converse
+entailment fails.
+\end{exercise}
+
+\section*{Solutions to the Exercises}
+\addcontentsline{toc}{section}{Solutions to the Exercises}
+
+\begin{solution}{4.1}
+$x^2 = x$ holds iff $x(x-1)=0$ iff $x \in \{0,1\}$. So $P(0)$, $P(1)$ are
+true, $P(2)$ is false; $\exists x P(x)$ is true (witness $0$);
+$\forall x P(x)$ is false (counterexample $2$).
+\end{solution}
+
+\begin{solution}{4.2}
+(a) $\exists x\,(x^2 \leq x)$. (b) $\forall x\,(x^2 \neq 2)$.
+\end{solution}
+
+\begin{solution}{4.3}
+(a) $\forall x\,(C(x) \to M(x))$. (b) $\exists x\,(C(x) \wedge \neg M(x))$.
+Negation of (a): $\neg\forall x (C(x) \to M(x)) \equiv \exists x\,(C(x)
+\wedge \neg M(x))$ --- ``some cat does not chase mice'', which is exactly (b).
+\end{solution}
+
+\begin{solution}{4.4}
+(a) True: given $n$, take $m = n+1$. (b) False: for any $m$, $n = m$ fails
+$m > n$. (c) True: take $m = -n$. (d) True: $m = 1$ satisfies $n \cdot 1 = n$
+for all $n$.
+\end{solution}
+
+\begin{solution}{4.5}
+Over $\Z$ with $P$ = ``even'', $Q$ = ``odd'': every integer is even or odd,
+so $\forall x(P \vee Q)$ is true, while neither $\forall x P$ nor
+$\forall x Q$ holds. For the second pair: $\exists x P(x)$ and
+$\exists x Q(x)$ are both true, but no integer is both even and odd, so
+$\exists x (P \wedge Q)$ is false.
+\end{solution}
+
+\begin{solution}{4.6}
+(a) $\exists k\,(n = 2k)$.
+(b) $\exists k\,(n = k^2)$.
+(c) $n > 1 \wedge \forall d\,\bigl(d \mid n \to (d = 1 \vee d = n)\bigr)$.
+(d) $\neg\exists m\,\forall n\,(n \leq m)$, equivalently
+$\forall m\,\exists n\,(n > m)$.
+\end{solution}
+
+\begin{solution}{4.7}
+Negate step by step:
+$\neg\forall\varepsilon\,\Phi \equiv \exists\varepsilon\,\neg\Phi$;
+$\neg\exists N\,\Psi \equiv \forall N\,\neg\Psi$;
+$\neg\forall n \geq N\,\chi \equiv \exists n \geq N\,\neg\chi$; finally
+$\neg(|a_n - L| < \varepsilon) \equiv |a_n - L| \geq \varepsilon$. Result:
+\[
+\exists \varepsilon > 0\ \forall N\ \exists n \geq N,\quad
+|a_n - L| \geq \varepsilon .
+\]
+\end{solution}
+
+\begin{solution}{4.8}
+(a) $\forall x\,\exists y\,F(x,y) \;\wedge\; \neg\exists x\,\forall y\,F(x,y)$.
+(b) $\exists x\,\exists y\,\bigl(x \neq y \wedge F(x,y) \wedge F(y,x)\bigr)$.
+(c) $\forall x\,\forall y\,\bigl(x\neq y \to \neg(F(x,y) \wedge F(y,x))\bigr)$.
+(b) and (c) are direct negations of each other (over pairs of distinct
+people), so they cannot both be true in the same situation (assuming at least
+two people).
+\end{solution}
+
+\begin{solution}{4.9}
+Entailment: suppose $\exists x\,\forall y\,P(x,y)$, with witness $x_0$. Given
+any $y$, $P(x_0, y)$ holds, so $\exists x\,P(x,y)$ holds; as $y$ was
+arbitrary, $\forall y\,\exists x\,P(x,y)$. Converse fails: over $\R$ with
+$P(x,y)$: ``$x + y = 0$'', $\forall y\,\exists x$ is true ($x = -y$) but no
+single $x$ works for every $y$, so $\exists x\,\forall y$ is false.
+\end{solution}

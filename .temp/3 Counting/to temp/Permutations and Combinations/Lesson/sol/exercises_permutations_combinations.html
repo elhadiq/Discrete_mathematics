@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Permutations &amp; Combinations — Exercises</title>
+<script>
+  MathJax = {
+    tex: { inlineMath: [['$','$']], displayMath: [['$$','$$']] },
+    options: { skipHtmlTags: ['script','noscript','style','textarea'] }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --orange:    #e67e22;
+  --darkblue:  #2c3e50;
+  --lightbg:   #f4f9fc;
+  --border:    #dce3ea;
+  --py-fg:     #1f4e7a;
+  --py-bg:     #eaf3fb;
+  --py-border: #2a6fb3;
+  --py-head:   #2a6fb3;
+  --sp-fg:     #1e824c;
+  --sp-bg:     #e8f5ec;
+  --sp-border: #27ae60;
+  --sp-head:   #27ae60;
+  --su-fg:     #4a4aaa;
+  --su-bg:     #eeeeff;
+  --su-border: #6060cc;
+  --su-head:   #6060cc;
+  --out-fg:    #6e4b0a;
+  --out-bg:    #fff7e0;
+  --out-border:#e0b341;
+  --out-head:  #c89324;
+  --sol-bg:    #fdf6ee;
+  --sol-border:#e67e22;
+}
+
+body {
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  background: #e8edf2;
+  color: var(--darkblue);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem 1rem 5rem;
+  gap: 1.5rem;
+}
+
+.slide {
+  background: #fff;
+  width: 100%;
+  max-width: 940px;
+  border-radius: 10px;
+  box-shadow: 0 4px 18px rgba(0,0,0,.10);
+  padding: 2rem 2.4rem 1.6rem;
+  position: relative;
+}
+
+.slide.title-slide {
+  background: linear-gradient(145deg, #f4f9fc 60%, #e0eef7);
+  text-align: center;
+  border-top: 6px solid var(--orange);
+  padding: 2.5rem 2rem;
+}
+.slide.title-slide h1 { font-size: 1.9rem; color: var(--darkblue); margin-bottom: 0.4rem; }
+.slide.title-slide .subtitle { font-size: 1.15rem; color: #555; }
+
+h2.frame-title {
+  font-size: 1.4rem;
+  color: var(--orange);
+  font-weight: 700;
+  margin-bottom: 0.4rem;
+  padding-bottom: 0.3rem;
+  border-bottom: 2px solid #f9e4cc;
+}
+.ex-number {
+  display: inline-block;
+  background: var(--orange);
+  color: #fff;
+  font-weight: 700;
+  padding: 0.15em 0.6em;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  margin-right: 0.5rem;
+}
+.difficulty {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  padding: 0.1em 0.5em;
+  border-radius: 3px;
+  margin-left: 0.4rem;
+  vertical-align: middle;
+  text-transform: uppercase;
+}
+.easy   { background: #d4f4dd; color: #1e7a3b; }
+.medium { background: #fce4b6; color: #8a5400; }
+.hard   { background: #f8c8c8; color: #952020; }
+.kind {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  padding: 0.1em 0.55em;
+  border-radius: 3px;
+  margin-left: 0.4rem;
+  vertical-align: middle;
+  text-transform: uppercase;
+}
+.kind.lab  { background: #eaf3fb; color: #1f4e7a; }
+.kind.math { background: #f8e9ff; color: #5b1e7a; }
+
+p { line-height: 1.7; margin: 0.4rem 0; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.4rem; line-height: 1.85; }
+ul li::marker, ol li::marker { color: var(--orange); }
+
+.statement { margin: 0.3rem 0 0.6rem; }
+
+.python-block, .output-block {
+  border-radius: 6px;
+  overflow: hidden;
+  margin: 0.6rem 0;
+  border: 1px solid;
+}
+.python-block { border-color: var(--py-border); }
+.output-block { border-color: var(--out-border); margin: 0.4rem 0 0.6rem; }
+.python-label, .output-label {
+  display: block;
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  color: #fff;
+}
+.python-label { background: var(--py-head); }
+.output-label { background: var(--out-head); }
+.pane-code {
+  font-family: 'Consolas', 'Fira Code', monospace;
+  font-size: 0.83rem;
+  line-height: 1.6;
+  padding: 0.5rem 0.75rem;
+  white-space: pre;
+  display: block;
+  overflow-x: auto;
+}
+.python-block .pane-code { background: var(--py-bg); color: var(--py-fg); }
+.output-block .pane-code { background: var(--out-bg); color: var(--out-fg); }
+
+details.solution {
+  margin: 0.4rem 0 0.6rem;
+  background: var(--sol-bg);
+  border-left: 4px solid var(--sol-border);
+  border-radius: 4px;
+  padding: 0.5rem 0.8rem;
+}
+details.solution summary {
+  cursor: pointer;
+  font-weight: 700;
+  color: var(--orange);
+  list-style: none;
+  font-size: 0.9rem;
+  letter-spacing: 0.04em;
+}
+details.solution summary::before { content: "▸ "; }
+details.solution[open] summary::before { content: "▾ "; }
+details.solution > *:not(summary) { margin-top: 0.5rem; }
+
+.toc {
+  background: var(--lightbg);
+  border-left: 4px solid var(--orange);
+  padding: 0.8rem 1rem;
+  border-radius: 4px;
+}
+.toc a { color: var(--darkblue); text-decoration: none; }
+.toc a:hover { color: var(--orange); }
+code { background: #f0f3f7; color: #1f4e7a; padding: 0 .25em; border-radius: 3px; font-family: 'Consolas','Fira Code',monospace; }
+</style>
+</head>
+<body>
+
+<!-- ══ Title ════════════════════════════════════════════════════════ -->
+<section class="slide title-slide">
+  <h1>Discrete Mathematics — Permutations &amp; Combinations</h1>
+  <p class="subtitle">Exercises &amp; Solutions — 4 Python labs + 4 math problems</p>
+  <p style="font-size:1rem;color:#e67e22;margin-top:0.8rem;font-style:italic;font-weight:600;letter-spacing:.02em;">By Pr. El Hadiq Zouhair</p>
+</section>
+
+<!-- ══ TOC ══════════════════════════════════════════════════════════ -->
+<section class="slide">
+  <h2 class="frame-title">Contents</h2>
+  <div class="toc">
+    <p style="font-weight:700;color:var(--orange);margin-bottom:0.3rem;">Part A — Python labs</p>
+    <ol>
+      <li><a href="#ex1">Factorielle sans <code>math.factorial</code></a> <span class="difficulty easy">easy</span> <span class="kind lab">lab</span></li>
+      <li><a href="#ex2">Arrangements $P(n, k)$ par produit itératif</a> <span class="difficulty easy">easy</span> <span class="kind lab">lab</span></li>
+      <li><a href="#ex3">Coefficient binomial via le triangle de Pascal</a> <span class="difficulty medium">medium</span> <span class="kind lab">lab</span></li>
+      <li><a href="#ex4">Principe des tiroirs &amp; détecteur de collision</a> <span class="difficulty medium">medium</span> <span class="kind lab">lab</span></li>
+    </ol>
+    <p style="font-weight:700;color:var(--orange);margin:0.8rem 0 0.3rem;">Part B — Mathematical problems</p>
+    <ol start="5">
+      <li><a href="#ex5">Choix d'une équipe — binomial</a> <span class="difficulty easy">easy</span> <span class="kind math">math</span></li>
+      <li><a href="#ex6">Anagrammes de MISSISSIPPI — multinomial</a> <span class="difficulty medium">medium</span> <span class="kind math">math</span></li>
+      <li><a href="#ex7">Principe des tiroirs — mois de naissance</a> <span class="difficulty medium">medium</span> <span class="kind math">math</span></li>
+      <li><a href="#ex8">Étoiles et barres — distribution de bonbons</a> <span class="difficulty hard">hard</span> <span class="kind math">math</span></li>
+    </ol>
+  </div>
+</section>
+
+<!-- ══ Exercise 1 — LAB ═════════════════════════════════════════════ -->
+<section class="slide" id="ex1">
+  <h2 class="frame-title"><span class="ex-number">1</span>Factorielle <span class="difficulty easy">easy</span> <span class="kind lab">lab</span></h2>
+  <p class="statement">La factorielle compte le nombre de permutations d'un ensemble à $n$ éléments. Écrire une fonction <code>factorielle(n)</code> qui renvoie $n!$ pour tout entier $n \geq 0$, <strong>sans utiliser <code>math.factorial</code></strong>. On rappelle que $0! = 1$.</p>
+  <ul>
+    <li>Vérifier sur $n = 0, 1, 5, 9, 12$.</li>
+  </ul>
+
+  <details class="solution"><summary>Solution</summary>
+  <div class="python-block">
+    <span class="python-label">Python</span>
+    <span class="pane-code">def factorielle(n):
+    """Renvoie n! par accumulation itérative."""
+    resultat = 1
+    for k in range(2, n + 1):
+        resultat *= k
+    return resultat
+
+for n in (0, 1, 5, 9, 12):
+    print(f"{n}! = {factorielle(n)}")</span>
+  </div>
+  <div class="output-block">
+    <span class="output-label">Output</span>
+    <span class="pane-code">0! = 1
+1! = 1
+5! = 120
+9! = 362880
+12! = 479001600</span>
+  </div>
+  <p><strong>Justification.</strong> Par le principe du produit (§1.2 du cours), placer $n$ objets distincts dans un ordre revient à choisir le premier ($n$ choix), puis le deuxième ($n - 1$ choix), … La factorielle vaut donc $n \cdot (n-1) \cdots 2 \cdot 1$, avec la convention $0! = 1$ (produit vide).</p>
+  </details>
+</section>
+
+<!-- ══ Exercise 2 — LAB ═════════════════════════════════════════════ -->
+<section class="slide" id="ex2">
+  <h2 class="frame-title"><span class="ex-number">2</span>Arrangements $P(n, k)$ <span class="difficulty easy">easy</span> <span class="kind lab">lab</span></h2>
+  <p class="statement">$P(n, k)$ compte le nombre d'arrangements ordonnés sans répétition de $k$ éléments choisis dans un ensemble à $n$ éléments. Écrire <code>arrangements(n, k)</code> qui renvoie $n(n-1)(n-2)\cdots(n-k+1)$ par produit itératif, <strong>sans utiliser <code>math.perm</code> ni <code>math.factorial</code></strong>.</p>
+  <ul>
+    <li>Conventions : <code>arrangements(n, 0) == 1</code>, <code>arrangements(n, k) == 0</code> si $k &gt; n$.</li>
+    <li>Vérifier : $P(9, 3) = 504$, $P(12, 5) = 95\,040$.</li>
+  </ul>
+
+  <details class="solution"><summary>Solution</summary>
+  <div class="python-block">
+    <span class="python-label">Python</span>
+    <span class="pane-code">def arrangements(n, k):
+    """Renvoie P(n, k) = n*(n-1)*...*(n-k+1) sans bibliothèque."""
+    if k == 0:
+        return 1
+    if k > n:
+        return 0
+    resultat = 1
+    for i in range(k):
+        resultat *= (n - i)
+    return resultat
+
+for (n, k) in [(9, 3), (7, 0), (5, 8), (12, 5), (20, 10)]:
+    print(f"P({n},{k}) = {arrangements(n, k)}")</span>
+  </div>
+  <div class="output-block">
+    <span class="output-label">Output</span>
+    <span class="pane-code">P(9,3) = 504
+P(7,0) = 1
+P(5,8) = 0
+P(12,5) = 95040
+P(20,10) = 670442572800</span>
+  </div>
+  <p><strong>Justification.</strong> Le $i$-ème facteur dans la boucle ($i = 0, 1, \ldots, k-1$) place le $(i+1)$-ème objet : il reste $n - i$ choix possibles. Le produit donne $P(n, k) = n!/(n-k)!$.</p>
+  </details>
+</section>
+
+<!-- ══ Exercise 3 — LAB ═════════════════════════════════════════════ -->
+<section class="slide" id="ex3">
+  <h2 class="frame-title"><span class="ex-number">3</span>Coefficient binomial via Pascal <span class="difficulty medium">medium</span> <span class="kind lab">lab</span></h2>
+  <p class="statement">L'identité de Pascal donne $\binom{n}{k} = \binom{n-1}{k-1} + \binom{n-1}{k}$, avec $\binom{n}{0} = \binom{n}{n} = 1$. Écrire <code>binomial(n, k)</code> qui calcule $\binom{n}{k}$ en construisant ligne par ligne le triangle de Pascal, <strong>sans utiliser <code>math.comb</code></strong>. Renvoyer $0$ si $k &lt; 0$ ou $k &gt; n$.</p>
+  <ul>
+    <li>Vérifier : $\binom{12}{5} = 792$, $\binom{20}{10} = 184\,756$.</li>
+    <li>Vérifier la symétrie $\binom{n}{k} = \binom{n}{n-k}$ pour $n = 20$, $k = 7$.</li>
+  </ul>
+
+  <details class="solution"><summary>Solution</summary>
+  <div class="python-block">
+    <span class="python-label">Python</span>
+    <span class="pane-code">def binomial(n, k):
+    """Coefficient binomial calculé par le triangle de Pascal."""
+    if k < 0 or k > n:
+        return 0
+    ligne = [1]
+    for i in range(1, n + 1):
+        nouvelle = [1]
+        for j in range(1, i):
+            nouvelle.append(ligne[j - 1] + ligne[j])
+        nouvelle.append(1)
+        ligne = nouvelle
+    return ligne[k]
+
+print(binomial(12, 5))          # 792
+print(binomial(10, 4))          # 210
+print(binomial(20, 10))         # 184756
+print(binomial(7, -1))          # 0
+print(binomial(5, 8))           # 0
+
+# Symétrie
+print(binomial(20, 7), binomial(20, 13))   # 77520 77520</span>
+  </div>
+  <div class="output-block">
+    <span class="output-label">Output</span>
+    <span class="pane-code">792
+210
+184756
+0
+0
+77520 77520</span>
+  </div>
+  <p><strong>Justification.</strong> Chaque ligne $i$ du triangle est construite à partir de la ligne $i-1$ par l'identité de Pascal : l'entrée $\binom{i}{j}$ est la somme des deux entrées $\binom{i-1}{j-1}$ et $\binom{i-1}{j}$ (Pascal, §3.2 du cours). La symétrie $\binom{n}{k} = \binom{n}{n-k}$ se vérifie pour $\binom{20}{7} = \binom{20}{13} = 77\,520$.</p>
+  </details>
+</section>
+
+<!-- ══ Exercise 4 — LAB ═════════════════════════════════════════════ -->
+<section class="slide" id="ex4">
+  <h2 class="frame-title"><span class="ex-number">4</span>Principe des tiroirs &amp; détection de collision <span class="difficulty medium">medium</span> <span class="kind lab">lab</span></h2>
+  <p class="statement">Si $N$ pigeons sont répartis dans $k$ tiroirs, au moins un tiroir contient au moins $\lceil N/k \rceil$ pigeons.</p>
+  <ol>
+    <li>Écrire <code>tiroir_min(N, k)</code> qui renvoie le nombre minimum d'objets dans le tiroir le plus rempli, garanti par le principe des tiroirs généralisé (pour $N = 0$, $k \geq 1$, renvoyer $0$).</li>
+    <li>Écrire <code>a_collision(liste)</code> qui renvoie <code>True</code> si la liste contient au moins un doublon, <code>False</code> sinon.</li>
+    <li>Application : un mot de passe est tiré aléatoirement parmi $26^4 = 456\,976$ possibilités. Combien de personnes faut-il pour qu'au moins deux partagent leur mot de passe (par tiroirs) avec $1\,000\,000$ d'utilisateurs ?</li>
+  </ol>
+
+  <details class="solution"><summary>Solution</summary>
+  <div class="python-block">
+    <span class="python-label">Python</span>
+    <span class="pane-code">def tiroir_min(N, k):
+    """Borne de Dirichlet : ceil(N/k) sans bibliothèque."""
+    if N == 0:
+        return 0
+    return (N + k - 1) // k     # ceil-division entière
+
+def a_collision(liste):
+    """Vrai ssi un élément se répète."""
+    return len(set(liste)) < len(liste)
+
+print(tiroir_min(13, 12))            # 2  — anniversaires sur 12 mois
+print(tiroir_min(100, 12))           # 9  — 100 personnes / 12 mois
+print(tiroir_min(1_000_000, 456_976))# 3  — mots de passe 4 lettres
+print(a_collision([1, 2, 3, 4]))     # False
+print(a_collision([1, 2, 3, 2]))     # True</span>
+  </div>
+  <div class="output-block">
+    <span class="output-label">Output</span>
+    <span class="pane-code">2
+9
+3
+False
+True</span>
+  </div>
+  <p><strong>Justification.</strong></p>
+  <ol>
+    <li>$\lceil N/k \rceil = \lfloor (N + k - 1) / k \rfloor$ pour $N, k \in \mathbb{N}^*$ — formule arithmétique entière classique.</li>
+    <li><code>set(liste)</code> élimine les doublons ; si la taille diminue, il y a eu collision.</li>
+    <li>$\lceil 1\,000\,000 / 456\,976 \rceil = 3$ : au moins un mot de passe est partagé par $\geq 3$ utilisateurs.</li>
+  </ol>
+  </details>
+</section>
+
+<!-- ══ Exercise 5 — MATH ════════════════════════════════════════════ -->
+<section class="slide" id="ex5">
+  <h2 class="frame-title"><span class="ex-number">5</span>Choix d'une équipe — binomial <span class="difficulty easy">easy</span> <span class="kind math">math</span></h2>
+  <p class="statement">On choisit une équipe de $k = 5$ joueurs parmi un effectif de $n = 12$ personnes.</p>
+  <ol>
+    <li>Combien d'équipes différentes peut-on former ?</li>
+    <li>L'effectif contient $4$ Suisses, $5$ Éthiopiens et $3$ Brésiliens. Combien d'équipes de $5$ contiennent exactement $2$ Suisses, $2$ Éthiopiens et $1$ Brésilien ?</li>
+    <li>Si l'ordre comptait (top-$5$ classement), combien d'arrangements ?</li>
+  </ol>
+
+  <details class="solution"><summary>Solution</summary>
+  <p><strong>1.</strong> L'ordre des joueurs n'importe pas et il n'y a pas de répétition : combinaison.
+  $$\binom{12}{5} = \frac{12!}{5!\,7!} = \frac{12 \cdot 11 \cdot 10 \cdot 9 \cdot 8}{5!} = \frac{95\,040}{120} = 792.$$</p>
+  <p><strong>2.</strong> Choix indépendants dans chaque pays :
+  $$\binom{4}{2}\binom{5}{2}\binom{3}{1} = 6 \cdot 10 \cdot 3 = 180.$$</p>
+  <p><strong>3.</strong> Avec ordre : $P(12, 5) = 12 \cdot 11 \cdot 10 \cdot 9 \cdot 8 = 95\,040$.</p>
+  <div class="python-block">
+    <span class="python-label">Python — vérification</span>
+    <span class="pane-code">from math import comb, perm
+print(comb(12, 5))                      # 792
+print(comb(4, 2) * comb(5, 2) * comb(3, 1))  # 180
+print(perm(12, 5))                      # 95040</span>
+  </div>
+  </details>
+</section>
+
+<!-- ══ Exercise 6 — MATH ════════════════════════════════════════════ -->
+<section class="slide" id="ex6">
+  <h2 class="frame-title"><span class="ex-number">6</span>Anagrammes de MISSISSIPPI <span class="difficulty medium">medium</span> <span class="kind math">math</span></h2>
+  <p class="statement">Le mot <strong>MISSISSIPPI</strong> contient 11 lettres : 1 M, 4 I, 4 S et 2 P.</p>
+  <ol>
+    <li>Combien d'anagrammes distinctes peut-on former avec ces 11 lettres ?</li>
+    <li>Combien d'anagrammes commencent par <strong>M</strong> ?</li>
+    <li>Combien d'anagrammes ne contiennent <em>aucun</em> $\mathrm{SS}$ consécutif ? (Question ouverte, indication ci-dessous.)</li>
+  </ol>
+
+  <details class="solution"><summary>Solution</summary>
+  <p><strong>1.</strong> Formule multinomiale avec lettres répétées :
+  $$\binom{11}{1, 4, 4, 2} = \frac{11!}{1!\,4!\,4!\,2!} = \frac{39\,916\,800}{1 \cdot 24 \cdot 24 \cdot 2} = 34\,650.$$</p>
+  <p><strong>2.</strong> Fixer M en tête ; permuter les 10 lettres restantes (4 I, 4 S, 2 P) :
+  $\dfrac{10!}{4!\,4!\,2!} = \dfrac{3\,628\,800}{1152} = 3\,150.$ Cela représente $3\,150 / 34\,650 = 1/11$ des anagrammes — ce qui est cohérent par symétrie de position.</p>
+  <p><strong>3. Indication.</strong> Placer d'abord les 7 lettres non-S (1 M, 4 I, 2 P), créant 8 espaces possibles entre elles ; choisir 4 espaces où placer les S :
+  $\dfrac{7!}{1!\,4!\,2!} \cdot \binom{8}{4} = 105 \cdot 70 = 7\,350.$</p>
+  <div class="python-block">
+    <span class="python-label">Python — vérification</span>
+    <span class="pane-code">from math import factorial
+print(factorial(11) // (factorial(1)*factorial(4)*factorial(4)*factorial(2)))  # 34650
+print(factorial(10) // (factorial(4)*factorial(4)*factorial(2)))               # 3150
+
+# Vérification brute pour la partie 3 (énumération sur les 11!/(...) anagrammes)
+from itertools import permutations
+S = sorted(set(''.join(p) for p in permutations('MISSISSIPPI')))
+print(sum('SS' not in w for w in S))    # 7350</span>
+  </div>
+  </details>
+</section>
+
+<!-- ══ Exercise 7 — MATH ════════════════════════════════════════════ -->
+<section class="slide" id="ex7">
+  <h2 class="frame-title"><span class="ex-number">7</span>Principe des tiroirs — mois de naissance <span class="difficulty medium">medium</span> <span class="kind math">math</span></h2>
+  <p class="statement">Un groupe contient $N$ personnes. On range chaque personne dans le tiroir correspondant à son mois de naissance ($k = 12$ tiroirs).</p>
+  <ol>
+    <li>D'après le principe des tiroirs généralisé, quel est le nombre minimum garanti de personnes nées le même mois pour $N = 50$ ? pour $N = 100$ ? pour $N = 200$ ?</li>
+    <li>Quel est le plus petit $N$ tel qu'au moins $5$ personnes naissent forcément le même mois ?</li>
+    <li>Démontrer rigoureusement la borne $\lceil N/k \rceil$ (par contradiction).</li>
+  </ol>
+
+  <details class="solution"><summary>Solution</summary>
+  <p><strong>1.</strong> Borne $= \lceil N/12 \rceil$.</p>
+  <ul>
+    <li>$N = 50$ : $\lceil 50/12 \rceil = \lceil 4.166\rceil = 5$.</li>
+    <li>$N = 100$ : $\lceil 100/12 \rceil = \lceil 8.333 \rceil = 9$.</li>
+    <li>$N = 200$ : $\lceil 200/12 \rceil = \lceil 16.666 \rceil = 17$.</li>
+  </ul>
+  <p><strong>2.</strong> On veut $\lceil N/12 \rceil \geq 5$. Le plus petit $N$ est $N = 4 \cdot 12 + 1 = 49$ : avec $48$ personnes on peut placer exactement $4$ par mois, mais avec $49$ un mois en aura forcément au moins $5$.</p>
+  <p><strong>3. Démonstration.</strong> Supposons que chaque tiroir contienne au plus $\lceil N/k \rceil - 1$ pigeons. Alors le total est au plus
+  $k \cdot (\lceil N/k \rceil - 1) &lt; k \cdot (N/k) = N,$
+  utilisant $\lceil x \rceil - 1 &lt; x$. Contradiction : on a placé $N$ pigeons. Donc au moins un tiroir contient $\geq \lceil N/k \rceil$ pigeons. $\square$</p>
+  <div class="python-block">
+    <span class="python-label">Python — vérification</span>
+    <span class="pane-code">from math import ceil
+for N in (50, 100, 200): print(N, '→', ceil(N/12))
+# 50  → 5
+# 100 → 9
+# 200 → 17
+
+# Plus petit N pour ≥ 5 par mois
+N = next(N for N in range(1, 1000) if ceil(N/12) >= 5)
+print(N)   # 49</span>
+  </div>
+  </details>
+</section>
+
+<!-- ══ Exercise 8 — MATH ════════════════════════════════════════════ -->
+<section class="slide" id="ex8">
+  <h2 class="frame-title"><span class="ex-number">8</span>Étoiles et barres — distribution de bonbons <span class="difficulty hard">hard</span> <span class="kind math">math</span></h2>
+  <p class="statement">On distribue $k = 10$ bonbons <em>identiques</em> entre $n = 4$ enfants (un enfant peut recevoir 0, 1 ou plusieurs bonbons).</p>
+  <ol>
+    <li>Combien de distributions possibles ?</li>
+    <li>Combien de distributions si <strong>chaque</strong> enfant doit recevoir <strong>au moins $1$</strong> bonbon ?</li>
+    <li>Combien de distributions si le premier enfant doit recevoir au moins $2$ et le second au moins $3$ ?</li>
+    <li>Combien de solutions de $x_1 + x_2 + x_3 + x_4 = 10$ en entiers $0 \leq x_i \leq 5$ ?</li>
+  </ol>
+
+  <details class="solution"><summary>Solution</summary>
+  <p><strong>1.</strong> Solutions positives ou nulles de $x_1 + x_2 + x_3 + x_4 = 10$. Étoiles et barres :
+  $\binom{n + k - 1}{k} = \binom{4 + 10 - 1}{10} = \binom{13}{10} = \binom{13}{3} = 286.$</p>
+  <p><strong>2.</strong> Substituer $y_i = x_i - 1 \geq 0$ ; alors $y_1 + y_2 + y_3 + y_4 = 10 - 4 = 6$. Le compte :
+  $\binom{4 + 6 - 1}{6} = \binom{9}{6} = \binom{9}{3} = 84.$</p>
+  <p><strong>3.</strong> Substituer $y_1 = x_1 - 2$, $y_2 = x_2 - 3$, $y_3 = x_3$, $y_4 = x_4$, tous $\geq 0$ ; alors $y_1 + y_2 + y_3 + y_4 = 10 - 5 = 5$. Compte :
+  $\binom{4 + 5 - 1}{5} = \binom{8}{5} = \binom{8}{3} = 56.$</p>
+  <p><strong>4.</strong> Inclusion–exclusion. Soit $A_i$ = "$x_i \geq 6$". $|A_i| =$ solutions de $y_i + \text{autres} = 4$ avec $y_i = x_i - 6 \geq 0$ : $\binom{4+4-1}{4} = \binom{7}{4} = 35$. $|A_i \cap A_j| =$ solutions de somme $10 - 12 = -2$ : $0$. Total sans contrainte $|A_1 \cup A_2 \cup A_3 \cup A_4| = 4 \cdot 35 - 0 = 140$. Réponse :
+  $\binom{13}{3} - 140 = 286 - 140 = 146.$</p>
+  <div class="python-block">
+    <span class="python-label">Python — vérification</span>
+    <span class="pane-code">from math import comb
+print(comb(13, 10))                              # 286
+print(comb(9, 6))                                # 84
+print(comb(8, 5))                                # 56
+
+# Question 4 — vérification brute
+total = sum(1 for a in range(6)
+              for b in range(6)
+              for c in range(6)
+              for d in range(6) if a+b+c+d == 10)
+print(total)                                     # 146</span>
+  </div>
+  </details>
+</section>
+
+</body>
+</html>

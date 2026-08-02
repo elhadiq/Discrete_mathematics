@@ -1,0 +1,77 @@
+% ============================================================
+%  DISCRETE MATHEMATICS — full book
+%  Pr. Zouhair El Hadiq & Pr. Ismail Bouishak
+%  Compile:  pdflatex -output-directory=build main.tex  (run twice)
+% ============================================================
+\documentclass[11pt,twoside,openany]{book}
+\input{preamble}
+
+\title{Discrete Mathematics}
+\author{Pr.\ Zouhair El Hadiq \and Pr.\ Ismail Bouishak}
+\date{\today}
+
+\begin{document}
+
+% ---------------- title page ----------------
+\begin{titlepage}
+\centering
+\vspace*{2.5cm}
+{\color{Orange}\rule{\linewidth}{2.5pt}}\par\vspace{1.2cm}
+{\Huge\bfseries\color{DarkBlue} Discrete Mathematics\par}
+\vspace{0.6cm}
+{\Large\color{DarkBlue} Logic \textbullet{} Discrete Structures \textbullet{} Counting \textbullet{} Proofs and Recursion\par}
+\vspace{1.2cm}
+{\color{Orange}\rule{0.5\linewidth}{1.2pt}}\par\vspace{1.4cm}
+{\large\bfseries Pr.\ Zouhair El Hadiq \quad\textbullet\quad Pr.\ Ismail Bouishak\par}
+\vspace{0.8cm}
+{\itshape\bfseries\color{Orange} Notes By Pr.\ El Hadiq Zouhair\par}
+\vfill
+{\large \today\par}
+\vspace{1cm}
+{\color{Orange}\rule{\linewidth}{2.5pt}}
+\end{titlepage}
+
+\frontmatter
+\tableofcontents
+
+\mainmatter
+
+% ---------------- Part I ----------------
+\part{Foundations of Logic}
+\include{chapters/ch01_introduction}
+\include{chapters/ch02_propositional_logic}
+\include{chapters/ch03_logical_equivalences}
+\include{chapters/ch04_predicates_quantifiers}
+\include{chapters/ch05_rules_of_inference}
+
+% ---------------- Part II ----------------
+\part{Discrete Structures}
+\include{chapters/ch06_sets}
+\include{chapters/ch07_operations_on_sets}
+\include{chapters/ch08_relations_functions}
+\include{chapters/ch09_sequences_series}
+
+% ---------------- Part III ----------------
+\part{Counting}
+\include{chapters/ch10_permutations_combinations}
+\include{chapters/ch11_binomial_identities}
+
+% ---------------- Part IV ----------------
+\part{Proofs and Recursion}
+\include{chapters/ch12_proof_techniques}
+\include{chapters/ch13_mathematical_induction}
+\include{chapters/ch14_recursive_definitions}
+
+% ---------------- bibliography ----------------
+\backmatter
+\chapter{Bibliography}
+\begin{itemize}
+\item K.~H. Rosen, \emph{Discrete Mathematics and Its Applications}, 8th ed., McGraw--Hill, 2019.
+\item D.~J. Velleman, \emph{How to Prove It: A Structured Approach}, 3rd ed., Cambridge University Press, 2019.
+\item E.~Mendelson, \emph{Introduction to Mathematical Logic}, 6th ed., CRC Press, 2015.
+\item R.~Cori and D.~Lascar, \emph{Mathematical Logic: A Course with Exercises}, vol.~1, Oxford University Press, 2000.
+\item R.~L. Graham, D.~E. Knuth and O.~Patashnik, \emph{Concrete Mathematics}, 2nd ed., Addison--Wesley, 1994.
+\item R.~Lalement, \emph{Logique, r\'eduction, r\'esolution}, Masson, 1990.
+\end{itemize}
+
+\end{document}

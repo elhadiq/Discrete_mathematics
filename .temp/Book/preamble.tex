@@ -1,0 +1,130 @@
+% ============================================================
+%  Discrete Mathematics — shared preamble
+%  Theme matches the course site: orange / darkblue palette
+%  Notes By Pr. El Hadiq Zouhair
+% ============================================================
+\usepackage[a4paper,margin=2.4cm,headheight=14pt]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage{booktabs,array,longtable}
+\usepackage{tikz}
+\usetikzlibrary{shapes,arrows.meta,positioning}
+\usepackage[most]{tcolorbox}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{needspace}
+\usepackage[colorlinks=true,linkcolor=DarkBlue,urlcolor=Orange]{hyperref}
+
+% ---------- palette (mirrors the site CSS variables) ----------
+\definecolor{Orange}{HTML}{E67E22}
+\definecolor{DarkBlue}{HTML}{2C3E50}
+\definecolor{LightBg}{HTML}{F4F9FC}
+\definecolor{BorderCol}{HTML}{DCE3EA}
+\definecolor{EasyGreen}{HTML}{27AE60}
+\definecolor{MedAmber}{HTML}{C89324}
+\definecolor{HardRed}{HTML}{C0392B}
+\definecolor{RowT}{HTML}{FDECEA}
+\definecolor{RowF}{HTML}{EAF3FB}
+
+% ---------- headings ----------
+\titleformat{\chapter}[display]
+  {\normalfont\huge\bfseries\color{DarkBlue}}
+  {\flushright\normalsize\color{Orange}\MakeUppercase{\chaptertitlename}\
+   \fontsize{50}{52}\selectfont\thechapter}
+  {12pt}{\Huge}[\vspace{6pt}{\color{Orange}\titlerule[2pt]}]
+\titleformat{\section}{\Large\bfseries\color{Orange}}{\thesection}{0.8em}{}
+  [\vspace{2pt}{\color{BorderCol}\titlerule[1pt]}]
+\titleformat{\subsection}{\large\bfseries\color{DarkBlue}}{\thesubsection}{0.8em}{}
+
+% ---------- headers / footers ----------
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[LE]{\small\color{DarkBlue}\leftmark}
+\fancyhead[RO]{\small\color{DarkBlue}\rightmark}
+\fancyfoot[C]{\small\color{DarkBlue}\thepage}
+\fancyfoot[RO,LE]{\scriptsize\itshape\color{Orange}Notes By Pr.\ El Hadiq Zouhair}
+\renewcommand{\headrulewidth}{0.6pt}
+\renewcommand{\headrule}{\color{Orange}\hrule width\headwidth height\headrulewidth}
+
+% ---------- theorem environments ----------
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[chapter]
+\newtheorem{theorem}[definition]{Theorem}
+\newtheorem{lemma}[definition]{Lemma}
+\newtheorem{corollary}[definition]{Corollary}
+\newtheorem{proposition}[definition]{Proposition}
+\newtheorem{example}[definition]{Example}
+\theoremstyle{remark}
+\newtheorem{remark}[definition]{Remark}
+
+% boxed skins for the main environments
+\tcolorboxenvironment{definition}{enhanced jigsaw,breakable,
+  colback=Orange!6,boxrule=0pt,frame hidden,
+  borderline west={2.5pt}{0pt}{Orange},
+  left=8pt,right=8pt,top=6pt,bottom=6pt,arc=1.5mm}
+\tcolorboxenvironment{theorem}{enhanced jigsaw,breakable,
+  colback=DarkBlue!6,boxrule=0pt,frame hidden,
+  borderline west={2.5pt}{0pt}{DarkBlue},
+  left=8pt,right=8pt,top=6pt,bottom=6pt,arc=1.5mm}
+\tcolorboxenvironment{lemma}{enhanced jigsaw,breakable,
+  colback=DarkBlue!4,boxrule=0pt,frame hidden,
+  borderline west={2.5pt}{0pt}{DarkBlue!70},
+  left=8pt,right=8pt,top=6pt,bottom=6pt,arc=1.5mm}
+\tcolorboxenvironment{corollary}{enhanced jigsaw,breakable,
+  colback=DarkBlue!4,boxrule=0pt,frame hidden,
+  borderline west={2.5pt}{0pt}{DarkBlue!70},
+  left=8pt,right=8pt,top=6pt,bottom=6pt,arc=1.5mm}
+\tcolorboxenvironment{proposition}{enhanced jigsaw,breakable,
+  colback=DarkBlue!4,boxrule=0pt,frame hidden,
+  borderline west={2.5pt}{0pt}{DarkBlue!70},
+  left=8pt,right=8pt,top=6pt,bottom=6pt,arc=1.5mm}
+\tcolorboxenvironment{example}{enhanced jigsaw,breakable,
+  colback=LightBg,boxrule=0pt,frame hidden,
+  borderline west={2.5pt}{0pt}{BorderCol!160},
+  left=8pt,right=8pt,top=6pt,bottom=6pt,arc=1.5mm}
+
+% ---------- note box (orange-left italic callout) ----------
+\newtcolorbox{notebox}{enhanced jigsaw,breakable,
+  colback=Orange!8,boxrule=0pt,frame hidden,
+  borderline west={3pt}{0pt}{Orange},
+  left=8pt,right=8pt,top=6pt,bottom=6pt,arc=1.5mm,
+  fontupper=\itshape}
+
+% ---------- difficulty chips ----------
+\newcommand{\chip}[2]{\tikz[baseline=-0.55ex]{\node[rounded corners=4pt,fill=#1,
+  text=white,font=\scriptsize\bfseries,inner xsep=5pt,inner ysep=2pt]{#2};}}
+\newcommand{\easy}{\chip{EasyGreen}{EASY}}
+\newcommand{\medium}{\chip{MedAmber}{MEDIUM}}
+\newcommand{\hard}{\chip{HardRed}{HARD}}
+
+% ---------- exercises & solutions ----------
+\newcounter{exercise}[chapter]
+\renewcommand{\theexercise}{\thechapter.\arabic{exercise}}
+\newenvironment{exercise}[1]{% #1 = \easy | \medium | \hard
+  \refstepcounter{exercise}\par\medskip\needspace{4\baselineskip}%
+  \noindent{\bfseries\color{DarkBlue}Exercise \theexercise}\ #1\par\nopagebreak\smallskip
+  \noindent\ignorespaces}{\par\medskip}
+\newenvironment{solution}[1]{% #1 = exercise number, e.g. 2.3
+  \par\medskip\needspace{3\baselineskip}%
+  \noindent{\bfseries\color{Orange}Solution #1.}\ \ignorespaces}{%
+  \hfill$\blacksquare$\par\medskip}
+
+% ---------- misc ----------
+\newcommand{\TT}{\ensuremath{\mathtt{T}}}
+\newcommand{\FF}{\ensuremath{\mathtt{F}}}
+\newcommand{\B}{\mathbb{B}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\powerset}{\mathcal{P}}
+\newcommand{\signature}{\par\vspace{1.2em}\noindent
+  {\itshape\bfseries\color{Orange}Notes By Pr.\ El Hadiq Zouhair}\par}
+\setlength{\parskip}{2pt}
+\setlist{itemsep=2pt,topsep=4pt}
+\allowdisplaybreaks

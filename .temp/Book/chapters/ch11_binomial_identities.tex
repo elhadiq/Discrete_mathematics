@@ -1,0 +1,329 @@
+\chapter{Binomial Identities}
+\signature
+
+\section{Two kinds of proof}
+
+Recall $\binom{n}{k} = \frac{n!}{k!(n-k)!}$ counts the $k$-subsets of an
+$n$-set. Binomial identities admit two complementary proof styles:
+\emph{algebraic} (manipulate factorials, or compare coefficients in the
+binomial theorem) and \emph{combinatorial} (``double counting'': count one
+set in two ways). Whenever possible we give both --- the combinatorial proof
+usually explains \emph{why} the identity holds.
+
+\section{The fundamental identities}
+
+\begin{theorem}[Symmetry]
+$\displaystyle\binom{n}{k} = \binom{n}{n-k}$.
+\end{theorem}
+
+\begin{proof}
+Algebraic: both equal $\frac{n!}{k!(n-k)!}$. Combinatorial: selecting $k$
+elements is the same as rejecting $n - k$.
+\end{proof}
+
+\begin{theorem}[Pascal]
+$\displaystyle\binom{n+1}{k} = \binom{n}{k-1} + \binom{n}{k}$.
+\end{theorem}
+
+\begin{proof}
+Fix a distinguished element $x$ of an $(n+1)$-set: $k$-subsets containing
+$x$ number $\binom{n}{k-1}$, those avoiding $x$ number $\binom{n}{k}$.
+\end{proof}
+
+Pascal's triangle hides many patterns: the hockey-stick sums below, the
+Fibonacci numbers along shallow diagonals
+($\sum_k \binom{n-k}{k} = F_{n+1}$), the parity fractal of Sierpi\'nski, and
+the central column $\binom{2n}{n}$ governing Catalan numbers.
+
+\begin{theorem}[Absorption]
+$\displaystyle k\binom{n}{k} = n\binom{n-1}{k-1}$, equivalently
+$\binom{n}{k} = \frac{n}{k}\binom{n-1}{k-1}$.
+\end{theorem}
+
+\begin{proof}
+Count pairs (committee of $k$, its chair) from $n$ people in two ways:
+choose the committee then the chair ($\binom{n}{k} \cdot k$), or the chair
+then the rest ($n \cdot \binom{n-1}{k-1}$).
+\end{proof}
+
+\section{The binomial theorem and its harvest}
+
+\begin{theorem}[Binomial theorem]
+$\displaystyle (x+y)^{n} = \sum_{k=0}^{n} \binom{n}{k} x^{n-k} y^{k}$.
+\end{theorem}
+
+Substituting values of $x, y$ yields identities mechanically.
+
+\begin{theorem}[Row sum]\label{thm:rowsum}
+$\displaystyle\sum_{k=0}^{n} \binom{n}{k} = 2^{n}$.
+\end{theorem}
+
+\begin{proof}
+Three proofs. (1) Set $x = y = 1$ in the binomial theorem.
+(2) Combinatorial: both sides count subsets of an $n$-set, the left side by
+size. (3) Induction via Pascal's identity.
+\end{proof}
+
+\begin{theorem}[Alternating sum]
+$\displaystyle\sum_{k=0}^{n} (-1)^{k} \binom{n}{k} = 0$ for $n \geq 1$ ---
+set $x = 1$, $y = -1$. Hence even-sized subsets equal odd-sized subsets in
+number ($2^{n-1}$ each).
+\end{theorem}
+
+\begin{theorem}[Weighted sums]\label{thm:weighted}
+\[
+\sum_{k=0}^{n} 2^{k}\binom{n}{k} = 3^{n}, \qquad
+\sum_{k=0}^{n} k\binom{n}{k} = n\,2^{n-1}, \qquad
+\sum_{k=0}^{n} k^{2}\binom{n}{k} = n(n+1)\,2^{n-2}.
+\]
+\end{theorem}
+
+\begin{proof}
+First: $x=1, y=2$. Second: absorption gives
+$\sum_k k\binom{n}{k} = n \sum_k \binom{n-1}{k-1} = n\,2^{n-1}$;
+combinatorially, count (subset, distinguished member) pairs.
+Third: write $k^2 = k(k-1) + k$ and apply absorption twice:
+$\sum k(k-1)\binom{n}{k} = n(n-1)2^{n-2}$, then add $n\,2^{n-1}$ to get
+$n(n-1)2^{n-2} + n\,2^{n-1} = n(n+1)2^{n-2}$.
+\end{proof}
+
+\section{Vandermonde and friends}
+
+\begin{theorem}[Vandermonde]\label{thm:vdm}
+$\displaystyle\binom{m+n}{r} = \sum_{k=0}^{r}\binom{m}{k}\binom{n}{r-k}$.
+\end{theorem}
+
+\begin{example}
+A jury of $4$ from $6$ magistrates and $5$ citizens:
+$\binom{11}{4} = 330$ directly; by cases on magistrates:
+$\binom{6}{0}\binom{5}{4} + \binom{6}{1}\binom{5}{3} +
+\binom{6}{2}\binom{5}{2} + \binom{6}{3}\binom{5}{1} +
+\binom{6}{4}\binom{5}{0} = 5 + 60 + 150 + 100 + 15 = 330$. \checkmark
+\end{example}
+
+\begin{theorem}[Sum of squares]
+$\displaystyle\sum_{k=0}^{n} \binom{n}{k}^{2} = \binom{2n}{n}$ ---
+Vandermonde with $m = n = r$, using symmetry
+$\binom{n}{n-k} = \binom{n}{k}$.
+\end{theorem}
+
+\begin{theorem}[Hockey stick]\label{thm:hockey2}
+$\displaystyle\sum_{i=r}^{n} \binom{i}{r} = \binom{n+1}{r+1}$.
+\end{theorem}
+
+\begin{proof}
+Classify $(r+1)$-subsets of $\{1, \ldots, n+1\}$ by largest element $i+1$:
+the remaining $r$ elements come from $\{1,\dots,i\}$, in $\binom{i}{r}$
+ways, for $i = r, \ldots, n$.
+\end{proof}
+
+\section{Extensions}
+
+\begin{definition}[Generalised binomial coefficient]
+For real $\alpha$ and $k \in \N$:
+$\binom{\alpha}{k} = \frac{\alpha(\alpha-1)\cdots(\alpha-k+1)}{k!}$.
+Newton's binomial series $(1+x)^{\alpha} = \sum_k \binom{\alpha}{k}x^{k}$
+converges for $|x| < 1$; the \emph{negative-binomial} case gives
+$\binom{-n}{k} = (-1)^{k}\binom{n+k-1}{k}$, linking to stars and bars.
+\end{definition}
+
+\begin{definition}[Catalan numbers]
+$C_n = \dfrac{1}{n+1}\dbinom{2n}{n} = \dbinom{2n}{n} - \dbinom{2n}{n+1}$:
+$1, 1, 2, 5, 14, 42, \ldots$ They count balanced parenthesisations,
+monotonic lattice paths not crossing the diagonal, triangulations of convex
+polygons, and binary trees.
+\end{definition}
+
+The multinomial coefficients $\binom{n}{n_1,\dots,n_m}$ extend the whole
+theory from two blocks to $m$; and \emph{generating functions} --- viewing
+$\sum_k \binom{n}{k}x^k = (1+x)^n$ as a polynomial identity --- turn
+combinatorial convolutions into products of series, the method behind the
+Vandermonde proof and far beyond.
+
+\section{The combinatorial-proof template}
+
+To prove $\mathrm{LHS} = \mathrm{RHS}$ combinatorially: (1) pose a concrete
+counting question; (2) show the LHS answers it one way; (3) show the RHS
+answers the same question another way; (4) conclude the counts are equal.
+Practise the template on the worked example below.
+
+\begin{example}[Portfolio choice]
+Maeve must pick a team of $k$ analysts from $n$ candidates and name one team
+lead, but she may also count by first naming the lead ($n$ ways) and then
+completing the team ($\binom{n-1}{k-1}$ ways). The two counts,
+$k\binom{n}{k}$ and $n\binom{n-1}{k-1}$, must agree: absorption, proved by
+the template.
+\end{example}
+
+\section{Master cheat sheet}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.6}
+\begin{tabular}{ll}
+\toprule
+Symmetry & $\binom{n}{k} = \binom{n}{n-k}$\\
+Pascal & $\binom{n+1}{k} = \binom{n}{k-1} + \binom{n}{k}$\\
+Absorption & $k\binom{n}{k} = n\binom{n-1}{k-1}$\\
+Row sum & $\sum_k \binom{n}{k} = 2^{n}$\\
+Alternating & $\sum_k (-1)^{k}\binom{n}{k} = 0 \quad (n \geq 1)$\\
+Weighted & $\sum_k k\binom{n}{k} = n2^{n-1}$, \quad
+  $\sum_k k^{2}\binom{n}{k} = n(n+1)2^{n-2}$\\
+Powers of 3 & $\sum_k 2^{k}\binom{n}{k} = 3^{n}$\\
+Vandermonde & $\binom{m+n}{r} = \sum_k \binom{m}{k}\binom{n}{r-k}$\\
+Squares & $\sum_k \binom{n}{k}^{2} = \binom{2n}{n}$\\
+Hockey stick & $\sum_{i=r}^{n} \binom{i}{r} = \binom{n+1}{r+1}$\\
+Catalan & $C_n = \frac{1}{n+1}\binom{2n}{n}$\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{notebox}
+Common pitfalls: forgetting that $\binom{n}{k} = 0$ for $k < 0$ or $k > n$;
+shifting summation indices incorrectly; applying symmetry inside a sum
+without adjusting the range; and assuming an identity for real upper index
+when it only holds for integers.
+\end{notebox}
+
+\section{Summary}
+
+Every identity in this chapter flows from three sources: Pascal's recurrence,
+the binomial theorem with clever substitutions, and double counting. Master
+the cheat sheet, but more importantly master the \emph{template}: a binomial
+identity is an invitation to find the single question that both sides answer.
+
+\section*{Exercises}
+\addcontentsline{toc}{section}{Exercises}
+
+\begin{exercise}{\easy}
+Evaluate without a calculator: $\binom{10}{8}$, $\binom{12}{1}$,
+$\binom{9}{4} + \binom{9}{5}$.
+\end{exercise}
+
+\begin{exercise}{\easy}
+Use the row-sum and alternating-sum identities to find
+$\sum_{k \text{ even}} \binom{n}{k}$ for $n \geq 1$.
+\end{exercise}
+
+\begin{exercise}{\easy}
+Verify the hockey-stick identity
+$\binom{2}{2} + \binom{3}{2} + \binom{4}{2} + \binom{5}{2} = \binom{6}{3}$
+numerically.
+\end{exercise}
+
+\begin{exercise}{\medium}
+Give a combinatorial proof of
+$\binom{n}{2}\binom{n-2}{k-2} = \binom{n}{k}\binom{k}{2}$ \,($2 \le k \le
+n$).
+\end{exercise}
+
+\begin{exercise}{\medium}
+Evaluate $\sum_{k=0}^{n} 3^{k} \binom{n}{k}$ and
+$\sum_{k=0}^{n} (-2)^{k} \binom{n}{k}$.
+\end{exercise}
+
+\begin{exercise}{\medium}
+Prove $\sum_{k=1}^{n} k\binom{n}{k} = n2^{n-1}$ combinatorially, by counting
+committees with a chair.
+\end{exercise}
+
+\begin{exercise}{\medium}
+Using Vandermonde, evaluate $\sum_{k=0}^{m} \binom{m}{k}\binom{n}{p+k}$ as a
+single binomial coefficient ($p + m \le n$).
+\end{exercise}
+
+\begin{exercise}{\medium}
+Show that $\binom{2n}{n}$ is even for $n \geq 1$.
+\emph{Hint: } $\binom{2n}{n} = \binom{2n-1}{n-1} + \binom{2n-1}{n}$ and
+symmetry.
+\end{exercise}
+
+\begin{exercise}{\hard}
+Prove the Fibonacci diagonal identity
+$\sum_{k=0}^{\lfloor n/2 \rfloor} \binom{n-k}{k} = F_{n+1}$
+(with $F_1 = F_2 = 1$), by induction using Pascal's identity.
+\end{exercise}
+
+\begin{exercise}{\hard}
+Prove $\sum_{k=0}^{n} \binom{n}{k}^2 = \binom{2n}{n}$ combinatorially, by
+counting $n$-subsets of a set of $n$ women and $n$ men.
+\end{exercise}
+
+\begin{exercise}{\hard}
+Show $C_n = \binom{2n}{n} - \binom{2n}{n+1}$ counts lattice paths from
+$(0,0)$ to $(n,n)$ (unit right/up steps) that never rise above the diagonal,
+via the reflection principle.
+\end{exercise}
+
+\section*{Solutions to the Exercises}
+\addcontentsline{toc}{section}{Solutions to the Exercises}
+
+\begin{solution}{11.1}
+$\binom{10}{8} = \binom{10}{2} = 45$; $\binom{12}{1} = 12$;
+$\binom{9}{4} + \binom{9}{5} = \binom{10}{5} = 252$ (Pascal).
+\end{solution}
+
+\begin{solution}{11.2}
+Adding $\sum_k \binom{n}{k} = 2^n$ and $\sum_k (-1)^k\binom{n}{k} = 0$
+cancels odd $k$ and doubles even $k$:
+$\sum_{k\text{ even}} \binom{n}{k} = 2^{n-1}$.
+\end{solution}
+
+\begin{solution}{11.3}
+$1 + 3 + 6 + 10 = 20 = \binom{6}{3}$. \checkmark
+\end{solution}
+
+\begin{solution}{11.4}
+Both sides count (committee of $k$ from $n$ people, with $2$ designated
+co-chairs): left side picks the co-chairs first
+($\binom{n}{2}$), then fills the committee ($\binom{n-2}{k-2}$); right side
+picks the committee ($\binom{n}{k}$), then its co-chairs ($\binom{k}{2}$).
+\end{solution}
+
+\begin{solution}{11.5}
+Binomial theorem with $(x,y) = (1,3)$: $4^{n}$. With $(1,-2)$:
+$(-1)^{n}$.
+\end{solution}
+
+\begin{solution}{11.6}
+Count pairs (committee $S$ of any size, chair $c \in S$) from $n$ people.
+By size: choose size $k$, the committee, then the chair:
+$\sum_k \binom{n}{k} k$. Chair first: $n$ choices, then any subset of the
+remaining $n-1$ people joins: $n \, 2^{n-1}$. Equate.
+\end{solution}
+
+\begin{solution}{11.7}
+By symmetry $\binom{m}{k} = \binom{m}{m-k}$, the sum is
+$\sum_{k} \binom{m}{m-k}\binom{n}{p+k}$, a Vandermonde convolution picking
+$m + p$ objects from $m + n$:
+$\binom{m+n}{m+p}$.
+\end{solution}
+
+\begin{solution}{11.8}
+Pascal: $\binom{2n}{n} = \binom{2n-1}{n-1} + \binom{2n-1}{n}$, and the two
+terms are equal by symmetry ($(n-1) + n = 2n - 1$). Hence
+$\binom{2n}{n} = 2\binom{2n-1}{n-1}$ is even.
+\end{solution}
+
+\begin{solution}{11.9}
+Let $S_n = \sum_k \binom{n-k}{k}$. Check $S_1 = 1 = F_2$, $S_2 = 2 = F_3$.
+For the step, Pascal gives
+$\binom{n-k}{k} = \binom{n-1-k}{k} + \binom{n-1-k}{k-1}$;
+summing over $k$, the first parts sum to $S_{n-1}$ and the second parts
+re-index ($k \to k-1$) to $S_{n-2}$. So $S_n = S_{n-1} + S_{n-2}$ ---
+the Fibonacci recurrence with Fibonacci initial values, hence
+$S_n = F_{n+1}$ for all $n$.
+\end{solution}
+
+\begin{solution}{11.10}
+Choosing $n$ people from $n$ women + $n$ men splits by the number $k$ of
+women chosen: $\binom{n}{k}$ ways for the women and
+$\binom{n}{n-k} = \binom{n}{k}$ for the men, giving
+$\sum_k \binom{n}{k}^2$. Direct count: $\binom{2n}{n}$. Equate.
+\end{solution}
+
+\begin{solution}{11.11}
+All paths to $(n,n)$: $\binom{2n}{n}$. A ``bad'' path touches the line
+$y = x + 1$; reflecting its prefix up to the first touch across that line
+bijects bad paths with paths from $(-1, 1)$ to $(n,n)$, which number
+$\binom{2n}{n+1}$. Good paths: $\binom{2n}{n} - \binom{2n}{n+1} = C_n$.
+\end{solution}

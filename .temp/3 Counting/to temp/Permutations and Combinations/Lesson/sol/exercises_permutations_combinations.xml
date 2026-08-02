@@ -1,0 +1,614 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Permutations and Combinations — 8 exercises (4 CodeRunner labs + 4 STACK math) -->
+<!-- Notes By Pr. El Hadiq Zouhair -->
+<quiz>
+
+  <!-- ════════ PART A — CodeRunner Python labs (4 exercises) ════════ -->
+<question type="coderunner"><name><text>LAB 1 — Factorielle</text></name><questiontext format="html"><text>&lt;div style="background:#f8fafc;border:1px solid #e2e8f0;border-left:5px solid #c9a227;border-radius:8px;padding:20px 24px;margin-bottom:18px;"&gt;
+  &lt;p style="color:#92400e;font-family:Georgia,serif;font-size:13px;font-weight:bold;letter-spacing:2px;text-transform:uppercase;margin:0 0 10px 0;"&gt;LAB 1 &amp;mdash; FACTORIELLE&lt;/p&gt;
+  &lt;p style="color:#1e293b;font-family:Georgia,serif;font-size:15px;line-height:1.8;margin:0;"&gt;La factorielle compte le nombre de permutations d'un ensemble &amp;agrave; n &amp;eacute;l&amp;eacute;ments.&lt;/p&gt;
+&lt;/div&gt;
+&lt;p style="font-family:Georgia,serif;font-size:15px;color:#1e293b;line-height:1.8;"&gt;
+  &amp;Eacute;crire une fonction &lt;strong&gt;&lt;code&gt;factorielle(n)&lt;/code&gt;&lt;/strong&gt; qui renvoie n! pour tout entier n &amp;gt;= 0, &lt;strong&gt;sans utiliser &lt;code&gt;math.factorial&lt;/code&gt;&lt;/strong&gt;. On rappelle que 0! = 1.
+&lt;/p&gt;
+&lt;div style="background:#fdf4ff;border:1px solid #e9d5ff;border-left:5px solid #9333ea;border-radius:8px;padding:14px 20px;margin:14px 0;"&gt;
+  &lt;pre style="color:#3b0764;font-family:'Courier New',monospace;font-size:14px;margin:0;background:none;border:none;"&gt;factorielle(0) &amp;rarr; 1
+factorielle(5) &amp;rarr; 120
+factorielle(9) &amp;rarr; 362880&lt;/pre&gt;
+&lt;/div&gt;</text></questiontext><generalfeedback format="html"><text /></generalfeedback><defaultgrade>2.0000000</defaultgrade><penalty>0.0000000</penalty><hidden>0</hidden><idnumber /><coderunnertype>python3</coderunnertype><prototypetype>0</prototypetype><allornothing>0</allornothing><penaltyregime>0</penaltyregime><precheck>0</precheck><hidecheck>0</hidecheck><showsource>0</showsource><answerboxlines>18</answerboxlines><answerboxcolumns>100</answerboxcolumns><answerpreload>def factorielle(n):
+    # Compléter : initialiser le résultat et multiplier par chaque entier de 2 à n.
+    resultat = 1
+    for k in range(...):   # à compléter
+        ...
+    return resultat
+</answerpreload><globalextra /><useace /><resultcolumns /><template /><iscombinatortemplate /><allowmultiplestdins /><answer>def factorielle(n):
+    """Renvoie n! par accumulation itérative."""
+    resultat = 1
+    for k in range(2, n + 1):
+        resultat *= k
+    return resultat
+</answer><validateonsave>1</validateonsave><testsplitterre /><language /><acelang /><sandbox /><grader /><cputimelimitsecs /><memlimitmb /><sandboxparams /><templateparams /><hoisttemplateparams>1</hoisttemplateparams><extractcodefromjson>1</extractcodefromjson><templateparamslang>None</templateparamslang><templateparamsevalpertry>0</templateparamsevalpertry><templateparamsevald>{}</templateparamsevald><twigall>0</twigall><uiplugin /><uiparameters /><attachments>0</attachments><attachmentsrequired>0</attachmentsrequired><maxfilesize>10240</maxfilesize><filenamesregex /><filenamesexplain /><displayfeedback>1</displayfeedback><giveupallowed>0</giveupallowed><prototypeextra /><testcases><testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000"><testcode><text>print(factorielle(0))
+</text></testcode><stdin><text /></stdin><expected><text>1
+</text></expected><extra><text /></extra><display><text>SHOW</text></display></testcase><testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000"><testcode><text>print(factorielle(1))
+</text></testcode><stdin><text /></stdin><expected><text>1
+</text></expected><extra><text /></extra><display><text>SHOW</text></display></testcase><testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000"><testcode><text>print(factorielle(5))
+</text></testcode><stdin><text /></stdin><expected><text>120
+</text></expected><extra><text /></extra><display><text>SHOW</text></display></testcase><testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000"><testcode><text>print(factorielle(9))
+</text></testcode><stdin><text /></stdin><expected><text>362880
+</text></expected><extra><text /></extra><display><text>HIDE</text></display></testcase><testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000"><testcode><text>print(factorielle(12))
+</text></testcode><stdin><text /></stdin><expected><text>479001600
+</text></expected><extra><text /></extra><display><text>HIDE</text></display></testcase></testcases></question><question type="coderunner"><name><text>LAB 2 — Arrangements P(n, k)</text></name><questiontext format="html"><text>&lt;div style="background:#f8fafc;border:1px solid #e2e8f0;border-left:5px solid #c9a227;border-radius:8px;padding:20px 24px;margin-bottom:18px;"&gt;
+  &lt;p style="color:#92400e;font-family:Georgia,serif;font-size:13px;font-weight:bold;letter-spacing:2px;text-transform:uppercase;margin:0 0 10px 0;"&gt;LAB 2 &amp;mdash; ARRANGEMENTS P(n, k)&lt;/p&gt;
+  &lt;p style="color:#1e293b;font-family:Georgia,serif;font-size:15px;line-height:1.8;margin:0;"&gt;P(n, k) compte le nombre d'arrangements ordonn&amp;eacute;s sans r&amp;eacute;p&amp;eacute;tition de k &amp;eacute;l&amp;eacute;ments choisis dans un ensemble &amp;agrave; n &amp;eacute;l&amp;eacute;ments.&lt;/p&gt;
+&lt;/div&gt;
+&lt;p style="font-family:Georgia,serif;font-size:15px;color:#1e293b;line-height:1.8;"&gt;
+  &amp;Eacute;crire une fonction &lt;strong&gt;&lt;code&gt;arrangements(n, k)&lt;/code&gt;&lt;/strong&gt; qui renvoie &lt;code&gt;n*(n-1)*(n-2)*...*(n-k+1)&lt;/code&gt; par produit it&amp;eacute;ratif, &lt;strong&gt;sans utiliser &lt;code&gt;math.perm&lt;/code&gt; ni &lt;code&gt;math.factorial&lt;/code&gt;&lt;/strong&gt;. Si k = 0 ou si k &amp;gt; n, la fonction renvoie 0 quand k &amp;gt; n et 1 quand k = 0.
+&lt;/p&gt;
+&lt;div style="background:#fdf4ff;border:1px solid #e9d5ff;border-left:5px solid #9333ea;border-radius:8px;padding:14px 20px;margin:14px 0;"&gt;
+  &lt;pre style="color:#3b0764;font-family:'Courier New',monospace;font-size:14px;margin:0;background:none;border:none;"&gt;arrangements(9, 3) &amp;rarr; 504
+arrangements(12, 5) &amp;rarr; 95040
+arrangements(7, 0) &amp;rarr; 1
+arrangements(5, 8) &amp;rarr; 0&lt;/pre&gt;
+&lt;/div&gt;</text></questiontext><generalfeedback format="html"><text /></generalfeedback><defaultgrade>2.0000000</defaultgrade><penalty>0.0000000</penalty><hidden>0</hidden><idnumber /><coderunnertype>python3</coderunnertype><prototypetype>0</prototypetype><allornothing>0</allornothing><penaltyregime>0</penaltyregime><precheck>0</precheck><hidecheck>0</hidecheck><showsource>0</showsource><answerboxlines>18</answerboxlines><answerboxcolumns>100</answerboxcolumns><answerpreload>def arrangements(n, k):
+    # Compléter : gérer les cas k == 0 et k &gt; n, puis multiplier les k premiers facteurs.
+    if k == 0:
+        return ...
+    if k &gt; n:
+        return ...
+    resultat = 1
+    for i in range(...):
+        ...
+    return resultat
+</answerpreload><globalextra /><useace /><resultcolumns /><template /><iscombinatortemplate /><allowmultiplestdins /><answer>def arrangements(n, k):
+    """Renvoie P(n, k) = n*(n-1)*...*(n-k+1) sans bibliothèque."""
+    if k == 0:
+        return 1
+    if k &gt; n:
+        return 0
+    resultat = 1
+    for i in range(k):
+        resultat *= (n - i)
+    return resultat
+</answer><validateonsave>1</validateonsave><testsplitterre /><language /><acelang /><sandbox /><grader /><cputimelimitsecs /><memlimitmb /><sandboxparams /><templateparams /><hoisttemplateparams>1</hoisttemplateparams><extractcodefromjson>1</extractcodefromjson><templateparamslang>None</templateparamslang><templateparamsevalpertry>0</templateparamsevalpertry><templateparamsevald>{}</templateparamsevald><twigall>0</twigall><uiplugin /><uiparameters /><attachments>0</attachments><attachmentsrequired>0</attachmentsrequired><maxfilesize>10240</maxfilesize><filenamesregex /><filenamesexplain /><displayfeedback>1</displayfeedback><giveupallowed>0</giveupallowed><prototypeextra /><testcases><testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000"><testcode><text>print(arrangements(9, 3))
+</text></testcode><stdin><text /></stdin><expected><text>504
+</text></expected><extra><text /></extra><display><text>SHOW</text></display></testcase><testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000"><testcode><text>print(arrangements(7, 0))
+</text></testcode><stdin><text /></stdin><expected><text>1
+</text></expected><extra><text /></extra><display><text>SHOW</text></display></testcase><testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000"><testcode><text>print(arrangements(5, 8))
+</text></testcode><stdin><text /></stdin><expected><text>0
+</text></expected><extra><text /></extra><display><text>SHOW</text></display></testcase><testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000"><testcode><text>print(arrangements(12, 5))
+</text></testcode><stdin><text /></stdin><expected><text>95040
+</text></expected><extra><text /></extra><display><text>HIDE</text></display></testcase><testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000"><testcode><text>print(arrangements(20, 10))
+</text></testcode><stdin><text /></stdin><expected><text>670442572800
+</text></expected><extra><text /></extra><display><text>HIDE</text></display></testcase></testcases></question><question type="coderunner"><name><text>LAB 3 — Binomial via Pascal</text></name><questiontext format="html"><text>&lt;div style="background:#f8fafc;border:1px solid #e2e8f0;border-left:5px solid #c9a227;border-radius:8px;padding:20px 24px;margin-bottom:18px;"&gt;
+  &lt;p style="color:#92400e;font-family:Georgia,serif;font-size:13px;font-weight:bold;letter-spacing:2px;text-transform:uppercase;margin:0 0 10px 0;"&gt;LAB 3 &amp;mdash; COMBINAISONS C(n, k) PAR PASCAL&lt;/p&gt;
+  &lt;p style="color:#1e293b;font-family:Georgia,serif;font-size:15px;line-height:1.8;margin:0;"&gt;L'identit&amp;eacute; de Pascal donne C(n, k) = C(n-1, k-1) + C(n-1, k), avec C(n, 0) = C(n, n) = 1.&lt;/p&gt;
+&lt;/div&gt;
+&lt;p style="font-family:Georgia,serif;font-size:15px;color:#1e293b;line-height:1.8;"&gt;
+  &amp;Eacute;crire une fonction &lt;strong&gt;&lt;code&gt;binomial(n, k)&lt;/code&gt;&lt;/strong&gt; qui calcule C(n, k) en construisant ligne par ligne le triangle de Pascal, &lt;strong&gt;sans utiliser &lt;code&gt;math.comb&lt;/code&gt;&lt;/strong&gt;. La fonction renvoie 0 si k &amp;lt; 0 ou si k &amp;gt; n.
+&lt;/p&gt;
+&lt;div style="background:#fdf4ff;border:1px solid #e9d5ff;border-left:5px solid #9333ea;border-radius:8px;padding:14px 20px;margin:14px 0;"&gt;
+  &lt;pre style="color:#3b0764;font-family:'Courier New',monospace;font-size:14px;margin:0;background:none;border:none;"&gt;binomial(12, 5)  &amp;rarr; 792
+binomial(10, 4)  &amp;rarr; 210
+binomial(20, 10) &amp;rarr; 184756
+binomial(7, -1)  &amp;rarr; 0
+binomial(5, 8)   &amp;rarr; 0&lt;/pre&gt;
+&lt;/div&gt;</text></questiontext><generalfeedback format="html"><text /></generalfeedback><defaultgrade>2.0000000</defaultgrade><penalty>0.0000000</penalty><hidden>0</hidden><idnumber /><coderunnertype>python3</coderunnertype><prototypetype>0</prototypetype><allornothing>0</allornothing><penaltyregime>0</penaltyregime><precheck>0</precheck><hidecheck>0</hidecheck><showsource>0</showsource><answerboxlines>18</answerboxlines><answerboxcolumns>100</answerboxcolumns><answerpreload>def binomial(n, k):
+    if k &lt; 0 or k &gt; n:
+        return ...
+    ligne = [1]
+    for i in range(1, n + 1):
+        nouvelle = [1]
+        for j in range(1, i):
+            nouvelle.append(...)   # somme des deux entrées au-dessus
+        nouvelle.append(1)
+        ligne = nouvelle
+    return ligne[k]
+</answerpreload><globalextra /><useace /><resultcolumns /><template /><iscombinatortemplate /><allowmultiplestdins /><answer>def binomial(n, k):
+    """Coefficient binomial calculé par le triangle de Pascal."""
+    if k &lt; 0 or k &gt; n:
+        return 0
+    # Ligne courante du triangle.
+    ligne = [1]
+    for i in range(1, n + 1):
+        # Construire la ligne i à partir de la ligne i-1.
+        nouvelle = [1]
+        for j in range(1, i):
+            nouvelle.append(ligne[j - 1] + ligne[j])
+        nouvelle.append(1)
+        ligne = nouvelle
+    return ligne[k]
+</answer><validateonsave>1</validateonsave><testsplitterre /><language /><acelang /><sandbox /><grader /><cputimelimitsecs /><memlimitmb /><sandboxparams /><templateparams /><hoisttemplateparams>1</hoisttemplateparams><extractcodefromjson>1</extractcodefromjson><templateparamslang>None</templateparamslang><templateparamsevalpertry>0</templateparamsevalpertry><templateparamsevald>{}</templateparamsevald><twigall>0</twigall><uiplugin /><uiparameters /><attachments>0</attachments><attachmentsrequired>0</attachmentsrequired><maxfilesize>10240</maxfilesize><filenamesregex /><filenamesexplain /><displayfeedback>1</displayfeedback><giveupallowed>0</giveupallowed><prototypeextra /><testcases><testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000"><testcode><text>print(binomial(12, 5))
+</text></testcode><stdin><text /></stdin><expected><text>792
+</text></expected><extra><text /></extra><display><text>SHOW</text></display></testcase><testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000"><testcode><text>print(binomial(10, 4))
+</text></testcode><stdin><text /></stdin><expected><text>210
+</text></expected><extra><text /></extra><display><text>SHOW</text></display></testcase><testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000"><testcode><text>print(binomial(7, -1))
+</text></testcode><stdin><text /></stdin><expected><text>0
+</text></expected><extra><text /></extra><display><text>SHOW</text></display></testcase><testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000"><testcode><text>print(binomial(5, 8))
+</text></testcode><stdin><text /></stdin><expected><text>0
+</text></expected><extra><text /></extra><display><text>HIDE</text></display></testcase><testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000"><testcode><text>print(binomial(20, 10))
+</text></testcode><stdin><text /></stdin><expected><text>184756
+</text></expected><extra><text /></extra><display><text>HIDE</text></display></testcase></testcases></question><question type="coderunner"><name><text>LAB 4 — Principe des tiroirs</text></name><questiontext format="html"><text>&lt;div style="background:#f8fafc;border:1px solid #e2e8f0;border-left:5px solid #c9a227;border-radius:8px;padding:20px 24px;margin-bottom:18px;"&gt;
+  &lt;p style="color:#92400e;font-family:Georgia,serif;font-size:13px;font-weight:bold;letter-spacing:2px;text-transform:uppercase;margin:0 0 10px 0;"&gt;LAB 4 &amp;mdash; PRINCIPE DES TIROIRS&lt;/p&gt;
+  &lt;p style="color:#1e293b;font-family:Georgia,serif;font-size:15px;line-height:1.8;margin:0;"&gt;Si N pigeons sont r&amp;eacute;partis dans k tiroirs, au moins un tiroir contient au moins ceil(N/k) pigeons.&lt;/p&gt;
+&lt;/div&gt;
+&lt;p style="font-family:Georgia,serif;font-size:15px;color:#1e293b;line-height:1.8;"&gt;
+  &amp;Eacute;crire une fonction &lt;strong&gt;&lt;code&gt;tiroir_min(N, k)&lt;/code&gt;&lt;/strong&gt; qui renvoie le nombre minimum d'objets dans le tiroir le plus rempli, garanti par le principe des tiroirs g&amp;eacute;n&amp;eacute;ralis&amp;eacute;. Pour N = 0 et k &amp;gt; 0 la fonction renvoie 0. On suppose toujours k &amp;gt;= 1.
+&lt;/p&gt;
+&lt;p style="font-family:Georgia,serif;font-size:15px;color:#1e293b;line-height:1.8;"&gt;
+  &amp;Eacute;crire aussi &lt;strong&gt;&lt;code&gt;a_collision(liste)&lt;/code&gt;&lt;/strong&gt; qui renvoie &lt;code&gt;True&lt;/code&gt; si la liste contient au moins un doublon, &lt;code&gt;False&lt;/code&gt; sinon.
+&lt;/p&gt;
+&lt;div style="background:#fdf4ff;border:1px solid #e9d5ff;border-left:5px solid #9333ea;border-radius:8px;padding:14px 20px;margin:14px 0;"&gt;
+  &lt;pre style="color:#3b0764;font-family:'Courier New',monospace;font-size:14px;margin:0;background:none;border:none;"&gt;tiroir_min(13, 12)      &amp;rarr; 2
+tiroir_min(1000000, 456976) &amp;rarr; 3
+tiroir_min(100, 12)     &amp;rarr; 9
+a_collision([1, 2, 3, 4])    &amp;rarr; False
+a_collision([1, 2, 3, 2])    &amp;rarr; True&lt;/pre&gt;
+&lt;/div&gt;</text></questiontext><generalfeedback format="html"><text /></generalfeedback><defaultgrade>2.0000000</defaultgrade><penalty>0.0000000</penalty><hidden>0</hidden><idnumber /><coderunnertype>python3</coderunnertype><prototypetype>0</prototypetype><allornothing>0</allornothing><penaltyregime>0</penaltyregime><precheck>0</precheck><hidecheck>0</hidecheck><showsource>0</showsource><answerboxlines>18</answerboxlines><answerboxcolumns>100</answerboxcolumns><answerpreload>def tiroir_min(N, k):
+    if N == 0:
+        return 0
+    # Calculer ceil(N/k) sans bibliothèque.
+    return ...   # à compléter
+
+def a_collision(liste):
+    # Renvoyer True si un doublon existe.
+    return ...
+</answerpreload><globalextra /><useace /><resultcolumns /><template /><iscombinatortemplate /><allowmultiplestdins /><answer>def tiroir_min(N, k):
+    """Borne de Dirichlet : ceil(N/k) sans bibliothèque."""
+    if N == 0:
+        return 0
+    # ceil(N/k) = (N + k - 1) // k pour N, k entiers positifs.
+    return (N + k - 1) // k
+
+def a_collision(liste):
+    """Vrai ssi un élément se répète dans la liste."""
+    return len(set(liste)) &lt; len(liste)
+</answer><validateonsave>1</validateonsave><testsplitterre /><language /><acelang /><sandbox /><grader /><cputimelimitsecs /><memlimitmb /><sandboxparams /><templateparams /><hoisttemplateparams>1</hoisttemplateparams><extractcodefromjson>1</extractcodefromjson><templateparamslang>None</templateparamslang><templateparamsevalpertry>0</templateparamsevalpertry><templateparamsevald>{}</templateparamsevald><twigall>0</twigall><uiplugin /><uiparameters /><attachments>0</attachments><attachmentsrequired>0</attachmentsrequired><maxfilesize>10240</maxfilesize><filenamesregex /><filenamesexplain /><displayfeedback>1</displayfeedback><giveupallowed>0</giveupallowed><prototypeextra /><testcases><testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000"><testcode><text>print(tiroir_min(13, 12))
+</text></testcode><stdin><text /></stdin><expected><text>2
+</text></expected><extra><text /></extra><display><text>SHOW</text></display></testcase><testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000"><testcode><text>print(tiroir_min(100, 12))
+</text></testcode><stdin><text /></stdin><expected><text>9
+</text></expected><extra><text /></extra><display><text>SHOW</text></display></testcase><testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000"><testcode><text>print(tiroir_min(1000000, 456976))
+</text></testcode><stdin><text /></stdin><expected><text>3
+</text></expected><extra><text /></extra><display><text>SHOW</text></display></testcase><testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000"><testcode><text>print(a_collision([1, 2, 3, 4]))
+</text></testcode><stdin><text /></stdin><expected><text>False
+</text></expected><extra><text /></extra><display><text>HIDE</text></display></testcase><testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000"><testcode><text>print(a_collision([1, 2, 3, 2]))
+</text></testcode><stdin><text /></stdin><expected><text>True
+</text></expected><extra><text /></extra><display><text>HIDE</text></display></testcase></testcases></question>
+
+  <!-- ════════ PART B — STACK math exercises (4 exercises) ════════ -->
+<question type="stack">
+    <name>
+      <text>MATH 1 — Choix d une equipe (binomial)</text>
+    </name>
+    <questiontext format="html">
+      <text><![CDATA[<p>On choisit une &eacute;quipe de \({@k@}\) joueurs parmi un effectif de \({@n@}\) personnes.</p>
+<p>Combien d'&eacute;quipes diff&eacute;rentes peut-on former&nbsp;?</p>
+<p>Nombre d'&eacute;quipes : [[input:ans1]] [[validation:ans1]]</p>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text><![CDATA[<p>Comme l'ordre des joueurs dans l'&eacute;quipe n'a pas d'importance et qu'il n'y a pas de r&eacute;p&eacute;tition (chaque personne ne peut &ecirc;tre choisie qu'une fois), il s'agit d'une combinaison&nbsp;:</p>
+<p>\[ C({@n@}, {@k@}) = \binom{ {@n@} }{ {@k@} } = \frac{ {@n@}! }{ {@k@}! \cdot ({@n@}-{@k@})! } = {@ta@}. \]</p>]]></text>
+    </generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.1000000</penalty>
+    <hidden>0</hidden>
+    <idnumber></idnumber>
+    <stackversion>
+      <text>2024010100</text>
+    </stackversion>
+    <questionvariables>
+      <text>n : rand_with_step(8, 14, 1);
+k : rand_with_step(3, 5, 1);
+ta : binomial(n, k);</text>
+    </questionvariables>
+    <specificfeedback format="html">
+      <text><![CDATA[<p>[[feedback:prt1]]</p>]]></text>
+    </specificfeedback>
+    <questionnote format="moodle_auto_format">
+      <text>C({@n@},{@k@}) = {@ta@}</text>
+    </questionnote>
+    <questiondescription format="html">
+      <text></text>
+    </questiondescription>
+    <questionsimplify>1</questionsimplify>
+    <assumepositive>0</assumepositive>
+    <assumereal>0</assumereal>
+    <prtcorrect format="html">
+      <text><![CDATA[<p>Correct answer, well done.</p>]]></text>
+    </prtcorrect>
+    <prtpartiallycorrect format="html">
+      <text><![CDATA[<p>Your answer is partially correct.</p>]]></text>
+    </prtpartiallycorrect>
+    <prtincorrect format="html">
+      <text><![CDATA[<p>Incorrect answer.</p>]]></text>
+    </prtincorrect>
+    <multiplicationsign>dot</multiplicationsign>
+    <sqrtsign>1</sqrtsign>
+    <complexno>i</complexno>
+    <inversetrig>cos-1</inversetrig>
+    <matrixparens>[</matrixparens>
+    <variantsselectionseed></variantsselectionseed>
+    <input>
+      <name>ans1</name>
+      <type>algebraic</type>
+      <tans>ta</tans>
+      <boxsize>15</boxsize>
+      <strictsyntax>1</strictsyntax>
+      <insertstars>0</insertstars>
+      <syntaxhint></syntaxhint>
+      <syntaxattribute>0</syntaxattribute>
+      <forbidwords></forbidwords>
+      <allowwords></allowwords>
+      <forbidfloat>1</forbidfloat>
+      <requirelowestterms>0</requirelowestterms>
+      <checkanswertype>0</checkanswertype>
+      <mustverify>1</mustverify>
+      <showvalidation>1</showvalidation>
+      <options></options>
+    </input>
+    <prt>
+      <name>prt1</name>
+      <value>1.0000000</value>
+      <autosimplify>1</autosimplify>
+      <feedbackstyle>1</feedbackstyle>
+      <feedbackvariables>
+        <text></text>
+      </feedbackvariables>
+      <firstnodename>0</firstnodename>
+      <node>
+        <name>0</name>
+        <answertest>AlgEquiv</answertest>
+        <sans>ans1</sans>
+        <tans>ta</tans>
+        <testoptions></testoptions>
+        <quiet>0</quiet>
+        <truescoremode>=</truescoremode>
+        <truescore>1.0000000</truescore>
+        <truepenalty>0.0000000</truepenalty>
+        <truenextnode>-1</truenextnode>
+        <trueanswernote>prt1-1-T</trueanswernote>
+        <truefeedback format="html">
+          <text><![CDATA[<p>Bonne r&eacute;ponse&nbsp;: \(\binom{ {@n@} }{ {@k@} } = {@ta@}\).</p>]]></text>
+        </truefeedback>
+        <falsescoremode>=</falsescoremode>
+        <falsescore>0.0000000</falsescore>
+        <falsepenalty>0.0000000</falsepenalty>
+        <falsenextnode>-1</falsenextnode>
+        <falseanswernote>prt1-1-F</falseanswernote>
+        <falsefeedback format="html">
+          <text><![CDATA[<p>R&eacute;ponse incorrecte. Indication&nbsp;: l'ordre ne compte pas, donc utiliser \(C(n, k) = \binom{n}{k}\).</p>]]></text>
+        </falsefeedback>
+      </node>
+    </prt>
+    <deployedseed>1</deployedseed>
+    <deployedseed>2</deployedseed>
+    <deployedseed>3</deployedseed>
+  </question>
+  <question type="stack">
+    <name>
+      <text>MATH 2 — Anagrammes de MISSISSIPPI</text>
+    </name>
+    <questiontext format="html">
+      <text><![CDATA[<p>Combien d'anagrammes distinctes peut-on former avec les lettres du mot <strong>MISSISSIPPI</strong>&nbsp;?</p>
+<p>Ce mot contient 11 lettres&nbsp;: 1 M, 4 I, 4 S et 2 P.</p>
+<p>Nombre d'anagrammes : [[input:ans1]] [[validation:ans1]]</p>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text><![CDATA[<p>Avec \(n_1, n_2, \ldots, n_k\) lettres identiques par classe, la formule du multinomial donne&nbsp;:</p>
+<p>\[ \binom{n}{n_1, n_2, \ldots, n_k} = \frac{n!}{n_1!\, n_2! \cdots n_k!}. \]</p>
+<p>Ici&nbsp;: \(\displaystyle \frac{11!}{1!\,4!\,4!\,2!} = \frac{39\,916\,800}{1 \cdot 24 \cdot 24 \cdot 2} = 34\,650.\)</p>]]></text>
+    </generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.1000000</penalty>
+    <hidden>0</hidden>
+    <idnumber></idnumber>
+    <stackversion>
+      <text>2024010100</text>
+    </stackversion>
+    <questionvariables>
+      <text>/* Number of distinct anagrams of MISSISSIPPI : 11!/(1!4!4!2!) = 34650 */
+ta : 11!/(1!*4!*4!*2!);</text>
+    </questionvariables>
+    <specificfeedback format="html">
+      <text><![CDATA[<p>[[feedback:prt1]]</p>]]></text>
+    </specificfeedback>
+    <questionnote format="moodle_auto_format">
+      <text>ta = 34650</text>
+    </questionnote>
+    <questiondescription format="html">
+      <text></text>
+    </questiondescription>
+    <questionsimplify>1</questionsimplify>
+    <assumepositive>0</assumepositive>
+    <assumereal>0</assumereal>
+    <prtcorrect format="html">
+      <text><![CDATA[<p>Correct answer, well done.</p>]]></text>
+    </prtcorrect>
+    <prtpartiallycorrect format="html">
+      <text><![CDATA[<p>Your answer is partially correct.</p>]]></text>
+    </prtpartiallycorrect>
+    <prtincorrect format="html">
+      <text><![CDATA[<p>Incorrect answer.</p>]]></text>
+    </prtincorrect>
+    <multiplicationsign>dot</multiplicationsign>
+    <sqrtsign>1</sqrtsign>
+    <complexno>i</complexno>
+    <inversetrig>cos-1</inversetrig>
+    <matrixparens>[</matrixparens>
+    <variantsselectionseed></variantsselectionseed>
+    <input>
+      <name>ans1</name>
+      <type>algebraic</type>
+      <tans>34650</tans>
+      <boxsize>15</boxsize>
+      <strictsyntax>1</strictsyntax>
+      <insertstars>0</insertstars>
+      <syntaxhint></syntaxhint>
+      <syntaxattribute>0</syntaxattribute>
+      <forbidwords></forbidwords>
+      <allowwords></allowwords>
+      <forbidfloat>1</forbidfloat>
+      <requirelowestterms>0</requirelowestterms>
+      <checkanswertype>0</checkanswertype>
+      <mustverify>1</mustverify>
+      <showvalidation>1</showvalidation>
+      <options></options>
+    </input>
+    <prt>
+      <name>prt1</name>
+      <value>1.0000000</value>
+      <autosimplify>1</autosimplify>
+      <feedbackstyle>1</feedbackstyle>
+      <feedbackvariables>
+        <text></text>
+      </feedbackvariables>
+      <firstnodename>0</firstnodename>
+      <node>
+        <name>0</name>
+        <answertest>AlgEquiv</answertest>
+        <sans>ans1</sans>
+        <tans>34650</tans>
+        <testoptions></testoptions>
+        <quiet>0</quiet>
+        <truescoremode>=</truescoremode>
+        <truescore>1.0000000</truescore>
+        <truepenalty>0.0000000</truepenalty>
+        <truenextnode>-1</truenextnode>
+        <trueanswernote>prt1-1-T</trueanswernote>
+        <truefeedback format="html">
+          <text><![CDATA[<p>Bonne r&eacute;ponse&nbsp;: \(11!/(1! \cdot 4! \cdot 4! \cdot 2!) = 34\,650\).</p>]]></text>
+        </truefeedback>
+        <falsescoremode>=</falsescoremode>
+        <falsescore>0.0000000</falsescore>
+        <falsepenalty>0.0000000</falsepenalty>
+        <falsenextnode>-1</falsenextnode>
+        <falseanswernote>prt1-1-F</falseanswernote>
+        <falsefeedback format="html">
+          <text><![CDATA[<p>R&eacute;ponse incorrecte. Rappel&nbsp;: pour des lettres r&eacute;p&eacute;t&eacute;es, on divise \(n!\) par les factorielles des effectifs de chaque classe.</p>]]></text>
+        </falsefeedback>
+      </node>
+    </prt>
+    <deployedseed>1</deployedseed>
+    <deployedseed>2</deployedseed>
+    <deployedseed>3</deployedseed>
+  </question>
+  <question type="stack">
+    <name>
+      <text>MATH 3 — Principe des tiroirs (mois)</text>
+    </name>
+    <questiontext format="html">
+      <text><![CDATA[<p>Un groupe contient \({@N@}\) personnes. On range chaque personne dans le tiroir correspondant &agrave; son mois de naissance (12 tiroirs au total).</p>
+<p>D'apr&egrave;s le principe des tiroirs g&eacute;n&eacute;ralis&eacute;, quel est le nombre minimum garanti de personnes nées le m&ecirc;me mois&nbsp;?</p>
+<p>R&eacute;ponse : [[input:ans1]] [[validation:ans1]]</p>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text><![CDATA[<p>Avec \(N\) pigeons dans \(k\) tiroirs, au moins un tiroir contient au moins \(\lceil N/k \rceil\) pigeons.</p>
+<p>Ici&nbsp;: \(\lceil {@N@}/12 \rceil = {@ta@}\).</p>]]></text>
+    </generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.1000000</penalty>
+    <hidden>0</hidden>
+    <idnumber></idnumber>
+    <stackversion>
+      <text>2024010100</text>
+    </stackversion>
+    <questionvariables>
+      <text>/* Pigeonhole : N people in 12 months, how many share at least one month at minimum? */
+N : rand_with_step(50, 200, 10);
+k : 12;
+ta : ceiling(N/k);</text>
+    </questionvariables>
+    <specificfeedback format="html">
+      <text><![CDATA[<p>[[feedback:prt1]]</p>]]></text>
+    </specificfeedback>
+    <questionnote format="moodle_auto_format">
+      <text>N={@N@}, ta={@ta@}</text>
+    </questionnote>
+    <questiondescription format="html">
+      <text></text>
+    </questiondescription>
+    <questionsimplify>1</questionsimplify>
+    <assumepositive>0</assumepositive>
+    <assumereal>0</assumereal>
+    <prtcorrect format="html">
+      <text><![CDATA[<p>Correct answer, well done.</p>]]></text>
+    </prtcorrect>
+    <prtpartiallycorrect format="html">
+      <text><![CDATA[<p>Your answer is partially correct.</p>]]></text>
+    </prtpartiallycorrect>
+    <prtincorrect format="html">
+      <text><![CDATA[<p>Incorrect answer.</p>]]></text>
+    </prtincorrect>
+    <multiplicationsign>dot</multiplicationsign>
+    <sqrtsign>1</sqrtsign>
+    <complexno>i</complexno>
+    <inversetrig>cos-1</inversetrig>
+    <matrixparens>[</matrixparens>
+    <variantsselectionseed></variantsselectionseed>
+    <input>
+      <name>ans1</name>
+      <type>algebraic</type>
+      <tans>ta</tans>
+      <boxsize>15</boxsize>
+      <strictsyntax>1</strictsyntax>
+      <insertstars>0</insertstars>
+      <syntaxhint></syntaxhint>
+      <syntaxattribute>0</syntaxattribute>
+      <forbidwords></forbidwords>
+      <allowwords></allowwords>
+      <forbidfloat>1</forbidfloat>
+      <requirelowestterms>0</requirelowestterms>
+      <checkanswertype>0</checkanswertype>
+      <mustverify>1</mustverify>
+      <showvalidation>1</showvalidation>
+      <options></options>
+    </input>
+    <prt>
+      <name>prt1</name>
+      <value>1.0000000</value>
+      <autosimplify>1</autosimplify>
+      <feedbackstyle>1</feedbackstyle>
+      <feedbackvariables>
+        <text></text>
+      </feedbackvariables>
+      <firstnodename>0</firstnodename>
+      <node>
+        <name>0</name>
+        <answertest>AlgEquiv</answertest>
+        <sans>ans1</sans>
+        <tans>ta</tans>
+        <testoptions></testoptions>
+        <quiet>0</quiet>
+        <truescoremode>=</truescoremode>
+        <truescore>1.0000000</truescore>
+        <truepenalty>0.0000000</truepenalty>
+        <truenextnode>-1</truenextnode>
+        <trueanswernote>prt1-1-T</trueanswernote>
+        <truefeedback format="html">
+          <text><![CDATA[<p>Bonne r&eacute;ponse&nbsp;: \(\lceil {@N@}/12 \rceil = {@ta@}\).</p>]]></text>
+        </truefeedback>
+        <falsescoremode>=</falsescoremode>
+        <falsescore>0.0000000</falsescore>
+        <falsepenalty>0.0000000</falsepenalty>
+        <falsenextnode>-1</falsenextnode>
+        <falseanswernote>prt1-1-F</falseanswernote>
+        <falsefeedback format="html">
+          <text><![CDATA[<p>R&eacute;ponse incorrecte. Indication&nbsp;: utiliser \(\lceil N/k \rceil\) (entier sup&eacute;rieur ou &eacute;gal).</p>]]></text>
+        </falsefeedback>
+      </node>
+    </prt>
+    <deployedseed>1</deployedseed>
+    <deployedseed>2</deployedseed>
+    <deployedseed>3</deployedseed>
+  </question>
+  <question type="stack">
+    <name>
+      <text>MATH 4 — Etoiles et barres</text>
+    </name>
+    <questiontext format="html">
+      <text><![CDATA[<p>On distribue \({@k@}\) bonbons identiques entre \({@n@}\) enfants (un enfant peut recevoir 0, 1 ou plusieurs bonbons).</p>
+<p>Combien y a-t-il de distributions possibles&nbsp;?</p>
+<p>Nombre de distributions : [[input:ans1]] [[validation:ans1]]</p>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text><![CDATA[<p>C'est exactement le nombre de solutions enti&egrave;res positives ou nulles de \(x_1 + x_2 + \cdots + x_{ {@n@} } = {@k@}\).</p>
+<p>Par la m&eacute;thode des &eacute;toiles et barres (stars and bars)&nbsp;:</p>
+<p>\[ \binom{n + k - 1}{k} = \binom{ {@n+k-1@} }{ {@k@} } = {@ta@}. \]</p>]]></text>
+    </generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.1000000</penalty>
+    <hidden>0</hidden>
+    <idnumber></idnumber>
+    <stackversion>
+      <text>2024010100</text>
+    </stackversion>
+    <questionvariables>
+      <text>/* Distribute k identical candies among n children: binomial(n+k-1, k) */
+n : rand_with_step(3, 6, 1);
+k : rand_with_step(8, 12, 1);
+ta : binomial(n + k - 1, k);</text>
+    </questionvariables>
+    <specificfeedback format="html">
+      <text><![CDATA[<p>[[feedback:prt1]]</p>]]></text>
+    </specificfeedback>
+    <questionnote format="moodle_auto_format">
+      <text>C({@n+k-1@},{@k@}) = {@ta@}</text>
+    </questionnote>
+    <questiondescription format="html">
+      <text></text>
+    </questiondescription>
+    <questionsimplify>1</questionsimplify>
+    <assumepositive>0</assumepositive>
+    <assumereal>0</assumereal>
+    <prtcorrect format="html">
+      <text><![CDATA[<p>Correct answer, well done.</p>]]></text>
+    </prtcorrect>
+    <prtpartiallycorrect format="html">
+      <text><![CDATA[<p>Your answer is partially correct.</p>]]></text>
+    </prtpartiallycorrect>
+    <prtincorrect format="html">
+      <text><![CDATA[<p>Incorrect answer.</p>]]></text>
+    </prtincorrect>
+    <multiplicationsign>dot</multiplicationsign>
+    <sqrtsign>1</sqrtsign>
+    <complexno>i</complexno>
+    <inversetrig>cos-1</inversetrig>
+    <matrixparens>[</matrixparens>
+    <variantsselectionseed></variantsselectionseed>
+    <input>
+      <name>ans1</name>
+      <type>algebraic</type>
+      <tans>ta</tans>
+      <boxsize>15</boxsize>
+      <strictsyntax>1</strictsyntax>
+      <insertstars>0</insertstars>
+      <syntaxhint></syntaxhint>
+      <syntaxattribute>0</syntaxattribute>
+      <forbidwords></forbidwords>
+      <allowwords></allowwords>
+      <forbidfloat>1</forbidfloat>
+      <requirelowestterms>0</requirelowestterms>
+      <checkanswertype>0</checkanswertype>
+      <mustverify>1</mustverify>
+      <showvalidation>1</showvalidation>
+      <options></options>
+    </input>
+    <prt>
+      <name>prt1</name>
+      <value>1.0000000</value>
+      <autosimplify>1</autosimplify>
+      <feedbackstyle>1</feedbackstyle>
+      <feedbackvariables>
+        <text></text>
+      </feedbackvariables>
+      <firstnodename>0</firstnodename>
+      <node>
+        <name>0</name>
+        <answertest>AlgEquiv</answertest>
+        <sans>ans1</sans>
+        <tans>ta</tans>
+        <testoptions></testoptions>
+        <quiet>0</quiet>
+        <truescoremode>=</truescoremode>
+        <truescore>1.0000000</truescore>
+        <truepenalty>0.0000000</truepenalty>
+        <truenextnode>-1</truenextnode>
+        <trueanswernote>prt1-1-T</trueanswernote>
+        <truefeedback format="html">
+          <text><![CDATA[<p>Bonne r&eacute;ponse&nbsp;: \(\binom{ {@n+k-1@} }{ {@k@} } = {@ta@}\).</p>]]></text>
+        </truefeedback>
+        <falsescoremode>=</falsescoremode>
+        <falsescore>0.0000000</falsescore>
+        <falsepenalty>0.0000000</falsepenalty>
+        <falsenextnode>-1</falsenextnode>
+        <falseanswernote>prt1-1-F</falseanswernote>
+        <falsefeedback format="html">
+          <text><![CDATA[<p>R&eacute;ponse incorrecte. Indication&nbsp;: pour \(k\) objets identiques dans \(n\) groupes, la formule est \(\binom{n+k-1}{k}\).</p>]]></text>
+        </falsefeedback>
+      </node>
+    </prt>
+    <deployedseed>1</deployedseed>
+    <deployedseed>2</deployedseed>
+    <deployedseed>3</deployedseed>
+  </question>
+
+</quiz>

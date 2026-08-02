@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Binomial Identities — Énoncés</title>
+<script>
+  MathJax = {
+    tex: { inlineMath: [['$','$']], displayMath: [['$$','$$']] },
+    options: { skipHtmlTags: ['script','noscript','style','textarea'] }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --orange:    #e67e22;
+  --darkblue:  #2c3e50;
+  --lightbg:   #f4f9fc;
+  --border:    #dce3ea;
+  --py-fg:     #1f4e7a;
+  --py-bg:     #eaf3fb;
+  --py-border: #2a6fb3;
+  --py-head:   #2a6fb3;
+  --out-fg:    #6e4b0a;
+  --out-bg:    #fff7e0;
+  --out-border:#e0b341;
+  --out-head:  #c89324;
+  --sol-bg:    #fdf6ee;
+  --sol-border:#e67e22;
+}
+
+body {
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  background: #e8edf2;
+  color: var(--darkblue);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem 1rem 5rem;
+  gap: 1.5rem;
+}
+
+.slide {
+  background: #fff;
+  width: 100%;
+  max-width: 940px;
+  border-radius: 10px;
+  box-shadow: 0 4px 18px rgba(0,0,0,.10);
+  padding: 2rem 2.4rem 1.6rem;
+  position: relative;
+}
+
+.slide.title-slide {
+  background: linear-gradient(145deg, #f4f9fc 60%, #e0eef7);
+  text-align: center;
+  border-top: 6px solid var(--orange);
+  padding: 2.5rem 2rem;
+}
+.slide.title-slide h1 { font-size: 1.9rem; color: var(--darkblue); margin-bottom: 0.4rem; }
+.slide.title-slide .subtitle { font-size: 1.15rem; color: #555; }
+
+h2.frame-title {
+  font-size: 1.4rem;
+  color: var(--orange);
+  font-weight: 700;
+  margin-bottom: 0.4rem;
+  padding-bottom: 0.3rem;
+  border-bottom: 2px solid #f9e4cc;
+}
+.ex-number {
+  display: inline-block;
+  background: var(--orange);
+  color: #fff;
+  font-weight: 700;
+  padding: 0.15em 0.6em;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  margin-right: 0.5rem;
+}
+.difficulty {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  padding: 0.1em 0.5em;
+  border-radius: 3px;
+  margin-left: 0.4rem;
+  vertical-align: middle;
+  text-transform: uppercase;
+}
+.easy   { background: #d4f4dd; color: #1e7a3b; }
+.medium { background: #fce4b6; color: #8a5400; }
+.hard   { background: #f8c8c8; color: #952020; }
+.kind {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  padding: 0.1em 0.55em;
+  border-radius: 3px;
+  margin-left: 0.4rem;
+  vertical-align: middle;
+  text-transform: uppercase;
+}
+.kind.lab  { background: #eaf3fb; color: #1f4e7a; }
+.kind.math { background: #f8e9ff; color: #5b1e7a; }
+
+p { line-height: 1.7; margin: 0.4rem 0; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.4rem; line-height: 1.85; }
+ul li::marker, ol li::marker { color: var(--orange); }
+
+.statement { margin: 0.3rem 0 0.6rem; }
+
+.python-block, .output-block {
+  border-radius: 6px;
+  overflow: hidden;
+  margin: 0.6rem 0;
+  border: 1px solid;
+}
+.python-block { border-color: var(--py-border); }
+.output-block { border-color: var(--out-border); margin: 0.4rem 0 0.6rem; }
+.python-label, .output-label {
+  display: block;
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  color: #fff;
+}
+.python-label { background: var(--py-head); }
+.output-label { background: var(--out-head); }
+.pane-code {
+  font-family: 'Consolas', 'Fira Code', monospace;
+  font-size: 0.83rem;
+  line-height: 1.6;
+  padding: 0.5rem 0.75rem;
+  white-space: pre;
+  display: block;
+  overflow-x: auto;
+}
+.python-block .pane-code { background: var(--py-bg); color: var(--py-fg); }
+.output-block .pane-code { background: var(--out-bg); color: var(--out-fg); }
+
+details.solution {
+  margin: 0.4rem 0 0.6rem;
+  background: var(--sol-bg);
+  border-left: 4px solid var(--sol-border);
+  border-radius: 4px;
+  padding: 0.5rem 0.8rem;
+}
+details.solution summary {
+  cursor: pointer;
+  font-weight: 700;
+  color: var(--orange);
+  list-style: none;
+  font-size: 0.9rem;
+  letter-spacing: 0.04em;
+}
+details.solution summary::before { content: "▸ "; }
+details.solution[open] summary::before { content: "▾ "; }
+details.solution > *:not(summary) { margin-top: 0.5rem; }
+
+.toc {
+  background: var(--lightbg);
+  border-left: 4px solid var(--orange);
+  padding: 0.8rem 1rem;
+  border-radius: 4px;
+}
+.toc a { color: var(--darkblue); text-decoration: none; }
+.toc a:hover { color: var(--orange); }
+.answer-space {
+  margin: 0.6rem 0;
+  padding: 1.2rem 1rem;
+  border: 2px dashed var(--orange);
+  border-radius: 6px;
+  background: #fffaf3;
+  color: #b56500;
+  font-style: italic;
+  font-size: 0.92rem;
+  min-height: 80px;
+}
+code { background: #f0f3f7; color: #1f4e7a; padding: 0 .25em; border-radius: 3px; font-family: 'Consolas','Fira Code',monospace; }
+</style>
+</head>
+<body>
+
+<section class="slide title-slide">
+  <h1>Discrete Mathematics — Binomial Identities</h1>
+  <p class="subtitle">Énoncés — 4 Python labs + 4 math problems (no solutions)</p>
+  <p style="font-size:1rem;color:#e67e22;margin-top:0.8rem;font-style:italic;font-weight:600;letter-spacing:.02em;">By Pr. El Hadiq Zouhair</p>
+</section>
+
+<section class="slide">
+  <h2 class="frame-title">Contents</h2>
+  <div class="toc">
+    <p style="font-weight:700;color:var(--orange);margin-bottom:0.3rem;">Part A — Python labs</p>
+    <ol>
+      <li><a href="#ex1">Pascal's-triangle generator</a> <span class="difficulty easy">easy</span> <span class="kind lab">lab</span></li>
+      <li><a href="#ex2">Row-sum identity verifier</a> <span class="difficulty easy">easy</span> <span class="kind lab">lab</span></li>
+      <li><a href="#ex3">Vandermonde identity checker</a> <span class="difficulty medium">medium</span> <span class="kind lab">lab</span></li>
+      <li><a href="#ex4">Catalan numbers via both formulas</a> <span class="difficulty medium">medium</span> <span class="kind lab">lab</span></li>
+    </ol>
+    <p style="font-weight:700;color:var(--orange);margin:0.8rem 0 0.3rem;">Part B — Mathematical problems</p>
+    <ol start="5">
+      <li><a href="#ex5">Apply the binomial theorem to $(2+x)^{12}$</a> <span class="difficulty easy">easy</span> <span class="kind math">math</span></li>
+      <li><a href="#ex6">Pascal's identity — stock-portfolio decomposition</a> <span class="difficulty medium">medium</span> <span class="kind math">math</span></li>
+      <li><a href="#ex7">Vandermonde &amp; bouquet counting</a> <span class="difficulty medium">medium</span> <span class="kind math">math</span></li>
+      <li><a href="#ex8">Hockey-stick &amp; sum of squares</a> <span class="difficulty hard">hard</span> <span class="kind math">math</span></li>
+    </ol>
+  </div>
+</section>
+
+<!-- ══ Exercise 1 — LAB ═════════════════════════════════════════════ -->
+<section class="slide" id="ex1">
+  <h2 class="frame-title"><span class="ex-number">1</span>Pascal's-triangle generator <span class="difficulty easy">easy</span> <span class="kind lab">lab</span></h2>
+  <p class="statement">Écrire une fonction <code>pascal(n)</code> qui renvoie la liste des $n + 1$ premières lignes du triangle de Pascal (la ligne $i$ contient $\binom{i}{0}, \binom{i}{1}, \ldots, \binom{i}{i}$), <strong>sans utiliser <code>math.comb</code></strong>. Chaque nouvelle ligne se construit à partir de la précédente via l'identité de Pascal.</p>
+  <ul>
+    <li>Vérifier que <code>pascal(5)[5] == [1, 5, 10, 10, 5, 1]</code>.</li>
+    <li>Vérifier que la somme de chaque ligne $n$ vaut $2^n$ (identité $\sum \binom{n}{k} = 2^n$).</li>
+  </ul>
+
+  <div class="answer-space">Your answer…</div>
+</section>
+
+<!-- ══ Exercise 2 — LAB ═════════════════════════════════════════════ -->
+<section class="slide" id="ex2">
+  <h2 class="frame-title"><span class="ex-number">2</span>Row-sum identity verifier <span class="difficulty easy">easy</span> <span class="kind lab">lab</span></h2>
+  <p class="statement">Écrire un script qui vérifie pour $n = 0, 1, \ldots, 20$ les trois identités&nbsp;:</p>
+  <ol>
+    <li>$\displaystyle \sum_{k=0}^{n} \binom{n}{k} = 2^n$</li>
+    <li>$\displaystyle \sum_{k=0}^{n} (-1)^k \binom{n}{k} = 0$ &nbsp;(pour $n \geq 1$)</li>
+    <li>$\displaystyle \sum_{k=0}^{n} 2^k \binom{n}{k} = 3^n$</li>
+  </ol>
+  <p>Renvoyer <code>True</code> si elles sont toutes vraies, sinon afficher la première qui échoue.</p>
+
+  <div class="answer-space">Your answer…</div>
+</section>
+
+<!-- ══ Exercise 3 — LAB ═════════════════════════════════════════════ -->
+<section class="slide" id="ex3">
+  <h2 class="frame-title"><span class="ex-number">3</span>Vandermonde identity checker <span class="difficulty medium">medium</span> <span class="kind lab">lab</span></h2>
+  <p class="statement">Écrire <code>vandermonde(m, n, r)</code> qui vérifie l'identité $\binom{m+n}{r} = \sum_{k=0}^{r} \binom{m}{k}\binom{n}{r-k}$ pour les paramètres donnés et renvoie le couple <code>(membre_gauche, membre_droit)</code>.</p>
+  <ul>
+    <li>Tester pour $(m, n, r) = (8, 12, 5)$, $(15, 15, 10)$, $(20, 20, 20)$.</li>
+    <li>Vérifier le corollaire $\sum_{k=0}^{n}\binom{n}{k}^2 = \binom{2n}{n}$ pour $n = 5, 10, 15$.</li>
+  </ul>
+
+  <div class="answer-space">Your answer…</div>
+</section>
+
+<!-- ══ Exercise 4 — LAB ═════════════════════════════════════════════ -->
+<section class="slide" id="ex4">
+  <h2 class="frame-title"><span class="ex-number">4</span>Catalan numbers — deux formules <span class="difficulty medium">medium</span> <span class="kind lab">lab</span></h2>
+  <p class="statement">Le $n$-ème nombre de Catalan est défini par $C_n = \dfrac{1}{n+1}\binom{2n}{n} = \binom{2n}{n} - \binom{2n}{n+1}$.</p>
+  <ol>
+    <li>Écrire deux fonctions <code>catalan1(n)</code> et <code>catalan2(n)</code> implémentant chacune une des formules.</li>
+    <li>Vérifier qu'elles coïncident pour $n = 0, 1, \ldots, 10$.</li>
+    <li>Vérifier la récurrence $C_{n+1} = \sum_{k=0}^{n} C_k C_{n-k}$ pour $n \leq 8$.</li>
+  </ol>
+
+  <div class="answer-space">Your answer…</div>
+</section>
+
+<!-- ══ Exercise 5 — MATH ════════════════════════════════════════════ -->
+<section class="slide" id="ex5">
+  <h2 class="frame-title"><span class="ex-number">5</span>Binomial theorem appliqué <span class="difficulty easy">easy</span> <span class="kind math">math</span></h2>
+  <p class="statement">Considérer le développement de $(2 + x)^{12}$.</p>
+  <ol>
+    <li>Donner le coefficient de $x^5$.</li>
+    <li>Donner le coefficient de $x^7$.</li>
+    <li>Quelle est la somme de tous les coefficients ? (Indication : évaluer en $x = 1$.)</li>
+    <li>Quelle est la somme alternée des coefficients ? (Évaluer en $x = -1$.)</li>
+  </ol>
+
+  <div class="answer-space">Your answer…</div>
+</section>
+
+<!-- ══ Exercise 6 — MATH ════════════════════════════════════════════ -->
+<section class="slide" id="ex6">
+  <h2 class="frame-title"><span class="ex-number">6</span>Pascal &amp; portefeuille <span class="difficulty medium">medium</span> <span class="kind math">math</span></h2>
+  <p class="statement">Maeve doit choisir $8$ actions parmi $20$ pour constituer son portefeuille.</p>
+  <ol>
+    <li>Combien de portefeuilles possibles ?</li>
+    <li>Maeve a une action favorite. Combien de portefeuilles <strong>contiennent</strong> cette action ? Combien la <strong>excluent</strong> ?</li>
+    <li>Vérifier numériquement l'identité de Pascal $\binom{20}{8} = \binom{19}{7} + \binom{19}{8}$.</li>
+    <li>Démontrer combinatoirement Pascal en s'appuyant sur cette situation.</li>
+  </ol>
+
+  <div class="answer-space">Your answer…</div>
+</section>
+
+<!-- ══ Exercise 7 — MATH ════════════════════════════════════════════ -->
+<section class="slide" id="ex7">
+  <h2 class="frame-title"><span class="ex-number">7</span>Vandermonde &amp; bouquets <span class="difficulty medium">medium</span> <span class="kind math">math</span></h2>
+  <p class="statement">Une fleuriste a $15$ roses et $15$ brins de lavande. Un client veut un bouquet de $10$ fleurs.</p>
+  <ol>
+    <li>Combien de bouquets contiennent exactement $3$ roses et $7$ brins de lavande ?</li>
+    <li>Combien de bouquets contiennent <strong>de $1$ à $3$ roses</strong> ?</li>
+    <li>Combien de bouquets de $10$ fleurs au total ?</li>
+    <li>Énoncer l'identité de Vandermonde et l'utiliser pour exprimer la question 3 en une seule formule.</li>
+  </ol>
+
+  <div class="answer-space">Your answer…</div>
+</section>
+
+<!-- ══ Exercise 8 — MATH ════════════════════════════════════════════ -->
+<section class="slide" id="ex8">
+  <h2 class="frame-title"><span class="ex-number">8</span>Hockey-stick &amp; sum of squares <span class="difficulty hard">hard</span> <span class="kind math">math</span></h2>
+  <p class="statement">Soit $n \geq 1$.</p>
+  <ol>
+    <li>Énoncer l'identité hockey-stick $\sum_{i=r}^{n}\binom{i}{r} = \binom{n+1}{r+1}$ et la démontrer par double comptage.</li>
+    <li>Évaluer $\sum_{i=2}^{10} \binom{i}{2}$ et vérifier numériquement.</li>
+    <li>Démontrer $\sum_{k=0}^{n}\binom{n}{k}^2 = \binom{2n}{n}$ via Vandermonde.</li>
+    <li>En déduire la formule asymptotique $\binom{2n}{n} \sim \dfrac{4^n}{\sqrt{\pi n}}$ (Stirling) et en estimer la valeur pour $n = 10$.</li>
+  </ol>
+
+  <div class="answer-space">Your answer…</div>
+</section>
+
+</body>
+</html>

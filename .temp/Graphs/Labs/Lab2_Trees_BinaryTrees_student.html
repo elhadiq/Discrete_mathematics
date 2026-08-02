@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lab 2 — Trees &amp; Binary Trees in Python</title>
+<script>
+  MathJax = {
+    tex: { inlineMath: [['$','$']], displayMath: [['$$','$$']], processEscapes: true },
+    options: { skipHtmlTags: ['script','noscript','style','textarea'] }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --orange:#e67e22; --darkblue:#2c3e50; --lightbg:#f4f9fc;
+  --border:#dce3ea;
+  --py-fg:#1f4e7a; --py-bg:#eaf3fb; --py-border:#2a6fb3; --py-head:#2a6fb3;
+  --out-fg:#6e4b0a; --out-bg:#fff7e0; --out-border:#e0b341; --out-head:#c89324;
+}
+body {
+  font-family:'Segoe UI', system-ui, sans-serif;
+  background:#e8edf2; color:var(--darkblue);
+  display:flex; flex-direction:column; align-items:center;
+  padding:2rem 1rem 5rem; gap:1.6rem;
+}
+.slide {
+  background:#fff; width:100%; max-width:940px;
+  border-radius:10px; box-shadow:0 4px 18px rgba(0,0,0,.10);
+  padding:2.0rem 2.6rem 1.8rem; position:relative;
+}
+.title-slide {
+  background:linear-gradient(145deg,#f4f9fc 60%,#e0eef7);
+  text-align:center; border-top:6px solid var(--orange);
+}
+.title-slide h1 { font-size:1.9rem; margin-bottom:0.4rem; }
+.title-slide .subtitle { font-size:1.05rem; color:#555; }
+.title-slide .author { font-size:1rem; color:var(--orange); margin-top:0.8rem; font-style:italic; font-weight:600; }
+h2.frame-title {
+  font-size:1.4rem; color:var(--orange); font-weight:700;
+  margin-bottom:0.6rem; padding-bottom:0.35rem; border-bottom:2px solid #f9e4cc;
+}
+h3.sub-title { font-size:1.02rem; color:var(--orange); font-weight:600; margin:0.8rem 0 0.3rem; }
+p { line-height:1.65; margin:0.5rem 0; }
+ul, ol { margin:0.4rem 0 0.4rem 1.5rem; line-height:1.75; }
+ul li::marker, ol li::marker { color:var(--orange); }
+code { background:#f0f3f7; color:#1f4e7a; padding:0 .25em; border-radius:3px; font-family:'Consolas','Fira Code',monospace; }
+.note-box, .def-box, .thm-box, .goal-box, .q-box {
+  border-radius:6px; padding:0.6rem 0.9rem; margin:0.6rem 0; line-height:1.65;
+}
+.note-box { background:#fff5e8; border-left:4px solid var(--orange); font-style:italic; }
+.def-box  { background:#eaf3fb; border-left:4px solid var(--py-border); }
+.def-box::before { content:"Definition. "; font-weight:700; color:var(--py-border); }
+.thm-box  { background:#fff7e0; border-left:4px solid var(--out-border); }
+.thm-box::before { content:"Recall. "; font-weight:700; color:var(--out-head); }
+.goal-box { background:#e8f5ec; border-left:4px solid #27ae60; }
+.goal-box::before { content:"Goal. "; font-weight:700; color:#1e824c; }
+.q-box { background:#eef1ff; border-left:4px solid #6060cc; }
+.q-box::before { content:"Question. "; font-weight:700; color:#6060cc; }
+.python-block, .output-block { border-radius:6px; overflow:hidden; margin:0.6rem 0; border:1px solid; }
+.pane-label { display:block; font-size:0.62rem; font-weight:800; letter-spacing:0.12em; text-transform:uppercase; padding:2px 10px; color:#fff; }
+.pane-code { font-family:'Consolas','Fira Code',monospace; font-size:0.8rem; line-height:1.55; padding:0.55rem 0.8rem; white-space:pre; display:block; overflow-x:auto; }
+.python-block { border-color:var(--py-border); }
+.python-block .pane-label { background:var(--py-head); }
+.python-block .pane-code { background:var(--py-bg); color:var(--py-fg); }
+.output-block { border-color:var(--out-border); }
+.output-block .pane-label { background:var(--out-head); }
+.output-block .pane-code { background:var(--out-bg); color:var(--out-fg); }
+.ex-tag { display:inline-block; background:var(--orange); color:#fff; font-size:0.72rem; font-weight:800; letter-spacing:.08em; text-transform:uppercase; padding:2px 9px; border-radius:12px; vertical-align:middle; margin-right:.5rem; }
+.toc { columns:2; column-gap:2rem; }
+</style>
+</head>
+<body>
+
+<section class="slide title-slide">
+  <h1>Lab 2 — Trees &amp; Binary Trees in Python</h1>
+  <p class="subtitle">Discrete Mathematics — Graphs, Trees &amp; Binary Trees</p>
+  <p class="author">Pr. El Hadiq Zouhair</p>
+</section>
+
+<section class="slide">
+  <h2 class="frame-title">Before you start</h2>
+  <div class="def-box">
+    A <strong>binary tree</strong> is either the empty tree <code>None</code>, or a list with three items <code>t = [key, left, right]</code>, where <code>left</code> and <code>right</code> are themselves binary trees.
+  </div>
+  <p>For instance, the tree with root 1 and two leaf children 2 and 3 is <code>[1, [2, None, None], [3, None, None]]</code>.</p>
+  <div class="note-box">This matches the inductive definition from the lesson — so every function in this lab is naturally a <strong>recursive</strong> function whose base case is <code>None</code>. As in Lab 1, <code>networkx</code> is used <strong>only</strong> to draw the trees and check the work.</div>
+  <p>Run the notebook from top to bottom. Replace each <code># TODO</code> and remove the <code>raise NotImplementedError</code>. A printed ✔ means the exercise's tests pass.</p>
+  <h3 class="sub-title">Contents</h3>
+  <ol class="toc">
+    <li>Size, height, leaves</li>
+    <li>The three depth-first traversals + level-order</li>
+    <li>Rebuilding a tree from two traversals</li>
+    <li>Binary search trees</li>
+    <li>Expression trees</li>
+    <li>A tree is a special graph</li>
+  </ol>
+</section>
+
+<section class="slide">
+  <h2 class="frame-title">Setup</h2>
+  <p>Run this cell first. It provides <code>leaf</code> and the tree-drawing helper.</p>
+  <div class="python-block"><span class="pane-label">Python · provided</span><code class="pane-code">import networkx as nx
+import matplotlib.pyplot as plt
+from collections import deque
+
+def leaf(key):
+    """A leaf: a node with two empty subtrees."""
+    return [key, None, None]
+
+def draw_btree(t, title=""):
+    """Draw a binary tree given in [key, left, right] form."""
+    if t is None:
+        print("(empty tree)")
+        return
+    pos, labels, edges, counter = {}, {}, [], {"x": 0, "id": 0}
+
+    def walk(node, depth):
+        nid = counter["id"]; counter["id"] += 1
+        key, left, right = node
+        lid = walk(left, depth + 1) if left is not None else None
+        pos[nid] = (counter["x"], -depth); counter["x"] += 1   # x = in-order rank
+        labels[nid] = str(key)
+        rid = walk(right, depth + 1) if right is not None else None
+        for child in (lid, rid):
+            if child is not None:
+                edges.append((nid, child))
+        return nid
+
+    walk(t, 0)
+    H = nx.Graph(); H.add_nodes_from(pos); H.add_edges_from(edges)
+    plt.figure(figsize=(max(4, len(pos) * 0.55), 3.5))
+    nx.draw(H, pos, labels=labels, with_labels=True, node_color="#ffd28f",
+            node_size=650, font_weight="bold", edge_color="#666666")
+    plt.title(title)
+    plt.show()
+
+print("Setup OK — networkx", nx.__version__)</code></div>
+</section>
+
+<section class="slide">
+  <h2 class="frame-title"><span class="ex-tag">Exercise 1</span>Size, height, leaves</h2>
+  <p>The cell below builds a first tree <code>t1</code> and draws it — keep that picture in mind for the whole lab. Then implement, recursively:</p>
+  <ol>
+    <li><code>size(t)</code> — number of nodes (<code>size(None) == 0</code>);</li>
+    <li><code>height(t)</code> — height of the tree, with the convention <code>height(None) == -1</code> (so a single node has height 0);</li>
+    <li><code>count_leaves(t)</code> — number of leaves.</li>
+  </ol>
+  <div class="thm-box">The test cell also checks two inequalities from the lesson: $$\text{leaves}(t) \le 2^{h(t)} \qquad\text{and}\qquad \text{size}(t) \le 2^{h(t)+1} - 1.$$</div>
+  <div class="python-block"><span class="pane-label">Python · provided</span><code class="pane-code">t1 = [8,
+      [4, leaf(2), leaf(6)],
+      [12, [10, leaf(9), None], leaf(14)]]
+draw_btree(t1, "t1")</code></div>
+  <div class="python-block"><span class="pane-label">Python · your turn</span><code class="pane-code">def size(t):
+    """Number of nodes of t."""
+    # TODO
+    raise NotImplementedError
+
+def height(t):
+    """Height of t, with height(None) == -1."""
+    # TODO
+    raise NotImplementedError
+
+def count_leaves(t):
+    """Number of leaves of t."""
+    # TODO — careful: three cases (empty, leaf, internal node)
+    raise NotImplementedError</code></div>
+  <div class="output-block"><span class="pane-label">Test cell</span><code class="pane-code">assert size(None) == 0 and size(leaf(7)) == 1 and size(t1) == 8
+assert height(None) == -1 and height(leaf(7)) == 0 and height(t1) == 3
+assert count_leaves(None) == 0 and count_leaves(t1) == 4
+assert count_leaves(t1) <= 2 ** height(t1)
+assert size(t1) <= 2 ** (height(t1) + 1) - 1
+print("Exercise 1 ✔")</code></div>
+</section>
+
+<section class="slide">
+  <h2 class="frame-title"><span class="ex-tag">Exercise 2</span>Traversals</h2>
+  <p>Implement the three depth-first traversals, each returning the <strong>list of keys</strong>:</p>
+  <ol>
+    <li><code>preorder(t)</code> — root, then left subtree, then right subtree;</li>
+    <li><code>inorder(t)</code> — left subtree, then root, then right subtree;</li>
+    <li><code>postorder(t)</code> — left subtree, then right subtree, then root;</li>
+    <li><code>level_order(t)</code> — top to bottom, left to right, using a queue exactly like BFS in Lab 1.</li>
+  </ol>
+  <div class="python-block"><span class="pane-label">Python · your turn</span><code class="pane-code">def preorder(t):
+    """Keys of t in preorder (root, left, right)."""
+    # TODO
+    raise NotImplementedError
+
+def inorder(t):
+    """Keys of t in inorder (left, root, right)."""
+    # TODO
+    raise NotImplementedError
+
+def postorder(t):
+    """Keys of t in postorder (left, right, root)."""
+    # TODO
+    raise NotImplementedError
+
+def level_order(t):
+    """Keys of t level by level (a queue of subtrees, as in BFS)."""
+    # TODO
+    raise NotImplementedError</code></div>
+  <div class="output-block"><span class="pane-label">Test cell</span><code class="pane-code">assert preorder(t1)    == [8, 4, 2, 6, 12, 10, 9, 14]
+assert inorder(t1)     == [2, 4, 6, 8, 9, 10, 12, 14]
+assert postorder(t1)   == [2, 6, 4, 9, 10, 14, 12, 8]
+assert level_order(t1) == [8, 4, 12, 2, 6, 10, 14, 9]
+print("Exercise 2 ✔  (the inorder list came out sorted — why? see Exercise 4!)")</code></div>
+</section>
+
+<section class="slide">
+  <h2 class="frame-title"><span class="ex-tag">Exercise 3</span>Rebuilding a tree from two traversals</h2>
+  <p>One traversal alone does <strong>not</strong> determine a binary tree (the test cell exhibits two different trees with the same preorder). But the pair <strong>(preorder, inorder)</strong> does, when all keys are distinct:</p>
+  <ul>
+    <li>the first key of <code>pre</code> is the root;</li>
+    <li>find it in <code>ino</code>: everything to its left is the inorder of the left subtree, everything to its right the inorder of the right subtree;</li>
+    <li>split <code>pre</code> accordingly and recurse.</li>
+  </ul>
+  <div class="python-block"><span class="pane-label">Python · your turn</span><code class="pane-code">def rebuild(pre, ino):
+    """The unique binary tree whose preorder is `pre` and inorder is `ino`."""
+    # TODO — base case: empty lists; then split and recurse
+    raise NotImplementedError</code></div>
+  <div class="output-block"><span class="pane-label">Test cell</span><code class="pane-code">assert rebuild(preorder(t1), inorder(t1)) == t1
+
+# two different trees sharing the same preorder:
+ta = [1, leaf(2), None]
+tb = [1, None, leaf(2)]
+assert preorder(ta) == preorder(tb) and ta != tb
+print("Exercise 3 ✔")
+draw_btree(rebuild(preorder(t1), inorder(t1)), "t1, rebuilt from (preorder, inorder)")</code></div>
+</section>
+
+<section class="slide">
+  <h2 class="frame-title"><span class="ex-tag">Exercise 4</span>Binary search trees</h2>
+  <div class="def-box">In a <strong>binary search tree (BST)</strong>, every key in the left subtree is <strong>smaller</strong> than the root's key, every key in the right subtree is <strong>larger</strong> — at every node.</div>
+  <ol>
+    <li><code>bst_insert(t, k)</code> — return the BST with <code>k</code> inserted (build <strong>new</strong> nodes along the insertion path; ignore duplicates);</li>
+    <li><code>bst_search(t, k)</code> — <code>True</code> iff <code>k</code> appears, visiting <strong>one</strong> branch only (never both);</li>
+    <li><code>bst_from(values)</code> — fold <code>bst_insert</code> over a list;</li>
+    <li><code>is_bst(t)</code> — check the BST property. <em>Hint: one single line, using a traversal from Exercise 2.</em></li>
+  </ol>
+  <div class="python-block"><span class="pane-label">Python · your turn</span><code class="pane-code">def bst_insert(t, k):
+    """The BST t with key k inserted (duplicates ignored)."""
+    # TODO
+    raise NotImplementedError
+
+def bst_search(t, k):
+    """True iff k is a key of the BST t (visit a single branch)."""
+    # TODO
+    raise NotImplementedError
+
+def bst_from(values):
+    """BST obtained by inserting the values in order."""
+    # TODO
+    raise NotImplementedError
+
+def is_bst(t):
+    """True iff t satisfies the BST property."""
+    # TODO — one line!
+    raise NotImplementedError</code></div>
+  <div class="output-block"><span class="pane-label">Test cell</span><code class="pane-code">import random
+random.seed(1)
+values = random.sample(range(100), 15)
+
+B = bst_from(values)
+assert is_bst(B) and is_bst(t1)
+assert inorder(B) == sorted(values)            # inorder of a BST is sorted!
+assert all(bst_search(B, v) for v in values)
+assert not bst_search(B, 101)
+assert not is_bst([5, leaf(9), leaf(1)])
+
+worst = bst_from(sorted(values))               # sorted insertion order...
+assert height(worst) == len(values) - 1        # ...gives a degenerate 'spaghetti' BST
+print("Exercise 4 ✔  height:", height(B), "(random order) vs",
+      height(worst), "(sorted order)")
+draw_btree(B, "BST, random insertion order")
+draw_btree(worst, "BST, sorted insertion order — degenerate")</code></div>
+</section>
+
+<section class="slide">
+  <h2 class="frame-title"><span class="ex-tag">Exercise 5</span>Expression trees</h2>
+  <p>An arithmetic expression is a binary tree whose <strong>leaves</strong> hold numbers and whose <strong>internal nodes</strong> hold operators — e.g. <code>(3 + 4) * (5 - 2)</code>.</p>
+  <ol>
+    <li><code>eval_tree(t)</code> — the value of the expression;</li>
+    <li><code>to_infix(t)</code> — a fully parenthesized string such as <code>"((3+4)*(5-2))"</code>;</li>
+    <li><code>from_postfix(tokens)</code> — build the tree from <em>postfix</em> (reverse Polish) notation using a <strong>stack</strong>: push a leaf for each number; for an operator, pop the right then the left operand and push the new node.</li>
+  </ol>
+  <div class="note-box">Notice how the three functions are really the traversals of Exercise 2 in disguise: postfix <strong>is</strong> the postorder, the infix string follows the inorder, and evaluation is a bottom-up (postorder) computation.</div>
+  <div class="python-block"><span class="pane-label">Python · your turn</span><code class="pane-code">OPS = {"+": lambda a, b: a + b, "-": lambda a, b: a - b,
+       "*": lambda a, b: a * b, "/": lambda a, b: a / b}
+
+def eval_tree(t):
+    """Value of the expression tree t."""
+    # TODO — a leaf holds its value; an internal node applies OPS[t[0]]
+    raise NotImplementedError
+
+def to_infix(t):
+    """Fully parenthesized infix string of t."""
+    # TODO
+    raise NotImplementedError
+
+def from_postfix(tokens):
+    """Expression tree of a postfix token list, via a stack."""
+    # TODO
+    raise NotImplementedError</code></div>
+  <div class="output-block"><span class="pane-label">Test cell</span><code class="pane-code">e = ["*", ["+", leaf(3), leaf(4)], ["-", leaf(5), leaf(2)]]
+assert eval_tree(e) == 21
+assert to_infix(e) == "((3+4)*(5-2))"
+
+e2 = from_postfix([3, 4, "+", 5, 2, "-", "*"])
+assert e2 == e
+assert postorder(e) == [3, 4, "+", 5, 2, "-", "*"]   # postfix IS the postorder
+
+e3 = from_postfix([1, 2, 3, "*", "+", 4, "-"])       # 1 + 2*3 - 4
+assert eval_tree(e3) == 3 and to_infix(e3) == "((1+(2*3))-4)"
+print("Exercise 5 ✔")
+draw_btree(e, "(3+4)*(5-2)")</code></div>
+</section>
+
+<section class="slide">
+  <h2 class="frame-title"><span class="ex-tag">Exercise 6</span>A tree is a special graph</h2>
+  <div class="thm-box">The lesson ended on the bridge between the two worlds: <strong>a tree is exactly a connected acyclic graph</strong>, and then $|E| = |V| - 1$.</div>
+  <p>Implement <code>btree_to_graph(t)</code>: convert a binary tree into a dict-of-lists graph as in Lab 1 — vertices are the keys (assumed distinct), edges are the parent–child links, <strong>undirected</strong> and with no left/right distinction. The test cell then verifies the characterization on <code>t1</code> with networkx as referee.</p>
+  <div class="python-block"><span class="pane-label">Python · your turn</span><code class="pane-code">def btree_to_graph(t):
+    """Undirected dict-of-lists graph of the parent-child edges of t."""
+    # TODO — walk the tree; for each child, add the edge in both directions
+    raise NotImplementedError</code></div>
+  <div class="output-block"><span class="pane-label">Test cell</span><code class="pane-code">Gt = btree_to_graph(t1)
+H = nx.Graph()
+H.add_nodes_from(Gt)
+H.add_edges_from((u, v) for u in Gt for v in Gt[u])
+
+assert set(Gt) == set(preorder(t1))                    # same vertices as keys
+assert nx.is_connected(H) and nx.is_tree(H)            # connected + acyclic
+assert sum(len(Gt[u]) for u in Gt) // 2 == len(Gt) - 1 # |E| = |V| - 1
+print("Exercise 6 ✔ — t1 is a tree in the graph sense too")
+
+plt.figure(figsize=(5, 4))
+nx.draw(H, nx.spring_layout(H, seed=3), with_labels=True,
+        node_color="#a8dadc", node_size=650, font_weight="bold",
+        edge_color="#666666")
+plt.title("t1 as a plain graph — the root is no longer special!")
+plt.show()</code></div>
+</section>
+
+<section class="slide">
+  <h2 class="frame-title">Summary</h2>
+  <p>On the <code>[key, left, right]</code> representation you implemented: size / height / leaf count, the four classical traversals, reconstruction from (preorder, inorder), binary search trees (insertion, search, the sorted-inorder characterization, degenerate shapes), expression trees (evaluation, infix printing, postfix parsing) — and finally crossed the bridge back to Lab 1 by checking that a tree really is a connected acyclic graph with $|V| - 1$ edges.</p>
+</section>
+
+</body>
+</html>

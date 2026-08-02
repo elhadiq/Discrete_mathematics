@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- MEDIUM Mock Exam (Examen Blanc) - Discrete Mathematics (ACSP) - Pr. El Hadiq Zouhair & Pr. Ismail Bouishak -->
+<!-- Parallel to exam_medium.xml: same structure/types, different statements and values. -->
+<quiz>
+
+  <question type="category">
+    <category>
+      <text>$course$/top/Midterm Discrete Math ACSP/Exam Blanc Medium</text>
+    </category>
+    <info format="html">
+      <text><![CDATA[<p>Medium mock midterm (examen blanc): Logic &amp; predicates &amp; inference (4), Discrete Structures (6), Proofs (2).</p>]]></text>
+    </info>
+  </question>
+
+  <!-- ============ PART I — LOGIC, PREDICATES & INFERENCE (Q1-Q4) ============ -->
+
+  <question type="multichoice">
+    <name><text>MB1 - The contrapositive of an implication</text></name>
+    <questiontext format="html">
+      <text><![CDATA[<p><strong>[Logic]</strong> Which proposition is logically equivalent to \( p \rightarrow q \) (its contrapositive)?</p>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text><![CDATA[<p>The contrapositive: \( p \rightarrow q \equiv \neg q \rightarrow \neg p \).</p>]]></text>
+    </generalfeedback>
+    <defaultgrade>1</defaultgrade>
+    <penalty>0.3333333</penalty>
+    <hidden>0</hidden>
+    <single>true</single>
+    <shuffleanswers>true</shuffleanswers>
+    <answernumbering>abc</answernumbering>
+    <correctfeedback format="html"><text>Correct.</text></correctfeedback>
+    <partiallycorrectfeedback format="html"><text>Partially correct.</text></partiallycorrectfeedback>
+    <incorrectfeedback format="html"><text>Incorrect.</text></incorrectfeedback>
+    <answer fraction="100" format="html"><text><![CDATA[\( \neg q \rightarrow \neg p \)]]></text><feedback format="html"><text>Correct — the contrapositive.</text></feedback></answer>
+    <answer fraction="0" format="html"><text><![CDATA[\( q \rightarrow p \)]]></text><feedback format="html"><text>That is the converse, not equivalent.</text></feedback></answer>
+    <answer fraction="0" format="html"><text><![CDATA[\( \neg p \rightarrow \neg q \)]]></text><feedback format="html"><text>That is the inverse, not equivalent.</text></feedback></answer>
+    <answer fraction="0" format="html"><text><![CDATA[\( p \land \neg q \)]]></text><feedback format="html"><text>That is the negation of \(p\to q\).</text></feedback></answer>
+  </question>
+
+  <question type="truefalse">
+    <name><text>MB2 - When is an implication false?</text></name>
+    <questiontext format="html">
+      <text><![CDATA[<p><strong>[Logic]</strong> The implication \( p \rightarrow q \) is false only when \(p\) is true and \(q\) is false.</p>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text><![CDATA[<p>True. An implication fails only in the case true \(\rightarrow\) false.</p>]]></text>
+    </generalfeedback>
+    <defaultgrade>1</defaultgrade>
+    <penalty>1</penalty>
+    <hidden>0</hidden>
+    <answer fraction="100" format="moodle_auto_format"><text>true</text><feedback format="html"><text>Correct.</text></feedback></answer>
+    <answer fraction="0" format="moodle_auto_format"><text>false</text><feedback format="html"><text>Look at the truth table of \(p\to q\).</text></feedback></answer>
+  </question>
+
+  <question type="matching">
+    <name><text>MB3 - Match each logical law to its form</text></name>
+    <questiontext format="html">
+      <text><![CDATA[<p><strong>[Logic]</strong> Match each logical equivalence law with its statement.</p>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text><![CDATA[<p>Commutative: \(p\land q\equiv q\land p\). De Morgan: \(\neg(p\lor q)\equiv \neg p\land\neg q\). Identity: \(p\land T\equiv p\). Idempotent: \(p\lor p\equiv p\).</p>]]></text>
+    </generalfeedback>
+    <defaultgrade>4</defaultgrade>
+    <penalty>0.3333333</penalty>
+    <hidden>0</hidden>
+    <shuffleanswers>true</shuffleanswers>
+    <correctfeedback format="html"><text>All correct.</text></correctfeedback>
+    <partiallycorrectfeedback format="html"><text>Some correct.</text></partiallycorrectfeedback>
+    <incorrectfeedback format="html"><text>Review the laws.</text></incorrectfeedback>
+    <subquestion format="html"><text><![CDATA[Commutative]]></text><answer><text><![CDATA[p∧q ≡ q∧p]]></text></answer></subquestion>
+    <subquestion format="html"><text><![CDATA[De Morgan]]></text><answer><text><![CDATA[¬(p∨q) ≡ ¬p∧¬q]]></text></answer></subquestion>
+    <subquestion format="html"><text><![CDATA[Identity]]></text><answer><text><![CDATA[p∧T ≡ p]]></text></answer></subquestion>
+    <subquestion format="html"><text><![CDATA[Idempotent]]></text><answer><text><![CDATA[p∨p ≡ p]]></text></answer></subquestion>
+  </question>
+
+  <question type="multichoice">
+    <name><text>MB4 - Negation of an existential implication</text></name>
+    <questiontext format="html">
+      <text><![CDATA[<p><strong>[Predicates]</strong> What is the negation of \( \exists x\, \big(P(x) \rightarrow Q(x)\big) \)?</p>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text><![CDATA[<p>\( \neg\exists x\,(P(x)\to Q(x)) \equiv \forall x\,\neg(P(x)\to Q(x)) \equiv \forall x\,(P(x)\land\neg Q(x)) \).</p>]]></text>
+    </generalfeedback>
+    <defaultgrade>1</defaultgrade>
+    <penalty>0.3333333</penalty>
+    <hidden>0</hidden>
+    <single>true</single>
+    <shuffleanswers>true</shuffleanswers>
+    <answernumbering>abc</answernumbering>
+    <correctfeedback format="html"><text>Correct.</text></correctfeedback>
+    <partiallycorrectfeedback format="html"><text>Partially correct.</text></partiallycorrectfeedback>
+    <incorrectfeedback format="html"><text>Incorrect.</text></incorrectfeedback>
+    <answer fraction="100" format="html"><text><![CDATA[\( \forall x\, (P(x) \land \neg Q(x)) \)]]></text><feedback format="html"><text>Correct.</text></feedback></answer>
+    <answer fraction="0" format="html"><text><![CDATA[\( \forall x\, (P(x) \rightarrow \neg Q(x)) \)]]></text><feedback format="html"><text>Negate the implication first.</text></feedback></answer>
+    <answer fraction="0" format="html"><text><![CDATA[\( \exists x\, (P(x) \land \neg Q(x)) \)]]></text><feedback format="html"><text>The quantifier must flip to \(\forall\).</text></feedback></answer>
+    <answer fraction="0" format="html"><text><![CDATA[\( \forall x\, (\neg P(x) \lor Q(x)) \)]]></text><feedback format="html"><text>No.</text></feedback></answer>
+  </question>
+
+  <!-- ============ PART II — DISCRETE STRUCTURES (Q5-Q10) ============ -->
+
+  <question type="numerical">
+    <name><text>MB5 - Sets: inclusion-exclusion</text></name>
+    <questiontext format="html">
+      <text><![CDATA[<p><strong>[Sets]</strong> Let \(A, B\) be finite sets with \(|A| = 11\), \(|B| = 16\) and \(|A \cap B| = 6\). Compute \(|A \cup B|\).</p>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text><![CDATA[<p>\( |A \cup B| = 11 + 16 - 6 = 21. \)</p>]]></text>
+    </generalfeedback>
+    <defaultgrade>1</defaultgrade>
+    <penalty>0.3333333</penalty>
+    <hidden>0</hidden>
+    <answer fraction="100" format="moodle_auto_format"><text>21</text><feedback format="html"><text>Correct.</text></feedback><tolerance>0</tolerance></answer>
+    <unitgradingtype>0</unitgradingtype>
+    <unitpenalty>0.1000000</unitpenalty>
+    <showunits>3</showunits>
+    <unitsleft>0</unitsleft>
+  </question>
+
+  <question type="multianswer">
+    <name><text>MB6 - Set operations on explicit sets (Cloze)</text></name>
+    <questiontext format="html">
+      <text><![CDATA[<p><strong>[Operations on Sets]</strong> Let \( A = \{1, 2, 3, 4, 5\} \) and \( B = \{2, 4, 6, 8\} \).</p>
+<p>(a) The intersection \( A \cap B \) is {1:MULTICHOICE:=&#123;2, 4&#125;~&#123;2, 4, 6, 8&#125;~&#123;1, 3, 5&#125;~&#123;6, 8&#125;}.</p>
+<p>(b) The number of elements in \( A \cup B \) is {2:NUMERICAL:=7:0}.</p>
+<p>(c) The number of elements in \( A \setminus B \) (in \(A\) but not in \(B\)) is {1:NUMERICAL:=3:0}.</p>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text><![CDATA[<p>(a) Common elements: \(\{2,4\}\). (b) \( A \cup B = \{1,2,3,4,5,6,8\} \Rightarrow 7 \). (c) \( A\setminus B = \{1,3,5\} \Rightarrow 3 \).</p>]]></text>
+    </generalfeedback>
+    <penalty>0.3333333</penalty>
+    <hidden>0</hidden>
+  </question>
+
+  <question type="multichoice">
+    <name><text>MB7 - Relations: the order relation =&gt; on integers</text></name>
+    <questiontext format="html">
+      <text><![CDATA[<p><strong>[Relations]</strong> Define \(R\) on \( \mathbb{Z} \) by \( a\,R\,b \iff a \ge b \). Select <em>all</em> properties \(R\) has.</p>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text><![CDATA[<p>\(a\ge a\) (reflexive); if \(a\ge b\) and \(b\ge a\) then \(a=b\) (antisymmetric); transitivity holds. So \(\ge\) is a partial order — <em>not</em> symmetric.</p>]]></text>
+    </generalfeedback>
+    <defaultgrade>3</defaultgrade>
+    <penalty>0.3333333</penalty>
+    <hidden>0</hidden>
+    <single>false</single>
+    <shuffleanswers>true</shuffleanswers>
+    <answernumbering>abc</answernumbering>
+    <correctfeedback format="html"><text>Correct.</text></correctfeedback>
+    <partiallycorrectfeedback format="html"><text>Partially correct.</text></partiallycorrectfeedback>
+    <incorrectfeedback format="html"><text>Incorrect.</text></incorrectfeedback>
+    <answer fraction="33.33333" format="html"><text>Reflexive</text><feedback format="html"><text>Yes.</text></feedback></answer>
+    <answer fraction="-100" format="html"><text>Symmetric</text><feedback format="html"><text>No — \(3\ge 2\) but \(2\not\ge 3\).</text></feedback></answer>
+    <answer fraction="33.33333" format="html"><text>Antisymmetric</text><feedback format="html"><text>Yes.</text></feedback></answer>
+    <answer fraction="33.33333" format="html"><text>Transitive</text><feedback format="html"><text>Yes.</text></feedback></answer>
+  </question>
+
+  <question type="shortanswer">
+    <name><text>MB8 - Functions: classify f(x)=x^3</text></name>
+    <questiontext format="html">
+      <text><![CDATA[<p><strong>[Functions]</strong> Consider \( f:\mathbb{R}\to\mathbb{R},\ f(x)=x^3 \). In one word, give the strongest correct term (injective, surjective, or bijective).</p>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text><![CDATA[<p>\(x^3\) is strictly increasing and takes every real value, so it is one-to-one and onto: <strong>bijective</strong>, with inverse \(f^{-1}(y)=\sqrt[3]{y}\).</p>]]></text>
+    </generalfeedback>
+    <defaultgrade>1</defaultgrade>
+    <penalty>0.3333333</penalty>
+    <hidden>0</hidden>
+    <usecase>0</usecase>
+    <answer fraction="100" format="moodle_auto_format"><text>bijective</text><feedback format="html"><text>Correct.</text></feedback></answer>
+    <answer fraction="100" format="moodle_auto_format"><text>bijection</text><feedback format="html"><text>Correct.</text></feedback></answer>
+    <answer fraction="50" format="moodle_auto_format"><text>injective</text><feedback format="html"><text>True, but it is also surjective — bijective is strongest.</text></feedback></answer>
+  </question>
+
+  <question type="numerical">
+    <name><text>MB9 - Sequences: term of a recurrence</text></name>
+    <questiontext format="html">
+      <text><![CDATA[<p><strong>[Sequences]</strong> Let \( u_0 = 2 \) and \( u_{n+1} = 3u_n - 2 \). Compute \( u_3 \).</p>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text><![CDATA[<p>\( u_1 = 4,\ u_2 = 10,\ u_3 = 28. \)</p>]]></text>
+    </generalfeedback>
+    <defaultgrade>1</defaultgrade>
+    <penalty>0.3333333</penalty>
+    <hidden>0</hidden>
+    <answer fraction="100" format="moodle_auto_format"><text>28</text><feedback format="html"><text>Correct.</text></feedback><tolerance>0</tolerance></answer>
+    <unitgradingtype>0</unitgradingtype>
+    <unitpenalty>0.1000000</unitpenalty>
+    <showunits>3</showunits>
+    <unitsleft>0</unitsleft>
+  </question>
+
+  <question type="numerical">
+    <name><text>MB10 - Series: sum of the first 5 odd numbers</text></name>
+    <questiontext format="html">
+      <text><![CDATA[<p><strong>[Series]</strong> Compute \( 1 + 3 + 5 + 7 + 9 \).</p>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text><![CDATA[<p>The sum of the first \(n\) odd numbers is \(n^2\); here \(5^2 = 25\).</p>]]></text>
+    </generalfeedback>
+    <defaultgrade>1</defaultgrade>
+    <penalty>0.3333333</penalty>
+    <hidden>0</hidden>
+    <answer fraction="100" format="moodle_auto_format"><text>25</text><feedback format="html"><text>Correct.</text></feedback><tolerance>0</tolerance></answer>
+    <unitgradingtype>0</unitgradingtype>
+    <unitpenalty>0.1000000</unitpenalty>
+    <showunits>3</showunits>
+    <unitsleft>0</unitsleft>
+  </question>
+
+  <!-- ============ PART III — PROOFS (Q11-Q12) ============ -->
+
+  <question type="essay">
+    <name><text>MB11 - Proof by contradiction: nonzero rational times irrational</text></name>
+    <questiontext format="html">
+      <text><![CDATA[<p><strong>[Proof — Contradiction]</strong> Prove by contradiction that the product of a non-zero rational number and an irrational number is irrational.</p>
+<p><em>Hint:</em> let \(r \ne 0\) be rational and \(x\) irrational, and suppose \(r x\) is rational.</p>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text><![CDATA[<p><strong>Model proof.</strong> Let \(r\) be a non-zero rational and \(x\) irrational. Suppose, for contradiction, that \(p = r x\) is rational. Since \(r \ne 0\), we may write \(x = p / r\). The quotient of two rationals (with non-zero denominator) is rational, so \(x\) would be rational — contradicting that \(x\) is irrational. Therefore \(r x\) is irrational. \( \blacksquare \)</p>]]></text>
+    </generalfeedback>
+    <defaultgrade>3</defaultgrade>
+    <penalty>0</penalty>
+    <hidden>0</hidden>
+    <responseformat>editor</responseformat>
+    <responserequired>1</responserequired>
+    <responsefieldlines>12</responsefieldlines>
+    <minwordlimit></minwordlimit>
+    <maxwordlimit></maxwordlimit>
+    <attachments>0</attachments>
+    <attachmentsrequired>0</attachmentsrequired>
+    <graderinfo format="html"><text><![CDATA[<p>Credit for: (1) assuming \(rx\) rational; (2) using \(r\ne 0\) to write \(x=rx/r\); (3) noting a quotient of rationals is rational; (4) contradiction and conclusion.</p>]]></text></graderinfo>
+    <responsetemplate format="html"><text></text></responsetemplate>
+  </question>
+
+  <question type="essay">
+    <name><text>MB12 - Proof by contraposition: 5n+3 odd implies n even</text></name>
+    <questiontext format="html">
+      <text><![CDATA[<p><strong>[Proof — Contraposition]</strong> Let \( n \in \mathbb{Z} \). Prove that <em>if \( 5n + 3 \) is odd then \( n \) is even</em>, using contraposition.</p>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text><![CDATA[<p><strong>Model proof.</strong> The contrapositive is: "if \(n\) is odd then \(5n+3\) is even." Assume \(n\) is odd, so \(n = 2k+1\). Then \( 5n+3 = 5(2k+1)+3 = 10k+8 = 2(5k+4) \), which is even. Hence the contrapositive holds, so the original statement is true. \( \blacksquare \)</p>]]></text>
+    </generalfeedback>
+    <defaultgrade>3</defaultgrade>
+    <penalty>0</penalty>
+    <hidden>0</hidden>
+    <responseformat>editor</responseformat>
+    <responserequired>1</responserequired>
+    <responsefieldlines>12</responsefieldlines>
+    <minwordlimit></minwordlimit>
+    <maxwordlimit></maxwordlimit>
+    <attachments>0</attachments>
+    <attachmentsrequired>0</attachmentsrequired>
+    <graderinfo format="html"><text><![CDATA[<p>Credit for: (1) stating the contrapositive; (2) writing \(n=2k+1\); (3) algebra giving \(5n+3=2m\); (4) conclusion.</p>]]></text></graderinfo>
+    <responsetemplate format="html"><text></text></responsetemplate>
+  </question>
+
+</quiz>

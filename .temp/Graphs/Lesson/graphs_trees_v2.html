@@ -1,0 +1,1721 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Graphs, Trees &amp; Binary Trees — Full Course v2</title>
+<script>
+  MathJax = {
+    tex: { inlineMath: [['$','$']], displayMath: [['$$','$$']], processEscapes: true },
+    options: { skipHtmlTags: ['script','noscript','style','textarea'] }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --orange:    #e67e22;
+  --darkblue:  #2c3e50;
+  --lightbg:   #f4f9fc;
+  --rowred:    #ffe8e8;
+  --rowblue:   #e3eeff;
+  --border:    #dce3ea;
+  --py-fg:     #1f4e7a;
+  --py-bg:     #eaf3fb;
+  --py-border: #2a6fb3;
+  --py-head:   #2a6fb3;
+  --sp-fg:     #1e824c;
+  --sp-bg:     #e8f5ec;
+  --sp-border: #27ae60;
+  --sp-head:   #27ae60;
+  --su-fg:     #4a4aaa;
+  --su-bg:     #eeeeff;
+  --su-border: #6060cc;
+  --su-head:   #6060cc;
+  --out-fg:    #6e4b0a;
+  --out-bg:    #fff7e0;
+  --out-border:#e0b341;
+  --out-head:  #c89324;
+}
+
+body {
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  background: #e8edf2;
+  color: var(--darkblue);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem 1rem 5rem;
+  gap: 2rem;
+}
+
+.slide {
+  background: #fff;
+  width: 100%;
+  max-width: 940px;
+  border-radius: 10px;
+  box-shadow: 0 4px 18px rgba(0,0,0,.10);
+  padding: 2.2rem 2.8rem 1.8rem;
+  position: relative;
+}
+.slide-number {
+  position: absolute;
+  bottom: 0.7rem;
+  right: 1.2rem;
+  font-size: 0.72rem;
+  color: #aaa;
+}
+
+.slide.title-slide {
+  background: linear-gradient(145deg, #f4f9fc 60%, #e0eef7);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 240px;
+  text-align: center;
+  border-top: 6px solid var(--orange);
+}
+.slide.title-slide h1 { font-size: 1.85rem; color: var(--darkblue); margin-bottom: 0.4rem; }
+.slide.title-slide .subtitle { font-size: 1.1rem; color: #555; }
+
+.part-slide {
+  background: linear-gradient(145deg, #fdf3e7 60%, #f9e4cc);
+  text-align: center;
+  border-left: 6px solid var(--orange);
+}
+.part-slide .part-label {
+  font-size: .85rem; letter-spacing: .2em; text-transform: uppercase;
+  color: var(--orange); font-weight: 700;
+}
+.part-slide h2 { color: var(--darkblue); font-size: 1.7rem; margin: 0.5rem 0; }
+.part-slide p  { color: #666; }
+
+h2.frame-title {
+  font-size: 1.45rem;
+  color: var(--orange);
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  padding-bottom: 0.35rem;
+  border-bottom: 2px solid #f9e4cc;
+}
+h3.sub-title {
+  font-size: 1.02rem;
+  color: var(--orange);
+  font-weight: 600;
+  margin: 0.7rem 0 0.3rem;
+}
+
+p { line-height: 1.65; margin: 0.4rem 0; }
+ul, ol { margin: 0.35rem 0 0.35rem 1.4rem; line-height: 1.75; }
+ul li::marker, ol li::marker { color: var(--orange); }
+code { background: #f0f3f7; color: #1f4e7a; padding: 0 .25em; border-radius: 3px; font-family: 'Consolas','Fira Code',monospace; }
+
+.note-box, .def-box, .thm-box, .proof-box, .ex-box, .ce-box, .cor-box, .aside-box {
+  border-radius: 6px;
+  padding: 0.6rem 0.9rem;
+  margin: 0.5rem 0;
+  line-height: 1.65;
+}
+.note-box  { background: #fff5e8; border-left: 4px solid var(--orange); font-style: italic; }
+.def-box   { background: #eaf3fb; border-left: 4px solid var(--py-border); }
+.def-box::before  { content: "Definition. "; font-weight: 700; color: var(--py-border); }
+.thm-box   { background: #fff7e0; border-left: 4px solid var(--out-border); }
+.thm-box::before  { content: "Theorem. "; font-weight: 700; color: var(--out-head); }
+.cor-box   { background: #fff7e0; border-left: 4px solid var(--out-border); }
+.cor-box::before  { content: "Corollary. "; font-weight: 700; color: var(--out-head); }
+.proof-box { background: #f4f9fc; border-left: 4px solid var(--darkblue); }
+.proof-box::before { content: "Proof. "; font-weight: 700; color: var(--darkblue); }
+.ex-box    { background: #e8f5ec; border-left: 4px solid var(--sp-border); }
+.ex-box::before    { content: "Example. "; font-weight: 700; color: var(--sp-border); }
+.ce-box    { background: #ffe8e8; border-left: 4px solid #c0395a; }
+.ce-box::before    { content: "Counter-example. "; font-weight: 700; color: #c0395a; }
+.aside-box { background: #eef1ff; border-left: 4px solid #6060cc; font-size: 0.92rem; }
+.aside-box::before { content: "Note. "; font-weight: 700; color: #6060cc; }
+
+.python-block, .setup-block, .sympy-block, .output-block {
+  border-radius: 6px;
+  overflow: hidden;
+  margin: 0.5rem 0;
+  border: 1px solid;
+}
+.pane-label {
+  display: block;
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 2px 10px;
+  color: #fff;
+}
+.pane-code {
+  font-family: 'Consolas','Fira Code',monospace;
+  font-size: 0.8rem;
+  line-height: 1.55;
+  padding: 0.5rem 0.75rem;
+  white-space: pre;
+  display: block;
+  overflow-x: auto;
+}
+.python-block { border-color: var(--py-border); }
+.python-block .pane-label { background: var(--py-head); }
+.python-block .pane-code  { background: var(--py-bg); color: var(--py-fg); }
+.output-block { border-color: var(--out-border); }
+.output-block .pane-label { background: var(--out-head); }
+.output-block .pane-code  { background: var(--out-bg); color: var(--out-fg); }
+
+.ref-table {
+  border-collapse: collapse;
+  margin: 0.5rem auto;
+  font-size: 0.88rem;
+  width: 100%;
+}
+.ref-table th, .ref-table td {
+  border: 1px solid var(--border);
+  padding: 0.35rem 0.65rem;
+  text-align: left;
+  vertical-align: top;
+}
+.ref-table th { background: var(--lightbg); font-weight: 600; color: var(--darkblue); }
+.center td, .center th { text-align: center; }
+
+/* Graph SVG illustrations */
+svg.graph-svg { display: block; margin: 0.5rem auto; max-width: 100%; }
+.svg-node { fill: #fff; stroke: var(--darkblue); stroke-width: 2; }
+.svg-node-label { font-size: 14px; font-family: 'Segoe UI', sans-serif; fill: var(--darkblue); font-weight: 700; }
+.svg-edge { stroke: var(--orange); stroke-width: 2; fill: none; }
+.svg-arrow { fill: var(--orange); }
+.svg-edge-label { font-size: 11px; fill: #555; }
+
+#nav { position: fixed; bottom: 1.5rem; right: 1.5rem; display: flex; gap: 0.4rem; z-index: 100; }
+#nav button {
+  background: var(--orange); color: #fff; border: none;
+  border-radius: 50%; width: 40px; height: 40px;
+  font-size: 1.1rem; cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,.25); transition: background .2s;
+}
+#nav button:hover { background: #cf6d17; }
+#nav #btn-scroll { border-radius: 20px; width: auto; padding: 0 12px; font-size: 0.8rem; }
+
+body.slideshow .slide        { display: none; }
+body.slideshow .slide.active { display: block; }
+
+.ref-cite { color: #777; font-size: 0.83rem; font-style: italic; }
+</style>
+</head>
+<body>
+
+<!-- ══ Slide 1 — Title ════════════════════════════════════════════════ -->
+<section class="slide title-slide" id="s1">
+  <h1>Graphs, Trees &amp; Binary Trees</h1>
+  <p class="subtitle">Discrete Mathematics — Sessions 5 &amp; 6 · Full Course v2</p>
+  <p style="font-size:1rem;color:#e67e22;margin-top:0.8rem;font-style:italic;font-weight:600;letter-spacing:.02em;">Notes By Pr. El Hadiq Zouhair</p>
+  <span class="slide-number">1 / 48</span>
+</section>
+
+<!-- ══ Slide 2 — Outline ═════════════════════════════════════════════ -->
+<section class="slide" id="s2">
+  <h2 class="frame-title">Outline of the combined course</h2>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+    <div>
+      <h3 class="sub-title">Part I — Graphs</h3>
+      <ol style="font-size:.9rem;">
+        <li>Formal definition, vertex, edge.</li>
+        <li>Degree, handshake lemma (proved).</li>
+        <li>Simple / directed / weighted / multigraphs.</li>
+        <li>Special families: $K_n$, $C_n$, $P_n$, $K_{m,n}$, $Q_n$.</li>
+        <li>Subgraphs, isomorphism.</li>
+        <li>Representations — adjacency matrix vs <strong>dict-based adjacency list</strong>.</li>
+        <li>Paths, cycles, walks, connectivity.</li>
+        <li>BFS &amp; DFS — Python implementations.</li>
+        <li>Eulerian / Hamiltonian paths.</li>
+        <li>Bipartite (2-coloring) characterisation.</li>
+        <li>Planar graphs &amp; Euler's formula $V - E + F = 2$.</li>
+        <li>Graph coloring; 4-color theorem.</li>
+        <li>Dijkstra, Bellman–Ford, Floyd–Warshall.</li>
+        <li>MST — Kruskal &amp; Prim.</li>
+      </ol>
+    </div>
+    <div>
+      <h3 class="sub-title">Part II — Trees</h3>
+      <ol start="15" style="font-size:.9rem;">
+        <li>Tree = acyclic connected graph.</li>
+        <li>Equivalent characterisations (5 conditions).</li>
+        <li>$n$ vertices $\Rightarrow n - 1$ edges (proved).</li>
+        <li>Rooted trees, terminology.</li>
+        <li>Spanning trees.</li>
+      </ol>
+      <h3 class="sub-title">Part III — Binary trees</h3>
+      <ol start="20" style="font-size:.9rem;">
+        <li><strong>Python representation</strong> $[]$ &amp; $[a, L, R]$.</li>
+        <li>Recursive functions: size, height, leaves.</li>
+        <li>Traversals: pre/in/post-order, BFS.</li>
+        <li>Binary search tree (BST).</li>
+        <li>BST operations: search, insert, delete.</li>
+        <li>Binary heap, heapsort.</li>
+        <li>Balanced trees (AVL preview).</li>
+      </ol>
+      <h3 class="sub-title">Part IV — Closing</h3>
+      <ol start="27" style="font-size:.9rem;">
+        <li>Topics covered — recap table.</li>
+        <li>Strategy, summary, bibliography.</li>
+      </ol>
+    </div>
+  </div>
+  <p class="ref-cite">References: Rosen 8e §§10.1–11.5; Cormen–Leiserson–Rivest–Stein (CLRS) Part VI; Beauquier–Berstel–Chrétienne, <em>Éléments d'algorithmique</em>; Diestel, <em>Graph Theory</em>.</p>
+  <span class="slide-number">2 / 48</span>
+</section>
+
+<!-- ══ Slide 3 — Part I divider ══════════════════════════════════════ -->
+<section class="slide part-slide" id="s3">
+  <div class="part-label">Part I</div>
+  <h2>Graph theory</h2>
+  <p>Vertices · edges · representations · BFS/DFS · shortest paths · MST.</p>
+  <span class="slide-number">3 / 48</span>
+</section>
+
+<!-- ══ Slide 4 — Formal definition ═══════════════════════════════════ -->
+<section class="slide" id="s4">
+  <h2 class="frame-title">1.1 Graph — formal definition</h2>
+
+  <div class="def-box">
+    A <strong>simple undirected graph</strong> is a pair $G = (V, E)$ where:
+    <ul>
+      <li>$V$ is a finite non-empty set whose elements are the <em>vertices</em> (or nodes);</li>
+      <li>$E \subseteq \binom{V}{2}$ is a set of unordered pairs of distinct vertices — the <em>edges</em>.</li>
+    </ul>
+    We write $|V| = n$ (the <em>order</em>) and $|E| = m$ (the <em>size</em>).
+  </div>
+
+  <div class="def-box">
+    A <strong>directed graph</strong> (digraph) replaces $E$ by a set of ordered pairs $E \subseteq V \times V$ — the <em>arcs</em>. A <em>weighted graph</em> additionally carries a function $w : E \to \mathbb{R}$ assigning a cost to each edge.
+  </div>
+
+  <p>Two vertices $u, v$ are <strong>adjacent</strong> (or <em>neighbours</em>) iff $\{u, v\} \in E$. An edge $e = \{u, v\}$ is <em>incident</em> to $u$ and to $v$.</p>
+
+  <svg class="graph-svg" viewBox="0 0 380 130" width="380" height="130">
+    <line class="svg-edge" x1="60" y1="65" x2="160" y2="40"/>
+    <line class="svg-edge" x1="60" y1="65" x2="160" y2="90"/>
+    <line class="svg-edge" x1="160" y1="40" x2="160" y2="90"/>
+    <line class="svg-edge" x1="160" y1="40" x2="260" y2="65"/>
+    <line class="svg-edge" x1="160" y1="90" x2="260" y2="65"/>
+    <line class="svg-edge" x1="260" y1="65" x2="335" y2="65"/>
+    <circle class="svg-node" cx="60" cy="65" r="14"/><text class="svg-node-label" x="60" y="70" text-anchor="middle">a</text>
+    <circle class="svg-node" cx="160" cy="40" r="14"/><text class="svg-node-label" x="160" y="45" text-anchor="middle">b</text>
+    <circle class="svg-node" cx="160" cy="90" r="14"/><text class="svg-node-label" x="160" y="95" text-anchor="middle">c</text>
+    <circle class="svg-node" cx="260" cy="65" r="14"/><text class="svg-node-label" x="260" y="70" text-anchor="middle">d</text>
+    <circle class="svg-node" cx="335" cy="65" r="14"/><text class="svg-node-label" x="335" y="70" text-anchor="middle">e</text>
+  </svg>
+  <p style="text-align:center;font-size:.85rem;color:#666;">$V = \{a,b,c,d,e\},\;E = \{\{a,b\},\{a,c\},\{b,c\},\{b,d\},\{c,d\},\{d,e\}\}$</p>
+  <p class="ref-cite">Rosen 8e §10.1; Diestel, <em>Graph Theory</em>, §1.1.</p>
+  <span class="slide-number">4 / 48</span>
+</section>
+
+<!-- ══ Slide 5 — Degree and handshake lemma ══════════════════════════ -->
+<section class="slide" id="s5">
+  <h2 class="frame-title">1.2 Degree &amp; handshake lemma</h2>
+
+  <div class="def-box">
+    The <strong>degree</strong> $\deg(v)$ of a vertex $v$ in an undirected graph is the number of edges incident to $v$. In a digraph: $\deg^+(v)$ (out-degree) and $\deg^-(v)$ (in-degree).
+  </div>
+
+  <div class="thm-box">
+    <strong>Handshake lemma.</strong> $\displaystyle \sum_{v \in V} \deg(v) = 2|E|.$ &nbsp;In particular the number of vertices of <em>odd</em> degree is even.
+  </div>
+
+  <div class="proof-box">
+    Each edge $\{u, v\}$ contributes $1$ to $\deg(u)$ and $1$ to $\deg(v)$, hence $2$ to the sum of degrees. Summing over all edges gives $2|E|$. <br>
+    Splitting the sum by parity: $\sum_{\text{even}}\deg(v) + \sum_{\text{odd}}\deg(v) = 2|E|$. The first sum is even; the right side is even; so $\sum_{\text{odd}}\deg(v)$ is even — therefore the number of odd-degree vertices is even. $\square$
+  </div>
+
+  <div class="cor-box">
+    In a group of $n$ people, the number who have shaken an odd number of hands is even.
+  </div>
+  <p class="ref-cite">Rosen 8e §10.2 Theorem 1; Euler (1736).</p>
+  <span class="slide-number">5 / 48</span>
+</section>
+
+<!-- ══ Slide 6 — Graph families ══════════════════════════════════════ -->
+<section class="slide" id="s6">
+  <h2 class="frame-title">1.3 Simple, multi, directed, weighted</h2>
+
+  <table class="ref-table">
+    <thead><tr><th>Type</th><th>Definition</th><th>Self-loops?</th><th>Multi-edges?</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Simple graph</strong></td><td>edges = $\binom{V}{2}$</td><td>No</td><td>No</td></tr>
+      <tr><td><strong>Multigraph</strong></td><td>multiset of unordered pairs</td><td>No</td><td>Yes</td></tr>
+      <tr><td><strong>Pseudograph</strong></td><td>multigraph + loops</td><td>Yes</td><td>Yes</td></tr>
+      <tr><td><strong>Digraph</strong></td><td>edges $\subseteq V \times V$</td><td>Yes</td><td>No</td></tr>
+      <tr><td><strong>Multidigraph</strong></td><td>multiset of ordered pairs</td><td>Yes</td><td>Yes</td></tr>
+      <tr><td><strong>Weighted graph</strong></td><td>any of the above + $w : E \to \mathbb{R}$</td><td>Depends</td><td>Depends</td></tr>
+    </tbody>
+  </table>
+
+  <div class="aside-box">
+    Throughout this course the default is the <em>simple finite</em> graph; directed and weighted variants appear when needed for path-finding and network problems. Multigraphs show up mainly in Eulerian-path problems (e.g. the Königsberg bridges).
+  </div>
+  <p class="ref-cite">Beauquier–Berstel–Chrétienne, §6.1.</p>
+  <span class="slide-number">6 / 48</span>
+</section>
+
+<!-- ══ Slide 7 — Special graph families ══════════════════════════════ -->
+<section class="slide" id="s7">
+  <h2 class="frame-title">1.4 Special families of graphs</h2>
+
+  <table class="ref-table">
+    <thead><tr><th>Notation</th><th>Name</th><th>Vertices</th><th>Edges</th></tr></thead>
+    <tbody>
+      <tr><td>$K_n$</td><td>Complete graph</td><td>$n$</td><td>$\binom{n}{2}$ — every pair adjacent</td></tr>
+      <tr><td>$P_n$</td><td>Path</td><td>$n$</td><td>$n - 1$ — line $v_1 - v_2 - \cdots - v_n$</td></tr>
+      <tr><td>$C_n$</td><td>Cycle ($n \geq 3$)</td><td>$n$</td><td>$n$ — closed path</td></tr>
+      <tr><td>$K_{m,n}$</td><td>Complete bipartite</td><td>$m + n$</td><td>$mn$</td></tr>
+      <tr><td>$Q_n$</td><td>$n$-cube (hypercube)</td><td>$2^n$</td><td>$n \cdot 2^{n-1}$</td></tr>
+      <tr><td>$W_n$</td><td>Wheel</td><td>$n + 1$</td><td>$2n$</td></tr>
+      <tr><td>$S_n$</td><td>Star</td><td>$n + 1$</td><td>$n$</td></tr>
+    </tbody>
+  </table>
+
+  <div class="ex-box">
+    $K_4$ is the smallest <em>non-planar</em>-looking graph that is in fact planar.<br>
+    $K_5$ and $K_{3,3}$ are the two minimal non-planar graphs (Kuratowski).<br>
+    The hypercube $Q_3$ — vertices are 3-bit strings, edges connect strings differing in one bit — represents the corners of a cube.
+  </div>
+  <p class="ref-cite">Rosen 8e §10.2.</p>
+  <span class="slide-number">7 / 48</span>
+</section>
+
+<!-- ══ Slide 8 — Representations ═════════════════════════════════════ -->
+<section class="slide" id="s8">
+  <h2 class="frame-title">2.1 Representations — adjacency matrix vs list</h2>
+
+  <div class="def-box">
+    The <strong>adjacency matrix</strong> $A \in \{0, 1\}^{n \times n}$ of a graph on $V = \{v_1, \ldots, v_n\}$ has $A_{ij} = 1$ iff $\{v_i, v_j\} \in E$. For a weighted graph, $A_{ij} = w(v_i, v_j)$ (or $+\infty$ if no edge).
+  </div>
+
+  <div class="def-box">
+    The <strong>adjacency list</strong> stores, for each vertex $v$, the list $N(v)$ of its neighbours.
+  </div>
+
+  <table class="ref-table center">
+    <thead><tr><th>Aspect</th><th>Adjacency matrix</th><th>Adjacency list</th></tr></thead>
+    <tbody>
+      <tr><td>Space</td><td>$\Theta(n^2)$</td><td>$\Theta(n + m)$</td></tr>
+      <tr><td>Check $(u,v) \in E$</td><td>$O(1)$</td><td>$O(\deg u)$</td></tr>
+      <tr><td>Enumerate neighbours of $v$</td><td>$O(n)$</td><td>$O(\deg v)$ — optimal</td></tr>
+      <tr><td>Add an edge</td><td>$O(1)$</td><td>$O(1)$ (amortised)</td></tr>
+      <tr><td>Dense graph ($m \approx n^2$)</td><td>Preferred</td><td>Same space, slower lookup</td></tr>
+      <tr><td>Sparse graph ($m \ll n^2$)</td><td>Wasteful</td><td><strong>Preferred</strong></td></tr>
+    </tbody>
+  </table>
+
+  <div class="aside-box">
+    Course convention: a graph is implemented as a <strong>Python <code>dict</code></strong> mapping each vertex to its set/list of neighbours. We adopt this throughout.
+  </div>
+  <p class="ref-cite">CLRS §20.1; Beauquier–Berstel–Chrétienne §6.2.</p>
+  <span class="slide-number">8 / 48</span>
+</section>
+
+<!-- ══ Slide 9 — Python representation ═══════════════════════════════ -->
+<section class="slide" id="s9">
+  <h2 class="frame-title">2.2 Python — graphs as <code>dict</code>s</h2>
+
+  <p>Throughout this course, every undirected graph $G = (V, E)$ is implemented as a Python <code>dict</code> mapping each vertex to the <em>set</em> of its neighbours:</p>
+
+  <div class="python-block">
+    <span class="pane-label">Python — dict representation</span>
+    <span class="pane-code"># Undirected graph on V = {a, b, c, d, e}
+G = {
+    'a': {'b', 'c'},
+    'b': {'a', 'c', 'd'},
+    'c': {'a', 'b', 'd'},
+    'd': {'b', 'c', 'e'},
+    'e': {'d'},
+}
+
+# Basic queries — O(1) or O(deg)
+def vertices(G):                 return G.keys()
+def edges(G):                    return {(u, v) for u in G for v in G[u] if u &lt; v}
+def neighbours(G, v):            return G[v]
+def degree(G, v):                return len(G[v])
+def has_edge(G, u, v):           return v in G[u]
+
+# Mutation helpers
+def add_vertex(G, v):            G.setdefault(v, set())
+def add_edge(G, u, v):
+    G.setdefault(u, set()).add(v)
+    G.setdefault(v, set()).add(u)
+def remove_edge(G, u, v):
+    G[u].discard(v); G[v].discard(u)
+
+print(len(vertices(G)), len(edges(G)))   # 5 6
+print(degree(G, 'b'))                    # 3
+print(sorted(neighbours(G, 'b')))        # ['a', 'c', 'd']</span>
+  </div>
+
+  <div class="aside-box">
+    For <strong>directed graphs</strong>, omit the symmetric assignment in <code>add_edge</code>: <code>G[u].add(v)</code> only. For <strong>weighted graphs</strong>, use a dict of dicts: <code>G[u] = {v: weight, ...}</code>.
+  </div>
+  <p class="ref-cite">Standard adjacency-list convention used throughout the course.</p>
+  <span class="slide-number">9 / 48</span>
+</section>
+
+<!-- ══ Slide 10 — Subgraphs, isomorphism ═════════════════════════════ -->
+<section class="slide" id="s10">
+  <h2 class="frame-title">3. Subgraphs and isomorphism</h2>
+
+  <div class="def-box">
+    $H = (V_H, E_H)$ is a <strong>subgraph</strong> of $G = (V, E)$ iff $V_H \subseteq V$ and $E_H \subseteq E \cap \binom{V_H}{2}$. $H$ is <em>spanning</em> if $V_H = V$, and <em>induced</em> if $E_H = E \cap \binom{V_H}{2}$ (all edges between $V_H$-vertices that exist in $G$).
+  </div>
+
+  <div class="def-box">
+    Two graphs $G_1 = (V_1, E_1)$ and $G_2 = (V_2, E_2)$ are <strong>isomorphic</strong>, $G_1 \cong G_2$, iff there exists a bijection $\varphi : V_1 \to V_2$ such that $\{u, v\} \in E_1 \iff \{\varphi(u), \varphi(v)\} \in E_2$.
+  </div>
+
+  <p>Isomorphism preserves all "structural" invariants — number of vertices, number of edges, degree sequence, number of triangles, chromatic number, etc. None of these is sufficient on its own to characterise isomorphism, but each can be used to <em>refute</em> it.</p>
+
+  <div class="ex-box">
+    Two graphs with the same degree sequence may fail to be isomorphic. The degree sequence $(2, 2, 2, 2)$ is shared by $C_4$ and by $K_2 \sqcup K_2$ ... wait — the latter has degree sequence $(1,1,1,1)$. Better example: $C_6$ and $K_{3,3}$ both have degree sequence $(2,2,2,2,2,2)$ vs $(3,3,3,3,3,3)$ — different. <em>Real</em> example: two non-isomorphic graphs both with degree sequence $(3,3,3,3,3,3)$ exist on $6$ vertices ($K_{3,3}$ and the triangular prism).
+  </div>
+  <p class="ref-cite">Rosen 8e §10.3.</p>
+  <span class="slide-number">10 / 48</span>
+</section>
+
+<!-- ══ Slide 11 — Paths, walks, cycles ═══════════════════════════════ -->
+<section class="slide" id="s11">
+  <h2 class="frame-title">4.1 Walks, paths, cycles</h2>
+
+  <div class="def-box">
+    A <strong>walk</strong> of length $k$ is a sequence $v_0 e_1 v_1 e_2 v_2 \cdots e_k v_k$ alternating vertices and edges with $e_i = \{v_{i-1}, v_i\}$. <br>
+    A <strong>trail</strong> is a walk with no repeated edge. <br>
+    A <strong>path</strong> is a walk with no repeated vertex. <br>
+    A <strong>cycle</strong> is a closed path ($v_0 = v_k$) with $k \geq 3$.
+  </div>
+
+  <div class="def-box">
+    $G$ is <strong>connected</strong> iff for every pair $u, v \in V$ there exists a path from $u$ to $v$. The connectedness relation $u \sim v$ is an equivalence relation (Lesson on Relations §3); its equivalence classes are the <em>connected components</em> of $G$.
+  </div>
+
+  <div class="thm-box">
+    A connected graph on $n$ vertices has at least $n - 1$ edges. Equality holds iff $G$ is a <strong>tree</strong> (Part II).
+  </div>
+  <div class="proof-box">
+    Induction on $n$. Base $n = 1$: $0 = n - 1$ edges, trivially connected. Step: a connected graph on $n + 1$ vertices contains a vertex $v$ with $\deg(v) \geq 1$ (else $v$ is isolated). If removing $v$ disconnects $G$, then we recurse on each component. The detail is left to slide 17. $\square$
+  </div>
+  <p class="ref-cite">Rosen 8e §10.4.</p>
+  <span class="slide-number">11 / 48</span>
+</section>
+
+<!-- ══ Slide 12 — BFS algorithm ══════════════════════════════════════ -->
+<section class="slide" id="s12">
+  <h2 class="frame-title">5.1 Breadth-First Search (BFS)</h2>
+
+  <p>BFS explores the graph layer-by-layer starting from a source $s$. It produces the shortest (unweighted) distance from $s$ to every reachable vertex.</p>
+
+  <div class="python-block">
+    <span class="pane-label">Python — BFS</span>
+    <span class="pane-code">from collections import deque
+
+def bfs(G, s):
+    """Return (distance, parent) dicts from source s."""
+    dist = {s: 0}
+    parent = {s: None}
+    file_attente = deque([s])
+    while file_attente:
+        u = file_attente.popleft()
+        for v in G[u]:
+            if v not in dist:                 # unvisited
+                dist[v] = dist[u] + 1
+                parent[v] = u
+                file_attente.append(v)
+    return dist, parent
+
+def shortest_path(G, s, t):
+    dist, parent = bfs(G, s)
+    if t not in dist: return None             # not reachable
+    chemin = []
+    while t is not None:
+        chemin.append(t)
+        t = parent[t]
+    return list(reversed(chemin))</span>
+  </div>
+
+  <div class="thm-box">
+    BFS runs in $O(n + m)$ time and produces the unique shortest-path tree rooted at $s$ (for the unweighted distance).
+  </div>
+
+  <div class="aside-box">
+    BFS is at the heart of every "minimum-edge-path" problem: maze solving, broadcasting, bipartite testing, shortest-step puzzles (e.g. word ladders).
+  </div>
+  <p class="ref-cite">CLRS §20.2; breadth-first scan / parcours en largeur.</p>
+  <span class="slide-number">12 / 48</span>
+</section>
+
+<!-- ══ Slide 13 — DFS algorithm ══════════════════════════════════════ -->
+<section class="slide" id="s13">
+  <h2 class="frame-title">5.2 Depth-First Search (DFS)</h2>
+
+  <p>DFS dives as deep as possible before backtracking. It discovers cycles, decomposes a digraph into strongly connected components, and produces a topological order on a DAG.</p>
+
+  <div class="python-block">
+    <span class="pane-label">Python — DFS (recursive)</span>
+    <span class="pane-code">def dfs(G, s):
+    """Recursive DFS — returns the set of visited vertices."""
+    vus = set()
+    def visite(u):
+        vus.add(u)
+        for v in G[u]:
+            if v not in vus:
+                visite(v)
+    visite(s)
+    return vus</span>
+  </div>
+
+  <div class="python-block">
+    <span class="pane-label">Python — DFS (iterative with explicit stack)</span>
+    <span class="pane-code">def dfs_iter(G, s):
+    vus = set()
+    pile = [s]
+    while pile:
+        u = pile.pop()
+        if u not in vus:
+            vus.add(u)
+            pile.extend(G[u])
+    return vus
+
+# Number of connected components
+def composantes(G):
+    vus, count = set(), 0
+    for v in G:
+        if v not in vus:
+            vus |= dfs(G, v)
+            count += 1
+    return count</span>
+  </div>
+
+  <div class="thm-box">
+    DFS runs in $O(n + m)$. The recursion depth can reach $n$, so use the iterative version for graphs with long paths to avoid Python's recursion limit.
+  </div>
+  <p class="ref-cite">CLRS §20.3; Tarjan (1972).</p>
+  <span class="slide-number">13 / 48</span>
+</section>
+
+<!-- ══ Slide 14 — Cycle &amp; connectivity tests ═════════════════════ -->
+<section class="slide" id="s14">
+  <h2 class="frame-title">5.3 Cycle detection &amp; connectivity tests</h2>
+
+  <div class="python-block">
+    <span class="pane-label">Python — DFS-based cycle detection (undirected)</span>
+    <span class="pane-code">def a_un_cycle(G):
+    """True iff the graph contains at least one cycle."""
+    vus = set()
+    def visite(u, parent):
+        vus.add(u)
+        for v in G[u]:
+            if v not in vus:
+                if visite(v, u):
+                    return True
+            elif v != parent:
+                return True                  # back-edge → cycle
+        return False
+    return any(visite(v, None) for v in G if v not in vus)</span>
+  </div>
+
+  <div class="python-block">
+    <span class="pane-label">Python — is the graph connected?</span>
+    <span class="pane-code">def est_connexe(G):
+    if not G: return True
+    racine = next(iter(G))
+    return len(dfs(G, racine)) == len(G)</span>
+  </div>
+
+  <div class="aside-box">
+    Cycle detection in a <em>directed</em> graph uses the "gray vertex" pattern: a vertex is <em>white</em> (unvisited), <em>gray</em> (on the current DFS stack) or <em>black</em> (finished). A back-edge to a gray vertex signals a cycle.
+  </div>
+  <p class="ref-cite">CLRS §20.4.</p>
+  <span class="slide-number">14 / 48</span>
+</section>
+
+<!-- ══ Slide 15 — Topological sort ═══════════════════════════════════ -->
+<section class="slide" id="s15">
+  <h2 class="frame-title">6. Topological sort (DAG)</h2>
+
+  <div class="def-box">
+    A <strong>topological order</strong> of a directed acyclic graph $G$ is a linear ordering of $V$ such that for every arc $(u, v)$, $u$ comes before $v$.
+  </div>
+
+  <div class="thm-box">
+    A digraph admits a topological ordering iff it is acyclic (no directed cycle).
+  </div>
+
+  <div class="python-block">
+    <span class="pane-label">Python — Kahn's algorithm (BFS-style)</span>
+    <span class="pane-code">def tri_topologique(G):
+    """G is a digraph as {u: list of successors}. Returns a topo order or None if cyclic."""
+    deg_entrant = {v: 0 for v in G}
+    for u in G:
+        for v in G[u]:
+            deg_entrant[v] = deg_entrant.get(v, 0) + 1
+            if v not in deg_entrant: deg_entrant[v] = 1
+    from collections import deque
+    file = deque([v for v in deg_entrant if deg_entrant[v] == 0])
+    ordre = []
+    while file:
+        u = file.popleft()
+        ordre.append(u)
+        for v in G.get(u, ()):
+            deg_entrant[v] -= 1
+            if deg_entrant[v] == 0:
+                file.append(v)
+    return ordre if len(ordre) == len(deg_entrant) else None</span>
+  </div>
+
+  <div class="ex-box">
+    Applications: build-systems (Make), task scheduling, course prerequisites, spreadsheet recalculation.
+  </div>
+  <p class="ref-cite">Kahn (1962); CLRS §20.4.</p>
+  <span class="slide-number">15 / 48</span>
+</section>
+
+<!-- ══ Slide 16 — Eulerian paths ═════════════════════════════════════ -->
+<section class="slide" id="s16">
+  <h2 class="frame-title">7. Eulerian paths and circuits</h2>
+
+  <div class="def-box">
+    An <strong>Eulerian trail</strong> uses every edge of $G$ exactly once. An <strong>Eulerian circuit</strong> is a closed Eulerian trail (starting and ending at the same vertex).
+  </div>
+
+  <div class="thm-box">
+    <strong>Euler (1736).</strong> A connected graph has an Eulerian <em>circuit</em> iff every vertex has <strong>even</strong> degree. It has an Eulerian <em>trail</em> iff exactly $0$ or $2$ vertices have odd degree.
+  </div>
+  <div class="proof-box">
+    <em>(⇒)</em> Every time the walk enters a vertex it also leaves it, contributing $2$ to the degree — so all degrees must be even (or, in the open-trail case, the start and end vertex contribute one extra and have odd degree).<br>
+    <em>(⇐)</em> Construct the circuit by Hierholzer's algorithm: start at any vertex, walk along unused edges until you return; if any edges remain, splice in subcircuits at vertices that still have unused edges. Each splice is valid by the even-degree hypothesis. $\square$
+  </div>
+
+  <div class="ex-box">
+    <strong>Königsberg bridges (1736).</strong> Euler proved no walk crosses every bridge exactly once: the underlying multigraph has $4$ vertices of odd degree. The negative result <em>founded</em> graph theory.
+  </div>
+  <p class="ref-cite">Euler, <em>Solutio problematis ad geometriam situs pertinentis</em> (1736).</p>
+  <span class="slide-number">16 / 48</span>
+</section>
+
+<!-- ══ Slide 17 — Hamiltonian paths ══════════════════════════════════ -->
+<section class="slide" id="s17">
+  <h2 class="frame-title">8. Hamiltonian paths and circuits</h2>
+
+  <div class="def-box">
+    A <strong>Hamiltonian path</strong> visits every <em>vertex</em> exactly once. A <strong>Hamiltonian circuit</strong> is a closed Hamiltonian path.
+  </div>
+
+  <div class="thm-box">
+    <strong>Dirac (1952).</strong> If $G$ is simple, $n \geq 3$ and $\delta(G) \geq n/2$ (minimum degree at least half the order), then $G$ has a Hamiltonian circuit.
+  </div>
+
+  <div class="thm-box">
+    <strong>Ore (1960).</strong> If for every non-adjacent pair $u, v$, $\deg(u) + \deg(v) \geq n$, then $G$ has a Hamiltonian circuit. (Generalises Dirac.)
+  </div>
+
+  <div class="note-box">
+    Unlike Eulerian circuits, there is <strong>no</strong> easy characterisation of Hamiltonicity. Deciding "is there a Hamiltonian circuit?" is <strong>NP-complete</strong> (Karp 1972). The travelling-salesman problem is the optimisation version.
+  </div>
+
+  <div class="ex-box">
+    $K_n$ ($n \geq 3$) is Hamiltonian. The Petersen graph is non-Hamiltonian but Eulerian-like.
+  </div>
+  <p class="ref-cite">Dirac (1952); Ore (1960); Karp (1972).</p>
+  <span class="slide-number">17 / 48</span>
+</section>
+
+<!-- ══ Slide 18 — Bipartite graphs ═══════════════════════════════════ -->
+<section class="slide" id="s18">
+  <h2 class="frame-title">9. Bipartite graphs &amp; 2-coloring</h2>
+
+  <div class="def-box">
+    A graph $G$ is <strong>bipartite</strong> iff $V$ can be partitioned into two sets $A, B$ such that every edge connects a vertex of $A$ to a vertex of $B$ (no edge inside $A$ or inside $B$).
+  </div>
+
+  <div class="thm-box">
+    A graph is bipartite iff it has no odd cycle iff it is $2$-colorable.
+  </div>
+
+  <div class="proof-box">
+    <em>Bipartite ⇒ no odd cycle.</em> Any cycle alternates between $A$ and $B$, hence has even length.<br>
+    <em>No odd cycle ⇒ bipartite.</em> Run BFS from any vertex $s$; color $s$ red, its neighbours blue, then alternate. If an edge connects two same-coloured vertices, BFS finds an odd cycle. Otherwise the partition is valid.<br>
+    <em>Bipartite ⇔ 2-colorable.</em> A 2-coloring of $G$ corresponds exactly to a bipartition $A \cup B$. $\square$
+  </div>
+
+  <div class="python-block">
+    <span class="pane-label">Python — bipartiteness test (BFS coloring)</span>
+    <span class="pane-code">from collections import deque
+def est_biparti(G):
+    couleur = {}
+    for depart in G:
+        if depart in couleur: continue
+        couleur[depart] = 0
+        file = deque([depart])
+        while file:
+            u = file.popleft()
+            for v in G[u]:
+                if v not in couleur:
+                    couleur[v] = 1 - couleur[u]
+                    file.append(v)
+                elif couleur[v] == couleur[u]:
+                    return False
+    return True</span>
+  </div>
+  <p class="ref-cite">König (1936); Rosen 8e §10.2.</p>
+  <span class="slide-number">18 / 48</span>
+</section>
+
+<!-- ══ Slide 19 — Planar graphs & Euler's formula ═══════════════════ -->
+<section class="slide" id="s19">
+  <h2 class="frame-title">10. Planar graphs &amp; Euler's formula</h2>
+
+  <div class="def-box">
+    A graph is <strong>planar</strong> if it can be drawn in the plane with no edge crossings. A planar drawing divides the plane into <em>faces</em> (regions), including one unbounded face.
+  </div>
+
+  <div class="thm-box">
+    <strong>Euler's formula.</strong> For a connected planar graph with $n$ vertices, $m$ edges, $f$ faces: $\;n - m + f = 2.$
+  </div>
+
+  <div class="proof-box">
+    Induction on $m$. Base $m = n - 1$: $G$ is a tree (Part II), one face only, $n - (n-1) + 1 = 2$. ✓<br>
+    Step: if $G$ has a cycle, remove one edge of the cycle; this decreases both $m$ and $f$ by $1$ (the two faces on either side of the edge merge). The formula is preserved. $\square$
+  </div>
+
+  <div class="cor-box">
+    For $n \geq 3$: $m \leq 3n - 6$. For bipartite planar graphs: $m \leq 2n - 4$. Hence $K_5$ (with $m = 10 &gt; 3\cdot 5 - 6 = 9$) and $K_{3,3}$ (with $m = 9 &gt; 2\cdot 6 - 4 = 8$) are <strong>not planar</strong>.
+  </div>
+
+  <div class="thm-box">
+    <strong>Kuratowski (1930).</strong> A graph is planar iff it does not contain a subdivision of $K_5$ or $K_{3,3}$.
+  </div>
+  <p class="ref-cite">Euler (1750); Kuratowski (1930); Rosen 8e §10.7.</p>
+  <span class="slide-number">19 / 48</span>
+</section>
+
+<!-- ══ Slide 20 — Graph coloring ═════════════════════════════════════ -->
+<section class="slide" id="s20">
+  <h2 class="frame-title">11. Graph coloring &amp; chromatic number</h2>
+
+  <div class="def-box">
+    A <strong>proper $k$-coloring</strong> of $G$ is a map $c : V \to \{1, \ldots, k\}$ such that $c(u) \neq c(v)$ for every edge $\{u, v\} \in E$. The <strong>chromatic number</strong> $\chi(G)$ is the smallest $k$ for which $G$ admits a $k$-coloring.
+  </div>
+
+  <p>Examples: $\chi(K_n) = n$; $\chi(C_n) = 2$ if $n$ is even, $3$ if $n$ is odd; bipartite $\Leftrightarrow \chi \leq 2$.</p>
+
+  <div class="thm-box">
+    <strong>Four-Color Theorem (Appel &amp; Haken, 1976).</strong> Every planar graph satisfies $\chi(G) \leq 4$.
+  </div>
+
+  <div class="note-box">
+    The 4-color theorem was the first major result proved by computer-assisted exhaustive case analysis. The 5-color theorem (every planar graph is 5-colorable) has an elegant elementary proof.
+  </div>
+
+  <div class="python-block">
+    <span class="pane-label">Python — greedy coloring (Welsh–Powell heuristic)</span>
+    <span class="pane-code">def coloration_gloutonne(G):
+    """Sort vertices by decreasing degree; assign smallest available color."""
+    ordre = sorted(G, key=lambda v: -len(G[v]))
+    couleur = {}
+    for u in ordre:
+        utilisees = {couleur[v] for v in G[u] if v in couleur}
+        c = 0
+        while c in utilisees: c += 1
+        couleur[u] = c
+    return couleur</span>
+  </div>
+  <p class="ref-cite">Appel &amp; Haken (1976); Welsh &amp; Powell (1967).</p>
+  <span class="slide-number">20 / 48</span>
+</section>
+
+<!-- ══ Slide 21 — Dijkstra ═══════════════════════════════════════════ -->
+<section class="slide" id="s21">
+  <h2 class="frame-title">12.1 Dijkstra — shortest paths from a source</h2>
+
+  <p>Setting: weighted graph with <strong>non-negative</strong> weights. Goal: shortest distances from source $s$ to every vertex.</p>
+
+  <div class="python-block">
+    <span class="pane-label">Python — Dijkstra with a heap</span>
+    <span class="pane-code">import heapq
+
+def dijkstra(G, s):
+    """G is a weighted graph: G[u] = {v: w, ...} with w &gt;= 0."""
+    dist = {v: float('inf') for v in G}
+    dist[s] = 0
+    parent = {s: None}
+    tas = [(0, s)]
+    while tas:
+        d, u = heapq.heappop(tas)
+        if d &gt; dist[u]: continue              # stale entry
+        for v, w in G[u].items():
+            if dist[u] + w &lt; dist[v]:
+                dist[v] = dist[u] + w
+                parent[v] = u
+                heapq.heappush(tas, (dist[v], v))
+    return dist, parent</span>
+  </div>
+
+  <div class="thm-box">
+    Dijkstra runs in $O((n + m)\log n)$ using a binary heap. Correctness requires non-negative weights.
+  </div>
+
+  <div class="proof-box">
+    <strong>Invariant.</strong> When a vertex $u$ is popped with distance $d$, $\mathrm{dist}[u] = d_G(s, u)$ is the true shortest distance. By induction on the order of extraction: at the first extraction $s$ trivially has distance $0$. For the next: any shorter path to $u$ would go through some unextracted $v$ with $\mathrm{dist}[v] &lt; d$, contradicting the heap property. $\square$
+  </div>
+  <p class="ref-cite">Dijkstra (1959); CLRS §22.3.</p>
+  <span class="slide-number">21 / 48</span>
+</section>
+
+<!-- ══ Slide 22 — Bellman-Ford ═══════════════════════════════════════ -->
+<section class="slide" id="s22">
+  <h2 class="frame-title">12.2 Bellman–Ford — negative weights allowed</h2>
+
+  <p>Allows negative edge weights; detects negative cycles.</p>
+
+  <div class="python-block">
+    <span class="pane-label">Python — Bellman–Ford</span>
+    <span class="pane-code">def bellman_ford(G, s):
+    dist = {v: float('inf') for v in G}
+    dist[s] = 0
+    aretes = [(u, v, w) for u in G for v, w in G[u].items()]
+    for _ in range(len(G) - 1):
+        for u, v, w in aretes:
+            if dist[u] + w &lt; dist[v]:
+                dist[v] = dist[u] + w
+    # Detect negative cycle: any further relaxation = cycle
+    for u, v, w in aretes:
+        if dist[u] + w &lt; dist[v]:
+            raise ValueError("Negative cycle detected!")
+    return dist</span>
+  </div>
+
+  <div class="thm-box">
+    Bellman–Ford runs in $O(n \cdot m)$ and detects negative cycles. After $n - 1$ relaxations of every edge, all finite distances are optimal (since the longest simple path has at most $n - 1$ edges).
+  </div>
+  <p class="ref-cite">Bellman (1958), Ford (1956); CLRS §22.1.</p>
+  <span class="slide-number">22 / 48</span>
+</section>
+
+<!-- ══ Slide 23 — Floyd-Warshall ═════════════════════════════════════ -->
+<section class="slide" id="s23">
+  <h2 class="frame-title">12.3 Floyd–Warshall — all-pairs shortest paths</h2>
+
+  <div class="thm-box">
+    Floyd–Warshall computes the shortest path between <em>every</em> pair of vertices in $O(n^3)$ time and $O(n^2)$ space.
+  </div>
+
+  <div class="python-block">
+    <span class="pane-label">Python — Floyd–Warshall</span>
+    <span class="pane-code">def floyd_warshall(G):
+    sommets = list(G)
+    n = len(sommets)
+    idx = {v: i for i, v in enumerate(sommets)}
+    d = [[float('inf')] * n for _ in range(n)]
+    for i in range(n): d[i][i] = 0
+    for u in G:
+        for v, w in G[u].items():
+            d[idx[u]][idx[v]] = w
+    # Core triple loop — "via vertex k" relaxation
+    for k in range(n):
+        for i in range(n):
+            for j in range(n):
+                if d[i][k] + d[k][j] &lt; d[i][j]:
+                    d[i][j] = d[i][k] + d[k][j]
+    return sommets, d</span>
+  </div>
+
+  <p><strong>Idea.</strong> Define $d^{(k)}_{ij}$ = shortest $i \to j$ path using only intermediate vertices in $\{1, \ldots, k\}$. The recurrence $d^{(k)}_{ij} = \min(d^{(k-1)}_{ij},\; d^{(k-1)}_{ik} + d^{(k-1)}_{kj})$ is the heart of the algorithm — a textbook dynamic-programming pattern.</p>
+  <p class="ref-cite">Floyd (1962); Warshall (1962); CLRS §23.</p>
+  <span class="slide-number">23 / 48</span>
+</section>
+
+<!-- ══ Slide 24 — Kruskal ════════════════════════════════════════════ -->
+<section class="slide" id="s24">
+  <h2 class="frame-title">13.1 Minimum spanning tree — Kruskal</h2>
+
+  <div class="def-box">
+    A <strong>spanning tree</strong> of a connected graph $G$ is a subgraph that is a tree and contains every vertex. A <strong>minimum spanning tree (MST)</strong> minimises the total edge weight.
+  </div>
+
+  <p>Kruskal's algorithm: sort edges by weight; greedily add the next-lightest edge whose endpoints lie in different connected components (use Union-Find).</p>
+
+  <div class="python-block">
+    <span class="pane-label">Python — Kruskal with Union-Find</span>
+    <span class="pane-code">def kruskal(G):
+    """G weighted (G[u] = {v: w, ...}). Returns list of edges in MST."""
+    parent = {v: v for v in G}
+    def find(x):
+        while parent[x] != x:
+            parent[x] = parent[parent[x]]    # path compression
+            x = parent[x]
+        return x
+    def union(x, y):
+        rx, ry = find(x), find(y)
+        if rx == ry: return False
+        parent[rx] = ry
+        return True
+    aretes = sorted(((w, u, v) for u in G for v, w in G[u].items() if u &lt; v))
+    mst = []
+    for w, u, v in aretes:
+        if union(u, v):
+            mst.append((u, v, w))
+            if len(mst) == len(G) - 1: break
+    return mst</span>
+  </div>
+
+  <div class="thm-box">
+    Kruskal runs in $O(m \log m)$ via the sort.
+  </div>
+  <p class="ref-cite">Kruskal (1956); CLRS §21.2.</p>
+  <span class="slide-number">24 / 48</span>
+</section>
+
+<!-- ══ Slide 25 — Prim ═══════════════════════════════════════════════ -->
+<section class="slide" id="s25">
+  <h2 class="frame-title">13.2 Minimum spanning tree — Prim</h2>
+
+  <p>Prim's algorithm grows the MST one vertex at a time from a single seed, always adding the lightest edge leaving the current tree.</p>
+
+  <div class="python-block">
+    <span class="pane-label">Python — Prim with a heap</span>
+    <span class="pane-code">import heapq
+
+def prim(G, depart=None):
+    if depart is None: depart = next(iter(G))
+    dans_arbre = {depart}
+    mst = []
+    tas = [(w, depart, v) for v, w in G[depart].items()]
+    heapq.heapify(tas)
+    while tas and len(dans_arbre) &lt; len(G):
+        w, u, v = heapq.heappop(tas)
+        if v in dans_arbre: continue
+        dans_arbre.add(v)
+        mst.append((u, v, w))
+        for x, wx in G[v].items():
+            if x not in dans_arbre:
+                heapq.heappush(tas, (wx, v, x))
+    return mst</span>
+  </div>
+
+  <div class="thm-box">
+    Prim runs in $O((n + m)\log n)$ with a binary heap, $O(m + n \log n)$ with a Fibonacci heap.
+  </div>
+
+  <div class="cor-box">
+    Both Kruskal and Prim rely on the <strong>cut property</strong>: in any cut of the graph, the lightest edge crossing the cut belongs to some MST. (Used as a loop invariant in the correctness proof.)
+  </div>
+  <p class="ref-cite">Prim (1957); Jarník (1930); CLRS §21.2.</p>
+  <span class="slide-number">25 / 48</span>
+</section>
+
+<!-- ══ Slide 26 — Part II divider ════════════════════════════════════ -->
+<section class="slide part-slide" id="s26">
+  <div class="part-label">Part II</div>
+  <h2>Trees</h2>
+  <p>Tree = acyclic connected graph · five equivalent characterisations · spanning trees.</p>
+  <span class="slide-number">26 / 48</span>
+</section>
+
+<!-- ══ Slide 27 — Tree definition ════════════════════════════════════ -->
+<section class="slide" id="s27">
+  <h2 class="frame-title">14. Tree — formal definition</h2>
+
+  <div class="def-box">
+    A <strong>tree</strong> is a connected undirected graph that contains no cycle. A graph with no cycles (possibly disconnected) is a <strong>forest</strong>; a forest is a disjoint union of trees.
+  </div>
+
+  <div class="thm-box">
+    For a graph $T$ on $n$ vertices, the following are equivalent:
+    <ol>
+      <li>$T$ is a tree (connected and acyclic);</li>
+      <li>$T$ is connected and has exactly $n - 1$ edges;</li>
+      <li>$T$ is acyclic and has exactly $n - 1$ edges;</li>
+      <li>Every two vertices are joined by a unique path;</li>
+      <li>$T$ is acyclic, but adding any edge between two existing vertices creates exactly one cycle.</li>
+    </ol>
+  </div>
+
+  <div class="proof-box">
+    (1 ⇒ 2): induction on $n$. Base $n = 1$: $0 = n - 1$ edges. Step: a tree with $n \geq 2$ vertices contains a leaf $\ell$ (vertex of degree $1$); removing $\ell$ gives a tree on $n - 1$ vertices with $n - 2$ edges (by IH), so $T$ has $n - 1$ edges.<br>
+    (2 ⇒ 3): if $T$ had a cycle, removing one edge would keep it connected (contradicting that a connected graph needs $\geq n - 1$ edges).<br>
+    (3 ⇒ 4): connectedness + acyclicity gives uniqueness; if two distinct paths existed, their symmetric difference would contain a cycle.<br>
+    (4 ⇒ 5): adding edge $\{u,v\}$ creates a cycle = existing $u$–$v$ path + new edge.<br>
+    (5 ⇒ 1): all hypotheses of (1) are restated. $\square$
+  </div>
+  <p class="ref-cite">Rosen 8e §11.1; Diestel §1.5.</p>
+  <span class="slide-number">27 / 48</span>
+</section>
+
+<!-- ══ Slide 28 — Tree properties ════════════════════════════════════ -->
+<section class="slide" id="s28">
+  <h2 class="frame-title">15. Tree properties — leaves, paths</h2>
+
+  <div class="thm-box">
+    Every tree with $n \geq 2$ vertices has at least <strong>two leaves</strong> (vertices of degree $1$).
+  </div>
+  <div class="proof-box">
+    Suppose at most one leaf. Then $\sum_v \deg(v) \geq 1 \cdot 1 + 2(n - 1) = 2n - 1$. But by the handshake lemma, $\sum_v \deg(v) = 2(n - 1) = 2n - 2$. Contradiction. $\square$
+  </div>
+
+  <div class="def-box">
+    A <strong>rooted tree</strong> is a tree together with a distinguished vertex $r$ — the <em>root</em>. Every other vertex has a unique <em>parent</em> (the next vertex on the unique path to the root); vertices closer to the root are <em>ancestors</em>, further are <em>descendants</em>. Vertices with no children are <em>leaves</em>; the others are <em>internal</em>.
+  </div>
+
+  <table class="ref-table">
+    <thead><tr><th>Term</th><th>Definition</th></tr></thead>
+    <tbody>
+      <tr><td>Depth of $v$</td><td>Length of the path from root to $v$.</td></tr>
+      <tr><td>Height of $v$</td><td>Length of the longest path from $v$ to a leaf below it.</td></tr>
+      <tr><td>Height of tree</td><td>Height of the root = depth of the deepest leaf.</td></tr>
+      <tr><td>Level $k$</td><td>All vertices at depth $k$.</td></tr>
+    </tbody>
+  </table>
+  <p class="ref-cite">Rosen 8e §11.1.</p>
+  <span class="slide-number">28 / 48</span>
+</section>
+
+<!-- ══ Slide 29 — Spanning trees ═════════════════════════════════════ -->
+<section class="slide" id="s29">
+  <h2 class="frame-title">16. Spanning trees</h2>
+
+  <div class="thm-box">
+    Every connected graph contains a spanning tree.
+  </div>
+  <div class="proof-box">
+    Start with $T = G$. While $T$ has a cycle, remove any edge of any cycle — connectivity is preserved (the edge can be replaced by the rest of the cycle). The process terminates with $T$ a tree. $\square$
+  </div>
+
+  <div class="thm-box">
+    <strong>Cayley's formula.</strong> The number of distinct spanning trees of the complete graph $K_n$ is $n^{n-2}$.
+  </div>
+
+  <p>Proof techniques include Prüfer sequences (an explicit bijection between trees on $\{1, \ldots, n\}$ and sequences in $\{1, \ldots, n\}^{n-2}$), the matrix-tree theorem (determinant of the Laplacian), and double-counting (multinomials).</p>
+
+  <div class="ex-box">
+    For $n = 4$, $4^{4-2} = 16$ spanning trees of $K_4$. Direct enumeration confirms this.
+  </div>
+
+  <div class="aside-box">
+    BFS or DFS from any vertex produce a spanning tree of a connected graph as a byproduct — the "BFS-tree" or "DFS-tree" used in many algorithmic problems.
+  </div>
+  <p class="ref-cite">Cayley (1889); Prüfer (1918); Kirchhoff (1847).</p>
+  <span class="slide-number">29 / 48</span>
+</section>
+
+<!-- ══ Slide 30 — Part III divider ═══════════════════════════════════ -->
+<section class="slide part-slide" id="s30">
+  <div class="part-label">Part III</div>
+  <h2>Binary trees</h2>
+  <p>Python <code>[]</code> and <code>[a, L, R]</code> representation · traversals · BST · heap.</p>
+  <span class="slide-number">30 / 48</span>
+</section>
+
+<!-- ══ Slide 31 — Binary tree definition ═════════════════════════════ -->
+<section class="slide" id="s31">
+  <h2 class="frame-title">17. Binary tree — inductive definition</h2>
+
+  <div class="def-box">
+    A <strong>binary tree</strong> $T$ is defined recursively:
+    <ul>
+      <li>The <em>empty tree</em>, written $\varnothing$ or <code>[]</code>, is a binary tree.</li>
+      <li>If $a$ is a value and $L, R$ are binary trees, then $\bigl[a,\, L,\, R\bigr]$ is a binary tree with root value $a$, left subtree $L$, and right subtree $R$.</li>
+    </ul>
+  </div>
+
+  <div class="aside-box">
+    <strong>Python convention.</strong> A binary tree is a Python <code>list</code>:
+    <ul>
+      <li><code>[]</code> denotes the empty tree;</li>
+      <li><code>[a, L, R]</code> denotes a non-empty tree with root <code>a</code> and subtrees <code>L</code> and <code>R</code>.</li>
+    </ul>
+    This <em>three-element-list</em> convention matches the inductive definition exactly and supports every recursive operation cleanly.
+  </div>
+
+  <div class="python-block">
+    <span class="pane-label">Python — example tree</span>
+    <span class="pane-code"># The tree
+#         1
+#        / \
+#       2   3
+#      / \   \
+#     4   5   6
+T = [1,
+        [2,
+            [4, [], []],
+            [5, [], []]],
+        [3,
+            [],
+            [6, [], []]]]
+
+def est_vide(T):  return T == []
+def racine(T):    return T[0]
+def gauche(T):    return T[1]
+def droite(T):    return T[2]
+
+print(racine(T), racine(gauche(T)), racine(droite(T)))   # 1 2 3</span>
+  </div>
+  <p class="ref-cite">SICP §2.2; classical nested-list representation of trees.</p>
+  <span class="slide-number">31 / 48</span>
+</section>
+
+<!-- ══ Slide 32 — Recursive functions on binary trees ════════════════ -->
+<section class="slide" id="s32">
+  <h2 class="frame-title">18. Recursive functions on binary trees</h2>
+
+  <p>Every recursive function on a binary tree follows the same pattern: a base case for $\varnothing$, and a recursive case for $[a, L, R]$ that combines results from $L$ and $R$.</p>
+
+  <div class="python-block">
+    <span class="pane-label">Python — fundamental tree functions</span>
+    <span class="pane-code">def taille(T):
+    """Number of nodes."""
+    if T == []: return 0
+    a, L, R = T
+    return 1 + taille(L) + taille(R)
+
+def hauteur(T):
+    """Height = longest root-to-leaf path. Convention: hauteur([]) == -1, hauteur([a,[],[]]) == 0."""
+    if T == []: return -1
+    a, L, R = T
+    return 1 + max(hauteur(L), hauteur(R))
+
+def feuilles(T):
+    """Number of leaves."""
+    if T == []: return 0
+    a, L, R = T
+    if L == [] and R == []: return 1
+    return feuilles(L) + feuilles(R)
+
+def somme(T):
+    """Sum of all node values (assuming numeric values)."""
+    if T == []: return 0
+    a, L, R = T
+    return a + somme(L) + somme(R)</span>
+  </div>
+
+  <div class="thm-box">
+    A binary tree with $n$ internal nodes has $n + 1$ leaves (in the "full" variant where every internal node has exactly two children).
+  </div>
+  <p class="ref-cite">SICP §2.2.2; Knuth, <em>TAOCP</em>, vol. 1, §2.3.</p>
+  <span class="slide-number">32 / 48</span>
+</section>
+
+<!-- ══ Slide 33 — Tree traversals ════════════════════════════════════ -->
+<section class="slide" id="s33">
+  <h2 class="frame-title">19. Tree traversals — pre/in/post-order</h2>
+
+  <div class="def-box">
+    Three classical depth-first traversals visit each node exactly once:
+    <ul>
+      <li><strong>Preorder</strong>: <em>root, left, right</em>.</li>
+      <li><strong>Inorder</strong>: <em>left, root, right</em>.</li>
+      <li><strong>Postorder</strong>: <em>left, right, root</em>.</li>
+    </ul>
+  </div>
+
+  <div class="python-block">
+    <span class="pane-label">Python — all three traversals</span>
+    <span class="pane-code">def prefixe(T):
+    if T == []: return []
+    a, L, R = T
+    return [a] + prefixe(L) + prefixe(R)
+
+def infixe(T):
+    if T == []: return []
+    a, L, R = T
+    return infixe(L) + [a] + infixe(R)
+
+def postfixe(T):
+    if T == []: return []
+    a, L, R = T
+    return postfixe(L) + postfixe(R) + [a]
+
+T = [1, [2, [4, [], []], [5, [], []]], [3, [], [6, [], []]]]
+print(prefixe(T))    # [1, 2, 4, 5, 3, 6]
+print(infixe(T))     # [4, 2, 5, 1, 3, 6]
+print(postfixe(T))   # [4, 5, 2, 6, 3, 1]</span>
+  </div>
+
+  <div class="ex-box">
+    <strong>Inorder = sorted</strong> for a <em>binary search tree</em> (next slide). <br>
+    <strong>Postorder</strong> is the order needed to evaluate an arithmetic-expression tree.<br>
+    <strong>Preorder</strong> matches the Polish prefix notation.
+  </div>
+  <p class="ref-cite">Knuth, <em>TAOCP</em>, vol. 1, §2.3.</p>
+  <span class="slide-number">33 / 48</span>
+</section>
+
+<!-- ══ Slide 34 — BFS on trees ═══════════════════════════════════════ -->
+<section class="slide" id="s34">
+  <h2 class="frame-title">20. Level-order traversal (BFS)</h2>
+
+  <p>A fourth, breadth-first traversal visits nodes level by level.</p>
+
+  <div class="python-block">
+    <span class="pane-label">Python — level-order (BFS) on a binary tree</span>
+    <span class="pane-code">from collections import deque
+
+def parcours_largeur(T):
+    if T == []: return []
+    resultat = []
+    file = deque([T])
+    while file:
+        N = file.popleft()
+        if N == []: continue
+        a, L, R = N
+        resultat.append(a)
+        file.append(L)
+        file.append(R)
+    return resultat
+
+T = [1, [2, [4, [], []], [5, [], []]], [3, [], [6, [], []]]]
+print(parcours_largeur(T))    # [1, 2, 3, 4, 5, 6]</span>
+  </div>
+
+  <div class="cor-box">
+    A <strong>perfect binary tree</strong> of height $h$ has $2^{h+1} - 1$ nodes, of which $2^h$ are leaves. Its level-order traversal corresponds exactly to the heap-indexing scheme used in arrays.
+  </div>
+
+  <div class="thm-box">
+    For a binary tree with $n$ nodes, the height satisfies $h \geq \lceil \log_2(n+1) \rceil - 1$. Equality is reached by perfectly balanced trees.
+  </div>
+  <p class="ref-cite">Knuth, <em>TAOCP</em>, vol. 1, §2.3.</p>
+  <span class="slide-number">34 / 48</span>
+</section>
+
+<!-- ══ Slide 35 — Binary search trees ════════════════════════════════ -->
+<section class="slide" id="s35">
+  <h2 class="frame-title">21. Binary search trees (BST)</h2>
+
+  <div class="def-box">
+    A <strong>binary search tree</strong> (BST) is a binary tree in which, for every node $[a, L, R]$:
+    <ul>
+      <li>every value in $L$ is strictly less than $a$;</li>
+      <li>every value in $R$ is strictly greater than $a$.</li>
+    </ul>
+    Equivalently, the <em>inorder</em> traversal yields a strictly increasing sequence.
+  </div>
+
+  <div class="python-block">
+    <span class="pane-label">Python — BST membership and insertion</span>
+    <span class="pane-code">def appartient(T, x):
+    if T == []: return False
+    a, L, R = T
+    if x == a: return True
+    if x &lt; a:  return appartient(L, x)
+    return appartient(R, x)
+
+def inserer(T, x):
+    if T == []: return [x, [], []]
+    a, L, R = T
+    if x &lt; a:  return [a, inserer(L, x), R]
+    if x &gt; a:  return [a, L, inserer(R, x)]
+    return T                                 # duplicate, ignored
+
+# Build a BST from a list
+import functools
+A = functools.reduce(inserer, [5, 3, 8, 1, 4, 7, 9], [])
+print(infixe(A))     # [1, 3, 4, 5, 7, 8, 9]   ← sorted!</span>
+  </div>
+
+  <div class="thm-box">
+    BST search, insert and delete all run in $O(h)$ time where $h$ is the tree height. For a balanced BST, $h = \Theta(\log n)$ — operations are logarithmic.
+  </div>
+  <p class="ref-cite">Knuth, <em>TAOCP</em>, vol. 3, §6.2.2; CLRS ch. 12.</p>
+  <span class="slide-number">35 / 48</span>
+</section>
+
+<!-- ══ Slide 36 — BST deletion ═══════════════════════════════════════ -->
+<section class="slide" id="s36">
+  <h2 class="frame-title">22. BST deletion — three cases</h2>
+
+  <p>Removing a value $x$ from a BST has three cases, depending on the children of the node containing $x$.</p>
+
+  <ol>
+    <li><strong>Leaf:</strong> replace the node by $\varnothing$.</li>
+    <li><strong>One child:</strong> splice the child into the node's position.</li>
+    <li><strong>Two children:</strong> replace the node's value by the smallest value in $R$ (the inorder successor), then recursively remove that value from $R$.</li>
+  </ol>
+
+  <div class="python-block">
+    <span class="pane-label">Python — BST deletion</span>
+    <span class="pane-code">def minimum(T):
+    a, L, R = T
+    return minimum(L) if L != [] else a
+
+def supprimer(T, x):
+    if T == []: return []
+    a, L, R = T
+    if x &lt; a: return [a, supprimer(L, x), R]
+    if x &gt; a: return [a, L, supprimer(R, x)]
+    # x == a
+    if L == []: return R                # case 1 + 2
+    if R == []: return L                # case 2
+    m = minimum(R)                       # case 3
+    return [m, L, supprimer(R, m)]
+
+A = [5, [3, [1, [], []], [4, [], []]], [8, [7, [], []], [9, [], []]]]
+print(infixe(supprimer(A, 3)))   # [1, 4, 5, 7, 8, 9]</span>
+  </div>
+
+  <div class="note-box">
+    Without balancing (AVL, red-black, splay), repeated insertions of a sorted sequence degenerate the BST into a "vine" of height $n$ — operations slow to $\Theta(n)$. Balanced variants guarantee $\Theta(\log n)$ worst-case.
+  </div>
+  <p class="ref-cite">CLRS ch. 12–13.</p>
+  <span class="slide-number">36 / 48</span>
+</section>
+
+<!-- ══ Slide 37 — Binary heap ════════════════════════════════════════ -->
+<section class="slide" id="s37">
+  <h2 class="frame-title">23. Binary heap (min-heap)</h2>
+
+  <div class="def-box">
+    A <strong>min-heap</strong> is a complete binary tree in which every parent's value is $\leq$ its children's values (so the minimum sits at the root). A <strong>max-heap</strong> reverses the inequality.
+  </div>
+
+  <p>Stored as an <em>array</em>: the root is at index $1$ (or $0$); for a node at index $i$, the left child is at $2i$ (or $2i+1$) and the right child is at $2i + 1$ (or $2i + 2$). Parent: $i // 2$ (or $(i - 1) // 2$).</p>
+
+  <div class="python-block">
+    <span class="pane-label">Python — using <code>heapq</code></span>
+    <span class="pane-code">import heapq
+tas = []
+for x in [5, 2, 8, 1, 6, 3]:
+    heapq.heappush(tas, x)
+print(tas)                       # [1, 2, 3, 5, 6, 8] — heap-ordered
+while tas:
+    print(heapq.heappop(tas), end=' ')   # 1 2 3 5 6 8 — sorted output</span>
+  </div>
+
+  <div class="thm-box">
+    Insertion (<code>heappush</code>) and extraction (<code>heappop</code>) on a binary heap of $n$ elements run in $O(\log n)$ time. Building a heap from $n$ elements takes $O(n)$ via Floyd's bottom-up heapify.
+  </div>
+
+  <div class="ex-box">
+    <strong>Heapsort.</strong> Build a max-heap of the input ($O(n)$), then repeatedly extract the max ($O(n \log n)$). Total: $O(n \log n)$ in-place sort.
+  </div>
+  <p class="ref-cite">Williams (1964); Floyd (1964); CLRS ch. 6.</p>
+  <span class="slide-number">37 / 48</span>
+</section>
+
+<!-- ══ Slide 38 — Balanced trees preview ═════════════════════════════ -->
+<section class="slide" id="s38">
+  <h2 class="frame-title">24. Balanced trees — AVL, red-black (preview)</h2>
+
+  <div class="def-box">
+    An <strong>AVL tree</strong> is a BST where for every node the heights of the left and right subtrees differ by at most $1$ — the <em>balance factor</em> is in $\{-1, 0, +1\}$.
+  </div>
+
+  <p>An AVL tree of $n$ nodes has height $h = O(\log n)$. Insertions and deletions trigger at most $O(\log n)$ "rotations" to restore the balance invariant.</p>
+
+  <table class="ref-table">
+    <thead><tr><th>Operation</th><th>BST (worst)</th><th>AVL / RB</th></tr></thead>
+    <tbody>
+      <tr><td>Search</td><td>$\Theta(n)$</td><td>$\Theta(\log n)$</td></tr>
+      <tr><td>Insert</td><td>$\Theta(n)$</td><td>$\Theta(\log n)$</td></tr>
+      <tr><td>Delete</td><td>$\Theta(n)$</td><td>$\Theta(\log n)$</td></tr>
+      <tr><td>Inorder traversal</td><td>$\Theta(n)$</td><td>$\Theta(n)$</td></tr>
+    </tbody>
+  </table>
+
+  <div class="aside-box">
+    Self-balancing BSTs are <em>cultural knowledge</em>: students should know they exist and provide $\Theta(\log n)$ guarantees, even if the internal rotation details may be out of scope. C++ <code>std::map</code> and Python's <code>SortedDict</code> are typical industrial implementations (often red-black trees).
+  </div>
+  <p class="ref-cite">Adelson-Velsky &amp; Landis (1962); CLRS ch. 13.</p>
+  <span class="slide-number">38 / 48</span>
+</section>
+
+<!-- ══ Slide 39 — Tree as special graph ══════════════════════════════ -->
+<section class="slide" id="s39">
+  <h2 class="frame-title">25. Tree as a special graph — bridging Parts I &amp; III</h2>
+
+  <p>Every tree on $n$ vertices <em>is</em> a connected acyclic graph with $n - 1$ edges (Part II §14). A binary tree is the rooted version with at most two ordered children per node (Part III §17).</p>
+
+  <div class="python-block">
+    <span class="pane-label">Python — convert between the two representations</span>
+    <span class="pane-code">def binaire_vers_graphe(T, prefixe=''):
+    """Convert a binary tree (nested list) into a graph (dict)
+       with synthetic vertex IDs to avoid value collisions."""
+    G = {}
+    def parcours(N, vid):
+        if N == []: return None
+        a, L, R = N
+        G[vid] = set()
+        G.setdefault(vid, set())
+        for sous_arbre, suffix in [(L, 'L'), (R, 'R')]:
+            sid = vid + suffix
+            if parcours(sous_arbre, sid) is not None:
+                G[vid].add(sid)
+                G[sid].add(vid)
+        return vid
+    parcours(T, prefixe)
+    return G
+
+T = [1, [2, [4, [], []], [5, [], []]], [3, [], [6, [], []]]]
+G = binaire_vers_graphe(T)
+print(len(G), len(G[''])>0)     # 6 True
+# Apply any graph algorithm of Part I — BFS, DFS, connectivity — to G.</span>
+  </div>
+
+  <div class="cor-box">
+    All graph algorithms of Part I (BFS, DFS, Dijkstra on a positively-weighted tree, etc.) apply directly to the converted representation. In particular, in a tree:
+    <ul>
+      <li>BFS from any vertex gives the unique distance function.</li>
+      <li>The diameter (longest path) can be found by <strong>two consecutive BFS</strong> from any vertex.</li>
+      <li>Dijkstra on a tree degenerates to a single pass — every path is unique.</li>
+    </ul>
+  </div>
+  <p class="ref-cite">Folklore tree-diameter algorithm.</p>
+  <span class="slide-number">39 / 48</span>
+</section>
+
+<!-- ══ Slide 40 — Expression trees ═══════════════════════════════════ -->
+<section class="slide" id="s40">
+  <h2 class="frame-title">26. Application — expression trees</h2>
+
+  <p>An arithmetic expression like $(3 + 4) \cdot (5 - 2)$ has a natural binary-tree representation: internal nodes are operators, leaves are operands.</p>
+
+  <div class="python-block">
+    <span class="pane-label">Python — evaluate an expression tree</span>
+    <span class="pane-code"># Expression: (3 + 4) * (5 - 2)
+expr = ['*',
+            ['+', [3, [], []], [4, [], []]],
+            ['-', [5, [], []], [2, [], []]]]
+
+def evaluer(T):
+    if T == []:
+        raise ValueError('empty tree')
+    a, L, R = T
+    if L == [] and R == []:
+        return a                              # leaf — operand
+    g, d = evaluer(L), evaluer(R)
+    return {'+': g + d, '-': g - d,
+            '*': g * d, '/': g / d}[a]
+
+print(evaluer(expr))     # 21
+print(prefixe(expr))     # ['*', '+', 3, 4, '-', 5, 2]   ← Polish notation
+print(postfixe(expr))    # [3, 4, '+', 5, 2, '-', '*']   ← Reverse Polish (RPN)</span>
+  </div>
+
+  <p>The same tree, traversed three ways, gives:</p>
+  <ul>
+    <li><strong>Preorder</strong> = Polish prefix notation: <code>* + 3 4 - 5 2</code>.</li>
+    <li><strong>Inorder</strong> (with parens) = the human-readable expression: <code>((3 + 4) * (5 - 2))</code>.</li>
+    <li><strong>Postorder</strong> = Reverse Polish notation (RPN): <code>3 4 + 5 2 - *</code> — exactly the order needed for a stack-based evaluator.</li>
+  </ul>
+  <p class="ref-cite">Knuth, <em>TAOCP</em>, vol. 1, §2.3; SICP §2.3.</p>
+  <span class="slide-number">40 / 48</span>
+</section>
+
+<!-- ══ Slide 41 — Strategy guide ═════════════════════════════════════ -->
+<section class="slide" id="s41">
+  <h2 class="frame-title">27. Strategy — picking the right algorithm</h2>
+
+  <table class="ref-table">
+    <thead><tr><th>Problem</th><th>Algorithm</th><th>Complexity</th></tr></thead>
+    <tbody>
+      <tr><td>Shortest path, unweighted</td><td>BFS</td><td>$O(n + m)$</td></tr>
+      <tr><td>Shortest path, non-negative weights</td><td>Dijkstra (heap)</td><td>$O((n+m)\log n)$</td></tr>
+      <tr><td>Shortest path, possibly negative</td><td>Bellman–Ford</td><td>$O(nm)$</td></tr>
+      <tr><td>All-pairs shortest paths</td><td>Floyd–Warshall</td><td>$O(n^3)$</td></tr>
+      <tr><td>Connected components</td><td>BFS or DFS</td><td>$O(n + m)$</td></tr>
+      <tr><td>Cycle detection (undirected)</td><td>DFS with parent</td><td>$O(n + m)$</td></tr>
+      <tr><td>Cycle detection (directed)</td><td>DFS with colors</td><td>$O(n + m)$</td></tr>
+      <tr><td>Topological order (DAG)</td><td>Kahn or DFS-postorder</td><td>$O(n + m)$</td></tr>
+      <tr><td>Bipartite testing</td><td>BFS-coloring</td><td>$O(n + m)$</td></tr>
+      <tr><td>MST</td><td>Kruskal / Prim</td><td>$O(m \log m)$ / $O((n+m)\log n)$</td></tr>
+      <tr><td>BST / heap operations</td><td>Recursive on tree</td><td>$O(\log n)$ balanced</td></tr>
+      <tr><td>Tree diameter</td><td>Two BFS</td><td>$O(n)$</td></tr>
+    </tbody>
+  </table>
+  <span class="slide-number">41 / 48</span>
+</section>
+
+<!-- ══ Slide 42 — Topics covered (recap) ═════════════════════════════ -->
+<section class="slide" id="s42">
+  <h2 class="frame-title">28. Topics covered — recap table</h2>
+
+  <table class="ref-table">
+    <thead><tr><th>Topic</th><th>Where in this course</th></tr></thead>
+    <tbody>
+      <tr><td>Graph vocabulary (vertices, edges, degree, path, cycle, connectivity)</td><td>§§1–4</td></tr>
+      <tr><td>Representations: adjacency matrix vs <strong>adjacency dictionary</strong></td><td>§2 (dict-based)</td></tr>
+      <tr><td>Breadth-first search (BFS) and depth-first search (DFS)</td><td>§5</td></tr>
+      <tr><td>Cycle detection, connected components</td><td>§§5.3, 14</td></tr>
+      <tr><td>Topological sort (DAG)</td><td>§6</td></tr>
+      <tr><td>Weighted graphs: shortest paths (Dijkstra, Bellman–Ford)</td><td>§§12.1, 12.2</td></tr>
+      <tr><td>Greedy algorithms: minimum spanning tree (Kruskal, Prim)</td><td>§13</td></tr>
+      <tr><td>Trees: definition, properties, traversals, BST</td><td>§§14–22</td></tr>
+      <tr><td>Binary heap and heapsort</td><td>§23</td></tr>
+      <tr><td>Python implementation (<code>dict</code>, <code>[a, L, R]</code> lists)</td><td>throughout the course</td></tr>
+    </tbody>
+  </table>
+
+  <div class="aside-box">
+    Enrichment topics — beyond a typical first introduction: Eulerian/Hamiltonian theorems, Cayley's formula, Floyd–Warshall, the Four-Color Theorem, AVL rotations.
+  </div>
+  <p class="ref-cite">Standard discrete-math curriculum on graphs and trees.</p>
+  <span class="slide-number">42 / 48</span>
+</section>
+
+<!-- ══ Slide 43 — Summary Part I ═════════════════════════════════════ -->
+<section class="slide" id="s43">
+  <h2 class="frame-title">29. Summary — Part I (Graphs)</h2>
+  <ul>
+    <li>Formal definitions: simple, directed, weighted, multigraphs.</li>
+    <li>Handshake lemma proved; degree sequence as an invariant.</li>
+    <li>Standard families: $K_n, P_n, C_n, K_{m,n}, Q_n, W_n, S_n$.</li>
+    <li>Representations: adjacency matrix vs Python <code>dict</code>; complexity table.</li>
+    <li>Paths, cycles, connectivity; tree-edge lower bound $\geq n - 1$.</li>
+    <li>BFS and DFS in $O(n + m)$ with Python implementations.</li>
+    <li>Topological sort by Kahn's algorithm.</li>
+    <li>Eulerian theorem (1736); Hamiltonian — NP-complete.</li>
+    <li>Bipartite ⇔ no odd cycle ⇔ 2-colorable (proved).</li>
+    <li>Planar graphs: Euler's formula $n - m + f = 2$ + Kuratowski.</li>
+    <li>Coloring: $\chi(G)$, 4-color theorem.</li>
+    <li>Shortest paths: Dijkstra, Bellman–Ford, Floyd–Warshall.</li>
+    <li>MST: Kruskal (Union-Find) and Prim (heap).</li>
+  </ul>
+  <span class="slide-number">43 / 48</span>
+</section>
+
+<!-- ══ Slide 44 — Summary Parts II & III ═════════════════════════════ -->
+<section class="slide" id="s44">
+  <h2 class="frame-title">30. Summary — Parts II &amp; III (Trees &amp; Binary Trees)</h2>
+  <ul>
+    <li><strong>Trees</strong> = connected acyclic graphs. Five equivalent characterisations proved.</li>
+    <li>Every tree has $n - 1$ edges; at least $2$ leaves (for $n \geq 2$).</li>
+    <li>Rooted-tree terminology: root, parent, child, depth, height, leaves.</li>
+    <li>Spanning trees: every connected graph has at least one; $K_n$ has $n^{n-2}$ (Cayley).</li>
+    <li><strong>Binary trees</strong>: inductive definition; Python <code>[]</code> and <code>[a, L, R]</code> representation.</li>
+    <li>Recursive functions: <code>taille</code>, <code>hauteur</code>, <code>feuilles</code>, <code>somme</code>.</li>
+    <li>Traversals: preorder, inorder, postorder, level-order. Each in $O(n)$.</li>
+    <li>BST: ordering invariant; search / insert / delete in $O(h)$.</li>
+    <li>Binary heap (min/max): complete tree; $O(\log n)$ operations; heapsort in $O(n \log n)$.</li>
+    <li>Balanced BSTs (AVL, red-black) guarantee $O(\log n)$ worst-case.</li>
+    <li>Bridging: convert binary tree → graph dict; reuse BFS/DFS/diameter algorithms.</li>
+  </ul>
+  <span class="slide-number">44 / 48</span>
+</section>
+
+<!-- ══ Slide 45 — Python toolbox ═════════════════════════════════════ -->
+<section class="slide" id="s45">
+  <h2 class="frame-title">31. Python toolbox — quick reference</h2>
+
+  <div class="python-block">
+    <span class="pane-label">Python — what to import for graph &amp; tree work</span>
+    <span class="pane-code">from collections import deque         # BFS queue
+import heapq                            # Dijkstra, Prim, heaps
+import functools                        # reduce, lru_cache
+
+# Adjacency-list graph
+G = {'a': {'b': 3, 'c': 1}, 'b': {'a': 3, 'c': 7}, 'c': {'a': 1, 'b': 7}}
+
+# Binary tree
+T = [1, [2, [4, [], []], [5, [], []]], [3, [], [6, [], []]]]
+
+# Optional: NetworkX for sanity checks (a library, not for the from-scratch exercises)
+# import networkx as nx
+# nx_G = nx.Graph()
+# nx_G.add_weighted_edges_from([(u, v, w) for u in G for v, w in G[u].items() if u &lt; v])
+# nx.shortest_path(nx_G, 'a', 'b', weight='weight')</span>
+  </div>
+
+  <div class="aside-box">
+    In exercises and assessments, <strong>do not rely on NetworkX</strong> — students are expected to implement BFS, DFS, Dijkstra, Kruskal/Prim, and tree operations from scratch using the standard <code>dict</code> and <code>list</code> representations. NetworkX is a convenient sanity check, not a substitute for the explicit implementations.
+  </div>
+  <span class="slide-number">45 / 48</span>
+</section>
+
+<!-- ══ Slide 46 — Wolfram → Python ═══════════════════════════════════ -->
+<section class="slide" id="s46">
+  <h2 class="frame-title">32. Wolfram → Python quick reference</h2>
+
+  <table class="ref-table">
+    <thead><tr><th>Operation</th><th>Wolfram</th><th>Python</th></tr></thead>
+    <tbody>
+      <tr><td>Create graph</td><td><code>Graph[{a&lt;-&gt;b, b&lt;-&gt;c}]</code></td><td><code>G = {'a': {'b'}, 'b': {'a','c'}, 'c': {'b'}}</code></td></tr>
+      <tr><td>Vertex degree</td><td><code>VertexDegree[G, v]</code></td><td><code>len(G[v])</code></td></tr>
+      <tr><td>Adjacency matrix</td><td><code>AdjacencyMatrix[G]</code></td><td>(build by hand)</td></tr>
+      <tr><td>BFS</td><td><code>BreadthFirstScan[G, s]</code></td><td>see §5.1</td></tr>
+      <tr><td>DFS</td><td><code>DepthFirstScan[G, s]</code></td><td>see §5.2</td></tr>
+      <tr><td>Shortest path</td><td><code>FindShortestPath[G, s, t]</code></td><td>see §12.1 (Dijkstra)</td></tr>
+      <tr><td>MST</td><td><code>FindSpanningTree[G]</code></td><td>see §13 (Kruskal / Prim)</td></tr>
+      <tr><td>Connected components</td><td><code>ConnectedComponents[G]</code></td><td>see §5.2</td></tr>
+      <tr><td>Topological sort</td><td><code>TopologicalSort[G]</code></td><td>see §6 (Kahn)</td></tr>
+      <tr><td>Eulerian circuit</td><td><code>FindEulerianCycle[G]</code></td><td>(Hierholzer's algorithm)</td></tr>
+    </tbody>
+  </table>
+  <span class="slide-number">46 / 48</span>
+</section>
+
+<!-- ══ Slide 47 — Bibliography ═══════════════════════════════════════ -->
+<section class="slide" id="s47">
+  <h2 class="frame-title">Bibliography</h2>
+  <ul>
+    <li>K. H. Rosen. <em>Discrete Mathematics and Its Applications</em>, 8th ed., McGraw-Hill, 2019 — §§10.1–10.7 (graphs), §§11.1–11.5 (trees).</li>
+    <li>T. H. Cormen, C. E. Leiserson, R. L. Rivest, C. Stein. <em>Introduction to Algorithms</em>, 4th ed., MIT Press, 2022 — Part VI (graph algorithms), ch. 12–13 (BST, balanced trees), ch. 6 (heaps).</li>
+    <li>D. Beauquier, J. Berstel, P. Chrétienne. <em>Éléments d'algorithmique</em>, Masson, 1992 — standard French-language algorithmics reference.</li>
+    <li>R. Diestel. <em>Graph Theory</em>, 5th ed., Springer, 2017 — standard mathematical reference.</li>
+    <li>D. E. Knuth. <em>The Art of Computer Programming</em>, vol. 1 (Fundamental Algorithms), vol. 3 (Sorting and Searching), Addison-Wesley.</li>
+    <li>H. Abelson &amp; G. J. Sussman. <em>Structure and Interpretation of Computer Programs</em>, 2nd ed., MIT Press, 1996 — §2.2 (tree-like data).</li>
+    <li>L. Euler (1736). <em>Solutio problematis ad geometriam situs pertinentis</em> — origins of graph theory.</li>
+    <li>K. Appel &amp; W. Haken (1976). Four-color theorem.</li>
+    <li>E. W. Dijkstra (1959). <em>A note on two problems in connexion with graphs</em>, Numer. Math. 1.</li>
+    <li>S. S. Skiena. <em>The Algorithm Design Manual</em>, 3rd ed., Springer, 2020 — graphs and trees from the algorithms-engineering perspective.</li>
+  </ul>
+
+  <p style="margin-top:1rem;color:#e67e22;font-style:italic;font-weight:600;">Notes By Pr. El Hadiq Zouhair</p>
+  <span class="slide-number">47 / 48</span>
+</section>
+
+<!-- ══ Slide 48 — End slide ══════════════════════════════════════════ -->
+<section class="slide part-slide" id="s48">
+  <div class="part-label">End of course</div>
+  <h2>Thank you</h2>
+  <p>Questions, exercises and lab sessions to follow.</p>
+  <p style="font-style:italic;margin-top:1.5rem;">Notes By Pr. El Hadiq Zouhair</p>
+  <span class="slide-number">48 / 48</span>
+</section>
+
+<!-- ── Navigation ─────────────────────────────────────────────────── -->
+<div id="nav">
+  <button id="btn-prev"   title="Previous">&#8592;</button>
+  <button id="btn-scroll" title="Toggle slideshow">Slideshow</button>
+  <button id="btn-next"   title="Next">&#8594;</button>
+</div>
+
+<script>
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  let current = 0, slideshowMode = false;
+
+  function enter(i) {
+    slides[current].classList.remove('active');
+    current = (i + slides.length) % slides.length;
+    slides[current].classList.add('active');
+    slides[current].scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  document.getElementById('btn-prev').addEventListener('click', () => {
+    if (slideshowMode) enter(current - 1);
+  });
+  document.getElementById('btn-next').addEventListener('click', () => {
+    if (slideshowMode) enter(current + 1);
+  });
+  document.getElementById('btn-scroll').addEventListener('click', () => {
+    slideshowMode = !slideshowMode;
+    document.body.classList.toggle('slideshow', slideshowMode);
+    document.getElementById('btn-scroll').textContent = slideshowMode ? 'Scroll' : 'Slideshow';
+    if (slideshowMode) slides[current].classList.add('active');
+    else slides.forEach(s => s.classList.remove('active'));
+  });
+
+  document.addEventListener('keydown', e => {
+    if (!slideshowMode) return;
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') enter(current + 1);
+    if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   enter(current - 1);
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,501 @@
+\chapter{Propositional Logic}
+\signature
+
+\section{Propositions}
+
+\begin{definition}[Proposition]
+A \emph{proposition} is a declarative sentence that is either true ($\TT$) or
+false ($\FF$), but never both and never neither. Propositions are denoted by
+lowercase letters $p, q, r, \ldots$ and take their values in the set
+$\B = \{\TT, \FF\}$ of \emph{truth values}.
+\end{definition}
+
+\begin{example}
+``$2+2=4$'' is a true proposition; ``Paris is the capital of Spain'' is a false
+proposition. By contrast, ``Close the door'' (imperative), ``What time is it?''
+(interrogative) and ``$x + 1 = 0$'' (free variable --- a \emph{predicate},
+Chapter~4) are not propositions. The self-referential sentence ``This sentence
+is false'' is also excluded: it cannot consistently receive either truth value,
+violating the principle of bivalence.
+\end{example}
+
+\begin{definition}[Atomic and compound]
+An \emph{atomic} proposition cannot be decomposed using logical connectives; it
+is symbolised by a single letter. A \emph{compound} proposition is built from
+atomic propositions using connectives such as
+$\neg, \wedge, \vee, \to, \leftrightarrow$.
+\end{definition}
+
+Propositional logic studies only how the truth of a compound proposition
+depends on its atoms; looking \emph{inside} an atom is the job of predicate
+logic (Chapter~4).
+
+\subsection{Well-formed formulas}
+
+The propositional language can be defined by a grammar: every atomic letter is
+a well-formed formula (wff); if $\varphi$ and $\psi$ are wffs, so are
+$\neg\varphi$, $(\varphi \wedge \psi)$, $(\varphi \vee \psi)$,
+$(\varphi \to \psi)$ and $(\varphi \leftrightarrow \psi)$; nothing else is a
+wff. This inductive definition (a recursive set in the sense of Chapter~14)
+makes ``formula'' a precise mathematical object.
+
+\begin{definition}[Truth assignment]
+A \emph{truth assignment} (or \emph{valuation}) is a function
+$v : \{p, q, r, \ldots\} \to \B$ assigning a truth value to every atomic
+proposition. A valuation extends uniquely to all wffs via the truth tables of
+the connectives.
+\end{definition}
+
+\section{The logical connectives}
+
+\begin{definition}[Negation]
+The \emph{negation} $\neg p$ (``not $p$'') is true exactly when $p$ is false.
+\end{definition}
+
+\begin{definition}[Conjunction and disjunction]
+The \emph{conjunction} $p \wedge q$ (``$p$ and $q$'') is true exactly when both
+$p$ and $q$ are true. The \emph{disjunction} $p \vee q$ (``$p$ or $q$'') is
+true exactly when at least one of $p, q$ is true (inclusive or).
+\end{definition}
+
+\begin{definition}[Exclusive or]
+The \emph{exclusive or} $p \oplus q$ is true exactly when $p$ and $q$ have
+different truth values.
+\end{definition}
+
+\begin{definition}[Conditional]
+The \emph{conditional} (material implication) $p \to q$ (``if $p$ then $q$'')
+is false only when $p$ is true and $q$ is false; in all other cases it is true.
+$p$ is the \emph{hypothesis} (antecedent), $q$ the \emph{conclusion}
+(consequent).
+\end{definition}
+
+\begin{notebox}
+A conditional with a false hypothesis is \emph{vacuously true}: ``if $1 = 2$
+then I am the Pope'' is a true proposition. The conditional asserts nothing
+about causality --- only that the case ($p$ true, $q$ false) does not occur.
+\end{notebox}
+
+\begin{definition}[Biconditional]
+The \emph{biconditional} $p \leftrightarrow q$ (``$p$ if and only if $q$'') is
+true exactly when $p$ and $q$ have the same truth value.
+\end{definition}
+
+\begin{definition}[NAND and NOR]
+$p \uparrow q \equiv \neg(p \wedge q)$ (\emph{NAND}, Sheffer stroke) and
+$p \downarrow q \equiv \neg(p \vee q)$ (\emph{NOR}, Peirce arrow).
+\end{definition}
+
+The complete behaviour of the binary connectives:
+
+\begin{center}
+\begin{tabular}{cc|cccccc}
+\toprule
+$p$ & $q$ & $p\wedge q$ & $p\vee q$ & $p\oplus q$ & $p\to q$ &
+$p\leftrightarrow q$ & $p\uparrow q$\\
+\midrule
+\TT & \TT & \TT & \TT & \FF & \TT & \TT & \FF\\
+\TT & \FF & \FF & \TT & \TT & \FF & \FF & \TT\\
+\FF & \TT & \FF & \TT & \TT & \TT & \FF & \TT\\
+\FF & \FF & \FF & \FF & \FF & \TT & \TT & \TT\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section{Truth tables}
+
+To build the truth table of a compound proposition with $n$ atomic letters,
+list all $2^n$ valuations (conventionally from $\TT\cdots\TT$ down to
+$\FF\cdots\FF$), then evaluate subformulas from the innermost outward.
+
+\begin{example}
+Truth table of $(p \to q) \wedge (\neg p \to \neg q)$:
+\begin{center}
+\begin{tabular}{cc|ccc|c}
+\toprule
+$p$ & $q$ & $p\to q$ & $\neg p$ & $\neg p \to \neg q$ & whole formula\\
+\midrule
+\TT & \TT & \TT & \FF & \TT & \TT\\
+\TT & \FF & \FF & \FF & \TT & \FF\\
+\FF & \TT & \TT & \TT & \FF & \FF\\
+\FF & \FF & \TT & \TT & \TT & \TT\\
+\bottomrule
+\end{tabular}
+\end{center}
+The formula is true exactly when $p$ and $q$ agree --- it is equivalent to
+$p \leftrightarrow q$.
+\end{example}
+
+\subsection{Precedence}
+
+To limit parentheses, the standard precedence (strongest first) is:
+$\neg$, then $\wedge$, then $\vee$, then $\to$, then $\leftrightarrow$.
+Thus $\neg p \vee q \wedge r \to s$ reads
+$\bigl((\neg p) \vee (q \wedge r)\bigr) \to s$. The conditional associates to
+the right: $p \to q \to r$ means $p \to (q \to r)$. When in doubt,
+parenthesize.
+
+\section{Converse, inverse, contrapositive}
+
+\begin{definition}
+For the conditional $p \to q$:
+the \emph{converse} is $q \to p$;
+the \emph{inverse} is $\neg p \to \neg q$;
+the \emph{contrapositive} is $\neg q \to \neg p$.
+\end{definition}
+
+\begin{theorem}
+A conditional is logically equivalent to its contrapositive:
+$p \to q \;\equiv\; \neg q \to \neg p$. It is \emph{not} in general equivalent
+to its converse or to its inverse (which are equivalent to each other).
+\end{theorem}
+
+Two classical fallacies arise from confusing these forms:
+\emph{affirming the consequent} (from $p \to q$ and $q$, wrongly concluding
+$p$) and \emph{denying the antecedent} (from $p \to q$ and $\neg p$, wrongly
+concluding $\neg q$).
+
+\section{Tautology, contradiction, contingency}
+
+\begin{definition}
+A compound proposition is a \emph{tautology} if it is true under every
+valuation; a \emph{contradiction} if it is false under every valuation; a
+\emph{contingency} if it is neither.
+\end{definition}
+
+\begin{example}
+$p \vee \neg p$ is a tautology (law of excluded middle); $p \wedge \neg p$ is a
+contradiction; $p \to q$ is a contingency.
+\end{example}
+
+\begin{definition}[Satisfiability]
+A formula is \emph{satisfiable} if at least one valuation makes it true. The
+\emph{SAT problem} asks whether a given formula is satisfiable; it is the
+canonical NP-complete problem, and a formula with $n$ variables has $2^n$
+candidate valuations --- brute force quickly becomes infeasible.
+\end{definition}
+
+\section{Logical equivalence}
+
+\begin{definition}
+Two formulas $\varphi$ and $\psi$ are \emph{logically equivalent}, written
+$\varphi \equiv \psi$, if they have the same truth value under every valuation
+--- equivalently, if $\varphi \leftrightarrow \psi$ is a tautology.
+\end{definition}
+
+\begin{theorem}[Major equivalence laws]\label{thm:laws}
+For all formulas $p, q, r$ (with $\TT$, $\FF$ denoting a tautology and a
+contradiction):
+\begin{center}
+\begin{tabular}{ll}
+\toprule
+Identity & $p \wedge \TT \equiv p$, \quad $p \vee \FF \equiv p$\\
+Domination & $p \vee \TT \equiv \TT$, \quad $p \wedge \FF \equiv \FF$\\
+Idempotence & $p \vee p \equiv p$, \quad $p \wedge p \equiv p$\\
+Double negation & $\neg(\neg p) \equiv p$\\
+Commutativity & $p \vee q \equiv q \vee p$, \quad $p \wedge q \equiv q \wedge p$\\
+Associativity & $(p \vee q) \vee r \equiv p \vee (q \vee r)$, and dually for $\wedge$\\
+Distributivity & $p \vee (q \wedge r) \equiv (p \vee q) \wedge (p \vee r)$, and dually\\
+De Morgan & $\neg(p \wedge q) \equiv \neg p \vee \neg q$, \quad
+             $\neg(p \vee q) \equiv \neg p \wedge \neg q$\\
+Absorption & $p \vee (p \wedge q) \equiv p$, \quad $p \wedge (p \vee q) \equiv p$\\
+Negation & $p \vee \neg p \equiv \TT$, \quad $p \wedge \neg p \equiv \FF$\\
+\bottomrule
+\end{tabular}
+\end{center}
+\end{theorem}
+
+\begin{theorem}[Implication and biconditional identities]\label{thm:impl}
+\[
+p \to q \equiv \neg p \vee q, \qquad
+\neg(p \to q) \equiv p \wedge \neg q, \qquad
+p \leftrightarrow q \equiv (p \to q) \wedge (q \to p).
+\]
+\end{theorem}
+
+Each law is proved by a truth table; once proved, laws may be chained to
+simplify formulas algebraically, replacing equals by equals.
+
+\section{Logical consequence}
+
+\begin{definition}[Entailment]
+A set of formulas $\Gamma$ \emph{entails} $\varphi$, written
+$\Gamma \models \varphi$, if every valuation making all formulas of $\Gamma$
+true also makes $\varphi$ true. An \emph{argument} with premises $\Gamma$ and
+conclusion $\varphi$ is \emph{valid} exactly when $\Gamma \models \varphi$.
+\end{definition}
+
+Validity can always be checked by a truth table, but with many atoms this is
+exponential; Chapter~5 develops \emph{rules of inference} as a scalable
+alternative. The most important rules --- modus ponens (from $p$ and
+$p \to q$, infer $q$), modus tollens (from $\neg q$ and $p \to q$, infer
+$\neg p$), hypothetical syllogism, disjunctive syllogism, addition,
+simplification, conjunction and resolution --- are all entailments and are
+treated in detail there.
+
+\section{Normal forms}
+
+\begin{definition}
+A \emph{literal} is an atom or a negated atom. A formula is in
+\emph{negation normal form} (NNF) if negations occur only on atoms.
+It is in \emph{disjunctive normal form} (DNF) if it is a disjunction of
+conjunctions of literals, and in \emph{conjunctive normal form} (CNF) if it is
+a conjunction of disjunctions of literals.
+\end{definition}
+
+\begin{theorem}
+Every propositional formula is equivalent to one in CNF and to one in DNF.
+\end{theorem}
+
+\begin{example}[CNF conversion]\label{ex:cnf}
+Convert $\neg(p \to q) \vee r$ to CNF:
+\[
+\neg(p \to q) \vee r
+\;\equiv\; (p \wedge \neg q) \vee r
+\;\equiv\; (p \vee r) \wedge (\neg q \vee r),
+\]
+using Theorem~\ref{thm:impl} and then distributivity. The general algorithm:
+eliminate $\leftrightarrow$ and $\to$, push negations inward by De Morgan
+(reaching NNF), then distribute $\vee$ over $\wedge$.
+\end{example}
+
+A DNF can also be read directly off a truth table: each row where the formula
+is true contributes one conjunction of literals describing that row.
+
+\section{Functional completeness}
+
+\begin{definition}
+A set of connectives is \emph{functionally complete} if every Boolean function
+$\B^n \to \B$ can be expressed using only connectives from the set.
+\end{definition}
+
+\begin{theorem}
+$\{\neg, \wedge, \vee\}$ is functionally complete (via DNF); so are
+$\{\neg, \wedge\}$ and $\{\neg, \vee\}$ (by De Morgan); and remarkably each of
+the singletons $\{\uparrow\}$ and $\{\downarrow\}$ is functionally complete.
+\end{theorem}
+
+For NAND: $\neg p \equiv p \uparrow p$ and
+$p \wedge q \equiv (p \uparrow q) \uparrow (p \uparrow q)$, which suffices.
+This is why entire processors can be built from NAND gates alone.
+
+\section{Logic gates and circuits}
+
+Each connective corresponds to a hardware \emph{gate} (AND, OR, NOT, XOR,
+NAND, NOR). Compound formulas correspond to combinational circuits. The
+\emph{half-adder}, which adds two bits, illustrates the correspondence: the sum
+bit is $s = p \oplus q$ and the carry bit is $c = p \wedge q$. Cascading
+half-adders yields full adders and ultimately arithmetic units --- arithmetic
+reduced to logic.
+
+\section{Translating English to logic}
+
+Useful patterns, with $p$ ``it rains'' and $q$ ``I take an umbrella'':
+
+\begin{itemize}
+\item ``If it rains, I take an umbrella'': $p \to q$.
+\item ``I take an umbrella only if it rains'': $q \to p$.
+\item ``I take an umbrella unless it rains'': $\neg p \to q$.
+\item ``Taking an umbrella is necessary for rain'': $p \to q$
+  ($q$ is the necessary condition).
+\item ``Taking an umbrella is sufficient for rain'': $q \to p$.
+\item ``I take an umbrella if and only if it rains'': $q \leftrightarrow p$.
+\end{itemize}
+
+\begin{notebox}
+``Only if'' introduces the \emph{conclusion}, not the hypothesis; ``unless''
+means ``if not''. These two patterns cause most translation errors.
+\end{notebox}
+
+\section{Summary}
+
+Propositions take values in $\B = \{\TT,\FF\}$; connectives
+$\neg, \wedge, \vee, \oplus, \to, \leftrightarrow, \uparrow, \downarrow$
+combine them. Truth tables decide every semantic question in principle;
+equivalence laws (Theorem~\ref{thm:laws}) decide them algebraically. Every
+formula has a CNF and a DNF; $\{\uparrow\}$ alone suffices to express
+everything; and logic realised in silicon becomes digital circuitry.
+
+\section*{Exercises}
+\addcontentsline{toc}{section}{Exercises}
+
+\begin{exercise}{\easy}
+Which of the following are propositions?
+(a) ``$7$ is prime.''\quad (b) ``$x^2 \geq 0$.''\quad
+(c) ``Read this chapter twice.''\quad (d) ``$1+1=3$.''\quad
+(e) ``This statement is false.''
+\end{exercise}
+
+\begin{exercise}{\easy}
+Let $p$: ``the file compiles'' and $q$: ``the tests pass''. Express in symbols:
+(a) the file compiles but the tests fail;
+(b) if the file does not compile then the tests fail;
+(c) the tests pass only if the file compiles;
+(d) the file compiles if and only if the tests pass.
+\end{exercise}
+
+\begin{exercise}{\easy}
+Build the truth table of $(p \vee q) \wedge \neg(p \wedge q)$ and identify
+which standard connective it represents.
+\end{exercise}
+
+\begin{exercise}{\medium}
+State the converse, inverse and contrapositive of: ``If $n$ is divisible by
+$6$, then $n$ is divisible by $3$.'' Which of the four statements are true for
+all integers $n$?
+\end{exercise}
+
+\begin{exercise}{\medium}
+Classify each formula as tautology, contradiction or contingency:
+(a) $(p \to q) \vee (q \to p)$;\quad
+(b) $(p \wedge \neg p) \to q$;\quad
+(c) $(p \to q) \to p$.
+\end{exercise}
+
+\begin{exercise}{\medium}
+Using the equivalence laws (not truth tables), simplify
+$\neg(p \vee \neg q) \vee (\neg p \wedge \neg q)$ as far as possible, citing
+each law used.
+\end{exercise}
+
+\begin{exercise}{\medium}
+Prove using equivalence laws that
+$(p \to r) \wedge (q \to r) \;\equiv\; (p \vee q) \to r$.
+\end{exercise}
+
+\begin{exercise}{\medium}
+Convert $(p \wedge q) \to r$ to CNF, then to DNF, showing each step.
+\end{exercise}
+
+\begin{exercise}{\hard}
+Show that $\{\to, \FF\}$ is functionally complete, where $\FF$ is the constant
+false. \emph{Hint: first express $\neg p$, then $\vee$, then $\wedge$.}
+\end{exercise}
+
+\begin{exercise}{\hard}
+Express $p \vee q$ and $p \to q$ using only the NOR connective $\downarrow$.
+\end{exercise}
+
+\begin{exercise}{\hard}
+A formula has the truth table that is true exactly on the rows
+$(p,q,r) = (\TT,\TT,\FF)$ and $(\FF,\TT,\TT)$. Write its DNF, and give an
+equivalent CNF.
+\end{exercise}
+
+\begin{exercise}{\hard}
+Three suspects make statements. Alice: ``Bob is lying.'' Bob: ``Carol is
+lying.'' Carol: ``Alice and Bob are both lying.'' Using propositional
+variables $a, b, c$ for ``Alice (resp.\ Bob, Carol) tells the truth'',
+formalise the situation and determine who is telling the truth.
+\end{exercise}
+
+\section*{Solutions to the Exercises}
+\addcontentsline{toc}{section}{Solutions to the Exercises}
+
+\begin{solution}{2.1}
+(a) Yes (true). (b) No as stated --- $x$ is a free variable, so it is a
+predicate; (it becomes a proposition once quantified, e.g.\
+$\forall x \in \R,\ x^2 \geq 0$). (c) No --- imperative. (d) Yes (false).
+(e) No --- it can receive no consistent truth value.
+\end{solution}
+
+\begin{solution}{2.2}
+(a) $p \wedge \neg q$. (b) $\neg p \to \neg q$. (c) $q \to p$.
+(d) $p \leftrightarrow q$.
+\end{solution}
+
+\begin{solution}{2.3}
+\begin{center}
+\begin{tabular}{cc|ccc}
+\toprule
+$p$&$q$&$p\vee q$&$\neg(p\wedge q)$&formula\\
+\midrule
+\TT&\TT&\TT&\FF&\FF\\
+\TT&\FF&\TT&\TT&\TT\\
+\FF&\TT&\TT&\TT&\TT\\
+\FF&\FF&\FF&\TT&\FF\\
+\bottomrule
+\end{tabular}
+\end{center}
+True exactly when $p$ and $q$ differ: this is the exclusive or $p \oplus q$.
+\end{solution}
+
+\begin{solution}{2.4}
+Converse: ``if $n$ is divisible by $3$ then $n$ is divisible by $6$'' ---
+false ($n = 9$). Inverse: ``if $n$ is not divisible by $6$ then $n$ is not
+divisible by $3$'' --- false ($n = 9$ again). Contrapositive: ``if $n$ is not
+divisible by $3$ then $n$ is not divisible by $6$'' --- true, being equivalent
+to the original true statement.
+\end{solution}
+
+\begin{solution}{2.5}
+(a) Tautology: if $p \to q$ fails then $p$ is true and $q$ false, making
+$q \to p$ true. (b) Tautology: the hypothesis $p \wedge \neg p$ is always
+false, so the conditional is vacuously true. (c) Contingency: true when
+$p = \TT$; false when $p = \FF$ (then $p \to q$ is true but the conclusion
+$p$ is false).
+\end{solution}
+
+\begin{solution}{2.6}
+\begin{align*}
+\neg(p \vee \neg q) \vee (\neg p \wedge \neg q)
+&\equiv (\neg p \wedge q) \vee (\neg p \wedge \neg q) && \text{De Morgan, double negation}\\
+&\equiv \neg p \wedge (q \vee \neg q) && \text{distributivity}\\
+&\equiv \neg p \wedge \TT && \text{negation law}\\
+&\equiv \neg p && \text{identity law.}
+\end{align*}
+\end{solution}
+
+\begin{solution}{2.7}
+\begin{align*}
+(p \to r) \wedge (q \to r)
+&\equiv (\neg p \vee r) \wedge (\neg q \vee r) && \text{implication identity}\\
+&\equiv (\neg p \wedge \neg q) \vee r && \text{distributivity}\\
+&\equiv \neg(p \vee q) \vee r && \text{De Morgan}\\
+&\equiv (p \vee q) \to r && \text{implication identity.}
+\end{align*}
+\end{solution}
+
+\begin{solution}{2.8}
+$(p \wedge q) \to r \equiv \neg(p \wedge q) \vee r
+\equiv \neg p \vee \neg q \vee r$. This single clause is simultaneously a CNF
+(one disjunctive clause) and a DNF (disjunction of three one-literal
+conjunctions).
+\end{solution}
+
+\begin{solution}{2.9}
+$\neg p \equiv p \to \FF$. Then
+$p \vee q \equiv \neg p \to q \equiv (p \to \FF) \to q$, and
+$p \wedge q \equiv \neg(\neg p \vee \neg q)
+\equiv \bigl(((p \to \FF) \to (q \to \FF))\bigr) \to \FF$ after expanding
+$\neg p \vee \neg q \equiv p \to \neg q$, i.e.\
+$p \wedge q \equiv (p \to (q \to \FF)) \to \FF$. Since
+$\{\neg, \wedge, \vee\}$ is functionally complete, so is $\{\to, \FF\}$.
+\end{solution}
+
+\begin{solution}{2.10}
+$\neg x \equiv x \downarrow x$. Then
+$p \vee q \equiv \neg(p \downarrow q)
+\equiv (p \downarrow q) \downarrow (p \downarrow q)$, and
+$p \to q \equiv \neg p \vee q$, so with $A = p \downarrow p$ ($= \neg p$):
+$p \to q \equiv (A \downarrow q) \downarrow (A \downarrow q)$.
+\end{solution}
+
+\begin{solution}{2.11}
+DNF: each true row becomes a conjunction:
+$(p \wedge q \wedge \neg r) \vee (\neg p \wedge q \wedge r)$.
+For a CNF, note both rows have $q = \TT$, and $p \leftrightarrow \neg r$ holds
+on them ($p$ and $r$ differ); conversely $q \wedge (p \oplus r)$ is true
+exactly on these two rows. Hence a CNF is
+$q \wedge (p \vee r) \wedge (\neg p \vee \neg r)$.
+\end{solution}
+
+\begin{solution}{2.12}
+The statements give $a \leftrightarrow \neg b$, $b \leftrightarrow \neg c$,
+$c \leftrightarrow (\neg a \wedge \neg b)$. From the first two: $a$ and $b$
+differ, $b$ and $c$ differ, so $a = c$ and $a \neq b$. Case $a = \TT$: then
+$c = \TT$, but Carol's statement requires $\neg a \wedge \neg b$, i.e.\
+$a = \FF$ --- contradiction. Case $a = \FF$: then $b = \TT$, $c = \FF$. Check
+Carol: she lies, and indeed $\neg a \wedge \neg b = \FF$ --- consistent.
+So Bob alone tells the truth.
+\end{solution}

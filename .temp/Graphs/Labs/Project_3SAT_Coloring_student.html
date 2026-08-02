@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Project — 3-SAT as a Graph-Coloring Problem</title>
+<script>
+  MathJax = {
+    tex: { inlineMath: [['$','$']], displayMath: [['$$','$$']], processEscapes: true },
+    options: { skipHtmlTags: ['script','noscript','style','textarea'] }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --orange:#e67e22; --darkblue:#2c3e50; --lightbg:#f4f9fc;
+  --border:#dce3ea;
+  --py-fg:#1f4e7a; --py-bg:#eaf3fb; --py-border:#2a6fb3; --py-head:#2a6fb3;
+  --out-fg:#6e4b0a; --out-bg:#fff7e0; --out-border:#e0b341; --out-head:#c89324;
+  --T:#2a9d8f; --F:#e63946; --B:#457b9d;
+}
+body {
+  font-family:'Segoe UI', system-ui, sans-serif;
+  background:#e8edf2; color:var(--darkblue);
+  display:flex; flex-direction:column; align-items:center;
+  padding:2rem 1rem 5rem; gap:1.6rem;
+}
+.slide {
+  background:#fff; width:100%; max-width:940px;
+  border-radius:10px; box-shadow:0 4px 18px rgba(0,0,0,.10);
+  padding:2.0rem 2.6rem 1.8rem; position:relative;
+}
+.title-slide {
+  background:linear-gradient(145deg,#fdf3e7 60%,#f9e4cc);
+  text-align:center; border-top:6px solid var(--orange);
+}
+.title-slide h1 { font-size:1.95rem; margin-bottom:0.4rem; }
+.title-slide .subtitle { font-size:1.05rem; color:#555; }
+.title-slide .badge { display:inline-block; margin-top:.7rem; background:var(--orange); color:#fff; padding:.25rem .8rem; border-radius:14px; font-size:.78rem; font-weight:800; letter-spacing:.1em; text-transform:uppercase; }
+.title-slide .author { font-size:1rem; color:var(--orange); margin-top:0.8rem; font-style:italic; font-weight:600; }
+h2.frame-title {
+  font-size:1.4rem; color:var(--orange); font-weight:700;
+  margin-bottom:0.6rem; padding-bottom:0.35rem; border-bottom:2px solid #f9e4cc;
+}
+h3.sub-title { font-size:1.05rem; color:var(--orange); font-weight:600; margin:0.9rem 0 0.3rem; }
+p { line-height:1.65; margin:0.5rem 0; }
+ul, ol { margin:0.4rem 0 0.4rem 1.5rem; line-height:1.8; }
+ul li::marker, ol li::marker { color:var(--orange); }
+code { background:#f0f3f7; color:#1f4e7a; padding:0 .25em; border-radius:3px; font-family:'Consolas','Fira Code',monospace; }
+.note-box, .def-box, .thm-box, .goal-box, .q-box, .task-box {
+  border-radius:6px; padding:0.6rem 0.9rem; margin:0.6rem 0; line-height:1.65;
+}
+.note-box { background:#fff5e8; border-left:4px solid var(--orange); font-style:italic; }
+.def-box  { background:#eaf3fb; border-left:4px solid var(--py-border); }
+.def-box::before { content:"Definition. "; font-weight:700; color:var(--py-border); }
+.thm-box  { background:#fff7e0; border-left:4px solid var(--out-border); }
+.thm-box::before { content:"Key fact. "; font-weight:700; color:var(--out-head); }
+.goal-box { background:#e8f5ec; border-left:4px solid #27ae60; }
+.goal-box::before { content:"Goal. "; font-weight:700; color:#1e824c; }
+.q-box { background:#eef1ff; border-left:4px solid #6060cc; }
+.q-box::before { content:"Check on paper. "; font-weight:700; color:#6060cc; }
+.task-box { background:#fdeee2; border-left:4px solid var(--orange); }
+.task-box::before { content:"Your task. "; font-weight:700; color:var(--orange); }
+.python-block, .output-block { border-radius:6px; overflow:hidden; margin:0.6rem 0; border:1px solid; }
+.pane-label { display:block; font-size:0.62rem; font-weight:800; letter-spacing:0.12em; text-transform:uppercase; padding:2px 10px; color:#fff; }
+.pane-code { font-family:'Consolas','Fira Code',monospace; font-size:0.8rem; line-height:1.55; padding:0.55rem 0.8rem; white-space:pre; display:block; overflow-x:auto; }
+.python-block { border-color:var(--py-border); }
+.python-block .pane-label { background:var(--py-head); }
+.python-block .pane-code { background:var(--py-bg); color:var(--py-fg); }
+.output-block { border-color:var(--out-border); }
+.output-block .pane-label { background:var(--out-head); }
+.output-block .pane-code { background:var(--out-bg); color:var(--out-fg); }
+.color-key { display:flex; gap:1.2rem; flex-wrap:wrap; margin:0.6rem 0; font-size:0.92rem; }
+.color-key span { display:inline-flex; align-items:center; gap:.4rem; }
+.dot { width:15px; height:15px; border-radius:50%; display:inline-block; border:2px solid #00000022; }
+svg.gadget { display:block; margin:0.8rem auto; max-width:100%; }
+.gnode { stroke:#2c3e50; stroke-width:2; }
+.glabel { font-size:14px; font-weight:700; fill:#fff; font-family:'Segoe UI',sans-serif; }
+.gedge { stroke:#666; stroke-width:2; }
+.steps { counter-reset:step; }
+.back-link { color:#777; font-size:0.9rem; text-decoration:none; }
+.back-link:hover { color:var(--orange); }
+</style>
+</head>
+<body>
+
+<section class="slide title-slide">
+  <h1>3-SAT as a Graph-Coloring Problem</h1>
+  <p class="subtitle">Discrete Mathematics — Guided Project · builds on Lab 1</p>
+  <span class="badge">★ Project</span>
+  <p class="author">Pr. El Hadiq Zouhair</p>
+</section>
+
+<section class="slide">
+  <h2 class="frame-title">What this project is about</h2>
+  <p><a class="back-link" href="Lab1_Graphs_student.html">← back to Lab 1</a></p>
+  <p>This project builds on your Lab 1 functions (<code>add_edge</code>, <code>build_graph</code>, <code>num_edges</code>). The <strong>Setup</strong> cell on the next slide provides everything you need, so the project is self-contained — you can run it in a fresh notebook.</p>
+  <div class="def-box">
+    A <strong>literal</strong> is a variable <code>x</code> or its negation <code>~x</code>. A <strong>clause</strong> is an OR of three literals, e.g. $(x \lor \lnot y \lor z)$. A <strong>formula</strong> is an AND of clauses.
+  </div>
+  <p><strong>The 3-SAT decision problem:</strong> is there a True/False assignment of the variables making the whole formula true?</p>
+  <p>This is a famously hard problem — and it can be <strong>encoded as graph 3-coloring</strong>: from any formula $\varphi$ we build a graph $G_\varphi$ that is 3-colorable <strong>if and only if</strong> $\varphi$ is satisfiable. Translating one problem into another like this is called a <em>reduction</em>, and it is the standard tool for comparing the difficulty of problems.</p>
+  <div class="goal-box">By the end you will have a program that <em>solves a logic formula by coloring a graph</em> — and reads the satisfying assignment straight off the colors.</div>
+</section>
+
+<section class="slide">
+  <h2 class="frame-title">Setup — run first</h2>
+  <p>These are the Lab 1 helpers this project needs, plus a <code>draw_graph</code> tuned for the larger SAT graph (it has $3 + 2V + 6C$ vertices — 33 already for the test formula — so the figure is bigger and the nodes smaller than in Lab 1).</p>
+  <div class="python-block"><span class="pane-label">Python · provided</span><code class="pane-code">import networkx as nx
+import matplotlib.pyplot as plt
+
+def add_vertex(G, v):
+    if v not in G:
+        G[v] = []
+
+def add_edge(G, u, v):
+    """Add the undirected edge {u, v} (and its endpoints if needed); no duplicates."""
+    add_vertex(G, u); add_vertex(G, v)
+    if v not in G[u]: G[u].append(v)
+    if u not in G[v]: G[v].append(u)
+
+def build_graph(vertices, edges):
+    G = {}
+    for v in vertices: add_vertex(G, v)
+    for u, v in edges: add_edge(G, u, v)
+    return G
+
+def num_edges(G):
+    """Half the degree sum (handshake lemma)."""
+    return sum(len(G[v]) for v in G) // 2
+
+def to_nx(G):
+    H = nx.Graph(); H.add_nodes_from(G)
+    for u in G:
+        for v in G[u]: H.add_edge(u, v)
+    return H
+
+def draw_graph(G, coloring=None, pos=None, title=""):
+    H = to_nx(G)
+    if pos is None:
+        pos = nx.spring_layout(H, seed=7)
+    palette = ["#2a9d8f", "#e63946", "#457b9d", "#e9c46a", "#f4a261", "#9b5de5"]
+    node_color = "#a8dadc" if coloring is None else [palette[coloring[v] % len(palette)] for v in H.nodes()]
+    plt.figure(figsize=(6.5, 5.0))
+    nx.draw(H, pos, with_labels=True, node_color=node_color,
+            node_size=600, font_weight="bold", font_size=8, edge_color="#666666")
+    plt.title(title); plt.show()
+
+print("Setup OK — networkx", nx.__version__)</code></div>
+  <div class="note-box">The integer colors 0/1/2 returned by your solver are assigned by the search in whatever order it finds — they do <em>not</em> line up with the T/F/B legend below. The legend explains the <em>meaning</em> of the three color classes, not the exact hue each vertex ends up drawn in.</div>
+</section>
+
+<section class="slide">
+  <h2 class="frame-title">The three colors</h2>
+  <p>Fix three colors with intended meanings <strong>T</strong>rue, <strong>F</strong>alse, <strong>B</strong>ase. A <strong>base triangle</strong> <code>T – F – B</code> forces those three vertices to receive three different colors, so we can talk about "the T color", "the F color", "the B color" everywhere else.</p>
+  <div class="color-key">
+    <span><span class="dot" style="background:var(--T)"></span> T — &ldquo;True&rdquo;</span>
+    <span><span class="dot" style="background:var(--F)"></span> F — &ldquo;False&rdquo;</span>
+    <span><span class="dot" style="background:var(--B)"></span> B — &ldquo;Base&rdquo;</span>
+  </div>
+  <h3 class="sub-title">Variable gadget</h3>
+  <p>For each variable <code>x</code>, a <strong>variable triangle</strong> <code>x – ~x – B</code>: both literal vertices are joined to <code>B</code>, so each must avoid B's color, i.e. each is colored "T" or "F" — and <code>x</code>, <code>~x</code> get <strong>opposite</strong> truth values. That is exactly what we want: a variable and its negation can never both be true.</p>
+</section>
+
+<section class="slide">
+  <h2 class="frame-title">The OR gadget</h2>
+  <p>For two inputs <code>u</code>, <code>v</code>: a fresh triangle <code>a – b – out</code>, plus the wires <code>a – u</code> and <code>b – v</code>.</p>
+  <svg class="gadget" viewBox="0 0 460 230" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="OR gadget diagram">
+    <!-- wires -->
+    <line class="gedge" x1="70" y1="60" x2="190" y2="60"/>
+    <line class="gedge" x1="70" y1="170" x2="190" y2="170"/>
+    <!-- inner triangle a-b-out -->
+    <line class="gedge" x1="190" y1="60" x2="190" y2="170"/>
+    <line class="gedge" x1="190" y1="60" x2="320" y2="115"/>
+    <line class="gedge" x1="190" y1="170" x2="320" y2="115"/>
+    <!-- input nodes -->
+    <circle class="gnode" cx="70" cy="60" r="22" fill="#9b5de5"/>
+    <text class="glabel" x="70" y="65" text-anchor="middle">u</text>
+    <circle class="gnode" cx="70" cy="170" r="22" fill="#9b5de5"/>
+    <text class="glabel" x="70" y="175" text-anchor="middle">v</text>
+    <!-- gadget nodes -->
+    <circle class="gnode" cx="190" cy="60" r="22" fill="#f4a261"/>
+    <text class="glabel" x="190" y="65" text-anchor="middle">a</text>
+    <circle class="gnode" cx="190" cy="170" r="22" fill="#f4a261"/>
+    <text class="glabel" x="190" y="175" text-anchor="middle">b</text>
+    <circle class="gnode" cx="320" cy="115" r="24" fill="#2a9d8f"/>
+    <text class="glabel" x="320" y="120" text-anchor="middle">out</text>
+  </svg>
+  <div class="thm-box">
+    If <code>u</code> and <code>v</code> are <strong>both</strong> colored F, then <code>a</code> and <code>b</code> must use the colors of T and B, forcing <code>out</code> to be colored F. If at least one input is colored T, <code>out</code> <strong>can</strong> be colored T.
+  </div>
+  <div class="q-box">Verify both claims by hand: try every assignment of T/F to <code>u</code> and <code>v</code>, and check which color <code>out</code> is forced into or allowed to take.</div>
+  <h3 class="sub-title">Clause gadget</h3>
+  <p>For a 3-literal clause $(\ell_1 \lor \ell_2 \lor \ell_3)$, chain two OR gadgets — <code>o1 = OR(l1, l2)</code>, then <code>o2 = OR(o1, l3)</code> — and <strong>force</strong> <code>o2</code> to be colored T by joining it to both <code>F</code> and <code>B</code>.</p>
+  <div class="thm-box">If every literal of a clause were colored F, its <code>o2</code> would be forced to F — impossible. So <strong>any</strong> proper 3-coloring of $G_\varphi$ hands us a satisfying assignment: read off which literals share T's color.</div>
+</section>
+
+<section class="slide">
+  <h2 class="frame-title">Provided helpers — run first</h2>
+  <p>Negation of a literal. (No work to do here.)</p>
+  <div class="python-block"><span class="pane-label">Python · provided</span><code class="pane-code">def neg(lit):
+    """Negation of a literal: 'x' <-> '~x'."""
+    return lit[1:] if lit.startswith("~") else "~" + lit
+
+assert neg("x") == "~x" and neg("~x") == "x"</code></div>
+</section>
+
+<section class="slide">
+  <h2 class="frame-title"><span style="color:var(--orange)">Task 1</span> — Build the SAT graph</h2>
+  <div class="task-box">Finish <code>or_gadget</code> (5 calls to <code>add_edge</code>, then return the output vertex), then chain two OR gadgets per clause and force the final output to color T.</div>
+  <div class="python-block"><span class="pane-label">Python · your turn</span><code class="pane-code">def build_sat_graph(formula):
+    """Graph that is 3-colorable iff `formula` (a list of 3-literal clauses) is satisfiable."""
+    G = {}
+    # base triangle
+    add_edge(G, "T", "F"); add_edge(G, "T", "B"); add_edge(G, "F", "B")
+
+    # one triangle  x -- ~x -- B  per variable
+    variables = {lit.lstrip("~") for clause in formula for lit in clause}
+    for x in sorted(variables):
+        add_edge(G, x, neg(x))
+        add_edge(G, x, "B")
+        add_edge(G, neg(x), "B")
+
+    def or_gadget(u, v, tag):
+        """Create fresh vertices tag+'a', tag+'b', tag+'o' and return tag+'o'.
+        Wiring: triangle a-b-o, plus a-u and b-v."""
+        # TODO — 5 calls to add_edge, then return the output vertex
+        raise NotImplementedError
+
+    for i, (l1, l2, l3) in enumerate(formula):
+        # TODO — chain two OR gadgets (tags f"c{i}_1" and f"c{i}_2"),
+        #        then force the final output to be colored T
+        #        by joining it to "F" and to "B".
+        raise NotImplementedError
+    return G</code></div>
+</section>
+
+<section class="slide">
+  <h2 class="frame-title"><span style="color:var(--orange)">Task 2</span> — The 3-coloring solver</h2>
+  <div class="task-box">Write the backtracking inside <code>three_color</code>: when <code>i == len(nodes)</code> you are done; otherwise try each color <code>c</code> in 0, 1, 2 that no already-colored neighbor of <code>nodes[i]</code> uses, assign it, recurse, and undo on failure.</div>
+  <div class="python-block"><span class="pane-label">Python · your turn</span><code class="pane-code">def three_color(G):
+    """A proper 3-coloring of G as a dict {vertex: 0, 1 or 2}, or None if impossible.
+    Backtracking: order the vertices (decreasing degree works well), then try
+    each color in turn for the current vertex and recurse."""
+    nodes = sorted(G, key=lambda v: -len(G[v]))
+    color = {}
+
+    def backtrack(i):
+        # TODO — if i == len(nodes): done. Otherwise try each color c in 0,1,2
+        #        that no already-colored neighbor of nodes[i] uses.
+        raise NotImplementedError
+
+    return color if backtrack(0) else None</code></div>
+</section>
+
+<section class="slide">
+  <h2 class="frame-title"><span style="color:var(--orange)">Task 3</span> — Decode the assignment</h2>
+  <div class="task-box">Write <code>decode</code>: a variable is True iff its vertex has the same color as vertex <code>'T'</code>. Return a dict <code>{variable: bool}</code>. (<code>evaluate</code> is provided — no work there.)</div>
+  <div class="python-block"><span class="pane-label">Python · your turn</span><code class="pane-code">def decode(coloring, formula):
+    """Read the truth assignment off a 3-coloring of the SAT graph:
+    a variable is True iff its vertex has the same color as vertex 'T'."""
+    # TODO — return a dict {variable: bool}
+    raise NotImplementedError
+
+def evaluate(formula, assignment):
+    """Truth value of the formula under the assignment (provided)."""
+    def value(lit):
+        return not assignment[lit[1:]] if lit.startswith("~") else assignment[lit]
+    return all(any(value(lit) for lit in clause) for clause in formula)</code></div>
+</section>
+
+<section class="slide">
+  <h2 class="frame-title">Putting it together — the test</h2>
+  <p>Run this once all three tasks are done. A satisfiable formula must yield a proper 3-coloring whose decoded assignment satisfies it.</p>
+  <div class="output-block"><span class="pane-label">Test cell</span><code class="pane-code">PHI = [("x", "y", "z"),
+       ("~x", "~y", "z"),
+       ("x", "~y", "~z"),
+       ("~x", "y", "~z")]
+
+G_sat = build_sat_graph(PHI)
+print("SAT graph:", len(G_sat), "vertices,", num_edges(G_sat), "edges")
+
+col = three_color(G_sat)
+assert col is not None, "PHI is satisfiable, so a 3-coloring must exist"
+assert all(col[u] != col[v] for u in G_sat for v in G_sat[u])   # proper
+
+assignment = decode(col, PHI)
+print("assignment read off the coloring:", assignment)
+assert evaluate(PHI, assignment), "the decoded assignment must satisfy PHI"
+print("Challenge ✔ — the coloring solved the formula!")
+draw_graph(G_sat, coloring=col, title="The 3-SAT graph of PHI, properly 3-colored")</code></div>
+</section>
+
+<section class="slide">
+  <h2 class="frame-title">Going further (optional)</h2>
+  <p>The formula below contains all $8$ possible clauses on <code>x, y, z</code>, so <em>every</em> assignment falsifies one of them: it is <strong>unsatisfiable</strong>, and its graph should therefore <strong>not</strong> be 3-colorable. Uncomment and run — the backtracking has to exhaust the search space, so it takes noticeably longer than the satisfiable case.</p>
+  <div class="note-box">That asymmetry — easy to verify a solution, hard to rule one out — is exactly what makes such problems interesting, and is the heart of the P vs NP question.</div>
+  <div class="python-block"><span class="pane-label">Python · optional</span><code class="pane-code">UNSAT = [(a, b, c) for a in ("x", "~x") for b in ("y", "~y") for c in ("z", "~z")]
+# print(three_color(build_sat_graph(UNSAT)))     # expected: None</code></div>
+  <h3 class="sub-title">Sanity-check your reduction (optional)</h3>
+  <p>Write a tiny brute-force solver that tries all $2^n$ assignments, then confirm on many random formulas that your graph is 3-colorable <strong>exactly when</strong> the formula is satisfiable. If the two ever disagree, your gadget wiring has a bug.</p>
+  <div class="python-block"><span class="pane-label">Python · optional</span><code class="pane-code">import itertools, random
+
+def brute_force_sat(formula):
+    variables = sorted({lit.lstrip("~") for clause in formula for lit in clause})
+    return any(evaluate(formula, dict(zip(variables, bits)))
+               for bits in itertools.product([False, True], repeat=len(variables)))
+
+rng = random.Random(0)
+for _ in range(100):
+    vs = [chr(ord("a") + i) for i in range(rng.randint(2, 4))]
+    phi = [tuple(("~" if rng.random() < .5 else "") + rng.choice(vs) for _ in range(3))
+           for _ in range(rng.randint(1, 6))]
+    assert (three_color(build_sat_graph(phi)) is not None) == brute_force_sat(phi)
+print("Reduction matches a brute-force solver on 100 random formulas ✔")</code></div>
+  <h3 class="sub-title">What to hand in</h3>
+  <ul>
+    <li>Your completed <code>build_sat_graph</code>, <code>three_color</code> and <code>decode</code>, with the test cell printing <em>Challenge ✔</em>.</li>
+    <li>Your paper verification of the OR-gadget claims (the two "Check on paper" boxes).</li>
+    <li>A short note: how many vertices and edges does $G_\varphi$ have as a function of the number of variables and clauses?</li>
+  </ul>
+  <p><a class="back-link" href="Lab1_Graphs_student.html">← back to Lab 1</a></p>
+</section>
+
+</body>
+</html>

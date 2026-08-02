@@ -1,0 +1,393 @@
+\chapter{Relations and Functions}
+\signature
+
+\section{Relations}
+
+\subsection{Definition and representations}
+
+\begin{definition}
+A \emph{binary relation} from $A$ to $B$ is a subset
+$R \subseteq A \times B$. We write $a\,R\,b$ for $(a,b) \in R$. When $A = B$,
+$R$ is a relation \emph{on} $A$. An \emph{$n$-ary relation} on
+$A_1, \ldots, A_n$ is a subset of $A_1 \times \cdots \times A_n$.
+\end{definition}
+
+\begin{example}
+On $A = \{1,2,3,4\}$, the divisibility relation
+$R = \{(a,b) \mid a \mid b\}$ is
+$\{(1,1),(1,2),(1,3),(1,4),(2,2),(2,4),(3,3),(4,4)\}$.
+\end{example}
+
+A relation admits three equivalent representations:
+as a \emph{set of ordered pairs}; as a \emph{Boolean matrix} $M_R$ with
+$(M_R)_{ij} = 1$ iff $(a_i, b_j) \in R$; and, when $A = B$, as a
+\emph{directed graph} on vertex set $A$ with an arc $a \to b$ for each
+$(a,b) \in R$. Matrix and graph views turn abstract questions into visual or
+computational ones: e.g.\ reflexivity is a diagonal of $1$s; symmetry is
+$M_R = M_R^{\mathsf T}$.
+
+Being sets, relations combine by $\cup, \cap, \setminus$; moreover the
+\emph{inverse} $R^{-1} = \{(b,a) \mid (a,b) \in R\}$ and the
+\emph{composition}
+$S \circ R = \{(a,c) \mid \exists b,\ (a,b) \in R \wedge (b,c) \in S\}$
+produce new relations from old.
+
+\subsection{Properties of relations on a set}
+
+\begin{definition}\label{def:relprops}
+A relation $R$ on $A$ is
+\begin{itemize}
+\item \emph{reflexive} if $\forall a,\ (a,a) \in R$;
+\item \emph{symmetric} if $(a,b) \in R \Rightarrow (b,a) \in R$;
+\item \emph{antisymmetric} if $(a,b) \in R \wedge (b,a) \in R \Rightarrow
+  a = b$;
+\item \emph{asymmetric} if $(a,b) \in R \Rightarrow (b,a) \notin R$;
+\item \emph{transitive} if $(a,b) \in R \wedge (b,c) \in R \Rightarrow
+  (a,c) \in R$.
+\end{itemize}
+\end{definition}
+
+\begin{notebox}
+Symmetric and antisymmetric are not opposites: the equality relation is both;
+the relation $\{(1,2),(2,1),(1,3)\}$ is neither. Asymmetric $=$ antisymmetric
+$+$ irreflexive.
+\end{notebox}
+
+\begin{example}
+On $\Z$: $\leq$ is reflexive, antisymmetric, transitive; $<$ is asymmetric and
+transitive; ``$a \equiv b \pmod 5$'' is reflexive, symmetric, transitive;
+``$a$ divides $b$'' on $\Z^+$ is reflexive, antisymmetric, transitive.
+\end{example}
+
+\subsection{Equivalence relations}
+
+\begin{definition}
+An \emph{equivalence relation} is a reflexive, symmetric and transitive
+relation on $A$. The \emph{equivalence class} of $a$ is
+$[a] = \{x \in A \mid x\,R\,a\}$; the set of classes is the \emph{quotient}
+$A/R$.
+\end{definition}
+
+\begin{theorem}[Fundamental partition theorem]\label{thm:partition}
+The equivalence classes of an equivalence relation on $A$ form a partition of
+$A$; conversely, every partition of $A$ arises this way from exactly one
+equivalence relation (``belong to the same block'').
+\end{theorem}
+
+\begin{proof}
+Reflexivity puts each $a$ in $[a]$, so classes are nonempty and cover $A$.
+Suppose $[a] \cap [b] \neq \varnothing$, say $c$ in both. For any
+$x \in [a]$: $x\,R\,a$, $a\,R\,c$ (symmetry from $c\,R\,a$), $c\,R\,b$, so
+by transitivity $x\,R\,b$, i.e.\ $[a] \subseteq [b]$; symmetrically
+$[b] \subseteq [a]$. Thus classes are equal or disjoint. The converse
+verification is routine.
+\end{proof}
+
+\begin{example}[Congruence modulo 3]\label{ex:mod3}
+On $\Z$ define $a \sim b \iff 3 \mid (a - b)$. Reflexive: $3 \mid 0$.
+Symmetric: $3 \mid (a-b) \Rightarrow 3 \mid (b-a)$. Transitive:
+$3 \mid (a-b),\ 3 \mid (b-c) \Rightarrow 3 \mid \bigl((a-b)+(b-c)\bigr) =
+a - c$. The classes are
+$[0] = \{\dots,-3,0,3,\dots\}$, $[1] = \{\dots,-2,1,4,\dots\}$,
+$[2] = \{\dots,-1,2,5,\dots\}$ --- the partition of $\Z$ into residues
+mod~$3$, and $\Z/{\sim} = \Z_3$.
+\end{example}
+
+\subsection{Order relations}
+
+\begin{definition}
+A \emph{partial order} is a reflexive, antisymmetric, transitive relation
+(e.g.\ $\subseteq$ on $\powerset(S)$, $\mid$ on $\Z^+$). It is a \emph{total}
+order when any two elements are comparable (e.g.\ $\leq$ on $\R$). A
+\emph{strict order} (e.g.\ $<$, $\subset$) is irreflexive and transitive.
+\end{definition}
+
+\subsection{Closures}
+
+\begin{definition}
+The \emph{reflexive} (resp.\ \emph{symmetric}, \emph{transitive})
+\emph{closure} of $R$ is the smallest relation containing $R$ with the stated
+property: $r(R) = R \cup \{(a,a)\}_{a \in A}$, $s(R) = R \cup R^{-1}$, and
+$t(R) = \bigcup_{k \geq 1} R^k$, where $R^k$ is the $k$-fold composition ---
+$(a,b) \in t(R)$ iff the digraph of $R$ has a path from $a$ to $b$.
+\end{definition}
+
+\section{Functions}
+
+\subsection{Definition}
+
+\begin{definition}
+A \emph{function} $f : A \to B$ is a relation $f \subseteq A \times B$ such
+that every $a \in A$ is related to \emph{exactly one} $b \in B$, written
+$b = f(a)$. $A$ is the \emph{domain}, $B$ the \emph{codomain}, and
+$f(A) = \{f(a) \mid a \in A\}$ the \emph{range} (image).
+\end{definition}
+
+Useful special cases: the \emph{identity} $\mathrm{id}_A(a) = a$;
+\emph{constant} functions; the \emph{restriction} $f|_S : S \to B$ of $f$ to
+$S \subseteq A$; and \emph{extensions}, which enlarge the domain.
+
+\subsection{Injections, surjections, bijections}
+
+\begin{definition}
+$f : A \to B$ is
+\begin{itemize}
+\item \emph{injective} (one-to-one) if $f(a_1) = f(a_2) \Rightarrow
+  a_1 = a_2$ --- distinct inputs give distinct outputs;
+\item \emph{surjective} (onto) if $\forall b \in B\ \exists a \in A,\
+  f(a) = b$ --- the range is all of $B$;
+\item \emph{bijective} if it is both.
+\end{itemize}
+\end{definition}
+
+\begin{example}
+$f : \Z \to \Z$, $f(x) = 2x$ is injective, not surjective.
+$g : \R \to [0,\infty)$, $g(x) = x^2$ is surjective, not injective.
+$h : \R \to \R$, $h(x) = x^3$ is bijective.
+\end{example}
+
+\begin{theorem}[Finite-case shortcut]\label{thm:finite}
+Let $|A| = |B|$ be finite and $f : A \to B$. Then
+$f$ injective $\iff$ $f$ surjective $\iff$ $f$ bijective.
+\end{theorem}
+
+This equivalence --- a form of the pigeonhole principle (Chapter~10) ---
+fails for infinite sets: $x \mapsto 2x$ on $\Z$ is injective but not
+surjective.
+
+\subsection{Composition}
+
+\begin{definition}
+The \emph{composition} of $f : A \to B$ and $g : B \to C$ is
+$g \circ f : A \to C$, $(g \circ f)(a) = g(f(a))$.
+\end{definition}
+
+\begin{theorem}\label{thm:comp}
+Composition is associative. If $f$ and $g$ are injective (resp.\ surjective,
+bijective), so is $g \circ f$. Conversely, if $g \circ f$ is injective then
+$f$ is injective; if $g \circ f$ is surjective then $g$ is surjective.
+\end{theorem}
+
+\subsection{Inverse functions}
+
+\begin{theorem}[Existence of the inverse]\label{thm:inverse}
+$f : A \to B$ has an \emph{inverse function} $f^{-1} : B \to A$ (with
+$f^{-1}(f(a)) = a$ and $f(f^{-1}(b)) = b$) if and only if $f$ is a bijection.
+Moreover $(f^{-1})^{-1} = f$ and
+$(g \circ f)^{-1} = f^{-1} \circ g^{-1}$.
+\end{theorem}
+
+\begin{proof}[Proof sketch]
+If $f$ is bijective, each $b \in B$ has exactly one preimage, and sending $b$
+to it defines $f^{-1}$. If $f^{-1}$ exists, $f$ must be injective (two equal
+images would need two values of $f^{-1}$) and surjective (every $b$ equals
+$f(f^{-1}(b))$).
+\end{proof}
+
+\subsection{Images and preimages of sets}
+
+\begin{definition}
+For $S \subseteq A$ and $T \subseteq B$:
+$f(S) = \{f(x) \mid x \in S\}$ and
+$f^{-1}(T) = \{x \in A \mid f(x) \in T\}$ (defined even when $f$ has no
+inverse function).
+\end{definition}
+
+Preimages behave perfectly:
+$f^{-1}(T_1 \cup T_2) = f^{-1}(T_1) \cup f^{-1}(T_2)$ and likewise for
+$\cap$ and complements. Images preserve unions, but only
+$f(S_1 \cap S_2) \subseteq f(S_1) \cap f(S_2)$ in general, with equality for
+injective $f$.
+
+\section{Cardinality via bijections}
+
+\begin{definition}
+Sets $A$ and $B$ are \emph{equinumerous}, $|A| = |B|$, when a bijection
+$A \to B$ exists. $A$ is countable when $|A| \le |\N|$.
+\end{definition}
+
+\begin{example}[A bijection $(0,1) \to \R$]\label{ex:tan}
+$x \mapsto \tan\bigl(\pi x - \tfrac{\pi}{2}\bigr)$ maps $(0,1)$ bijectively
+onto $\R$ (strictly increasing, range $\R$). Hence a bounded interval has
+\emph{exactly as many} points as the whole real line.
+\end{example}
+
+\begin{theorem}[Cantor]\label{thm:cantor}
+For every set $A$, $|A| < |\powerset(A)|$: the diagonal set
+$D = \{x \in A \mid x \notin f(x)\}$ witnesses that no
+$f : A \to \powerset(A)$ is surjective.
+\end{theorem}
+
+Consequently there is an infinite hierarchy of infinities:
+$|\N| < |\powerset(\N)| = |\R| < |\powerset(\R)| < \cdots$
+
+\section{Summary}
+
+Relations are subsets of products, viewable as pair-sets, Boolean matrices or
+digraphs; the key property bundles are \emph{equivalence relations}
+(= partitions, Theorem~\ref{thm:partition}) and \emph{orders}. Functions are
+total, single-valued relations; injectivity, surjectivity and bijectivity
+govern composition (Theorem~\ref{thm:comp}) and invertibility
+(Theorem~\ref{thm:inverse}); bijections define cardinality, and Cantor's
+theorem shows the power set always strictly exceeds the set.
+
+\section*{Exercises}
+\addcontentsline{toc}{section}{Exercises}
+
+\begin{exercise}{\easy}
+Let $A = \{1,2,3\}$ and $R = \{(1,1),(1,2),(2,1),(2,2),(3,3)\}$. Decide
+whether $R$ is reflexive, symmetric, antisymmetric, transitive.
+\end{exercise}
+
+\begin{exercise}{\easy}
+Write the Boolean matrix of $R = \{(a,b) \in A^2 \mid a < b\}$ for
+$A = \{1,2,3,4\}$, and describe its digraph.
+\end{exercise}
+
+\begin{exercise}{\easy}
+Which of these functions $\Z \to \Z$ are injective? surjective?
+(a) $f(n) = n + 3$;\quad (b) $g(n) = n^2$;\quad (c) $h(n) = \lceil n/2
+\rceil$.
+\end{exercise}
+
+\begin{exercise}{\medium}
+Prove that congruence modulo $m$ ($m \geq 1$) is an equivalence relation on
+$\Z$, and determine the number of equivalence classes.
+\end{exercise}
+
+\begin{exercise}{\medium}
+On $\R^2$, define $(x_1,y_1) \sim (x_2,y_2) \iff x_1^2 + y_1^2 = x_2^2 +
+y_2^2$. Show $\sim$ is an equivalence relation and describe its classes
+geometrically.
+\end{exercise}
+
+\begin{exercise}{\medium}
+Show that divisibility $\mid$ is a partial order on $\Z^{+}$ but not a total
+order. Exhibit two incomparable elements.
+\end{exercise}
+
+\begin{exercise}{\medium}
+Let $R = \{(1,2),(2,3),(3,1)\}$ on $A=\{1,2,3\}$. Compute the reflexive,
+symmetric and transitive closures of $R$.
+\end{exercise}
+
+\begin{exercise}{\medium}
+Let $f(x) = 3x - 4$ on $\R$. Show $f$ is a bijection and find $f^{-1}$.
+Verify $(f^{-1} \circ f)(x) = x$.
+\end{exercise}
+
+\begin{exercise}{\medium}
+Give an example of $f, g : \N \to \N$ such that $g \circ f$ is injective but
+$g$ is not, and explain which halves of Theorem~\ref{thm:comp} this
+illustrates.
+\end{exercise}
+
+\begin{exercise}{\hard}
+Let $f : A \to B$ and $S_1, S_2 \subseteq A$. Prove
+$f(S_1 \cap S_2) \subseteq f(S_1) \cap f(S_2)$, show equality can fail, and
+prove equality holds for all $S_1, S_2$ iff $f$ is injective.
+\end{exercise}
+
+\begin{exercise}{\hard}
+Construct an explicit bijection $\N \times \N \to \N$ and deduce that
+$\Q^{+}$ is countable.
+\end{exercise}
+
+\begin{exercise}{\hard}
+Using Theorem~\ref{thm:finite}, prove: if $|A| = |B| = n$ and
+$f : A \to B$ is injective, then $f$ is bijective. Then give a counterexample
+for $A = B = \N$.
+\end{exercise}
+
+\section*{Solutions to the Exercises}
+\addcontentsline{toc}{section}{Solutions to the Exercises}
+
+\begin{solution}{8.1}
+Reflexive: yes --- $(1,1),(2,2),(3,3) \in R$. Symmetric: yes --- the only
+non-diagonal pairs $(1,2),(2,1)$ come in mirror pairs. Antisymmetric: no ---
+$(1,2)$ and $(2,1)$ with $1 \neq 2$. Transitive: yes --- all required
+compositions land in $R$ (e.g.\ $(1,2),(2,1) \Rightarrow (1,1)\in R$).
+\end{solution}
+
+\begin{solution}{8.2}
+$M_R = \begin{pmatrix}0&1&1&1\\0&0&1&1\\0&0&0&1\\0&0&0&0\end{pmatrix}$ ---
+strictly upper triangular. The digraph has arcs from each smaller number to
+each larger one and no loops: a transitive tournament-like DAG.
+\end{solution}
+
+\begin{solution}{8.3}
+(a) Bijective: injective since $n+3 = m+3 \Rightarrow n = m$; surjective
+since $n = k - 3$ maps to any $k$. (b) Neither: $g(-1) = g(1)$ kills
+injectivity; negative integers are not squares. (c) Surjective: every $k$
+is $h(2k)$; not injective: $h(1) = h(2) = 1$.
+\end{solution}
+
+\begin{solution}{8.4}
+Reflexive: $m \mid 0$. Symmetric: $m \mid (a - b) \Rightarrow m \mid (b-a)$.
+Transitive: $m \mid (a-b)$, $m \mid (b-c)$ imply $m \mid (a-c)$ (sum). The
+classes are $[0], [1], \ldots, [m-1]$, one per remainder: exactly $m$
+classes.
+\end{solution}
+
+\begin{solution}{8.5}
+The relation compares values of $\varphi(x,y) = x^2 + y^2$; ``same value
+under a function'' is always reflexive, symmetric, transitive. The class of
+$(a,b)$ is the circle centred at the origin through $(a,b)$ (the origin
+alone for radius $0$): the plane is partitioned into concentric circles.
+\end{solution}
+
+\begin{solution}{8.6}
+Reflexive: $a \mid a$. Antisymmetric: $a \mid b$ and $b \mid a$ with
+$a,b > 0$ force $a = b$. Transitive: $a \mid b \mid c \Rightarrow a \mid c$.
+Not total: $2 \nmid 3$ and $3 \nmid 2$, so $2$ and $3$ are incomparable.
+\end{solution}
+
+\begin{solution}{8.7}
+$r(R) = R \cup \{(1,1),(2,2),(3,3)\}$.
+$s(R) = R \cup \{(2,1),(3,2),(1,3)\}$.
+For $t(R)$: paths give $(1,3)$ via $2$, $(2,1)$ via $3$, $(3,2)$ via $1$,
+then $(1,1),(2,2),(3,3)$ via three-step cycles: $t(R) = A \times A$.
+\end{solution}
+
+\begin{solution}{8.8}
+Injective: $3x - 4 = 3y - 4 \Rightarrow x = y$. Surjective: given $y$,
+$x = (y+4)/3$ satisfies $f(x) = y$. Hence bijective with
+$f^{-1}(y) = (y+4)/3$, and
+$f^{-1}(f(x)) = ((3x-4)+4)/3 = x$.
+\end{solution}
+
+\begin{solution}{8.9}
+Let $f(n) = 2n$ and let $g$ map $2k \mapsto k$ and $2k+1 \mapsto 0$. Then
+$(g \circ f)(n) = n$ is injective (indeed bijective), yet $g(1) = g(3) = 0$
+is not injective. This matches Theorem~\ref{thm:comp}: injectivity of
+$g \circ f$ forces only \emph{$f$} to be injective, and surjectivity of
+$g \circ f$ forces only \emph{$g$} to be surjective ($g$ here is
+surjective).
+\end{solution}
+
+\begin{solution}{8.10}
+If $y \in f(S_1 \cap S_2)$, then $y = f(x)$ with $x \in S_1$ and
+$x \in S_2$, so $y \in f(S_1)$ and $y \in f(S_2)$. Failure:
+$f(x) = x^2$, $S_1 = \{-1\}$, $S_2 = \{1\}$: $f(S_1 \cap S_2) =
+f(\varnothing) = \varnothing$ but $f(S_1) \cap f(S_2) = \{1\}$. If $f$ is
+injective and $y \in f(S_1) \cap f(S_2)$, then $y = f(x_1) = f(x_2)$ with
+$x_i \in S_i$; injectivity gives $x_1 = x_2 \in S_1 \cap S_2$, so
+$y \in f(S_1 \cap S_2)$. Conversely, if $f$ is not injective, the
+counterexample pattern above (two points with equal image) breaks equality.
+\end{solution}
+
+\begin{solution}{8.11}
+Cantor pairing: $\pi(m,n) = \frac{(m+n)(m+n+1)}{2} + n$ enumerates the
+diagonals $m + n = 0, 1, 2, \ldots$ in order; each pair receives a distinct
+index and every index is reached: a bijection $\N^2 \to \N$. Each positive
+rational is $p/q$ with $(p,q) \in \N^2$ (coprime, $q \ge 1$), so $\Q^{+}$
+injects into $\N^2 \sim \N$; being infinite, it is countable.
+\end{solution}
+
+\begin{solution}{8.12}
+If $f$ were not surjective, its range would have at most $n - 1$ elements,
+and $f : A \to f(A)$ with $|A| = n > |f(A)|$ would force two elements to
+share an image (pigeonhole), contradicting injectivity. Hence $f$ is
+surjective, so bijective. For $A = B = \N$, $f(n) = n + 1$ is injective but
+misses $0$: the shortcut is strictly a finite phenomenon.
+\end{solution}

@@ -1,0 +1,382 @@
+\chapter{Sequences and Series}
+\signature
+
+\section{Sequences}
+
+\begin{definition}
+A \emph{sequence} in a set $X$ is a function $a : \N \to X$ (or
+$\Z^{+} \to X$); we write $a_n$ for $a(n)$ and $(a_n)_{n \geq 0}$ for the
+sequence. A \emph{subsequence} $(a_{n_k})_{k \ge 0}$ is obtained by selecting
+indices $n_0 < n_1 < n_2 < \cdots$.
+\end{definition}
+
+\begin{definition}
+A real sequence $(a_n)$ is \emph{bounded} if $\exists M,\ |a_n| \leq M$ for
+all $n$; \emph{increasing} if $a_{n+1} \geq a_n$ for all $n$ (strictly, with
+$>$); \emph{decreasing} dually; \emph{monotone} if either.
+\end{definition}
+
+\section{Limits}
+
+\begin{definition}[Limit]\label{def:limit}
+$(a_n)$ \emph{converges} to $L \in \R$, written $\lim_{n\to\infty} a_n = L$,
+when
+\[
+\forall \varepsilon > 0\ \exists N \in \N\ \forall n \geq N,\quad
+|a_n - L| < \varepsilon .
+\]
+A sequence with no limit \emph{diverges}.
+\end{definition}
+
+\begin{example}
+$a_n = \frac{1}{n} \to 0$: given $\varepsilon > 0$ take
+$N > 1/\varepsilon$; then $n \geq N \Rightarrow |1/n| \le 1/N <
+\varepsilon$.
+\end{example}
+
+\begin{theorem}[Uniqueness]
+A sequence has at most one limit.
+\end{theorem}
+
+\begin{proof}
+If $a_n \to L$ and $a_n \to L'$ with $L \neq L'$, take
+$\varepsilon = |L - L'|/2$. Beyond the larger of the two thresholds,
+$|L - L'| \leq |L - a_n| + |a_n - L'| < 2\varepsilon = |L - L'|$ ---
+contradiction.
+\end{proof}
+
+\begin{theorem}[Algebra of limits]
+If $a_n \to A$ and $b_n \to B$ then
+$a_n + b_n \to A + B$, $a_n b_n \to AB$, and
+$a_n / b_n \to A/B$ provided $B \neq 0$.
+\end{theorem}
+
+\begin{theorem}[Monotone convergence]\label{thm:mct}
+Every increasing sequence bounded above converges (to its supremum);
+every decreasing sequence bounded below converges.
+\end{theorem}
+
+\begin{theorem}[Squeeze]
+If $a_n \leq b_n \leq c_n$ eventually and $a_n \to L$, $c_n \to L$, then
+$b_n \to L$.
+\end{theorem}
+
+\begin{definition}
+$(a_n)$ is \emph{Cauchy} when
+$\forall \varepsilon > 0\ \exists N\ \forall m, n \geq N,\
+|a_m - a_n| < \varepsilon$.
+\end{definition}
+
+In $\R$, a sequence converges iff it is Cauchy (completeness), and every
+bounded sequence has a convergent subsequence (Bolzano--Weierstrass).
+
+\subsection{Standard limits}
+
+\[
+\frac{1}{n^p} \to 0\ (p>0); \qquad
+r^n \to 0\ (|r|<1); \qquad
+n^{1/n} \to 1; \qquad
+\Bigl(1 + \frac{x}{n}\Bigr)^{n} \to e^{x}; \qquad
+\frac{n!}{n^n} \to 0 .
+\]
+
+\section{Progressions and finite sums}
+
+\begin{definition}[AP]
+An \emph{arithmetic progression} has constant difference:
+$a_n = a_0 + nd$. The sum of the first $n$ terms is
+\[
+S_n = \sum_{k=0}^{n-1} (a_0 + kd) = n a_0 + d\,\frac{n(n-1)}{2}
+= \frac{n}{2}\,(\text{first} + \text{last}).
+\]
+\end{definition}
+
+\begin{definition}[GP]
+A \emph{geometric progression} has constant ratio: $a_n = a_0 r^n$. For
+$r \neq 1$,
+\[
+\sum_{k=0}^{n-1} a_0 r^{k} = a_0\,\frac{1 - r^{n}}{1 - r},
+\qquad\text{and for } |r| < 1,\quad
+\sum_{k=0}^{\infty} a_0 r^{k} = \frac{a_0}{1 - r}.
+\]
+\end{definition}
+
+\begin{theorem}[Standard closed forms]\label{thm:sums}
+\[
+\sum_{k=1}^{n} k = \frac{n(n+1)}{2},\qquad
+\sum_{k=1}^{n} k^2 = \frac{n(n+1)(2n+1)}{6},\qquad
+\sum_{k=1}^{n} k^3 = \Bigl(\frac{n(n+1)}{2}\Bigr)^{2}.
+\]
+\end{theorem}
+
+\begin{proof}[Proof of the second formula, by induction]
+Base $n=1$: $1 = \frac{1\cdot 2\cdot 3}{6}$. Step: assuming the formula for
+$n$,
+\[
+\sum_{k=1}^{n+1} k^2
+= \frac{n(n+1)(2n+1)}{6} + (n+1)^2
+= \frac{(n+1)\bigl(2n^2 + n + 6n + 6\bigr)}{6}
+= \frac{(n+1)(n+2)(2n+3)}{6},
+\]
+which is the formula at $n+1$. (Induction is treated fully in Chapter~13.)
+\end{proof}
+
+\section{Series}
+
+\begin{definition}
+Given $(a_n)_{n\ge 1}$, the \emph{series} $\sum_{n\ge 1} a_n$ is the sequence
+of \emph{partial sums} $S_N = \sum_{n=1}^{N} a_n$; the series
+\emph{converges} to $S$ when $S_N \to S$.
+\end{definition}
+
+\begin{theorem}[Necessary condition]\label{thm:nec}
+If $\sum a_n$ converges then $a_n \to 0$. The converse fails: the
+\emph{harmonic series} $\sum 1/n$ diverges although $1/n \to 0$.
+\end{theorem}
+
+\begin{proof}[Divergence of the harmonic series]
+Group terms:
+$\tfrac12 \ge \tfrac12$;\ \
+$\tfrac13 + \tfrac14 > \tfrac24 = \tfrac12$;\ \
+$\tfrac15 + \cdots + \tfrac18 > \tfrac48 = \tfrac12$; each block of
+$2^k$ terms exceeds $\tfrac12$, so $S_{2^m} > 1 + \tfrac{m}{2} \to \infty$.
+\end{proof}
+
+\begin{example}[Telescoping]
+$\displaystyle\sum_{n=1}^{\infty} \frac{1}{n(n+1)}
+= \sum_{n=1}^{\infty}\Bigl(\frac{1}{n} - \frac{1}{n+1}\Bigr)
+= \lim_{N\to\infty}\Bigl(1 - \frac{1}{N+1}\Bigr) = 1$.
+\end{example}
+
+\begin{theorem}[$p$-series]
+$\sum_{n\ge1} n^{-p}$ converges iff $p > 1$.
+\end{theorem}
+
+\subsection{Convergence tests}
+
+\begin{theorem}[Tests for positive series]\label{thm:tests}
+Let $a_n, b_n \geq 0$.
+\begin{itemize}
+\item \textbf{Comparison:} if $a_n \leq b_n$ eventually and $\sum b_n$
+  converges, then $\sum a_n$ converges; contrapositively divergence passes
+  upward.
+\item \textbf{Ratio (d'Alembert):} if $a_{n+1}/a_n \to \ell$, the series
+  converges for $\ell < 1$ and diverges for $\ell > 1$ ($\ell = 1$:
+  inconclusive).
+\item \textbf{Root (Cauchy):} same conclusion with $\sqrt[n]{a_n} \to \ell$.
+\item \textbf{Integral:} for $f$ positive decreasing, $\sum f(n)$ and
+  $\int_1^{\infty} f(x)\,dx$ converge or diverge together.
+\end{itemize}
+\end{theorem}
+
+\begin{theorem}[Leibniz alternating test]
+If $(b_n)$ decreases to $0$, then $\sum (-1)^{n+1} b_n$ converges, and the
+error after $N$ terms is at most $b_{N+1}$.
+\end{theorem}
+
+\begin{definition}
+$\sum a_n$ is \emph{absolutely convergent} when $\sum |a_n|$ converges;
+absolute convergence implies convergence. A convergent but not absolutely
+convergent series (e.g.\ $\sum (-1)^{n+1}/n$) is \emph{conditionally
+convergent} --- and by Riemann's theorem its terms can be rearranged to reach
+any prescribed sum.
+\end{definition}
+
+\section{Recurrence relations}
+
+\begin{definition}
+A sequence is defined by a \emph{recurrence} when each term is given as a
+function of earlier terms, together with initial conditions --- e.g.\ the
+Fibonacci sequence $F_0 = 0$, $F_1 = 1$, $F_{n} = F_{n-1} + F_{n-2}$.
+\end{definition}
+
+\begin{theorem}[Linear homogeneous recurrences, order 2]\label{thm:rec}
+For $a_n = c_1 a_{n-1} + c_2 a_{n-2}$, form the characteristic equation
+$x^2 = c_1 x + c_2$.
+If it has distinct roots $r_1 \neq r_2$, the general solution is
+$a_n = \alpha r_1^{n} + \beta r_2^{n}$;
+if a double root $r$, then $a_n = (\alpha + \beta n) r^{n}$. The constants
+are fixed by the initial conditions.
+\end{theorem}
+
+\begin{example}[Binet's formula]\label{ex:binet}
+For Fibonacci, $x^2 = x + 1$ gives roots
+$\varphi = \frac{1+\sqrt5}{2}$, $\psi = \frac{1-\sqrt5}{2}$. Solving
+$\alpha + \beta = 0$, $\alpha\varphi + \beta\psi = 1$ yields
+\[
+F_n = \frac{\varphi^{n} - \psi^{n}}{\sqrt 5}.
+\]
+Since $|\psi| < 1$, $F_n$ is the nearest integer to
+$\varphi^{n}/\sqrt5$, and $F_{n+1}/F_n \to \varphi$, the golden ratio.
+\end{example}
+
+\section{Products and famous sequences}
+
+The product notation mirrors the sum:
+$\prod_{k=1}^{n} a_k = a_1 a_2 \cdots a_n$; e.g.\
+$n! = \prod_{k=1}^{n} k$, and Wallis' product
+$\prod_{k\ge1} \frac{4k^2}{4k^2-1} = \frac{\pi}{2}$.
+Beyond Fibonacci, classical sequences include the Catalan numbers
+$C_n = \frac{1}{n+1}\binom{2n}{n}$ (Chapter~11), the harmonic numbers
+$H_n = \sum_{k\le n} 1/k \approx \ln n + \gamma$, the primes, and the
+triangular numbers $n(n+1)/2$.
+
+\section{Summary}
+
+Sequences are functions on $\N$; convergence is the $\varepsilon$--$N$ game,
+tamed by uniqueness, limit algebra, monotone convergence, squeeze and Cauchy
+criteria. AP/GP sums and the power sums of Theorem~\ref{thm:sums} are the
+basic closed forms. Series converge through comparison, ratio, root,
+integral and Leibniz tests; absolute convergence is the robust notion. Linear
+recurrences are solved by characteristic roots --- Binet's formula being the
+showcase.
+
+\section*{Exercises}
+\addcontentsline{toc}{section}{Exercises}
+
+\begin{exercise}{\easy}
+Write the first five terms of: (a) $a_n = \frac{(-1)^n}{n+1}$ ($n \geq 0$);
+(b) the sequence defined by $b_0 = 2$, $b_{n} = 3b_{n-1} - 1$.
+\end{exercise}
+
+\begin{exercise}{\easy}
+An amphitheatre has $20$ rows; the first has $18$ seats and each row has $3$
+more than the previous. How many seats in total?
+\end{exercise}
+
+\begin{exercise}{\easy}
+Compute $\sum_{k=0}^{9} 5 \cdot 2^{k}$ and
+$\sum_{k=0}^{\infty} 5 \cdot (1/3)^{k}$.
+\end{exercise}
+
+\begin{exercise}{\medium}
+Prove from Definition~\ref{def:limit} that
+$\lim_{n\to\infty} \frac{2n+1}{n+3} = 2$.
+\end{exercise}
+
+\begin{exercise}{\medium}
+Let $a_1 = \sqrt2$ and $a_{n+1} = \sqrt{2 + a_n}$. Show $(a_n)$ is
+increasing and bounded above by $2$, and find its limit.
+\end{exercise}
+
+\begin{exercise}{\medium}
+Using Theorem~\ref{thm:sums}, find a closed form for
+$\sum_{k=1}^{n} (2k-1)$ (the sum of the first $n$ odd numbers) and for
+$\sum_{k=1}^{n} k(k+1)$.
+\end{exercise}
+
+\begin{exercise}{\medium}
+Determine the convergence of:
+(a) $\sum \frac{n}{2^{n}}$;\quad
+(b) $\sum \frac{1}{\sqrt n}$;\quad
+(c) $\sum \frac{(-1)^{n}}{\ln(n+1)}$.
+\end{exercise}
+
+\begin{exercise}{\medium}
+Evaluate the telescoping series
+$\sum_{n=1}^{\infty} \frac{1}{(2n-1)(2n+1)}$.
+\end{exercise}
+
+\begin{exercise}{\medium}
+Solve the recurrence $a_n = 5a_{n-1} - 6a_{n-2}$, $a_0 = 1$, $a_1 = 0$.
+\end{exercise}
+
+\begin{exercise}{\hard}
+Solve $a_n = 4a_{n-1} - 4a_{n-2}$, $a_0 = 1$, $a_1 = 4$ (double root case).
+\end{exercise}
+
+\begin{exercise}{\hard}
+Prove by induction the bound $F_n \le \varphi^{\,n-1}$ for $n \ge 1$, where
+$\varphi = \frac{1+\sqrt5}{2}$ (note $\varphi^2 = \varphi + 1$).
+\end{exercise}
+
+\begin{exercise}{\hard}
+Show that $\sum_{n=2}^{\infty} \frac{1}{n \ln n}$ diverges although
+$\frac{1}{n\ln n} \to 0$, using the integral test.
+\end{exercise}
+
+\section*{Solutions to the Exercises}
+\addcontentsline{toc}{section}{Solutions to the Exercises}
+
+\begin{solution}{9.1}
+(a) $1, -\tfrac12, \tfrac13, -\tfrac14, \tfrac15$.
+(b) $2, 5, 14, 41, 122$.
+\end{solution}
+
+\begin{solution}{9.2}
+AP with $a_1 = 18$, $d = 3$, $n = 20$: last row has $18 + 19\cdot3 = 75$
+seats; total $\frac{20}{2}(18 + 75) = 10 \cdot 93 = 930$.
+\end{solution}
+
+\begin{solution}{9.3}
+$5\,\frac{2^{10}-1}{2-1} = 5 \cdot 1023 = 5115$;\quad
+$\frac{5}{1 - 1/3} = \frac{15}{2}$.
+\end{solution}
+
+\begin{solution}{9.4}
+$\Bigl|\frac{2n+1}{n+3} - 2\Bigr| = \frac{5}{n+3}$. Given
+$\varepsilon > 0$, choose $N > \frac{5}{\varepsilon} - 3$; then
+$n \geq N \Rightarrow \frac{5}{n+3} \le \frac{5}{N+3} < \varepsilon$.
+\end{solution}
+
+\begin{solution}{9.5}
+Bounded: by induction, $a_n < 2 \Rightarrow a_{n+1} = \sqrt{2 + a_n} <
+\sqrt4 = 2$, and $a_1 = \sqrt2 < 2$. Increasing:
+$a_{n+1}^2 - a_n^2 = 2 + a_n - a_n^2 = (2 - a_n)(1 + a_n) > 0$. By monotone
+convergence the limit $L$ exists and satisfies $L = \sqrt{2 + L}$, i.e.\
+$L^2 - L - 2 = 0$, so $L = 2$ (the root $-1$ being impossible).
+\end{solution}
+
+\begin{solution}{9.6}
+$\sum_{k=1}^{n}(2k-1) = 2\,\frac{n(n+1)}{2} - n = n^2$.
+$\sum k(k+1) = \sum k^2 + \sum k =
+\frac{n(n+1)(2n+1)}{6} + \frac{n(n+1)}{2} = \frac{n(n+1)(n+2)}{3}$.
+\end{solution}
+
+\begin{solution}{9.7}
+(a) Ratio test: $\frac{(n+1)/2^{n+1}}{n/2^{n}} = \frac{n+1}{2n} \to
+\tfrac12 < 1$: converges. (b) $p$-series with $p = \tfrac12 \le 1$:
+diverges. (c) $\frac{1}{\ln(n+1)}$ decreases to $0$: converges by Leibniz
+(only conditionally --- compare with the divergent $\sum 1/(n \ln n)$-type
+behaviour of the absolute series, which dominates $1/n$ eventually...
+in fact $\frac{1}{\ln(n+1)} > \frac{1}{n}$ for $n \geq 1$, so absolute
+convergence fails by comparison with the harmonic series).
+\end{solution}
+
+\begin{solution}{9.8}
+$\frac{1}{(2n-1)(2n+1)} = \frac12\Bigl(\frac{1}{2n-1} -
+\frac{1}{2n+1}\Bigr)$, so the partial sum is
+$\frac12\bigl(1 - \frac{1}{2N+1}\bigr) \to \frac12$.
+\end{solution}
+
+\begin{solution}{9.9}
+Characteristic equation $x^2 = 5x - 6$: roots $2, 3$. General solution
+$a_n = \alpha 2^n + \beta 3^n$; conditions give $\alpha + \beta = 1$,
+$2\alpha + 3\beta = 0$, so $\beta = -2$, $\alpha = 3$:
+$a_n = 3 \cdot 2^{n} - 2 \cdot 3^{n}$.
+\end{solution}
+
+\begin{solution}{9.10}
+$x^2 = 4x - 4$ has the double root $r = 2$, so
+$a_n = (\alpha + \beta n)2^{n}$. From $a_0 = 1$: $\alpha = 1$; from
+$a_1 = 4$: $(1 + \beta) \cdot 2 = 4$, $\beta = 1$. Hence
+$a_n = (n + 1)\,2^{n}$.
+\end{solution}
+
+\begin{solution}{9.11}
+Strong induction. Base: $F_1 = 1 = \varphi^{0}$ and
+$F_2 = 1 \le \varphi^{1}$. Step ($n \ge 3$): assuming the bound below $n$,
+\[
+F_n = F_{n-1} + F_{n-2}
+\le \varphi^{\,n-2} + \varphi^{\,n-3}
+= \varphi^{\,n-3}(\varphi + 1)
+= \varphi^{\,n-3}\varphi^{2} = \varphi^{\,n-1}.
+\]
+\end{solution}
+
+\begin{solution}{9.12}
+$f(x) = \frac{1}{x \ln x}$ is positive and decreasing on $[2,\infty)$, and
+$\int_2^{T} \frac{dx}{x\ln x} = \ln \ln T - \ln\ln 2 \to \infty$. By the
+integral test the series diverges --- terms tending to $0$ is necessary but
+never sufficient (Theorem~\ref{thm:nec}).
+\end{solution}

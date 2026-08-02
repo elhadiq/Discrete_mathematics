@@ -1,0 +1,577 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Binomial Identities — 8 exercises (4 CodeRunner labs + 4 STACK math) -->
+<!-- Notes By Pr. El Hadiq Zouhair -->
+<quiz>
+
+  <!-- ════════ PART A — CodeRunner Python labs (4 exercises) ════════ -->
+<question type="coderunner"><name><text>LAB 1 — Ligne du triangle de Pascal</text></name><questiontext format="html"><text>&lt;div style="background:#f8fafc;border:1px solid #e2e8f0;border-left:5px solid #c9a227;border-radius:8px;padding:20px 24px;margin-bottom:18px;"&gt;
+  &lt;p style="color:#92400e;font-family:Georgia,serif;font-size:13px;font-weight:bold;letter-spacing:2px;text-transform:uppercase;margin:0 0 10px 0;"&gt;LAB 1 &amp;mdash; TRIANGLE DE PASCAL&lt;/p&gt;
+  &lt;p style="color:#1e293b;font-family:Georgia,serif;font-size:15px;line-height:1.8;margin:0;"&gt;Chaque entr&amp;eacute;e int&amp;eacute;rieure du triangle de Pascal est la somme des deux entr&amp;eacute;es de la ligne pr&amp;eacute;c&amp;eacute;dente.&lt;/p&gt;
+&lt;/div&gt;
+&lt;p style="font-family:Georgia,serif;font-size:15px;color:#1e293b;line-height:1.8;"&gt;
+  &amp;Eacute;crire &lt;strong&gt;&lt;code&gt;pascal_ligne(n)&lt;/code&gt;&lt;/strong&gt; qui renvoie la ligne n du triangle de Pascal (liste des coefficients binomiaux), &lt;strong&gt;sans utiliser &lt;code&gt;math.comb&lt;/code&gt;&lt;/strong&gt;. La ligne 0 est &lt;code&gt;[1]&lt;/code&gt;.
+&lt;/p&gt;
+&lt;div style="background:#fdf4ff;border:1px solid #e9d5ff;border-left:5px solid #9333ea;border-radius:8px;padding:14px 20px;margin:14px 0;"&gt;
+  &lt;pre style="color:#3b0764;font-family:'Courier New',monospace;font-size:14px;margin:0;background:none;border:none;"&gt;pascal_ligne(0) &amp;rarr; [1]
+pascal_ligne(4) &amp;rarr; [1, 4, 6, 4, 1]
+pascal_ligne(7) &amp;rarr; [1, 7, 21, 35, 35, 21, 7, 1]&lt;/pre&gt;
+&lt;/div&gt;</text></questiontext><generalfeedback format="html"><text /></generalfeedback><defaultgrade>2.0000000</defaultgrade><penalty>0.0000000</penalty><hidden>0</hidden><idnumber /><coderunnertype>python3</coderunnertype><prototypetype>0</prototypetype><allornothing>0</allornothing><penaltyregime>0</penaltyregime><precheck>0</precheck><hidecheck>0</hidecheck><showsource>0</showsource><answerboxlines>18</answerboxlines><answerboxcolumns>100</answerboxcolumns><answerpreload>def pascal_ligne(n):
+    ligne = [1]
+    for i in range(1, n + 1):
+        nouvelle = [1]
+        for j in range(1, i):
+            nouvelle.append(...)   # à compléter
+        nouvelle.append(1)
+        ligne = nouvelle
+    return ligne
+</answerpreload><globalextra /><useace /><resultcolumns /><template /><iscombinatortemplate /><allowmultiplestdins /><answer>def pascal_ligne(n):
+    """Renvoie la ligne n du triangle de Pascal via Pascal."""
+    ligne = [1]
+    for i in range(1, n + 1):
+        nouvelle = [1]
+        for j in range(1, i):
+            nouvelle.append(ligne[j - 1] + ligne[j])
+        nouvelle.append(1)
+        ligne = nouvelle
+    return ligne
+</answer><validateonsave>1</validateonsave><testsplitterre /><language /><acelang /><sandbox /><grader /><cputimelimitsecs /><memlimitmb /><sandboxparams /><templateparams /><hoisttemplateparams>1</hoisttemplateparams><extractcodefromjson>1</extractcodefromjson><templateparamslang>None</templateparamslang><templateparamsevalpertry>0</templateparamsevalpertry><templateparamsevald>{}</templateparamsevald><twigall>0</twigall><uiplugin /><uiparameters /><attachments>0</attachments><attachmentsrequired>0</attachmentsrequired><maxfilesize>10240</maxfilesize><filenamesregex /><filenamesexplain /><displayfeedback>1</displayfeedback><giveupallowed>0</giveupallowed><prototypeextra /><testcases><testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000"><testcode><text>print(pascal_ligne(0))
+</text></testcode><stdin><text /></stdin><expected><text>[1]
+</text></expected><extra><text /></extra><display><text>SHOW</text></display></testcase><testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000"><testcode><text>print(pascal_ligne(4))
+</text></testcode><stdin><text /></stdin><expected><text>[1, 4, 6, 4, 1]
+</text></expected><extra><text /></extra><display><text>SHOW</text></display></testcase><testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000"><testcode><text>print(pascal_ligne(7))
+</text></testcode><stdin><text /></stdin><expected><text>[1, 7, 21, 35, 35, 21, 7, 1]
+</text></expected><extra><text /></extra><display><text>SHOW</text></display></testcase><testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000"><testcode><text>print(sum(pascal_ligne(10)))
+</text></testcode><stdin><text /></stdin><expected><text>1024
+</text></expected><extra><text /></extra><display><text>HIDE</text></display></testcase><testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000"><testcode><text>print(pascal_ligne(12)[6])
+</text></testcode><stdin><text /></stdin><expected><text>924
+</text></expected><extra><text /></extra><display><text>HIDE</text></display></testcase></testcases></question><question type="coderunner"><name><text>LAB 2 — Somme de la ligne (identité 2^n)</text></name><questiontext format="html"><text>&lt;div style="background:#f8fafc;border:1px solid #e2e8f0;border-left:5px solid #c9a227;border-radius:8px;padding:20px 24px;margin-bottom:18px;"&gt;
+  &lt;p style="color:#92400e;font-family:Georgia,serif;font-size:13px;font-weight:bold;letter-spacing:2px;text-transform:uppercase;margin:0 0 10px 0;"&gt;LAB 2 &amp;mdash; IDENTIT&amp;Eacute; DES SOMMES LIGNES&lt;/p&gt;
+  &lt;p style="color:#1e293b;font-family:Georgia,serif;font-size:15px;line-height:1.8;margin:0;"&gt;La somme de la ligne n du triangle de Pascal vaut 2&amp;#8319;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;p style="font-family:Georgia,serif;font-size:15px;color:#1e293b;line-height:1.8;"&gt;
+  &amp;Eacute;crire &lt;strong&gt;&lt;code&gt;somme_ligne(n)&lt;/code&gt;&lt;/strong&gt; qui calcule directement &amp;Sigma; C(n, k) pour k = 0..n en utilisant &lt;code&gt;math.comb&lt;/code&gt;. Renvoyer cette somme.
+&lt;/p&gt;
+&lt;div style="background:#fdf4ff;border:1px solid #e9d5ff;border-left:5px solid #9333ea;border-radius:8px;padding:14px 20px;margin:14px 0;"&gt;
+  &lt;pre style="color:#3b0764;font-family:'Courier New',monospace;font-size:14px;margin:0;background:none;border:none;"&gt;somme_ligne(0)  &amp;rarr; 1
+somme_ligne(5)  &amp;rarr; 32
+somme_ligne(10) &amp;rarr; 1024&lt;/pre&gt;
+&lt;/div&gt;</text></questiontext><generalfeedback format="html"><text /></generalfeedback><defaultgrade>2.0000000</defaultgrade><penalty>0.0000000</penalty><hidden>0</hidden><idnumber /><coderunnertype>python3</coderunnertype><prototypetype>0</prototypetype><allornothing>0</allornothing><penaltyregime>0</penaltyregime><precheck>0</precheck><hidecheck>0</hidecheck><showsource>0</showsource><answerboxlines>18</answerboxlines><answerboxcolumns>100</answerboxcolumns><answerpreload>from math import comb
+
+def somme_ligne(n):
+    return sum(...)   # à compléter
+</answerpreload><globalextra /><useace /><resultcolumns /><template /><iscombinatortemplate /><allowmultiplestdins /><answer>from math import comb
+
+def somme_ligne(n):
+    """Renvoie la somme directe Sigma C(n, k)."""
+    return sum(comb(n, k) for k in range(n + 1))
+</answer><validateonsave>1</validateonsave><testsplitterre /><language /><acelang /><sandbox /><grader /><cputimelimitsecs /><memlimitmb /><sandboxparams /><templateparams /><hoisttemplateparams>1</hoisttemplateparams><extractcodefromjson>1</extractcodefromjson><templateparamslang>None</templateparamslang><templateparamsevalpertry>0</templateparamsevalpertry><templateparamsevald>{}</templateparamsevald><twigall>0</twigall><uiplugin /><uiparameters /><attachments>0</attachments><attachmentsrequired>0</attachmentsrequired><maxfilesize>10240</maxfilesize><filenamesregex /><filenamesexplain /><displayfeedback>1</displayfeedback><giveupallowed>0</giveupallowed><prototypeextra /><testcases><testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000"><testcode><text>print(somme_ligne(0))
+</text></testcode><stdin><text /></stdin><expected><text>1
+</text></expected><extra><text /></extra><display><text>SHOW</text></display></testcase><testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000"><testcode><text>print(somme_ligne(5))
+</text></testcode><stdin><text /></stdin><expected><text>32
+</text></expected><extra><text /></extra><display><text>SHOW</text></display></testcase><testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000"><testcode><text>print(somme_ligne(10))
+</text></testcode><stdin><text /></stdin><expected><text>1024
+</text></expected><extra><text /></extra><display><text>SHOW</text></display></testcase><testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000"><testcode><text>print(somme_ligne(15))
+</text></testcode><stdin><text /></stdin><expected><text>32768
+</text></expected><extra><text /></extra><display><text>HIDE</text></display></testcase><testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000"><testcode><text>print(somme_ligne(20))
+</text></testcode><stdin><text /></stdin><expected><text>1048576
+</text></expected><extra><text /></extra><display><text>HIDE</text></display></testcase></testcases></question><question type="coderunner"><name><text>LAB 3 — Vandermonde</text></name><questiontext format="html"><text>&lt;div style="background:#f8fafc;border:1px solid #e2e8f0;border-left:5px solid #c9a227;border-radius:8px;padding:20px 24px;margin-bottom:18px;"&gt;
+  &lt;p style="color:#92400e;font-family:Georgia,serif;font-size:13px;font-weight:bold;letter-spacing:2px;text-transform:uppercase;margin:0 0 10px 0;"&gt;LAB 3 &amp;mdash; IDENTIT&amp;Eacute; DE VANDERMONDE&lt;/p&gt;
+  &lt;p style="color:#1e293b;font-family:Georgia,serif;font-size:15px;line-height:1.8;margin:0;"&gt;Vandermonde : C(m+n, r) = &amp;Sigma; C(m, k) C(n, r-k) pour k = 0..r.&lt;/p&gt;
+&lt;/div&gt;
+&lt;p style="font-family:Georgia,serif;font-size:15px;color:#1e293b;line-height:1.8;"&gt;
+  &amp;Eacute;crire &lt;strong&gt;&lt;code&gt;vandermonde(m, n, r)&lt;/code&gt;&lt;/strong&gt; qui calcule la &lt;strong&gt;somme&lt;/strong&gt; &amp;Sigma; C(m, k) C(n, r-k) pour k = 0..r et renvoie cette valeur (qui doit valoir C(m+n, r)).
+&lt;/p&gt;
+&lt;div style="background:#fdf4ff;border:1px solid #e9d5ff;border-left:5px solid #9333ea;border-radius:8px;padding:14px 20px;margin:14px 0;"&gt;
+  &lt;pre style="color:#3b0764;font-family:'Courier New',monospace;font-size:14px;margin:0;background:none;border:none;"&gt;vandermonde(8, 12, 5)   &amp;rarr; 15504
+vandermonde(15, 15, 10) &amp;rarr; 30045015
+vandermonde(5, 5, 5)    &amp;rarr; 252&lt;/pre&gt;
+&lt;/div&gt;</text></questiontext><generalfeedback format="html"><text /></generalfeedback><defaultgrade>2.0000000</defaultgrade><penalty>0.0000000</penalty><hidden>0</hidden><idnumber /><coderunnertype>python3</coderunnertype><prototypetype>0</prototypetype><allornothing>0</allornothing><penaltyregime>0</penaltyregime><precheck>0</precheck><hidecheck>0</hidecheck><showsource>0</showsource><answerboxlines>18</answerboxlines><answerboxcolumns>100</answerboxcolumns><answerpreload>from math import comb
+
+def vandermonde(m, n, r):
+    return sum(...)   # à compléter
+</answerpreload><globalextra /><useace /><resultcolumns /><template /><iscombinatortemplate /><allowmultiplestdins /><answer>from math import comb
+
+def vandermonde(m, n, r):
+    """Membre droit de Vandermonde : Sigma C(m, k) C(n, r-k)."""
+    return sum(comb(m, k) * comb(n, r - k) for k in range(r + 1))
+</answer><validateonsave>1</validateonsave><testsplitterre /><language /><acelang /><sandbox /><grader /><cputimelimitsecs /><memlimitmb /><sandboxparams /><templateparams /><hoisttemplateparams>1</hoisttemplateparams><extractcodefromjson>1</extractcodefromjson><templateparamslang>None</templateparamslang><templateparamsevalpertry>0</templateparamsevalpertry><templateparamsevald>{}</templateparamsevald><twigall>0</twigall><uiplugin /><uiparameters /><attachments>0</attachments><attachmentsrequired>0</attachmentsrequired><maxfilesize>10240</maxfilesize><filenamesregex /><filenamesexplain /><displayfeedback>1</displayfeedback><giveupallowed>0</giveupallowed><prototypeextra /><testcases><testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000"><testcode><text>print(vandermonde(8, 12, 5))
+</text></testcode><stdin><text /></stdin><expected><text>15504
+</text></expected><extra><text /></extra><display><text>SHOW</text></display></testcase><testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000"><testcode><text>print(vandermonde(5, 5, 5))
+</text></testcode><stdin><text /></stdin><expected><text>252
+</text></expected><extra><text /></extra><display><text>SHOW</text></display></testcase><testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000"><testcode><text>print(vandermonde(15, 15, 10))
+</text></testcode><stdin><text /></stdin><expected><text>30045015
+</text></expected><extra><text /></extra><display><text>SHOW</text></display></testcase><testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000"><testcode><text>print(vandermonde(10, 10, 10))
+</text></testcode><stdin><text /></stdin><expected><text>184756
+</text></expected><extra><text /></extra><display><text>HIDE</text></display></testcase><testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000"><testcode><text>print(vandermonde(0, 5, 3))
+</text></testcode><stdin><text /></stdin><expected><text>10
+</text></expected><extra><text /></extra><display><text>HIDE</text></display></testcase></testcases></question><question type="coderunner"><name><text>LAB 4 — Nombres de Catalan</text></name><questiontext format="html"><text>&lt;div style="background:#f8fafc;border:1px solid #e2e8f0;border-left:5px solid #c9a227;border-radius:8px;padding:20px 24px;margin-bottom:18px;"&gt;
+  &lt;p style="color:#92400e;font-family:Georgia,serif;font-size:13px;font-weight:bold;letter-spacing:2px;text-transform:uppercase;margin:0 0 10px 0;"&gt;LAB 4 &amp;mdash; NOMBRES DE CATALAN&lt;/p&gt;
+  &lt;p style="color:#1e293b;font-family:Georgia,serif;font-size:15px;line-height:1.8;margin:0;"&gt;Catalan : C_n = (1/(n+1)) C(2n, n) = C(2n, n) - C(2n, n+1).&lt;/p&gt;
+&lt;/div&gt;
+&lt;p style="font-family:Georgia,serif;font-size:15px;color:#1e293b;line-height:1.8;"&gt;
+  &amp;Eacute;crire &lt;strong&gt;&lt;code&gt;catalan(n)&lt;/code&gt;&lt;/strong&gt; qui calcule le n-i&amp;egrave;me nombre de Catalan via la formule &lt;em&gt;diff&amp;eacute;rence&lt;/em&gt; : C_n = C(2n, n) - C(2n, n+1). On prendra C(2n, n+1) = 0 si n+1 &amp;gt; 2n (donc pour n = 0).
+&lt;/p&gt;
+&lt;div style="background:#fdf4ff;border:1px solid #e9d5ff;border-left:5px solid #9333ea;border-radius:8px;padding:14px 20px;margin:14px 0;"&gt;
+  &lt;pre style="color:#3b0764;font-family:'Courier New',monospace;font-size:14px;margin:0;background:none;border:none;"&gt;catalan(0) &amp;rarr; 1
+catalan(3) &amp;rarr; 5
+catalan(5) &amp;rarr; 42
+catalan(8) &amp;rarr; 1430&lt;/pre&gt;
+&lt;/div&gt;</text></questiontext><generalfeedback format="html"><text /></generalfeedback><defaultgrade>2.0000000</defaultgrade><penalty>0.0000000</penalty><hidden>0</hidden><idnumber /><coderunnertype>python3</coderunnertype><prototypetype>0</prototypetype><allornothing>0</allornothing><penaltyregime>0</penaltyregime><precheck>0</precheck><hidecheck>0</hidecheck><showsource>0</showsource><answerboxlines>18</answerboxlines><answerboxcolumns>100</answerboxcolumns><answerpreload>from math import comb
+
+def catalan(n):
+    return ...   # à compléter
+</answerpreload><globalextra /><useace /><resultcolumns /><template /><iscombinatortemplate /><allowmultiplestdins /><answer>from math import comb
+
+def catalan(n):
+    """C_n = C(2n, n) - C(2n, n+1)."""
+    # comb gère déjà k &gt; n en renvoyant 0
+    return comb(2 * n, n) - comb(2 * n, n + 1)
+</answer><validateonsave>1</validateonsave><testsplitterre /><language /><acelang /><sandbox /><grader /><cputimelimitsecs /><memlimitmb /><sandboxparams /><templateparams /><hoisttemplateparams>1</hoisttemplateparams><extractcodefromjson>1</extractcodefromjson><templateparamslang>None</templateparamslang><templateparamsevalpertry>0</templateparamsevalpertry><templateparamsevald>{}</templateparamsevald><twigall>0</twigall><uiplugin /><uiparameters /><attachments>0</attachments><attachmentsrequired>0</attachmentsrequired><maxfilesize>10240</maxfilesize><filenamesregex /><filenamesexplain /><displayfeedback>1</displayfeedback><giveupallowed>0</giveupallowed><prototypeextra /><testcases><testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000"><testcode><text>print(catalan(0))
+</text></testcode><stdin><text /></stdin><expected><text>1
+</text></expected><extra><text /></extra><display><text>SHOW</text></display></testcase><testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000"><testcode><text>print(catalan(3))
+</text></testcode><stdin><text /></stdin><expected><text>5
+</text></expected><extra><text /></extra><display><text>SHOW</text></display></testcase><testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000"><testcode><text>print(catalan(5))
+</text></testcode><stdin><text /></stdin><expected><text>42
+</text></expected><extra><text /></extra><display><text>SHOW</text></display></testcase><testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000"><testcode><text>print(catalan(8))
+</text></testcode><stdin><text /></stdin><expected><text>1430
+</text></expected><extra><text /></extra><display><text>HIDE</text></display></testcase><testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000"><testcode><text>print(catalan(10))
+</text></testcode><stdin><text /></stdin><expected><text>16796
+</text></expected><extra><text /></extra><display><text>HIDE</text></display></testcase></testcases></question>
+
+  <!-- ════════ PART B — STACK math exercises (4 exercises) ════════ -->
+<question type="stack">
+    <name>
+      <text>MATH 1 — Coefficient via binome</text>
+    </name>
+    <questiontext format="html">
+      <text><![CDATA[<p>On d&eacute;veloppe \(({@a@} + x)^{ {@n@} }\) par le th&eacute;or&egrave;me du bin&ocirc;me.</p>
+<p>Quel est le coefficient de \(x^{ {@k@} }\) dans ce d&eacute;veloppement&nbsp;?</p>
+<p>Coefficient : [[input:ans1]] [[validation:ans1]]</p>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text><![CDATA[<p>Par le th&eacute;or&egrave;me du bin&ocirc;me, \(({@a@} + x)^{ {@n@} } = \sum_{k=0}^{ {@n@} } \binom{ {@n@} }{k}\,{@a@}^{ {@n@}-k}\,x^k\).</p>
+<p>Le coefficient de \(x^{ {@k@} }\) est donc \(\binom{ {@n@} }{ {@k@} } \cdot {@a@}^{ {@n-k@} } = {@ta@}\).</p>]]></text>
+    </generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.1000000</penalty>
+    <hidden>0</hidden>
+    <idnumber></idnumber>
+    <stackversion>
+      <text>2024010100</text>
+    </stackversion>
+    <questionvariables>
+      <text>n : rand_with_step(8, 14, 1);
+k : rand_with_step(3, 6, 1);
+a : rand_with_step(2, 4, 1);
+ta : binomial(n, k) * a^(n - k);</text>
+    </questionvariables>
+    <specificfeedback format="html">
+      <text><![CDATA[<p>[[feedback:prt1]]</p>]]></text>
+    </specificfeedback>
+    <questionnote format="moodle_auto_format">
+      <text>C({@n@},{@k@}) * {@a@}^{@n-k@} = {@ta@}</text>
+    </questionnote>
+    <questiondescription format="html">
+      <text></text>
+    </questiondescription>
+    <questionsimplify>1</questionsimplify>
+    <assumepositive>0</assumepositive>
+    <assumereal>0</assumereal>
+    <prtcorrect format="html">
+      <text><![CDATA[<p>Correct answer, well done.</p>]]></text>
+    </prtcorrect>
+    <prtpartiallycorrect format="html">
+      <text><![CDATA[<p>Your answer is partially correct.</p>]]></text>
+    </prtpartiallycorrect>
+    <prtincorrect format="html">
+      <text><![CDATA[<p>Incorrect answer.</p>]]></text>
+    </prtincorrect>
+    <multiplicationsign>dot</multiplicationsign>
+    <sqrtsign>1</sqrtsign>
+    <complexno>i</complexno>
+    <inversetrig>cos-1</inversetrig>
+    <matrixparens>[</matrixparens>
+    <variantsselectionseed></variantsselectionseed>
+    <input>
+      <name>ans1</name>
+      <type>algebraic</type>
+      <tans>ta</tans>
+      <boxsize>15</boxsize>
+      <strictsyntax>1</strictsyntax>
+      <insertstars>0</insertstars>
+      <syntaxhint></syntaxhint>
+      <syntaxattribute>0</syntaxattribute>
+      <forbidwords></forbidwords>
+      <allowwords></allowwords>
+      <forbidfloat>1</forbidfloat>
+      <requirelowestterms>0</requirelowestterms>
+      <checkanswertype>0</checkanswertype>
+      <mustverify>1</mustverify>
+      <showvalidation>1</showvalidation>
+      <options></options>
+    </input>
+    <prt>
+      <name>prt1</name>
+      <value>1.0000000</value>
+      <autosimplify>1</autosimplify>
+      <feedbackstyle>1</feedbackstyle>
+      <feedbackvariables>
+        <text></text>
+      </feedbackvariables>
+      <firstnodename>0</firstnodename>
+      <node>
+        <name>0</name>
+        <answertest>AlgEquiv</answertest>
+        <sans>ans1</sans>
+        <tans>ta</tans>
+        <testoptions></testoptions>
+        <quiet>0</quiet>
+        <truescoremode>=</truescoremode>
+        <truescore>1.0000000</truescore>
+        <truepenalty>0.0000000</truepenalty>
+        <truenextnode>-1</truenextnode>
+        <trueanswernote>prt1-1-T</trueanswernote>
+        <truefeedback format="html">
+          <text><![CDATA[<p>Bonne r&eacute;ponse&nbsp;: \(\binom{ {@n@} }{ {@k@} } \cdot {@a@}^{ {@n-k@} } = {@ta@}\).</p>]]></text>
+        </truefeedback>
+        <falsescoremode>=</falsescoremode>
+        <falsescore>0.0000000</falsescore>
+        <falsepenalty>0.0000000</falsepenalty>
+        <falsenextnode>-1</falsenextnode>
+        <falseanswernote>prt1-1-F</falseanswernote>
+        <falsefeedback format="html">
+          <text><![CDATA[<p>R&eacute;ponse incorrecte. Indication&nbsp;: le terme g&eacute;n&eacute;ral est \(\binom{n}{k} a^{n-k} x^k\).</p>]]></text>
+        </falsefeedback>
+      </node>
+    </prt>
+    <deployedseed>1</deployedseed>
+    <deployedseed>2</deployedseed>
+    <deployedseed>3</deployedseed>
+  </question>
+  <question type="stack">
+    <name>
+      <text>MATH 2 — Somme ponderee = 3^n</text>
+    </name>
+    <questiontext format="html">
+      <text><![CDATA[<p>&Eacute;valuer la somme</p>
+<p>\[ \sum_{k=0}^{ {@n@} } 2^k \binom{ {@n@} }{k}. \]</p>
+<p>R&eacute;sultat : [[input:ans1]] [[validation:ans1]]</p>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text><![CDATA[<p>Par le th&eacute;or&egrave;me du bin&ocirc;me appliqu&eacute; &agrave; \((1 + x)^{ {@n@} }\) avec \(x = 2\)&nbsp;:</p>
+<p>\[ \sum_{k=0}^{ {@n@} } 2^k \binom{ {@n@} }{k} = (1 + 2)^{ {@n@} } = 3^{ {@n@} } = {@ta@}. \]</p>]]></text>
+    </generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.1000000</penalty>
+    <hidden>0</hidden>
+    <idnumber></idnumber>
+    <stackversion>
+      <text>2024010100</text>
+    </stackversion>
+    <questionvariables>
+      <text>n : rand_with_step(5, 10, 1);
+ta : 3^n;</text>
+    </questionvariables>
+    <specificfeedback format="html">
+      <text><![CDATA[<p>[[feedback:prt1]]</p>]]></text>
+    </specificfeedback>
+    <questionnote format="moodle_auto_format">
+      <text>n={@n@}, 3^n = {@ta@}</text>
+    </questionnote>
+    <questiondescription format="html">
+      <text></text>
+    </questiondescription>
+    <questionsimplify>1</questionsimplify>
+    <assumepositive>0</assumepositive>
+    <assumereal>0</assumereal>
+    <prtcorrect format="html">
+      <text><![CDATA[<p>Correct answer, well done.</p>]]></text>
+    </prtcorrect>
+    <prtpartiallycorrect format="html">
+      <text><![CDATA[<p>Your answer is partially correct.</p>]]></text>
+    </prtpartiallycorrect>
+    <prtincorrect format="html">
+      <text><![CDATA[<p>Incorrect answer.</p>]]></text>
+    </prtincorrect>
+    <multiplicationsign>dot</multiplicationsign>
+    <sqrtsign>1</sqrtsign>
+    <complexno>i</complexno>
+    <inversetrig>cos-1</inversetrig>
+    <matrixparens>[</matrixparens>
+    <variantsselectionseed></variantsselectionseed>
+    <input>
+      <name>ans1</name>
+      <type>algebraic</type>
+      <tans>ta</tans>
+      <boxsize>15</boxsize>
+      <strictsyntax>1</strictsyntax>
+      <insertstars>0</insertstars>
+      <syntaxhint></syntaxhint>
+      <syntaxattribute>0</syntaxattribute>
+      <forbidwords></forbidwords>
+      <allowwords></allowwords>
+      <forbidfloat>1</forbidfloat>
+      <requirelowestterms>0</requirelowestterms>
+      <checkanswertype>0</checkanswertype>
+      <mustverify>1</mustverify>
+      <showvalidation>1</showvalidation>
+      <options></options>
+    </input>
+    <prt>
+      <name>prt1</name>
+      <value>1.0000000</value>
+      <autosimplify>1</autosimplify>
+      <feedbackstyle>1</feedbackstyle>
+      <feedbackvariables>
+        <text></text>
+      </feedbackvariables>
+      <firstnodename>0</firstnodename>
+      <node>
+        <name>0</name>
+        <answertest>AlgEquiv</answertest>
+        <sans>ans1</sans>
+        <tans>ta</tans>
+        <testoptions></testoptions>
+        <quiet>0</quiet>
+        <truescoremode>=</truescoremode>
+        <truescore>1.0000000</truescore>
+        <truepenalty>0.0000000</truepenalty>
+        <truenextnode>-1</truenextnode>
+        <trueanswernote>prt1-1-T</trueanswernote>
+        <truefeedback format="html">
+          <text><![CDATA[<p>Bonne r&eacute;ponse&nbsp;: \(3^{ {@n@} } = {@ta@}\).</p>]]></text>
+        </truefeedback>
+        <falsescoremode>=</falsescoremode>
+        <falsescore>0.0000000</falsescore>
+        <falsepenalty>0.0000000</falsepenalty>
+        <falsenextnode>-1</falsenextnode>
+        <falseanswernote>prt1-1-F</falseanswernote>
+        <falsefeedback format="html">
+          <text><![CDATA[<p>R&eacute;ponse incorrecte. Indication&nbsp;: utiliser \((1 + a)^n = \sum a^k \binom{n}{k}\).</p>]]></text>
+        </falsefeedback>
+      </node>
+    </prt>
+    <deployedseed>1</deployedseed>
+    <deployedseed>2</deployedseed>
+    <deployedseed>3</deployedseed>
+  </question>
+  <question type="stack">
+    <name>
+      <text>MATH 3 — Vandermonde (bouquet)</text>
+    </name>
+    <questiontext format="html">
+      <text><![CDATA[<p>Une fleuriste a 15 roses et 15 brins de lavande. On forme un bouquet de 10 fleurs.</p>
+<p>Combien de bouquets contiennent <strong>exactement {@r@} roses</strong> et <strong>{@lav@} brins de lavande</strong>&nbsp;?</p>
+<p>Nombre de bouquets : [[input:ans1]] [[validation:ans1]]</p>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text><![CDATA[<p>Choix ind&eacute;pendants par produit&nbsp;:</p>
+<p>\[ \binom{15}{ {@r@} } \cdot \binom{15}{ {@lav@} } = {@ta@}. \]</p>
+<p>C'est le terme central de la somme de Vandermonde \(\binom{30}{10} = \sum_{k=0}^{10} \binom{15}{k}\binom{15}{10-k}\).</p>]]></text>
+    </generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.1000000</penalty>
+    <hidden>0</hidden>
+    <idnumber></idnumber>
+    <stackversion>
+      <text>2024010100</text>
+    </stackversion>
+    <questionvariables>
+      <text>r : rand_with_step(2, 5, 1);
+lav : 10 - r;
+ta : binomial(15, r) * binomial(15, lav);</text>
+    </questionvariables>
+    <specificfeedback format="html">
+      <text><![CDATA[<p>[[feedback:prt1]]</p>]]></text>
+    </specificfeedback>
+    <questionnote format="moodle_auto_format">
+      <text>C(15,{@r@}) C(15,{@lav@}) = {@ta@}</text>
+    </questionnote>
+    <questiondescription format="html">
+      <text></text>
+    </questiondescription>
+    <questionsimplify>1</questionsimplify>
+    <assumepositive>0</assumepositive>
+    <assumereal>0</assumereal>
+    <prtcorrect format="html">
+      <text><![CDATA[<p>Correct answer, well done.</p>]]></text>
+    </prtcorrect>
+    <prtpartiallycorrect format="html">
+      <text><![CDATA[<p>Your answer is partially correct.</p>]]></text>
+    </prtpartiallycorrect>
+    <prtincorrect format="html">
+      <text><![CDATA[<p>Incorrect answer.</p>]]></text>
+    </prtincorrect>
+    <multiplicationsign>dot</multiplicationsign>
+    <sqrtsign>1</sqrtsign>
+    <complexno>i</complexno>
+    <inversetrig>cos-1</inversetrig>
+    <matrixparens>[</matrixparens>
+    <variantsselectionseed></variantsselectionseed>
+    <input>
+      <name>ans1</name>
+      <type>algebraic</type>
+      <tans>ta</tans>
+      <boxsize>15</boxsize>
+      <strictsyntax>1</strictsyntax>
+      <insertstars>0</insertstars>
+      <syntaxhint></syntaxhint>
+      <syntaxattribute>0</syntaxattribute>
+      <forbidwords></forbidwords>
+      <allowwords></allowwords>
+      <forbidfloat>1</forbidfloat>
+      <requirelowestterms>0</requirelowestterms>
+      <checkanswertype>0</checkanswertype>
+      <mustverify>1</mustverify>
+      <showvalidation>1</showvalidation>
+      <options></options>
+    </input>
+    <prt>
+      <name>prt1</name>
+      <value>1.0000000</value>
+      <autosimplify>1</autosimplify>
+      <feedbackstyle>1</feedbackstyle>
+      <feedbackvariables>
+        <text></text>
+      </feedbackvariables>
+      <firstnodename>0</firstnodename>
+      <node>
+        <name>0</name>
+        <answertest>AlgEquiv</answertest>
+        <sans>ans1</sans>
+        <tans>ta</tans>
+        <testoptions></testoptions>
+        <quiet>0</quiet>
+        <truescoremode>=</truescoremode>
+        <truescore>1.0000000</truescore>
+        <truepenalty>0.0000000</truepenalty>
+        <truenextnode>-1</truenextnode>
+        <trueanswernote>prt1-1-T</trueanswernote>
+        <truefeedback format="html">
+          <text><![CDATA[<p>Bonne r&eacute;ponse&nbsp;: \(\binom{15}{ {@r@} }\binom{15}{ {@lav@} } = {@ta@}\).</p>]]></text>
+        </truefeedback>
+        <falsescoremode>=</falsescoremode>
+        <falsescore>0.0000000</falsescore>
+        <falsepenalty>0.0000000</falsepenalty>
+        <falsenextnode>-1</falsenextnode>
+        <falseanswernote>prt1-1-F</falseanswernote>
+        <falsefeedback format="html">
+          <text><![CDATA[<p>R&eacute;ponse incorrecte. Les deux types de fleurs sont ind&eacute;pendants, donc on multiplie les deux choix.</p>]]></text>
+        </falsefeedback>
+      </node>
+    </prt>
+    <deployedseed>1</deployedseed>
+    <deployedseed>2</deployedseed>
+    <deployedseed>3</deployedseed>
+  </question>
+  <question type="stack">
+    <name>
+      <text>MATH 4 — Hockey-stick</text>
+    </name>
+    <questiontext format="html">
+      <text><![CDATA[<p>&Eacute;valuer la somme par l'identit&eacute; hockey-stick&nbsp;:</p>
+<p>\[ \sum_{i={@r@}}^{ {@n@} } \binom{i}{ {@r@} }. \]</p>
+<p>R&eacute;sultat : [[input:ans1]] [[validation:ans1]]</p>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text><![CDATA[<p>L'identit&eacute; hockey-stick affirme</p>
+<p>\[ \sum_{i=r}^{n} \binom{i}{r} = \binom{n+1}{r+1}. \]</p>
+<p>Ici&nbsp;: \(\binom{ {@n+1@} }{ {@r+1@} } = {@ta@}\).</p>]]></text>
+    </generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.1000000</penalty>
+    <hidden>0</hidden>
+    <idnumber></idnumber>
+    <stackversion>
+      <text>2024010100</text>
+    </stackversion>
+    <questionvariables>
+      <text>r : rand_with_step(2, 4, 1);
+n : rand_with_step(7, 12, 1);
+ta : binomial(n + 1, r + 1);</text>
+    </questionvariables>
+    <specificfeedback format="html">
+      <text><![CDATA[<p>[[feedback:prt1]]</p>]]></text>
+    </specificfeedback>
+    <questionnote format="moodle_auto_format">
+      <text>C({@n+1@},{@r+1@}) = {@ta@}</text>
+    </questionnote>
+    <questiondescription format="html">
+      <text></text>
+    </questiondescription>
+    <questionsimplify>1</questionsimplify>
+    <assumepositive>0</assumepositive>
+    <assumereal>0</assumereal>
+    <prtcorrect format="html">
+      <text><![CDATA[<p>Correct answer, well done.</p>]]></text>
+    </prtcorrect>
+    <prtpartiallycorrect format="html">
+      <text><![CDATA[<p>Your answer is partially correct.</p>]]></text>
+    </prtpartiallycorrect>
+    <prtincorrect format="html">
+      <text><![CDATA[<p>Incorrect answer.</p>]]></text>
+    </prtincorrect>
+    <multiplicationsign>dot</multiplicationsign>
+    <sqrtsign>1</sqrtsign>
+    <complexno>i</complexno>
+    <inversetrig>cos-1</inversetrig>
+    <matrixparens>[</matrixparens>
+    <variantsselectionseed></variantsselectionseed>
+    <input>
+      <name>ans1</name>
+      <type>algebraic</type>
+      <tans>ta</tans>
+      <boxsize>15</boxsize>
+      <strictsyntax>1</strictsyntax>
+      <insertstars>0</insertstars>
+      <syntaxhint></syntaxhint>
+      <syntaxattribute>0</syntaxattribute>
+      <forbidwords></forbidwords>
+      <allowwords></allowwords>
+      <forbidfloat>1</forbidfloat>
+      <requirelowestterms>0</requirelowestterms>
+      <checkanswertype>0</checkanswertype>
+      <mustverify>1</mustverify>
+      <showvalidation>1</showvalidation>
+      <options></options>
+    </input>
+    <prt>
+      <name>prt1</name>
+      <value>1.0000000</value>
+      <autosimplify>1</autosimplify>
+      <feedbackstyle>1</feedbackstyle>
+      <feedbackvariables>
+        <text></text>
+      </feedbackvariables>
+      <firstnodename>0</firstnodename>
+      <node>
+        <name>0</name>
+        <answertest>AlgEquiv</answertest>
+        <sans>ans1</sans>
+        <tans>ta</tans>
+        <testoptions></testoptions>
+        <quiet>0</quiet>
+        <truescoremode>=</truescoremode>
+        <truescore>1.0000000</truescore>
+        <truepenalty>0.0000000</truepenalty>
+        <truenextnode>-1</truenextnode>
+        <trueanswernote>prt1-1-T</trueanswernote>
+        <truefeedback format="html">
+          <text><![CDATA[<p>Bonne r&eacute;ponse&nbsp;: \(\binom{ {@n+1@} }{ {@r+1@} } = {@ta@}\).</p>]]></text>
+        </truefeedback>
+        <falsescoremode>=</falsescoremode>
+        <falsescore>0.0000000</falsescore>
+        <falsepenalty>0.0000000</falsepenalty>
+        <falsenextnode>-1</falsenextnode>
+        <falseanswernote>prt1-1-F</falseanswernote>
+        <falsefeedback format="html">
+          <text><![CDATA[<p>R&eacute;ponse incorrecte. Identit&eacute; utile&nbsp;: \(\sum_{i=r}^{n}\binom{i}{r} = \binom{n+1}{r+1}\).</p>]]></text>
+        </falsefeedback>
+      </node>
+    </prt>
+    <deployedseed>1</deployedseed>
+    <deployedseed>2</deployedseed>
+    <deployedseed>3</deployedseed>
+  </question>
+
+</quiz>

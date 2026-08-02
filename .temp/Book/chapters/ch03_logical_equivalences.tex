@@ -1,0 +1,284 @@
+\chapter{Equivalence of Propositions}
+\signature
+
+\section{Overview}
+
+Chapter~2 introduced logical equivalence through truth tables. This chapter
+turns equivalence into a working calculus: classifying formulas by their
+satisfiability profile, simplifying them with the standard laws, and putting
+them into \emph{normal forms} suited to mechanical processing.
+
+\section{Tautology, contradiction, contingency revisited}
+
+\begin{definition}
+Let $\varphi$ be a formula over $n$ atomic letters, with $2^n$ valuations.
+$\varphi$ is a \emph{tautology} if all $2^n$ valuations satisfy it, a
+\emph{contradiction} if none does, and a \emph{contingency} otherwise.
+$\varphi$ is \emph{satisfiable} when at least one valuation satisfies it ---
+i.e.\ exactly when it is not a contradiction.
+\end{definition}
+
+\begin{example}
+$(p \to q) \leftrightarrow (\neg q \to \neg p)$ is a tautology (the
+contrapositive law); $(p \oplus q) \wedge (p \leftrightarrow q)$ is a
+contradiction; $p \to (q \wedge r)$ is a contingency.
+\end{example}
+
+\begin{notebox}
+$\varphi$ is a tautology if and only if $\neg\varphi$ is a contradiction.
+Tautology checking and satisfiability checking are therefore two faces of the
+same computational problem.
+\end{notebox}
+
+\section{The main equivalences}
+
+The equivalence laws of Chapter~2 --- identity, domination, idempotence,
+double negation, commutativity, associativity, distributivity, De~Morgan,
+absorption, negation --- together with the implication identities
+\[
+p \to q \equiv \neg p \vee q, \qquad
+\neg(p \to q) \equiv p \wedge \neg q, \qquad
+p \leftrightarrow q \equiv (p \to q) \wedge (q \to p),
+\]
+form a complete working kit. Two further conditional equivalences are worth
+memorising:
+\[
+p \to (q \to r) \;\equiv\; (p \wedge q) \to r
+\qquad\text{(exportation)},
+\]
+\[
+(p \to q) \wedge (p \to r) \;\equiv\; p \to (q \wedge r),
+\qquad
+(p \to r) \wedge (q \to r) \;\equiv\; (p \vee q) \to r .
+\]
+
+\begin{example}[Simplifying a proposition]
+Simplify $\varphi = (p \wedge q) \vee (p \wedge \neg q) \vee (\neg p \wedge q)$.
+\begin{align*}
+\varphi &\equiv \bigl(p \wedge (q \vee \neg q)\bigr) \vee (\neg p \wedge q)
+  && \text{distributivity}\\
+&\equiv p \vee (\neg p \wedge q) && \text{negation, identity}\\
+&\equiv (p \vee \neg p) \wedge (p \vee q) && \text{distributivity}\\
+&\equiv p \vee q && \text{negation, identity.}
+\end{align*}
+Three two-literal clauses collapse to a single disjunction.
+\end{example}
+
+Such simplification is exactly what automated tools (SAT preprocessors,
+circuit minimisers, symbolic algebra systems) perform on a large scale;
+the Quine--McCluskey algorithm and Karnaugh maps systematise it for circuit
+design.
+
+\section{Disjunctive normal form}
+
+\begin{definition}
+A \emph{minterm} over atoms $p_1,\dots,p_n$ is a conjunction containing each
+$p_i$ exactly once, either plain or negated. A formula is in \emph{disjunctive
+normal form} (DNF) if it is a disjunction of conjunctions of literals; it is in
+\emph{full} (canonical) DNF if every disjunct is a minterm.
+\end{definition}
+
+\begin{theorem}[DNF from the truth table]
+Every satisfiable formula $\varphi$ is equivalent to the disjunction of the
+minterms of the rows where $\varphi$ is true. Hence every formula has a full
+DNF, unique up to order.
+\end{theorem}
+
+\begin{example}[XOR: ``for me or against me'']
+The exclusive or is true on rows $(\TT,\FF)$ and $(\FF,\TT)$, so its full DNF
+is
+\[
+p \oplus q \;\equiv\; (p \wedge \neg q) \vee (\neg p \wedge q).
+\]
+\end{example}
+
+\begin{example}[A counting function]
+Define $m(p,q,r)$ to be true when \emph{at least two} of $p,q,r$ are true
+(the ``majority'' function). The true rows are
+$(\TT,\TT,\TT), (\TT,\TT,\FF), (\TT,\FF,\TT), (\FF,\TT,\TT)$, giving the full
+DNF
+\[
+m \equiv (p\wedge q\wedge r) \vee (p\wedge q\wedge \neg r)
+\vee (p\wedge \neg q\wedge r) \vee (\neg p\wedge q\wedge r),
+\]
+which simplifies (by absorption-style grouping) to
+$(p \wedge q) \vee (p \wedge r) \vee (q \wedge r)$.
+\end{example}
+
+\section{Other normal forms}
+
+\begin{definition}
+A formula is in \emph{negation normal form} (NNF) if negation appears only on
+atoms, and in \emph{conjunctive normal form} (CNF) if it is a conjunction of
+\emph{clauses}, each clause a disjunction of literals. The full CNF uses
+\emph{maxterms} --- clauses containing every atom once --- one for each
+\emph{false} row of the truth table.
+\end{definition}
+
+CNF is the input format of SAT solvers and of the resolution proof system;
+DNF makes satisfiability trivial to read off but may be exponentially large.
+
+\subsection{CNF \texorpdfstring{$\leftrightarrow$}{<->} DNF conversion}
+
+The two directions are symmetric: distribute $\vee$ over $\wedge$ to go from
+CNF to DNF, and $\wedge$ over $\vee$ for the converse.
+
+\begin{example}
+\[
+(p \vee q) \wedge (\neg p \vee r)
+\;\equiv\;
+(p \wedge \neg p) \vee (p \wedge r) \vee (q \wedge \neg p) \vee (q \wedge r)
+\;\equiv\;
+(p \wedge r) \vee (\neg p \wedge q) \vee (q \wedge r),
+\]
+a CNF of two clauses becoming a DNF of three conjunctions (the contradictory
+term vanishes). The term $q \wedge r$ is in fact absorbed by no other and must
+stay; in general the blow-up can be exponential.
+\end{example}
+
+\section{Satisfiability research}
+
+Deciding satisfiability of a CNF formula is the historic NP-complete problem
+(Cook--Levin, 1971). Despite the exponential worst case, modern
+conflict-driven clause-learning (CDCL) solvers routinely handle industrial
+instances with millions of variables, powering hardware verification, planning
+and dependency resolution. The special case 2-SAT (clauses of width $2$) is
+solvable in linear time, while 3-SAT is already NP-complete --- a remarkably
+sharp frontier.
+
+\section{Summary}
+
+Formulas split into tautologies, contradictions and contingencies; the
+equivalence laws constitute an algebra for simplifying them; every formula has
+a CNF and a DNF, readable from the false and true rows of its truth table
+respectively; and satisfiability, trivial for DNF, is the canonical hard
+problem for CNF.
+
+\section*{Exercises}
+\addcontentsline{toc}{section}{Exercises}
+
+\begin{exercise}{\easy}
+Classify as tautology, contradiction or contingency:
+(a) $(p \wedge q) \to p$;\quad
+(b) $p \leftrightarrow \neg p$;\quad
+(c) $(p \vee q) \wedge \neg p$.
+\end{exercise}
+
+\begin{exercise}{\easy}
+Verify by truth table the exportation law
+$p \to (q \to r) \equiv (p \wedge q) \to r$.
+\end{exercise}
+
+\begin{exercise}{\medium}
+Simplify using the laws, citing each step:
+$\neg\bigl(\neg p \wedge \neg q\bigr) \wedge (p \vee \neg q)$.
+\end{exercise}
+
+\begin{exercise}{\medium}
+Simplify $(p \to q) \wedge (p \to \neg q)$ to a formula with a single
+connective.
+\end{exercise}
+
+\begin{exercise}{\medium}
+Write the full DNF of $p \to \neg q$ (two atoms), directly from its truth
+table.
+\end{exercise}
+
+\begin{exercise}{\medium}
+Give the full CNF of $p \oplus q$, using the false rows of its truth table.
+\end{exercise}
+
+\begin{exercise}{\hard}
+Let $f(p,q,r)$ be true exactly when an \emph{odd} number of $p, q, r$ are
+true. Write its full DNF and show $f \equiv p \oplus q \oplus r$.
+\end{exercise}
+
+\begin{exercise}{\hard}
+Convert $(p \wedge q) \vee (r \wedge s)$ into CNF, and explain why a CNF of a
+DNF with $k$ conjunctions of two literals each may need $2^k$ clauses.
+\end{exercise}
+
+\begin{exercise}{\hard}
+Show that the majority function
+$m \equiv (p\wedge q) \vee (p\wedge r) \vee (q\wedge r)$ is also equivalent to
+the CNF $(p \vee q) \wedge (p \vee r) \wedge (q \vee r)$.
+\end{exercise}
+
+\section*{Solutions to the Exercises}
+\addcontentsline{toc}{section}{Solutions to the Exercises}
+
+\begin{solution}{3.1}
+(a) Tautology --- if $p \wedge q$ holds, $p$ holds. (b) Contradiction --- the
+two sides always differ. (c) Contingency --- true for $p=\FF, q=\TT$, false
+for $p=\TT$.
+\end{solution}
+
+\begin{solution}{3.2}
+Both sides are false exactly on the row $(p,q,r) = (\TT,\TT,\FF)$: the left
+side because $q \to r$ then fails with $p$ true; the right side because
+$p \wedge q$ is true and $r$ false. All other rows make both sides true,
+hence equivalence.
+\end{solution}
+
+\begin{solution}{3.3}
+\begin{align*}
+\neg(\neg p \wedge \neg q) \wedge (p \vee \neg q)
+&\equiv (p \vee q) \wedge (p \vee \neg q) && \text{De Morgan, double negation}\\
+&\equiv p \vee (q \wedge \neg q) && \text{distributivity}\\
+&\equiv p \vee \FF \equiv p && \text{negation, identity.}
+\end{align*}
+\end{solution}
+
+\begin{solution}{3.4}
+$(p \to q) \wedge (p \to \neg q) \equiv p \to (q \wedge \neg q)
+\equiv p \to \FF \equiv \neg p$.
+\end{solution}
+
+\begin{solution}{3.5}
+$p \to \neg q$ is true on rows $(\TT,\FF), (\FF,\TT), (\FF,\FF)$, so
+\[
+p \to \neg q \;\equiv\;
+(p \wedge \neg q) \vee (\neg p \wedge q) \vee (\neg p \wedge \neg q).
+\]
+\end{solution}
+
+\begin{solution}{3.6}
+$p \oplus q$ is false on rows $(\TT,\TT)$ and $(\FF,\FF)$. Each false row
+yields the maxterm that negates it:
+$(\neg p \vee \neg q)$ for $(\TT,\TT)$ and $(p \vee q)$ for $(\FF,\FF)$.
+Hence $p \oplus q \equiv (p \vee q) \wedge (\neg p \vee \neg q)$.
+\end{solution}
+
+\begin{solution}{3.7}
+Odd-parity rows: exactly one true ---
+$(\TT,\FF,\FF), (\FF,\TT,\FF), (\FF,\FF,\TT)$ --- or all three true
+$(\TT,\TT,\TT)$. Full DNF:
+\[
+(p\wedge\neg q\wedge\neg r) \vee (\neg p\wedge q\wedge\neg r) \vee
+(\neg p\wedge\neg q\wedge r) \vee (p\wedge q\wedge r).
+\]
+Since $\oplus$ is associative and $x \oplus y$ is true when exactly one of
+$x,y$ is true, $(p \oplus q) \oplus r$ is true when the number of true atoms
+among $p,q,r$ is odd --- the same four rows. Hence
+$f \equiv p \oplus q \oplus r$.
+\end{solution}
+
+\begin{solution}{3.8}
+Distribute:
+\[
+(p \wedge q) \vee (r \wedge s)
+\equiv (p \vee r) \wedge (p \vee s) \wedge (q \vee r) \wedge (q \vee s).
+\]
+With $k$ two-literal conjunctions $(a_1\wedge b_1)\vee\cdots\vee(a_k\wedge b_k)$,
+distributing chooses one literal from each conjunct in every clause: $2^k$
+clauses, and in general (for distinct variables) none is redundant.
+\end{solution}
+
+\begin{solution}{3.9}
+Expand the CNF:
+$(p \vee q) \wedge (p \vee r) \wedge (q \vee r)$. If at least two of $p,q,r$
+are true, each clause contains a true literal, so the CNF is true. If at most
+one is true, some pair among $\{p,q\},\{p,r\},\{q,r\}$ consists of two false
+atoms, and the corresponding clause fails. So the CNF is true exactly when at
+least two atoms are true --- the majority function $m$.
+\end{solution}

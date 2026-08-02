@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lab 1 — Graphs in Python</title>
+<script>
+  MathJax = {
+    tex: { inlineMath: [['$','$']], displayMath: [['$$','$$']], processEscapes: true },
+    options: { skipHtmlTags: ['script','noscript','style','textarea'] }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --orange:#e67e22; --darkblue:#2c3e50; --lightbg:#f4f9fc;
+  --border:#dce3ea;
+  --py-fg:#1f4e7a; --py-bg:#eaf3fb; --py-border:#2a6fb3; --py-head:#2a6fb3;
+  --out-fg:#6e4b0a; --out-bg:#fff7e0; --out-border:#e0b341; --out-head:#c89324;
+}
+body {
+  font-family:'Segoe UI', system-ui, sans-serif;
+  background:#e8edf2; color:var(--darkblue);
+  display:flex; flex-direction:column; align-items:center;
+  padding:2rem 1rem 5rem; gap:1.6rem;
+}
+.slide {
+  background:#fff; width:100%; max-width:940px;
+  border-radius:10px; box-shadow:0 4px 18px rgba(0,0,0,.10);
+  padding:2.0rem 2.6rem 1.8rem; position:relative;
+}
+.title-slide {
+  background:linear-gradient(145deg,#f4f9fc 60%,#e0eef7);
+  text-align:center; border-top:6px solid var(--orange);
+}
+.title-slide h1 { font-size:1.9rem; margin-bottom:0.4rem; }
+.title-slide .subtitle { font-size:1.05rem; color:#555; }
+.title-slide .author { font-size:1rem; color:var(--orange); margin-top:0.8rem; font-style:italic; font-weight:600; }
+h2.frame-title {
+  font-size:1.4rem; color:var(--orange); font-weight:700;
+  margin-bottom:0.6rem; padding-bottom:0.35rem; border-bottom:2px solid #f9e4cc;
+}
+h3.sub-title { font-size:1.02rem; color:var(--orange); font-weight:600; margin:0.8rem 0 0.3rem; }
+p { line-height:1.65; margin:0.5rem 0; }
+ul, ol { margin:0.4rem 0 0.4rem 1.5rem; line-height:1.75; }
+ul li::marker, ol li::marker { color:var(--orange); }
+code { background:#f0f3f7; color:#1f4e7a; padding:0 .25em; border-radius:3px; font-family:'Consolas','Fira Code',monospace; }
+.note-box, .def-box, .thm-box, .goal-box, .q-box {
+  border-radius:6px; padding:0.6rem 0.9rem; margin:0.6rem 0; line-height:1.65;
+}
+.note-box { background:#fff5e8; border-left:4px solid var(--orange); font-style:italic; }
+.def-box  { background:#eaf3fb; border-left:4px solid var(--py-border); }
+.def-box::before { content:"Definition. "; font-weight:700; color:var(--py-border); }
+.thm-box  { background:#fff7e0; border-left:4px solid var(--out-border); }
+.thm-box::before { content:"Recall. "; font-weight:700; color:var(--out-head); }
+.goal-box { background:#e8f5ec; border-left:4px solid #27ae60; }
+.goal-box::before { content:"Goal. "; font-weight:700; color:#1e824c; }
+.q-box { background:#eef1ff; border-left:4px solid #6060cc; }
+.q-box::before { content:"Question. "; font-weight:700; color:#6060cc; }
+.python-block, .output-block { border-radius:6px; overflow:hidden; margin:0.6rem 0; border:1px solid; }
+.pane-label { display:block; font-size:0.62rem; font-weight:800; letter-spacing:0.12em; text-transform:uppercase; padding:2px 10px; color:#fff; }
+.pane-code { font-family:'Consolas','Fira Code',monospace; font-size:0.8rem; line-height:1.55; padding:0.55rem 0.8rem; white-space:pre; display:block; overflow-x:auto; }
+.python-block { border-color:var(--py-border); }
+.python-block .pane-label { background:var(--py-head); }
+.python-block .pane-code { background:var(--py-bg); color:var(--py-fg); }
+.output-block { border-color:var(--out-border); }
+.output-block .pane-label { background:var(--out-head); }
+.output-block .pane-code { background:var(--out-bg); color:var(--out-fg); }
+.ex-tag { display:inline-block; background:var(--orange); color:#fff; font-size:0.72rem; font-weight:800; letter-spacing:.08em; text-transform:uppercase; padding:2px 9px; border-radius:12px; vertical-align:middle; margin-right:.5rem; }
+.toc { columns:2; column-gap:2rem; }
+a.project-link { display:inline-block; margin-top:.4rem; background:#27ae60; color:#fff; text-decoration:none; padding:.5rem .9rem; border-radius:6px; font-weight:600; }
+a.project-link:hover { background:#1e824c; }
+.tag-row { color:#888; font-size:0.85rem; }
+</style>
+</head>
+<body>
+
+<section class="slide title-slide">
+  <h1>Lab 1 — Graphs in Python</h1>
+  <p class="subtitle">Discrete Mathematics — Graphs, Trees &amp; Binary Trees</p>
+  <p class="author">Pr. El Hadiq Zouhair</p>
+</section>
+
+<section class="slide">
+  <h2 class="frame-title">Before you start</h2>
+  <p>In this lab you implement a small graph library <strong>from scratch</strong>.</p>
+  <div class="def-box">
+    A graph is a dictionary mapping each vertex to the <strong>list of its neighbors</strong> (the <em>adjacency-list</em> representation from the lesson):
+  </div>
+  <div class="python-block"><span class="pane-label">Python</span><code class="pane-code">G = {"A": ["B", "C"], "B": ["A"], "C": ["A"]}</code></div>
+  <p>We use <code>networkx</code> <strong>only</strong> to <em>draw</em> the graphs and to <em>check</em> your implementations — every algorithm must be written by hand.</p>
+  <div class="note-box">How to work: run the notebook from top to bottom. Replace each <code># TODO</code> and remove the <code>raise NotImplementedError</code>. A printed ✔ means the exercise's tests pass.</div>
+  <h3 class="sub-title">Contents</h3>
+  <ol class="toc">
+    <li>Building a graph</li>
+    <li>Degrees and the handshake lemma</li>
+    <li>Breadth-first search (BFS)</li>
+    <li>Depth-first search (DFS) &amp; connected components</li>
+    <li>Cycle detection</li>
+    <li>Bipartite graphs and 2-coloring</li>
+    <li>Greedy coloring</li>
+  </ol>
+  <p style="margin-top:1rem;">★ The <strong>3-SAT as a coloring problem</strong> challenge is now a separate guided project:</p>
+  <a class="project-link" href="Project_3SAT_Coloring_student.html">→ Open the 3-SAT Coloring project</a>
+</section>
+
+<section class="slide">
+  <h2 class="frame-title">Setup</h2>
+  <p>Run this cell first. It provides the drawing helpers used throughout the lab.</p>
+  <div class="python-block"><span class="pane-label">Python · provided</span><code class="pane-code">import networkx as nx
+import matplotlib.pyplot as plt
+from collections import deque
+
+def to_nx(G):
+    """Convert a dict-of-lists graph into a networkx Graph (drawing/checking only)."""
+    H = nx.Graph()
+    H.add_nodes_from(G)
+    for u in G:
+        for v in G[u]:
+            H.add_edge(u, v)
+    return H
+
+def draw_graph(G, coloring=None, pos=None, title=""):
+    """Draw a dict-of-lists graph; `coloring` may map vertices to small integers."""
+    H = to_nx(G)
+    if pos is None:
+        pos = nx.spring_layout(H, seed=7)
+    palette = ["#e63946", "#2a9d8f", "#e9c46a", "#457b9d", "#f4a261", "#9b5de5"]
+    if coloring is None:
+        node_color = "#a8dadc"
+    else:
+        node_color = [palette[coloring[v] % len(palette)] for v in H.nodes()]
+    plt.figure(figsize=(5.5, 4.2))
+    nx.draw(H, pos, with_labels=True, node_color=node_color,
+            node_size=650, font_weight="bold", edge_color="#666666")
+    plt.title(title)
+    plt.show()
+
+print("Setup OK — networkx", nx.__version__)</code></div>
+</section>
+
+<section class="slide">
+  <h2 class="frame-title"><span class="ex-tag">Exercise 1</span>Building a graph</h2>
+  <p>Write the three functions below.</p>
+  <ol>
+    <li><code>add_vertex(G, v)</code> — add vertex <code>v</code> to <code>G</code> (no effect if it is already there);</li>
+    <li><code>add_edge(G, u, v)</code> — add the <strong>undirected</strong> edge $\{u, v\}$ (add missing endpoints; never duplicate a neighbor);</li>
+    <li><code>build_graph(vertices, edges)</code> — build a fresh graph from a list of vertices and a list of pairs.</li>
+  </ol>
+  <div class="python-block"><span class="pane-label">Python · your turn</span><code class="pane-code">def add_vertex(G, v):
+    """Add vertex v to G if not already present."""
+    # TODO
+    raise NotImplementedError
+
+def add_edge(G, u, v):
+    """Add the undirected edge {u, v} to G (and its endpoints if needed)."""
+    # TODO
+    raise NotImplementedError
+
+def build_graph(vertices, edges):
+    """Return a new dict-of-lists graph with the given vertices and edges."""
+    # TODO
+    raise NotImplementedError</code></div>
+  <div class="output-block"><span class="pane-label">Test cell</span><code class="pane-code">EDGES = [("A","B"), ("A","C"), ("B","C"), ("B","D"), ("C","E"),
+         ("D","E"), ("D","F"), ("E","F"), ("F","G")]
+G1 = build_graph("ABCDEFG", EDGES)
+
+assert set(G1) == set("ABCDEFG")
+assert set(G1["A"]) == {"B", "C"} and set(G1["F"]) == {"D", "E", "G"}
+add_edge(G1, "A", "B")                       # adding twice must not duplicate
+assert G1["A"].count("B") == 1
+print("Exercise 1 ✔")
+draw_graph(G1, title="G1 — does it match the edge list?")</code></div>
+</section>
+
+<section class="slide">
+  <h2 class="frame-title"><span class="ex-tag">Exercise 2</span>Degrees and the handshake lemma</h2>
+  <ol>
+    <li><code>degree(G, v)</code> — number of neighbors of <code>v</code>;</li>
+    <li><code>degree_sequence(G)</code> — list of all degrees, sorted in decreasing order;</li>
+    <li><code>num_edges(G)</code> — number of edges, <strong>without</strong> counting any edge twice.</li>
+  </ol>
+  <div class="thm-box">The test cell checks the <strong>handshake lemma</strong> on <code>G1</code>: $$\sum_{v \in V} \deg(v) = 2\,|E|.$$</div>
+  <div class="q-box">A graph has 9 vertices, all of degree 3. How many edges does it have?</div>
+  <div class="python-block"><span class="pane-label">Python · your turn</span><code class="pane-code">def degree(G, v):
+    """Degree of vertex v in G."""
+    # TODO
+    raise NotImplementedError
+
+def degree_sequence(G):
+    """All degrees of G, sorted in decreasing order."""
+    # TODO
+    raise NotImplementedError
+
+def num_edges(G):
+    """Number of edges of G (hint: use the handshake lemma)."""
+    # TODO
+    raise NotImplementedError</code></div>
+  <div class="output-block"><span class="pane-label">Test cell</span><code class="pane-code">assert degree(G1, "F") == 3 and degree(G1, "G") == 1
+assert degree_sequence(G1) == [3, 3, 3, 3, 3, 2, 1]
+assert num_edges(G1) == len(EDGES)
+assert sum(degree(G1, v) for v in G1) == 2 * num_edges(G1)   # handshake lemma
+assert num_edges(G1) == to_nx(G1).number_of_edges()          # networkx agrees
+print("Exercise 2 ✔  degree sequence:", degree_sequence(G1))</code></div>
+</section>
+
+<section class="slide">
+  <h2 class="frame-title"><span class="ex-tag">Exercise 3</span>Breadth-first search</h2>
+  <p>Implement <code>bfs(G, s)</code>: return a dictionary <code>{v: d(s, v)}</code> giving the distance (number of edges) from <code>s</code> to every <strong>reachable</strong> vertex. Visit the vertices level by level using a queue (<code>collections.deque</code>, with <code>append</code> and <code>popleft</code>).</p>
+  <div class="python-block"><span class="pane-label">Python · your turn</span><code class="pane-code">def bfs(G, s):
+    """Return {v: distance from s} for every vertex reachable from s."""
+    # TODO — start from {s: 0} and a queue containing s
+    raise NotImplementedError</code></div>
+  <div class="output-block"><span class="pane-label">Test cell</span><code class="pane-code">dist = bfs(G1, "A")
+assert dist == nx.single_source_shortest_path_length(to_nx(G1), "A")
+print("Exercise 3 ✔  distances from A:", dist)
+draw_graph(G1, coloring=dist, title="G1 colored by distance from A (BFS layers)")</code></div>
+</section>
+
+<section class="slide">
+  <h2 class="frame-title"><span class="ex-tag">Exercise 4</span>Depth-first search and connected components</h2>
+  <ol>
+    <li><code>dfs(G, s)</code> — return the <strong>set</strong> of vertices reachable from <code>s</code> (iterative version, with an explicit stack: a plain Python list with <code>append</code>/<code>pop</code>);</li>
+    <li><code>connected_components(G)</code> — return the list of connected components, each one a set of vertices.</li>
+  </ol>
+  <div class="python-block"><span class="pane-label">Python · your turn</span><code class="pane-code">def dfs(G, s):
+    """Set of vertices reachable from s (iterative DFS with a stack)."""
+    # TODO
+    raise NotImplementedError
+
+def connected_components(G):
+    """List of the connected components of G (sets of vertices)."""
+    # TODO — launch dfs from every not-yet-visited vertex
+    raise NotImplementedError</code></div>
+  <div class="output-block"><span class="pane-label">Test cell</span><code class="pane-code">G2 = build_graph(range(1, 11),
+                 [(1,2), (2,3), (3,1), (4,5), (5,6), (6,7), (7,4), (8,9)])
+comps = connected_components(G2)
+assert sorted(map(len, comps)) == [1, 2, 3, 4]
+assert len(comps) == nx.number_connected_components(to_nx(G2))
+assert dfs(G1, "A") == set(G1)            # G1 is connected
+print("Exercise 4 ✔  components of G2:", comps)
+draw_graph(G2, title="G2 — four connected components")</code></div>
+</section>
+
+<section class="slide">
+  <h2 class="frame-title"><span class="ex-tag">Exercise 5</span>Cycle detection</h2>
+  <p>Implement <code>has_cycle(G)</code> for an <strong>undirected</strong> graph: run a DFS from every unvisited vertex, remembering each vertex's <em>parent</em> in the traversal; reaching an already-visited vertex that is <strong>not</strong> the parent reveals a cycle.</p>
+  <div class="thm-box">A connected graph with no cycle is a <strong>tree</strong>, and then $|E| = |V| - 1$.</div>
+  <div class="python-block"><span class="pane-label">Python · your turn</span><code class="pane-code">def has_cycle(G):
+    """True iff the undirected graph G contains a cycle."""
+    # TODO — DFS keeping track of each vertex's parent
+    raise NotImplementedError</code></div>
+  <div class="output-block"><span class="pane-label">Test cell</span><code class="pane-code">T = build_graph("ABCDEF", [("A","B"), ("A","C"), ("B","D"), ("B","E"), ("C","F")])
+assert not has_cycle(T) and num_edges(T) == len(T) - 1     # a tree!
+assert nx.is_tree(to_nx(T))                                # networkx agrees
+assert has_cycle(G1) and has_cycle(G2)
+P5 = build_graph(range(5), [(i, i + 1) for i in range(4)])
+assert not has_cycle(P5)
+print("Exercise 5 ✔")
+draw_graph(T, title="T — connected and acyclic: a tree")</code></div>
+</section>
+
+<section class="slide">
+  <h2 class="frame-title"><span class="ex-tag">Exercise 6</span>Bipartite graphs and 2-coloring</h2>
+  <div class="def-box">A graph is <strong>bipartite</strong> when its vertices split into two sides such that every edge joins the two sides — equivalently, when it admits a proper <strong>2-coloring</strong> (adjacent vertices always get different colors).</div>
+  <p>Implement <code>two_color(G)</code>: return a dict <code>{vertex: 0 or 1}</code> describing a proper 2-coloring if one exists, and <code>None</code> otherwise. Color along a BFS, handling <strong>every</strong> component; finding two neighbors with the same color means an odd cycle is present.</p>
+  <div class="python-block"><span class="pane-label">Python · your turn</span><code class="pane-code">def two_color(G):
+    """A proper 2-coloring of G as a dict, or None if G is not bipartite."""
+    # TODO — BFS per component, alternating colors 0 / 1
+    raise NotImplementedError</code></div>
+  <div class="output-block"><span class="pane-label">Test cell</span><code class="pane-code">C6  = build_graph(range(6), [(i, (i + 1) % 6) for i in range(6)])
+C5  = build_graph(range(5), [(i, (i + 1) % 5) for i in range(5)])
+K33 = build_graph(range(6), [(i, j) for i in range(3) for j in range(3, 6)])
+
+for G, expected in [(C6, True), (C5, False), (K33, True), (T, True), (G1, False)]:
+    c = two_color(G)
+    assert (c is not None) == expected == nx.is_bipartite(to_nx(G))
+    if c is not None:                       # the coloring must be proper
+        assert all(c[u] != c[v] for u in G for v in G[u])
+print("Exercise 6 ✔  (even cycles, trees, K33: yes — odd cycles: no)")
+draw_graph(C6, coloring=two_color(C6), title="C6 is 2-colorable")
+draw_graph(K33, coloring=two_color(K33), title="K(3,3) is bipartite")</code></div>
+</section>
+
+<section class="slide">
+  <h2 class="frame-title"><span class="ex-tag">Exercise 7</span>Greedy coloring</h2>
+  <p>Implement <code>greedy_coloring(G, order=None)</code>: scan the vertices in the given order — by default the <em>Welsh–Powell</em> order, i.e. <strong>decreasing degree</strong> — and give each vertex the <strong>smallest</strong> color (a non-negative integer) not already used by its neighbors. Return the dict <code>{vertex: color}</code>.</p>
+  <div class="q-box">The wheel $W_n$ is a cycle on $n$ vertices plus a hub joined to every cycle vertex. How many colors are needed when $n$ is even? When $n$ is odd?</div>
+  <div class="python-block"><span class="pane-label">Python · your turn</span><code class="pane-code">def greedy_coloring(G, order=None):
+    """Greedy proper coloring of G following `order` (default: decreasing degree)."""
+    # TODO — for each vertex, collect the neighbors' colors, take the smallest free one
+    raise NotImplementedError</code></div>
+  <div class="output-block"><span class="pane-label">Test cell</span><code class="pane-code">def wheel(n):
+    """Cycle 0..n-1 plus a hub 'h' joined to every cycle vertex."""
+    G = build_graph(range(n), [(i, (i + 1) % n) for i in range(n)])
+    for i in range(n):
+        add_edge(G, "h", i)
+    return G
+
+PETERSEN_EDGES = [(0,1),(1,2),(2,3),(3,4),(4,0),
+                  (5,7),(7,9),(9,6),(6,8),(8,5),
+                  (0,5),(1,6),(2,7),(3,8),(4,9)]
+P = build_graph(range(10), PETERSEN_EDGES)
+
+for G in [wheel(6), wheel(5), P, G1]:
+    c = greedy_coloring(G)
+    assert all(c[u] != c[v] for u in G for v in G[u])       # proper coloring
+
+n_colors = lambda c: max(c.values()) + 1
+print("colors used:  W6 ->", n_colors(greedy_coloring(wheel(6))),
+      "| W5 ->", n_colors(greedy_coloring(wheel(5))),
+      "| Petersen ->", n_colors(greedy_coloring(P)),
+      "| networkx on Petersen ->", n_colors(nx.greedy_color(to_nx(P))))
+draw_graph(P, coloring=greedy_coloring(P), title="Petersen graph — greedy coloring")
+print("Exercise 7 ✔")</code></div>
+</section>
+
+<section class="slide">
+  <h2 class="frame-title">★ Next: the 3-SAT challenge</h2>
+  <p>The famous reduction from <strong>Boolean satisfiability</strong> to <strong>graph 3-coloring</strong> builds on everything above. It is now a separate guided project so you can treat it as a mini-assignment.</p>
+  <a class="project-link" href="Project_3SAT_Coloring_student.html">→ Open the 3-SAT Coloring project</a>
+  <h3 class="sub-title">Summary</h3>
+  <p>You implemented from scratch, on dict-of-lists graphs: construction, degrees (+ handshake lemma), BFS distances, DFS, connected components, cycle detection, the bipartite test by 2-coloring, and greedy coloring. Throughout, <code>networkx</code> served as an independent referee for your code.</p>
+</section>
+
+</body>
+</html>

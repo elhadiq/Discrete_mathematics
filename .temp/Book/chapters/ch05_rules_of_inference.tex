@@ -1,0 +1,266 @@
+\chapter{Rules of Inference}
+\signature
+
+\section{Motivation}
+
+An \emph{argument} is a sequence of propositions: \emph{premises}
+$p_1, \ldots, p_k$ followed by a \emph{conclusion} $q$. The argument is
+\emph{valid} when the premises entail the conclusion:
+$(p_1 \wedge \cdots \wedge p_k) \to q$ is a tautology. Validity concerns form,
+not content --- a valid argument with true premises is called \emph{sound} and
+its conclusion must be true.
+
+\subsection{The limits of truth tables}
+
+Validity can in principle be checked by a truth table, but an argument with
+$n$ atomic propositions requires $2^n$ rows: $20$ atoms already mean more than
+a million rows. Rules of inference replace this exponential check by short
+chains of certified elementary steps --- the same economy that proofs provide
+throughout mathematics.
+
+\section{The rules of inference}
+
+Each rule below is a small valid argument, verified once by a truth table and
+then reused forever. We write premises above the line, conclusion below.
+
+\begin{center}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{llll}
+\toprule
+\textbf{Rule} & \textbf{Premises} & \textbf{Conclusion} & \textbf{Tautology}\\
+\midrule
+Modus ponens & $p,\quad p \to q$ & $q$ &
+  $(p \wedge (p \to q)) \to q$\\
+Modus tollens & $\neg q,\quad p \to q$ & $\neg p$ &
+  $(\neg q \wedge (p \to q)) \to \neg p$\\
+Hypothetical syllogism & $p \to q,\quad q \to r$ & $p \to r$ &
+  $((p \to q) \wedge (q \to r)) \to (p \to r)$\\
+Disjunctive syllogism & $p \vee q,\quad \neg p$ & $q$ &
+  $((p \vee q) \wedge \neg p) \to q$\\
+Addition & $p$ & $p \vee q$ & $p \to (p \vee q)$\\
+Simplification & $p \wedge q$ & $p$ & $(p \wedge q) \to p$\\
+Conjunction & $p,\quad q$ & $p \wedge q$ &
+  $((p) \wedge (q)) \to (p \wedge q)$\\
+Resolution & $p \vee q,\quad \neg p \vee r$ & $q \vee r$ &
+  $((p \vee q) \wedge (\neg p \vee r)) \to (q \vee r)$\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{notebox}
+Modus ponens is the engine of deduction; resolution alone underlies automated
+theorem provers and SAT solvers. Beware the two fallacies of Chapter~2:
+affirming the consequent ($q$ and $p \to q$, hence $p$) and denying the
+antecedent ($\neg p$ and $p \to q$, hence $\neg q$) are \emph{not} valid
+rules.
+\end{notebox}
+
+\begin{example}\label{ex:inf1}
+Premises: ``If it rains, the match is cancelled'' ($r \to c$); ``If the match
+is cancelled, the tickets are refunded'' ($c \to t$); ``The tickets are not
+refunded'' ($\neg t$). Conclusion: ``It does not rain'' ($\neg r$).
+
+\begin{center}
+\begin{tabular}{llll}
+\toprule
+Step & Formula & Justification\\
+\midrule
+1 & $r \to c$ & premise\\
+2 & $c \to t$ & premise\\
+3 & $r \to t$ & hypothetical syllogism, 1, 2\\
+4 & $\neg t$ & premise\\
+5 & $\neg r$ & modus tollens, 3, 4\\
+\bottomrule
+\end{tabular}
+\end{center}
+\end{example}
+
+\begin{example}\label{ex:inf2}
+Premises: $p \vee q$,\quad $p \to r$,\quad $q \to s$,\quad $\neg r$.
+Show: $s$.
+
+\begin{center}
+\begin{tabular}{lll}
+\toprule
+Step & Formula & Justification\\
+\midrule
+1 & $p \to r$ & premise\\
+2 & $\neg r$ & premise\\
+3 & $\neg p$ & modus tollens, 1, 2\\
+4 & $p \vee q$ & premise\\
+5 & $q$ & disjunctive syllogism, 4, 3\\
+6 & $q \to s$ & premise\\
+7 & $s$ & modus ponens, 6, 5\\
+\bottomrule
+\end{tabular}
+\end{center}
+\end{example}
+
+\section{Rules for quantified statements}
+
+Four rules connect quantifiers with concrete instances. Here $c$ denotes an
+element of the domain.
+
+\begin{center}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{lll}
+\toprule
+\textbf{Rule} & \textbf{From} & \textbf{Infer}\\
+\midrule
+Universal instantiation (UI) & $\forall x\,P(x)$ & $P(c)$ for any $c$\\
+Universal generalisation (UG) & $P(c)$ for \emph{arbitrary} $c$ &
+  $\forall x\,P(x)$\\
+Existential instantiation (EI) & $\exists x\,P(x)$ &
+  $P(c)$ for some \emph{fresh} name $c$\\
+Existential generalisation (EG) & $P(c)$ for some $c$ & $\exists x\,P(x)$\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{notebox}
+Two safety conditions: in UG, $c$ must be \emph{arbitrary} --- no special
+assumption may have been made about it; in EI, the witness name $c$ must be
+\emph{new}, not previously used in the proof. Violating either produces
+plausible-looking nonsense.
+\end{notebox}
+
+\begin{example}[Socrates]
+Premises: $\forall x\,(M(x) \to D(x))$ (``all men are mortal'') and
+$M(\mathrm{socrates})$. By UI, $M(\mathrm{socrates}) \to
+D(\mathrm{socrates})$; by modus ponens, $D(\mathrm{socrates})$:
+Socrates is mortal. Propositional logic alone could never perform the first
+step.
+\end{example}
+
+\begin{example}[Existential reasoning]\label{ex:exist}
+Premises: ``Some student in the class has not done the homework''
+$\exists x\,(S(x) \wedge \neg H(x))$; ``Every student in the class passed the
+test'' $\forall x\,(S(x) \to T(x))$. Conclusion: ``Someone who passed the test
+has not done the homework'' $\exists x\,(T(x) \wedge \neg H(x))$.
+
+Proof: by EI choose a fresh $c$ with $S(c) \wedge \neg H(c)$; by
+simplification $S(c)$ and $\neg H(c)$; by UI on the second premise,
+$S(c) \to T(c)$; by modus ponens $T(c)$; by conjunction
+$T(c) \wedge \neg H(c)$; by EG, $\exists x\,(T(x) \wedge \neg H(x))$.
+\end{example}
+
+\section{Summary}
+
+Valid argument forms --- modus ponens, modus tollens, syllogisms, addition,
+simplification, conjunction, resolution --- replace exponential truth-table
+checks by linear chains of certified steps. The four quantifier rules
+(UI, UG, EI, EG) let deductions pass between general statements and concrete
+instances, with the side conditions ``arbitrary'' (UG) and ``fresh'' (EI).
+Together these rules constitute the deductive machinery used implicitly by
+every proof in the remainder of the book.
+
+\section*{Exercises}
+\addcontentsline{toc}{section}{Exercises}
+
+\begin{exercise}{\easy}
+Name the rule of inference used: (a) ``It is snowing, therefore it is snowing
+or it is cold.'' (b) ``It is snowing and cold; therefore it is cold.''
+(c) ``If I sleep, I miss the bus. I slept. Therefore I missed the bus.''
+\end{exercise}
+
+\begin{exercise}{\easy}
+Verify by truth table that disjunctive syllogism
+$((p \vee q) \wedge \neg p) \to q$ is a tautology.
+\end{exercise}
+
+\begin{exercise}{\easy}
+Identify the fallacy: ``If the program is correct, all tests pass. All tests
+pass. Therefore the program is correct.''
+\end{exercise}
+
+\begin{exercise}{\medium}
+Construct a step-by-step deduction. Premises:
+$\neg p \to q$,\quad $q \to r$,\quad $\neg r$. Conclusion: $p$.
+\end{exercise}
+
+\begin{exercise}{\medium}
+Construct a deduction. Premises: $p \to (q \wedge r)$,\quad $p \vee s$,\quad
+$\neg q$. Conclusion: $s$.
+\end{exercise}
+
+\begin{exercise}{\medium}
+Use resolution repeatedly to derive a contradiction (the empty clause) from
+the clauses: $p \vee q$,\quad $\neg p \vee q$,\quad $\neg q$.
+\end{exercise}
+
+\begin{exercise}{\medium}
+Premises: ``Every computer science student studies discrete mathematics''
+and ``Hind is a computer science student''. Formalise with predicates and
+derive ``Hind studies discrete mathematics'', naming each rule.
+\end{exercise}
+
+\begin{exercise}{\hard}
+Find the flaw: from $\exists x\,P(x)$ and $\exists x\,Q(x)$, a student
+instantiates both with the same $c$ to get $P(c) \wedge Q(c)$ and concludes
+$\exists x\,(P(x) \wedge Q(x))$. Exhibit concrete $P$, $Q$ and a domain where
+the premises are true and the conclusion false.
+\end{exercise}
+
+\begin{exercise}{\hard}
+Premises: $\forall x\,(P(x) \to Q(x))$ and $\forall x\,(Q(x) \to R(x))$.
+Give a full quantified deduction of $\forall x\,(P(x) \to R(x))$, naming
+every rule (UI, UG, hypothetical syllogism).
+\end{exercise}
+
+\section*{Solutions to the Exercises}
+\addcontentsline{toc}{section}{Solutions to the Exercises}
+
+\begin{solution}{5.1}
+(a) Addition. (b) Simplification. (c) Modus ponens.
+\end{solution}
+
+\begin{solution}{5.2}
+The formula fails only if $(p \vee q) \wedge \neg p$ is true and $q$ false.
+Then $p$ is false (from $\neg p$) and $q$ false, making $p \vee q$ false ---
+contradiction. So no falsifying row exists: a tautology. (The four-row table
+confirms: rows $(\TT,\TT),(\TT,\FF)$ make $\neg p$ false; row $(\FF,\TT)$
+makes $q$ true; row $(\FF,\FF)$ makes $p \vee q$ false.)
+\end{solution}
+
+\begin{solution}{5.3}
+Affirming the consequent: from $p \to q$ and $q$ one cannot infer $p$ ---
+tests can pass for an incorrect program.
+\end{solution}
+
+\begin{solution}{5.4}
+1.~$q \to r$ (premise); 2.~$\neg r$ (premise); 3.~$\neg q$ (modus tollens,
+1,2); 4.~$\neg p \to q$ (premise); 5.~$\neg\neg p$, i.e.\ $p$ (modus tollens,
+4,3, with double negation).
+\end{solution}
+
+\begin{solution}{5.5}
+1.~$\neg q$ (premise); 2.~$\neg q \vee \neg r$ (addition, 1);
+3.~$\neg(q \wedge r)$ (De Morgan, 2); 4.~$p \to (q \wedge r)$ (premise);
+5.~$\neg p$ (modus tollens, 4,3); 6.~$p \vee s$ (premise); 7.~$s$
+(disjunctive syllogism, 6,5).
+\end{solution}
+
+\begin{solution}{5.6}
+Resolve $p \vee q$ with $\neg p \vee q$ on $p$: get $q \vee q = q$. Resolve
+$q$ with $\neg q$: the empty clause. The clause set is unsatisfiable.
+\end{solution}
+
+\begin{solution}{5.7}
+Let $C(x)$: ``$x$ is a CS student'', $D(x)$: ``$x$ studies discrete
+mathematics''. Premises: $\forall x\,(C(x) \to D(x))$, $C(\mathrm{hind})$.
+1.~UI: $C(\mathrm{hind}) \to D(\mathrm{hind})$. 2.~Modus ponens with the
+second premise: $D(\mathrm{hind})$.
+\end{solution}
+
+\begin{solution}{5.8}
+The error is reusing the name $c$ in the second EI --- the witness must be
+fresh. Counterexample: domain $\Z$, $P(x)$: ``$x$ is even'', $Q(x)$: ``$x$
+is odd''. Both premises are true, yet no integer is both even and odd, so
+$\exists x\,(P(x) \wedge Q(x))$ is false.
+\end{solution}
+
+\begin{solution}{5.9}
+Let $c$ be arbitrary. 1.~UI on premise~1: $P(c) \to Q(c)$. 2.~UI on
+premise~2: $Q(c) \to R(c)$. 3.~Hypothetical syllogism: $P(c) \to R(c)$.
+4.~Since $c$ was arbitrary, UG yields $\forall x\,(P(x) \to R(x))$.
+\end{solution}
